@@ -68,11 +68,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Cpp_Demo.cpp" />
+    <ClCompile Include="Cpp_Test.cpp" />
     <ClCompile Include="类.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cpp_Demo.h" />
+    <ClInclude Include="Cpp_Test.h" />
     <ClInclude Include="Note.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>

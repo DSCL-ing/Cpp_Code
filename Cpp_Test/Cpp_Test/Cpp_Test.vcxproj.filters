@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Cpp_Demo.cpp">
+    <ClCompile Include="Cpp_Test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="类.cpp">
@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cpp_Demo.h">
+    <ClInclude Include="Cpp_Test.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Note.h">
