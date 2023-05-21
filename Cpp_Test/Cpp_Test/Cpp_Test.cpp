@@ -6,37 +6,48 @@
 
 using namespace std;
 
- inline void Swap(int& a, int& b)
+
+int main()
 {
-	int tmp = a;
-	a = b;
-	b = tmp;
+	//调用构造函数
+	Stack st;		//不传参写法.和其他方法不一样,构造方法和其他方法不同之处
+	//Stack st();		//会警告,不能这么写
+	Stack st1(4);	//传参写法
+
+	return 0;
 }
 
- class Date
- {
- public:
-	 void Init(int year, int month, int day)
-	 {
-		 _year = year;
-		 _month = month;
-		 _day = day;
-		 cout << this << endl;
-	 }
- private:
-	 int _year; // 年
-	 int _month; // 月
-	 int _day; // 日
- };
-
- int main()
- {
-	 Date d1, d2;
-	 d1.Init(2022, 1, 11);
-	 d2.Init(2022, 1, 12);
-
-	 return 0;
- }
+// inline void Swap(int& a, int& b)
+//{
+//	int tmp = a;
+//	a = b;
+//	b = tmp;
+//}
+//
+// class Date
+// {
+// public:
+//	 void Init(int year, int month, int day)
+//	 {
+//		 _year = year;
+//		 _month = month;
+//		 _day = day;
+//		 cout << this << endl;
+//	 }
+// private:
+//	 int _year; // 年
+//	 int _month; // 月
+//	 int _day; // 日
+// };
+//
+// int main()
+// {
+//	 Date d1, d2;
+//	 d1.Init(2022, 1, 11);
+//	 d2.Init(2022, 1, 12);
+//
+//	 return 0;
+// }
 
  //// 类中既有成员变量，又有成员函数
  //class A1 {
