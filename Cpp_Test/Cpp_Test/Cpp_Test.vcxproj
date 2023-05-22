@@ -18,10 +18,21 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Cpp_Test.h" />
+    <ClInclude Include="Note.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="类.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Cpp_Test.cpp" />
+    <ClCompile Include="类.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{cd167ece-5cc8-4a27-ac2b-940ea6b92111}</ProjectGuid>
+    <ProjectGuid>{9e4cc9f9-f4d9-49c2-8a79-d36af39ef207}</ProjectGuid>
     <RootNamespace>CppTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -138,19 +149,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\Cpp_Test.cpp" />
-    <ClCompile Include="..\类.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Cpp_Test.h" />
-    <ClInclude Include="..\Note.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\类.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
