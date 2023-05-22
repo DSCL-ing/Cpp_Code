@@ -1,7 +1,7 @@
 
 #include<iostream>
 #include<stdlib.h>
-#include"Á±ª.h"
+#include"¿‡.h"
 
 
 Stack::Stack()

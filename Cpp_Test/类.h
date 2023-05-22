@@ -4,18 +4,18 @@
 #include<stdlib.h>
 
 
-//ä¸€èˆ¬å®šä¹‰æ–¹å¼
+//Ò»°ã¶¨Òå·½Ê½
 class Stack
 {
 public:
-	//æˆå‘˜å‡½æ•°
-	//void Init(int n = 4); //ç¼ºçœå‚æ•°
-	Stack();			//æ„é€ å‡½æ•°
+	//³ÉÔ±º¯Êı
+	//void Init(int n = 4); //È±Ê¡²ÎÊı
+	Stack();			//¹¹Ôìº¯Êı
 	Stack(int n);
 	void Push(int x);
-	~Stack();			//ææ„å‡½æ•°
+	~Stack();			//Îö¹¹º¯Êı
 private:
-	//æˆå‘˜å˜é‡
+	//³ÉÔ±±äÁ¿
 	int* _a;
 	int _size;
 	int _capacity;
@@ -23,13 +23,13 @@ private:
 
 
 
-//æ–¹å¼1ï¼šæœªå­¦æƒé™ï¼Œå…ˆä½¿ç”¨struct
+//·½Ê½1£ºÎ´Ñ§È¨ÏŞ£¬ÏÈÊ¹ÓÃstruct
 struct Stack1
 {
-	//æˆå‘˜å‡½æ•°
-	void Init(int n = 4); //ç¼ºçœå‚æ•°
+	//³ÉÔ±º¯Êı
+	void Init(int n = 4); //È±Ê¡²ÎÊı
 	void Push(int x);
-	//æˆå‘˜å˜é‡
+	//³ÉÔ±±äÁ¿
 	int* a;
 	int size;
 	int capacity;
