@@ -1,28 +1,53 @@
 
-#define  _CRT_SECURE_NO_WARNINGS 1
-#include<iostream>
-#include"Cpp_Test.h"
-
 #include"类.h"
 
-using namespace std;
+
+
 
 
 int main()
 {
-	
-	
-	
-	
-	
-	
-	//调用构造函数
-	Stack st;		//不传参写法.和其他方法不一样,构造方法和其他方法不同之处
-	//Stack st();		//会警告,不能这么写
-	//Stack st1(4);	//传参写法
-
+	Date d1;
+	Date d2(1, 1, 2);
+	Date d3(3, 3, 3);
+	cout << d1.operator<(d2) << endl;
+	d1 = d2 = d3;
+	d1.print();
+	d2.print();
+	d3.print();
 	return 0;
 }
+
+
+//运算符重载1
+//bool operator==(const Date& d1, const Date& d2)
+//{
+//	return d1._day == d2._day &&
+//		d1._month == d2._month &&
+//		d1._year == d2._year;
+//}
+//
+//int main()
+//{
+//	Date d1;
+//	Date d2(1,1,1);
+//	cout << operator==(d1, d2) << endl;
+//	cout << (d1 == d2) << endl;
+//	return 0;
+//}
+
+
+
+//int main()
+//{
+//
+//	//调用构造函数
+//	Stack st;		//不传参写法.和其他方法不一样,构造方法和其他方法不同之处
+//	//Stack st();		//会警告,不能这么写
+//	//Stack st1(4);	//传参写法
+//
+//	return 0;
+//}
 
 // inline void Swap(int& a, int& b)
 //{
@@ -31,21 +56,7 @@ int main()
 //	b = tmp;
 //}
 //
-// class Date
-// {
-// public:
-//	 void Init(int year, int month, int day)
-//	 {
-//		 _year = year;
-//		 _month = month;
-//		 _day = day;
-//		 cout << this << endl;
-//	 }
-// private:
-//	 int _year; // 年
-//	 int _month; // 月
-//	 int _day; // 日
-// };
+
 //
 // int main()
 // {
