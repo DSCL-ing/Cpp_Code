@@ -21,15 +21,21 @@
     <ClInclude Include="类.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Cpp_Test.h">
+    <ClInclude Include="Test.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Cpp_Test.cpp">
+    <ClCompile Include="Test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="类.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Date.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

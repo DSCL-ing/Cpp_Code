@@ -1,22 +1,37 @@
 
 #include"类.h"
-
-
-
-
+#include"Date.h"
 
 int main()
 {
-	Date d1;
-	Date d2(1, 1, 2);
-	Date d3(3, 3, 3);
-	cout << d1.operator<(d2) << endl;
-	d1 = d2 = d3;
+	Date d1(2023,5,24);
+	Date d2;
+	Date d3;
+	d2 = d1 += 2000;
 	d1.print();
 	d2.print();
+
+	d3 = d2 + 2000;
+	d2.print();
+
 	d3.print();
 	return 0;
 }
+
+
+//赋值运算符重载
+//int main()
+//{
+//	Date d1;
+//	Date d2(1, 1, 2);
+//	Date d3(3, 3, 3);
+//	cout << d1.operator<(d2) << endl;
+//	d1 = d2 = d3;
+//	d1.print();
+//	d2.print();
+//	d3.print();
+//	return 0;
+//}
 
 
 //运算符重载1

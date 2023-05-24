@@ -13,9 +13,13 @@ public:
 
 	Date& operator=(const Date& d)
 	{
-		_year = d._year;
-		_month = d._month;
-		_day = d._day;
+		if (this != &d)
+		{
+			_year = d._year;
+			_month = d._month;
+			_day = d._day;
+		}
+		return *this;
 	}
 
 	bool operator==(const Date& d)

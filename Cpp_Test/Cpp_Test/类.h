@@ -8,27 +8,7 @@
 
 using namespace std;
 
-class Date
-{
-public:
-	Date(int year = 1 , int month =1 ,int day = 1);
 
-	//运算符构造函数重载
-	Date& operator=(const Date& d);
-	bool operator==(const Date& d2);
-	bool operator<(const Date& d2);
-	bool operator<=(const Date& d);
-	bool operator>(const Date& d2);
-	bool operator>=(const Date& d);
-	bool operator!=(const Date& d);
-
-	//打印
-	void print();
-//private:
-	int _year; // 年
-	int _month; // 月
-	int _day; // 日
-};
 
 //一般定义方式
 class Stack
@@ -46,8 +26,6 @@ private:
 	int _size = 0;
 	int _capacity = 0;
 };
-
-
 
 //方式1：未学权限，先使用struct
 struct Stack1
