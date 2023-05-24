@@ -21,7 +21,7 @@ public:
 	bool operator> (const Date& d);
 	bool operator>=(const Date& d);
 	bool operator!=(const Date& d);
-
+	//...
 	//d + 100
 	Date operator+ (int day);
 
@@ -29,8 +29,13 @@ public:
 	Date& operator+=(int day);
 
 	//d - 100
-	
+	Date operator- (int day);
+
+	//d -= 100
+	Date& operator-= (int day);
+
 	//d1 - d2
+	int operator-(const Date& d);
 
 	//++d
 	Date& operator++();
@@ -39,6 +44,7 @@ public:
 	Date operator++(int);
 
 	//--d
+	
 
 	//d--
 
@@ -46,7 +52,7 @@ public:
 	int getRegulationsMonthDays(int year, int Month);
 
 	//ª÷∏¥≥ı ºªØ
-	void Init();
+	void Init(int year = 1, int month = 1, int day = 1);
 
 	//¥Ú”°
 	void print();
