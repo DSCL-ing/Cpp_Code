@@ -11,10 +11,18 @@ int main()
 	d1.print();
 	d2.print();
 
+	d1.Init();
+	d2.Init();
+
 	d3 = d2 + 2000;
 	d2.print();
-
 	d3.print();
+
+	(++d1).print();
+	(d2++).print();
+
+
+
 	return 0;
 }
 

@@ -33,8 +33,10 @@ public:
 	//d1 - d2
 
 	//++d
+	Date& operator++();
 
 	//d++
+	Date operator++(int);
 
 	//--d
 
@@ -43,6 +45,8 @@ public:
 	//年月日规定
 	int getRegulationsMonthDays(int year, int Month);
 
+	//恢复初始化
+	void Init();
 
 	//打印
 	void print();

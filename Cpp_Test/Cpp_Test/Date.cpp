@@ -50,6 +50,17 @@ bool Date::operator!=(const Date& d)
 	return !(*this == d);
 }
 
+Date& Date::operator++() //前置++
+{
+	return (*this+=1);
+}
+
+Date Date::operator++(int)
+{
+	Date tmp(*this);
+	return *this + 1;
+}
+
 Date& Date::operator+=(int day)
 {
 	//*this = *this + day;//调用+(拷贝),调用赋值
@@ -104,6 +115,14 @@ int Date::getRegulationsMonthDays(int year, int month)
 	}
 }
 
+void Date::Init()
+{
+	_year = 1;
+	_month = 1;
+	_day = 1;
+}
+
+
 Date::Date(int year, int month, int day)
 {
 	//判断日期规则是否正确
@@ -116,3 +135,4 @@ void Date::print()
 {
 	cout << _year << "/" << _month << "/" << _day << endl;
 }
+
