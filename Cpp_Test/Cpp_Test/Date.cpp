@@ -15,14 +15,14 @@ Date& Date::operator=(const Date& d)
 	return *this;
 }
 
-bool Date::operator==(const Date& d)
+bool Date::operator==(const Date& d)const
 {
 	return _day == d._day &&
 		_month == d._month &&
 		_year == d._year;
 }
 
-bool Date::operator< (const Date& d)
+bool Date::operator< (const Date& d)const
 {
 	return _year < d._year
 		|| _year == d._year && _month < d._month
@@ -30,22 +30,22 @@ bool Date::operator< (const Date& d)
 
 }
 
-bool Date::operator<=(const Date& d)
+bool Date::operator<=(const Date& d)const
 {
 	return *this < d || *this == d;
 }
 
-bool Date::operator> (const Date& d)
+bool Date::operator> (const Date& d)const
 {
 	return !(*this <= d);
 }
 
-bool Date::operator>=(const Date& d)
+bool Date::operator>=(const Date& d)const
 {
 	return *this > d || *this == d;
 }
 
-bool Date::operator!=(const Date& d)
+bool Date::operator!=(const Date& d)const
 {
 	return !(*this == d);
 }
@@ -74,9 +74,9 @@ Date& Date::operator+=(int day)
 	}
 
 	_day += day;
-	while (_day > getRegulationsMonthDays(_year, _month))
+	while (_day > getRegulationMonthDays(_year, _month))
 	{
-		_day -= getRegulationsMonthDays(_year, _month);
+		_day -= getRegulationMonthDays(_year, _month);
 		_month++;
 		if (_month == 13)
 		{
@@ -87,7 +87,7 @@ Date& Date::operator+=(int day)
 	return *this;
 }
 
-Date Date::operator+ (int day)
+Date Date::operator+ (int day)const
 {
 						//Date tmp1(*this);
 	Date tmp = *this; //1.调用拷贝构造
@@ -95,9 +95,9 @@ Date Date::operator+ (int day)
 
 	//Date tmp = *this;
 	//tmp._day += day;
-	//while (tmp._day > tmp.getRegulationsMonthDays(tmp._year, tmp._month))
+	//while (tmp._day > tmp.getRegulationMonthDays(tmp._year, tmp._month))
 	//{
-	//	tmp._day -= tmp.getRegulationsMonthDays(tmp._year, tmp._month);
+	//	tmp._day -= tmp.getRegulationMonthDays(tmp._year, tmp._month);
 	//	tmp._month++;
 	//	if (tmp._month == 13)
 	//	{
@@ -126,20 +126,20 @@ Date& Date::operator-= (int day)
 			--_year;
 			_month = 12;
 		}
-		_day += getRegulationsMonthDays(_year, _month);
+		_day += getRegulationMonthDays(_year, _month);
 	}
 	return *this;
 }
 
 
 
-Date Date::operator- (int day)
+Date Date::operator- (int day)const
 {
 	Date tmp(*this);
 	return tmp -= 1;
 }
 
-int Date::operator-(const Date& d)
+int Date::operator-(const Date& d)const
 {
 	Date max = *this;
 	Date min = d;
@@ -178,7 +178,7 @@ Date Date::operator--(int)
 
 
 //获取一个月有多少天
-int Date::getRegulationsMonthDays(int year, int month)
+int Date::getRegulationMonthDays(int year, int month)const
 {
 	int monthDaysArray[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
 	if ( month == 2 && ((year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0)))
@@ -195,22 +195,38 @@ int Date::getRegulationsMonthDays(int year, int month)
 
 Date& Date::Init(int year, int month, int day)
 {
-	_year = year;
-	_month = month;
-	_day = day;
-	return *this;
+	if (month > 0 && month < 13 && day>0 && day < getRegulationMonthDays(year, month))
+	{
+		_year = year;
+		_month = month;
+		_day = day;
+		return *this;
+	}
+	else
+	{
+		cout << "日期无效" << endl;
+		exit(-1);
+	}
 }
+
 
 
 Date::Date(int year, int month, int day)
 {
-	//判断日期规则是否正确
-	_year = year;
-	_month = month;
-	_day = day;
+	if (month > 0 && month < 13 && day>0 && day < getRegulationMonthDays(year, month))
+	{
+		_year = year;
+		_month = month;
+		_day = day;
+	}
+	else
+	{
+		cout << "日期无效" << endl;
+		exit(-1);
+	}
 }
 
-void Date::print()
+void Date::print()const
 {
 	cout << _year << "/" << _month << "/" << _day << endl;
 }

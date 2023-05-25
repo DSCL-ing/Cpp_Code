@@ -22,30 +22,41 @@ public:
 
 	//运算符构造函数重载
 	Date& operator= (const Date& d);
-	bool  operator==(const Date& d);
-	bool  operator< (const Date& d);
-	bool  operator<=(const Date& d);
-	bool  operator> (const Date& d);
-	bool  operator>=(const Date& d);
-	bool  operator!=(const Date& d);
-	Date  operator+ (int day);//d + 100
+	bool  operator==(const Date& d)const;
+	bool  operator< (const Date& d)const;
+	bool  operator<=(const Date& d)const;
+	bool  operator> (const Date& d)const;
+	bool  operator>=(const Date& d)const;
+	bool  operator!=(const Date& d)const;
+	Date  operator+ (int day)const;//d + 100
 	Date& operator+=(int day);//d += 100
 	Date& operator++(		);//++d
 	Date  operator++(int	);//d++
 	Date& operator-=(int day);//d -= 100
-	Date  operator- (int day);//d - 100
+	Date  operator- (int day)const;//d - 100
 	Date& operator--(		);//--d
 	Date  operator--(int	);//d--
-	int   operator- (const Date& d);//d1 - d2
+	int   operator- (const Date& d)const;//d1 - d2
+
+	//取地址运算符函数重载(天选之子5)
+	Date* operator& () 
+	{
+		return this;  
+	}
+	//const修饰的取地址运算符函数重载(天选之子6)
+	const Date* operator& ()const //不能只在函数名后面加const,因为那样返回值会权限放大
+	{
+		return this;
+	}
 
 	//年月日规定
-	int getRegulationsMonthDays(int year, int Month);
+	int getRegulationMonthDays(int year, int Month)const;
 
 	//恢复初始化
 	Date& Init(int year = 1, int month = 1, int day = 1);
 
 	//打印
-	void print();
+	void print()const;
 
 private:
 	int _year; // 年
