@@ -38,3 +38,5 @@ struct Stack1
 	int size ;
 	int capacity ;
 };
+
+

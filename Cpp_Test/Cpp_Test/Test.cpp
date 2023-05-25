@@ -9,6 +9,8 @@ int main()
 	Date d2;				 
 	Date d3;
 
+	//正常调用：d1.operator+(100);
+
 	//验证‘=’和‘d+=100’
 	d2 = d1 += 2000;		 
 	d1.print();				 //2028/11/13
@@ -44,10 +46,29 @@ int main()
 	d1.print();				 //1/1/1
 	d2.print();				 //0/12/31
 	
-	d1.Init(2023,5,24);
-	d2.Init(2000,6,25);
-	//(d1 -= d2).print();
-	
+	d2 = d1.Init(2023, 5, 25);
+	(d1 += -100).print();    //2023/2/14
+	(d2 -= -100).print();	 //2023/9/2
+
+	d1.Init();
+	d1--.print();			 //1/1/1
+	(--d1).print();			 //0/12/30
+
+	d1.Init(2023,5,25);
+	d2.Init(2023,9,2);
+	int ret = d1 - d2;
+	cout << ret << endl;	 //-100
+
+	d1.Init(2023, 5, 25);
+	d2.Init(2001, 3, 10);
+	cout << d1 - d2 << endl; 
+
+	//测试cout <<
+	cout << d1 << endl;
+
+	//测试cin >>
+	cin >> d1;
+	cout << d1 << endl;
 
 	return 0;
 }

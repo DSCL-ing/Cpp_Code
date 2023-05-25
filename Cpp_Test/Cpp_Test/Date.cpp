@@ -2,61 +2,7 @@
 
 #include"Date.h"
 
-Date& Date::operator-= (int day)
-{
-	_day -= day;
-	while (_day <= 0)
-	{
-		_month--;
-		if (_month == 0)
-		{
-			_month = 12;
-			--_year;
-		}
-		_day += getRegulationsMonthDays(_year, _month);
-	}
-	return *this;
-}
 
-Date Date::operator- (int day)
-{
-	Date tmp(*this);
-	return tmp-=1;
-}
-
-int Date::operator-(const Date& d)
-{
-
-
-
-
-	_year -= d._year;
-	if (_month - d._month>0 )
-	{
-		_month -= d._month;
-	}
-	else
-	{
-		--_year;
-		_month += 12 - d._month;
-	}
-	if (_day - d._day > 0)
-	{
-		_day = d._day;
-	}
-	else
-	{
-		if (--_month == 0)
-		{
-			_month = 12;
-		}
-		_day += getRegulationsMonthDays(_year, _month) - d._day;
-	}
-
-	
-
-	return 1;
-}
 
 Date& Date::operator=(const Date& d)
 {
@@ -119,7 +65,13 @@ Date Date::operator++(int) //后置++.int用于占位,区别前置++构成重载,语法规定
 
 Date& Date::operator+=(int day)
 {
-	//*this = *this + day;//调用+(拷贝),调用赋值
+	//*this = *this + day;//如果复用+来实现，开销：调用+(拷贝),调用赋值
+
+	if ( day < 0)
+	{
+		*this -= -day;
+		return *this;
+	}
 
 	_day += day;
 	while (_day > getRegulationsMonthDays(_year, _month))
@@ -157,6 +109,74 @@ Date Date::operator+ (int day)
 	//1,2,3点开销更大,所以复用+=来实现+(引用底层就是好)
 }
 
+Date& Date::operator-= (int day)
+{
+	if ( day < 0)
+	{
+		*this += -day;
+		return *this;
+	}
+
+	_day -= day;
+	while (_day <= 0)
+	{
+		--_month;
+		if (_month == 0)
+		{
+			--_year;
+			_month = 12;
+		}
+		_day += getRegulationsMonthDays(_year, _month);
+	}
+	return *this;
+}
+
+
+
+Date Date::operator- (int day)
+{
+	Date tmp(*this);
+	return tmp -= 1;
+}
+
+int Date::operator-(const Date& d)
+{
+	Date max = *this;
+	Date min = d;
+	int flag = 1;
+	if (*this < d)
+	{
+		max = d;
+		min = *this;
+		flag = -1;
+	}
+	
+	int count = 0;
+
+	while (max != min)
+	{
+		--max;
+		++count;
+	}
+
+	return flag * count;
+}
+
+
+Date& Date::operator--()
+{
+	return *this -= 1;
+}
+
+Date Date::operator--(int)
+{
+	Date tmp(*this);
+	*this -= 1;
+	return tmp;
+}
+
+
+
 //获取一个月有多少天
 int Date::getRegulationsMonthDays(int year, int month)
 {
@@ -173,11 +193,12 @@ int Date::getRegulationsMonthDays(int year, int month)
 
 
 
-void Date::Init(int year, int month, int day)
+Date& Date::Init(int year, int month, int day)
 {
 	_year = year;
 	_month = month;
 	_day = day;
+	return *this;
 }
 
 
@@ -194,3 +215,14 @@ void Date::print()
 	cout << _year << "/" << _month << "/" << _day << endl;
 }
 
+//ostream& operator<<(ostream& out, const Date& d)
+//{
+//	out << d._year << "/" << d._month << "/" << d._day;
+//	return out;
+//}
+//
+//istream& operator>>(istream& in, Date& d)
+//{
+//	in >> d._year >> d._month >> d._day;
+//	return in;
+//}
