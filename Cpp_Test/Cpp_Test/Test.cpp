@@ -2,12 +2,14 @@
 #include"¿‡.h"
 #include"Date.h"
 
+#include<iostream>
 
+using namespace std;
 
 
 int main()
 {
-
+	Date d1;
 	return 0;
 }
 
