@@ -4,14 +4,27 @@
 
 #include<iostream>
 
-using namespace std;
+//using namespace std;
 
+using std::cout;
+using std::endl;
 
-int main()
+class A
 {
-	Date d1;
-	return 0;
-}
+public:
+	static int count;
+};
+
+int A::count  = 0;
+
+ int main()
+ {
+
+	 A* ptr = nullptr;
+	 cout << ptr->count << endl;
+
+	 return 0;
+ }
 
 
 
