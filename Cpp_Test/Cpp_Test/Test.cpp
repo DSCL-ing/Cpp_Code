@@ -1,5 +1,4 @@
-﻿
-#pragma execution_character_set("utf-8")//解决中文乱码
+﻿#pragma once
 
 #include"类.h"
 #include"Date.h"
@@ -9,42 +8,66 @@
 //using namespace std;
 
 using std::cout;
+using std::cin;
 using std::endl;
 
-//class A
-//{
-//public:
-//	static int count;
-//};
-//
-//int A::count  = 0;
-//
-// int main()
-// {
-//
-//	 A* ptr = nullptr;
-//	 cout << ptr->count << endl;
-//
-//	 return 0;
-// }
+class A
+{
+private:
 
-class A {
+	int a;
 public:
-	int _a;
-	void fun() {
-	};
-	void fun(int a) {
-		_a = a;
-	};
+	static int count;
+	A()
+		:a(1)
+	{
+		++count;
+	}
+	A(int a)
+		:a(1)
+	{
+		++count;
+	} 
+	A(const A& aa)
+		:a(aa.a)
+	{
+		++count;
+	}
+	~A()
+	{
+		cout << "~A()" << endl;
+	}
 };
-int main() {
-	Date d1;
-	Stack s;
-	A* ptr = nullptr;
-	ptr->fun();
-	//ptr->fun(1);
-	return 0;
-}
+
+int A::count  = 0;
+
+ int main()
+ {
+	 A();
+	 //A a1;
+	 //A a2(1);
+	 //A a3 = 1;
+	 cout << A::count << endl;
+	 return 0;
+ }
+
+//class A {
+//	int _a;
+//
+//public:
+//	A() {
+//		cout << "hello" << endl;
+//	}
+//	void fun() {};
+//	void fun(int a) {_a= a;};
+//};
+//int main() {
+//	A* ptr = nullptr;
+//	ptr->fun();
+//	//ptr->fun(1);
+//	(*ptr).fun() ;
+//	return 0;
+//}
 
 
 //运算符重载

@@ -136,7 +136,7 @@ Date& Date::operator-= (int day)
 Date Date::operator- (int day)const
 {
 	Date tmp(*this);
-	return tmp -= 1;
+	return tmp -= day;
 }
 
 int Date::operator-(const Date& d)const

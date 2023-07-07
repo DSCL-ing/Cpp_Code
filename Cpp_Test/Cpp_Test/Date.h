@@ -23,14 +23,21 @@ private:
 	const int c = 1;
 
 public:
-	Date()
+	Date() //构造函数
 		:_year()
-		,_day()
+		,_day()  //--day放这的意思是初始化列表的初始化顺序与初始化列表的顺序无关,只与声明的位置有关
 		,_month()
 		//,_ref()//引用必须在,且必须有引用对象,且必须引用对象初始化过
 		,c()//const修饰的成员必须在,且必须赋值(初始化列表能给0)
 		//还有一个没带无参构造的自定义类型(类)成员
 	{}
+
+	Date(const Date& d) //拷贝构造 -- 构造函数的重载形式
+	{
+		_year = d._year;
+		_month = d._month;
+		_day = d._day;
+	}
 
 	Date(int year, int month, int day);
 
