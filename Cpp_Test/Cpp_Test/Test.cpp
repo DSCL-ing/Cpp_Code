@@ -21,35 +21,53 @@ public:
 	A()
 		:a(1)
 	{
+		cout << "A()" << endl;
 		++count;
 	}
 	A(int a)
 		:a(1)
 	{
+		cout << "A()" << endl;
 		++count;
 	} 
 	A(const A& aa)
 		:a(aa.a)
 	{
+		cout << "A()" << endl;
 		++count;
 	}
 	~A()
 	{
 		cout << "~A()" << endl;
 	}
+
 };
 
 int A::count  = 0;
 
- int main()
- {
-	 A();
-	 //A a1;
-	 //A a2(1);
-	 //A a3 = 1;
-	 cout << A::count << endl;
-	 return 0;
- }
+int main()
+{
+	int* p1 = new int;
+	int* p2 = new int[0];
+	return 0;
+}
+
+//void fun(const A& aa)
+//{
+//
+//}
+//
+// int main()
+// {
+//	 fun(2);
+//	 //A a1;
+//	 //A a2(1);
+//	 //A a3 = 1;
+//	 //cout << A::count << endl;
+//	 //cout << A::a << endl;
+//
+//	 return 0;
+// }
 
 //class A {
 //	int _a;
