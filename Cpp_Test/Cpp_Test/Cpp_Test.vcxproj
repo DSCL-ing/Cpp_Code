@@ -32,8 +32,8 @@
     <ClInclude Include="类.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Test.cpp" />
     <ClCompile Include="Date.cpp" />
+    <ClCompile Include="Test.cpp" />
     <ClCompile Include="类.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

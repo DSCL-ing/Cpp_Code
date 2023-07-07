@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #define  _CRT_SECURE_NO_WARNINGS 1
 
 
@@ -10,30 +10,30 @@ using namespace std;
 
 
 
-//Ò»°ã¶¨Òå·½Ê½
+//ä¸€èˆ¬å®šä¹‰æ–¹å¼
 class Stack
 {
 public:
-	//³ÉÔ±º¯Êı
-	//void Init(int n = 4); //È±Ê¡²ÎÊı
-	Stack();			//¹¹Ôìº¯Êı
+	//æˆå‘˜å‡½æ•°
+	//void Init(int n = 4); //ç¼ºçœå‚æ•°
+	Stack();			//æ„é€ å‡½æ•°
 	Stack(int n);
 	void Push(int x);
-	~Stack();			//Îö¹¹º¯Êı
+	~Stack();			//ææ„å‡½æ•°
 private:
-	//³ÉÔ±±äÁ¿
+	//æˆå‘˜å˜é‡
 	int* _a = 0;
 	int _size = 0;
 	int _capacity = 0;
 };
 
-//·½Ê½1£ºÎ´Ñ§È¨ÏŞ£¬ÏÈÊ¹ÓÃstruct
+//æ–¹å¼1ï¼šæœªå­¦æƒé™ï¼Œå…ˆä½¿ç”¨struct
 struct Stack1
 {
-	//³ÉÔ±º¯Êı
-	void Init(int n = 4); //È±Ê¡²ÎÊı
+	//æˆå‘˜å‡½æ•°
+	void Init(int n = 4); //ç¼ºçœå‚æ•°
 	void Push(int x);
-	//³ÉÔ±±äÁ¿
+	//æˆå‘˜å˜é‡
 	int* a ;
 	int size ;
 	int capacity ;

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 class Date
@@ -57,9 +57,9 @@ public:
 	}
 
 	//private:
-	int _year; // Äê
-	int _month; // ÔÂ
-	int _day; // ÈÕ
+	int _year; // å¹´
+	int _month; // æœˆ
+	int _day; // æ—¥
 };
 
 

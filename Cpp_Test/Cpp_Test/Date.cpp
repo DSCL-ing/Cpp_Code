@@ -1,4 +1,4 @@
-
+ï»¿
 
 #include"Date.h"
 
@@ -50,13 +50,13 @@ bool Date::operator!=(const Date& d)const
 	return !(*this == d);
 }
 
-Date& Date::operator++() //Ç°ÖÃ++
+Date& Date::operator++() //å‰ç½®++
 {
 
 	return (*this+=1);
 }
 
-Date Date::operator++(int) //ºóÖÃ++.intÓÃÓÚÕ¼Î»,Çø±ğÇ°ÖÃ++¹¹³ÉÖØÔØ,Óï·¨¹æ¶¨
+Date Date::operator++(int) //åç½®++.intç”¨äºå ä½,åŒºåˆ«å‰ç½®++æ„æˆé‡è½½,è¯­æ³•è§„å®š
 {
 	Date tmp(*this);
 	*this += 1;
@@ -65,7 +65,7 @@ Date Date::operator++(int) //ºóÖÃ++.intÓÃÓÚÕ¼Î»,Çø±ğÇ°ÖÃ++¹¹³ÉÖØÔØ,Óï·¨¹æ¶¨
 
 Date& Date::operator+=(int day)
 {
-	//*this = *this + day;//Èç¹û¸´ÓÃ+À´ÊµÏÖ£¬¿ªÏú£ºµ÷ÓÃ+(¿½±´),µ÷ÓÃ¸³Öµ
+	//*this = *this + day;//å¦‚æœå¤ç”¨+æ¥å®ç°ï¼Œå¼€é”€ï¼šè°ƒç”¨+(æ‹·è´),è°ƒç”¨èµ‹å€¼
 
 	if ( day < 0)
 	{
@@ -90,8 +90,8 @@ Date& Date::operator+=(int day)
 Date Date::operator+ (int day)const
 {
 						//Date tmp1(*this);
-	Date tmp = *this; //1.µ÷ÓÃ¿½±´¹¹Ôì
-	tmp += day;		//2.µ÷ÓÃ+=(ÒıÓÃ)
+	Date tmp = *this; //1.è°ƒç”¨æ‹·è´æ„é€ 
+	tmp += day;		//2.è°ƒç”¨+=(å¼•ç”¨)
 
 	//Date tmp = *this;
 	//tmp._day += day;
@@ -105,8 +105,8 @@ Date Date::operator+ (int day)const
 	//		++tmp._year;
 	//	}
 	//}
-	return tmp;  //3.´«Öµ·µ»Øµ÷ÓÃ¿½±´¹¹Ôì
-	//1,2,3µã¿ªÏú¸ü´ó,ËùÒÔ¸´ÓÃ+=À´ÊµÏÖ+(ÒıÓÃµ×²ã¾ÍÊÇºÃ)
+	return tmp;  //3.ä¼ å€¼è¿”å›è°ƒç”¨æ‹·è´æ„é€ 
+	//1,2,3ç‚¹å¼€é”€æ›´å¤§,æ‰€ä»¥å¤ç”¨+=æ¥å®ç°+(å¼•ç”¨åº•å±‚å°±æ˜¯å¥½)
 }
 
 Date& Date::operator-= (int day)
@@ -177,7 +177,7 @@ Date Date::operator--(int)
 
 
 
-//»ñÈ¡Ò»¸öÔÂÓĞ¶àÉÙÌì
+//è·å–ä¸€ä¸ªæœˆæœ‰å¤šå°‘å¤©
 int Date::getRegulationMonthDays(int year, int month)const
 {
 	int monthDaysArray[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
@@ -204,7 +204,7 @@ Date& Date::Init(int year, int month, int day)
 	}
 	else
 	{
-		cout << "ÈÕÆÚÎŞĞ§" << endl;
+		cout << "æ—¥æœŸæ— æ•ˆ" << endl;
 		exit(-1);
 	}
 }
@@ -221,7 +221,7 @@ Date::Date(int year, int month, int day)
 	}
 	else
 	{
-		cout << "ÈÕÆÚÎŞĞ§" << endl;
+		cout << "æ—¥æœŸæ— æ•ˆ" << endl;
 		exit(-1);
 	}
 }
