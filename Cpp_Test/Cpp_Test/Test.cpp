@@ -1,9 +1,9 @@
 ﻿#pragma once
 
-#include"类.h"
-#include"Date.h"
+
 
 #include<iostream>
+#include <string>
 //#include<algorithm>
 
 //using namespace std;
@@ -12,6 +12,7 @@ using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
+using std::swap;
 
 class A
 {
@@ -45,7 +46,6 @@ public:
 
 };
 
-#include <string>
 int main()
 {
 	string s1("hello world!");
@@ -54,6 +54,10 @@ int main()
 	{
 		cout << *it++ << " ";
 	}
+	int a = 1;
+	int b = 2;
+	swap(a, b);
+
 	cout << endl;
 	return 0;
 }
