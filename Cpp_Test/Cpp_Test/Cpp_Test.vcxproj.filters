@@ -36,6 +36,9 @@
     <ClInclude Include="STL.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="string.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="类.cpp">
@@ -47,7 +50,7 @@
     <ClCompile Include="Test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="string.cpp">
+    <ClCompile Include="myString.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
