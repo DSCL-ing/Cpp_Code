@@ -76,10 +76,34 @@
  * 2.append();//字符串追加拼接
  * 3.operator+=();//能够实现append和push_back.是他们两个的封装
  * 
+ * 插入
+ * string& insert(size_t pos , ...) //还有7个重载
+ * 
  */
 
 //迭代器
 /**
+ * 
+ *  int main()
+ * {
+ * 		string s1("hello world!");
+ * 		string::iterator it = s1.begin();
+ * 		while (it != s1.end())
+ * 		{
+ * 			cout << *it++ << " ";
+ * 		}
+ * 		cout << endl;
+ * 		return 0;
+ * }
+ * 
+ * it可以先理解成指针
+ * begin()是第一个数据的下标
+ * end()是最后一个数据的下一个下标
+ * 
+ * 
+ * foreach范围for底层是迭代器
+ * for(auto ch :s1)
+ * {//...}
  * 
  * 
  * .

@@ -11,6 +11,7 @@
 using std::cout;
 using std::cin;
 using std::endl;
+using std::string;
 
 class A
 {
@@ -43,12 +44,17 @@ public:
 	}
 
 };
-using std::string;
 
 #include <string>
 int main()
 {
 	string s1("hello world!");
+	string::iterator it = s1.begin();
+	while (it != s1.end())
+	{
+		cout << *it++ << " ";
+	}
+	cout << endl;
 	return 0;
 }
 
