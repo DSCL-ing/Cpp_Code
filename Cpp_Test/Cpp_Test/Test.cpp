@@ -4,7 +4,7 @@
 #include"Date.h"
 
 #include<iostream>
-#include<algorithm>
+//#include<algorithm>
 
 //using namespace std;
 
@@ -44,18 +44,25 @@ public:
 
 };
 using std::string;
-#include<string>
 
+#include <string>
 int main()
 {
 	string s1("hello world!");
-	for (size_t i = 0; i < s1.size(); ++i)
-	{
-		s1[i]++;
-	}
-	cout << s1 << endl;
 	return 0;
 }
+
+//#include<string>
+//int main()
+//{
+//	string s1("hello world!");
+//	for (size_t i = 0; i < s1.size(); ++i)
+//	{
+//		s1[i]++;
+//	}
+//	cout << s1 << endl;
+//	return 0;
+//}
 
 //int A::count  = 0;
 //
