@@ -43,31 +43,44 @@ public:
 	}
 
 };
-
-int A::count  = 0;
-
-template<class T> void Swap(T& x, T& y)
-{
-	T tmp = x;
-	x = y;
-	y = tmp;
-}
+using std::string;
+#include<string>
 
 int main()
 {
-	int x = 1;
-	int y = 2;
-	Swap(x, y);
-	cout << x<<" "<< y << endl;
-
-	double a = 1;
-	double b = 2;
-	Swap(a, b);
-	cout << a<<" "<< b  << endl;
-	//int* p1 = new int;
-	//int* p2 = new int[0];
+	string s1("hello world!");
+	for (size_t i = 0; i < s1.size(); ++i)
+	{
+		s1[i]++;
+	}
+	cout << s1 << endl;
 	return 0;
 }
+
+//int A::count  = 0;
+//
+//template<class T> void Swap(T& x, T& y)
+//{
+//	T tmp = x;
+//	x = y;
+//	y = tmp;
+//}
+//
+//int main()
+//{
+//	int x = 1;
+//	int y = 2;
+//	Swap(x, y);
+//	cout << x<<" "<< y << endl;
+//
+//	double a = 1;
+//	double b = 2;
+//	Swap(a, b);
+//	cout << a<<" "<< b  << endl;
+//	//int* p1 = new int;
+//	//int* p2 = new int[0];
+//	return 0;
+//}
 
 //void fun(const A& aa)
 //{
