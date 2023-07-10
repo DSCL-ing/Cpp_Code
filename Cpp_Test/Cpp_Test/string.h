@@ -1,9 +1,10 @@
 ﻿#pragma once
 
-//
+//笔记
 /**
  * 可以理解为管理数组的顺序表
  * 
+ * 关于迭代器的特性,相关的,对数据操作往往是一次只能操作一个指针下标,即一个数据
  * .
  */
 
@@ -74,7 +75,7 @@
  * .
  */
  
-
+//[
 //Modifiers(编辑器)
 /**
  * 尾插
@@ -82,10 +83,25 @@
  * 2.append();//字符串追加拼接
  * 3.operator+=();//能够实现append和push_back.是他们两个的封装
  * 
- * 插入
+ * 插入(不推荐,效率低)
  * string& insert(size_t pos , ...) //还有7个重载
+ * 注释:插入一般都是前插,记忆:头插,intsert(0),插在0的前面,在n的前面插入(插在n前)
+ * 配合迭代器使用:s.insert(s.begin()+5,' ');//在第5个位置前面插入空格
+ * 注意:迭代器插入重载函数只能是字符,没有字符串参数
+ * 
+ * 删除(不推荐,效率低)
+ * erase() //将下标及往后的删除,删除下标n,从下标n开始删除(包括n)
+ * s.erase(5); //删除下标为5及其以后的所有元素
+ * 配合迭代器使用:s.erase(s.begin()+5); //删除下标为5及其以后的所有元素
+ * 
+ * 
+ * 赋值,分配
+ * assign()
+ * 
  * 
  */
+
+//长类型使用auto自动推导,减少代码量,但可读性远远降低
 
 //迭代器
 /**
@@ -94,6 +110,7 @@
  * {
  * 		string s1("hello world!");
  * 		string::iterator it = s1.begin();
+ * //auto it = s1.begin();
  * 		while (it != s1.end())
  * 		{
  * 			cout << *it++ << " ";
@@ -112,6 +129,64 @@
  * {//...}
  * 
  * 
+ * .
+ */
+
+
+//反向迭代器
+/**
+ *
+ *  
+int main()
+{
+	string s1 = "hello world!";
+	string::reverse_iterator rit = s1.rbegin();
+// auto string::reverse_iterator rit = s1.rbegin();
+	while (rit != s1.rend())
+	{
+		cout << *rit << " ";
+		++rit; //逻辑设计上对称：反向走，往前也是++
+	}
+	cout << endl;
+	return 0;
+}
+ * 
+ * 
+ * .
+ */
+
+//const修饰的迭代器/反向迭代器
+/**
+ * 
+void fun(const string& s)
+{
+	//迭代器和begin的const重载,只允许迭代器读,不允许写
+	//const_reverse -- 安全,保护数据不被破坏
+	//string::const_reverse_iterator rit = s.rbegin();
+	auto rit = s.rbegin(); //auto自动推导类型
+	while (rit != s.rend())
+	{
+		//rit+=1; //	不允许修改指针指向的对象的内容,
+		cout << *rit << " ";
+		++rit;
+	}
+}
+ * 
+ * 对于const迭代器,还有新增的相应的cbegin()和cend //const
+ * begin和cbegin都可以用,前者用的人更多
+ * 
+ * 
+ * 
+ */
+//]
+
+
+//element access;
+/**
+ * 1.(重点)operator[] /operator[]const //越界会奔溃,assert
+ * 2.at(int i)  //越界会抛异常
+ * 3.back  //==[0]
+ * 4.front //==[size()-1]
  * .
  */
 

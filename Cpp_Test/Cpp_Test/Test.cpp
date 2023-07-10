@@ -46,21 +46,61 @@ public:
 
 };
 
+void fun(const string& s)
+{
+	//迭代器和begin的const重载,只允许迭代器读,不允许写
+	//const_reverse -- 安全,保护数据不被破坏
+	//string::const_reverse_iterator rit = s.rbegin();
+	auto rit = s.rbegin(); //auto自动推导类型
+	while (rit != s.rend())
+	{
+		//rit+=1; //	不允许修改指针指向的对象的内容,
+		cout << *rit << " ";
+		++rit;
+	}
+
+}
+
+//const迭代器
 int main()
 {
-	string s1("hello world!");
-	string::iterator it = s1.begin();
-	while (it != s1.end())
-	{
-		cout << *it++ << " ";
-	}
-	int a = 1;
-	int b = 2;
-	swap(a, b);
+	string s( "hello world!");
 
-	cout << endl;
+	s.erase(s.begin()+5);
+	cout << s << endl;
 	return 0;
 }
+
+//反向迭代器
+//int main()
+//{
+//	string s1 = "hello world!";
+//	string::reverse_iterator rit = s1.rbegin();
+//	while (rit != s1.rend())
+//	{
+//		cout << *rit << " ";
+//		++rit; //逻辑设计上对称：反向走，往前也是++
+//	}
+//	cout << endl;
+//	return 0;
+//}
+
+//正向迭代器
+//int main()
+//{
+//	string s1("hello world!");
+//	string::iterator it = s1.begin();
+//	while (it != s1.end())
+//	{
+//		cout << *it++ << " ";
+//	}
+//	int a = 1;
+//	int b = 2;
+//	swap(a, b);
+//
+//	cout << endl;
+//	return 0;
+//}
 
 //#include<string>
 //int main()
