@@ -48,10 +48,10 @@
 
 //Capacity(vs都不计算'\0')
 /**
- * 1.size(重点)和length:一样,历史遗留问题,保留了length,新增了size(为了和其他数据结构保持一致)
+ * 1.size()(重点)和length():一样,历史遗留问题,保留了length,新增了size(为了和其他数据结构保持一致)
  * 作用:计算字符串的长度
  * 
- * 2.max_size:
+ * 2.max_size():
  * 作用:字符串最大长度,实际上没什么价值
  * 
  * 3.resize(重点),两个重载
@@ -217,9 +217,10 @@ void fun(const string& s)
  // auto ,capacity和modifiers综合使用
  /**
   * 
+  * 	//题目:将空格替换成%20
+  * 方法一:时间效率低
 int main()
 {
-	//题目:将空格替换成%20
 	string s = "hello world i love you!";
 	size_t num = 0;
 	for (auto ch : s)
@@ -236,6 +237,35 @@ int main()
 		pos = s.find(' ',pos + 3);
 	}
 	cout << s << endl;
+	return 0;
+}
+  * 
+  * 方法二:空间换时间
+  int main()
+{
+	string s = "hello world i love you!";
+	string newStr;
+	size_t num = 0;
+	for (auto ch : s)
+	{
+		if (ch == ' ')
+		{
+			++num;
+		}
+	}
+	newStr.reserve(s.size() + num * 2);
+	for (auto ch : s)
+	{
+		if (ch != ' ')
+		{
+			newStr += ch;
+		}
+		else
+		{
+			newStr += "%20";
+		}
+	}
+	cout << newStr << endl;
 	return 0;
 }
   * .

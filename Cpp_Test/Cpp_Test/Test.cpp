@@ -48,25 +48,54 @@ public:
 
 int main()
 {
-	//题目:将空格替换成%20
 	string s = "hello world i love you!";
+	string newStr;
 	size_t num = 0;
 	for (auto ch : s)
 	{
 		if (ch == ' ')
 		{
-			num++;
+			++num;
 		}
 	}
-	s.reserve(size(s) + 2 * num);
-	size_t pos = s.find(' ');
-	while (pos !=string::npos) {
-		s.replace(pos,1, "%20");
-		pos = s.find(' ',pos + 3);
+	newStr.reserve(s.size() + num * 2);
+	for (auto ch : s)
+	{
+		if (ch != ' ')
+		{
+			newStr += ch;
+		}
+		else
+		{
+			newStr += "%20";
+		}
 	}
-	cout << s << endl;
+	cout << newStr << endl;
 	return 0;
 }
+
+//方法一
+//int main()
+//{
+//	//题目:将空格替换成%20
+//	string s = "hello world i love you!";
+//	size_t num = 0;
+//	for (auto ch : s)
+//	{
+//		if (ch == ' ')
+//		{
+//			num++;
+//		}
+//	}
+//	s.reserve(size(s) + 2 * num);
+//	size_t pos = s.find(' ');
+//	while (pos !=string::npos) {
+//		s.replace(pos,1, "%20");
+//		pos = s.find(' ',pos + 3);
+//	}
+//	cout << s << endl;
+//	return 0;
+//}
 
 //void fun(const string& s)
 //{
