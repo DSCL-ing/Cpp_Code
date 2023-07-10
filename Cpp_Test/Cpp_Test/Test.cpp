@@ -46,30 +46,52 @@ public:
 
 };
 
-void fun(const string& s)
-{
-	//迭代器和begin的const重载,只允许迭代器读,不允许写
-	//const_reverse -- 安全,保护数据不被破坏
-	//string::const_reverse_iterator rit = s.rbegin();
-	auto rit = s.rbegin(); //auto自动推导类型
-	while (rit != s.rend())
-	{
-		//rit+=1; //	不允许修改指针指向的对象的内容,
-		cout << *rit << " ";
-		++rit;
-	}
-
-}
-
-//const迭代器
 int main()
 {
-	string s( "hello world!");
-
-	s.erase(s.begin()+5);
+	//题目:将空格替换成%20
+	string s = "hello world i love you!";
+	size_t num = 0;
+	for (auto ch : s)
+	{
+		if (ch == ' ')
+		{
+			num++;
+		}
+	}
+	s.reserve(size(s) + 2 * num);
+	size_t pos = s.find(' ');
+	while (pos !=string::npos) {
+		s.replace(pos,1, "%20");
+		pos = s.find(' ',pos + 3);
+	}
 	cout << s << endl;
 	return 0;
 }
+
+//void fun(const string& s)
+//{
+//	//迭代器和begin的const重载,只允许迭代器读,不允许写
+//	//const_reverse -- 安全,保护数据不被破坏
+//	//string::const_reverse_iterator rit = s.rbegin();
+//	auto rit = s.rbegin(); //auto自动推导类型
+//	while (rit != s.rend())
+//	{
+//		//rit+=1; //	不允许修改指针指向的对象的内容,
+//		cout << *rit << " ";
+//		++rit;
+//	}
+//
+//}
+
+////const迭代器
+//int main()
+//{
+//	string s( "hello world!");
+//
+//	s.erase(s.begin()+5);
+//	cout << s << endl;
+//	return 0;
+//}
 
 //反向迭代器
 //int main()

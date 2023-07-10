@@ -5,9 +5,17 @@
  * 可以理解为管理数组的顺序表
  * 
  * 关于迭代器的特性,相关的,对数据操作往往是一次只能操作一个指针下标,即一个数据
+ * 1.注意迭代器初始化后,大小是固定了,中途大小变大或变小都不能影响到迭代器
  * .
  */
 
+
+//string类域成员
+/**
+ * 
+ * 
+ * .
+ */
 
 //构造函数
 /**
@@ -95,14 +103,29 @@
  * 配合迭代器使用:s.erase(s.begin()+5); //删除下标为5及其以后的所有元素
  * 
  * 
+ * 更换,更新,替换
+ * replace(不推荐,效率低)
+ * replace(size_t pos , size_t len , "");
+ * repalce(pos,1,' ');//将pos位置替换成空格
+ * 
  * 赋值,分配
  * assign()
  * 
  * 
+ * 
+ * 
+ */
+//]
+
+//operations
+/**
+ * find(char)
+ * find(char , 位置)
+ * .
  */
 
+//[
 //长类型使用auto自动推导,减少代码量,但可读性远远降低
-
 //迭代器
 /**
  * 
@@ -191,6 +214,31 @@ void fun(const string& s)
  */
 
 
-
+ // auto ,capacity和modifiers综合使用
+ /**
+  * 
+int main()
+{
+	//题目:将空格替换成%20
+	string s = "hello world i love you!";
+	size_t num = 0;
+	for (auto ch : s)
+	{
+		if (ch == ' ')
+		{
+			num++;
+		}
+	}
+	s.reserve(size(s) + 2 * num);
+	size_t pos = s.find(' ');
+	while (pos !=string::npos) {
+		s.replace(pos,1, "%20");
+		pos = s.find(' ',pos + 3);
+	}
+	cout << s << endl;
+	return 0;
+}
+  * .
+  */
 
 
