@@ -46,20 +46,59 @@ public:
 	}
 
 };
+
+int firstUniqChar(string s) {
+	char arr[26] = { 0 };
+	for (auto ch : s)
+	{
+		++arr[ch - 'a']  ;
+	}
+	for (size_t i = 0; i < s.size(); i++)
+	{
+		char ch = s[i];
+		if (arr[ch - 'a'] == 1)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+
 int main()
 {
-	string file("string.h.cpp");
-	size_t pos = file.rfind('.');
-	if (pos != string::npos)
-	{
-		cout << file.substr(pos) << endl;
-	}
-	else
-	{
-		cout << file << endl;
-	}
+	cout<<firstUniqChar("z");
 	return 0;
 }
+
+int main1()
+{
+	//屏蔽敏感词
+	string str("Please ,replace the vowels in this sentence by asterisks");
+	size_t pos = str.find_first_of("abcd");
+	while (pos != string::npos)
+	{
+		//str.replace(pos, 1,"*");
+		str[pos] = '*';
+		pos = str.find_first_of("abcd",pos+1);
+	}
+	cout << str << endl;
+	return 0;
+}
+
+//int main()
+//{
+//	string file("string.h.cpp");
+//	size_t pos = file.rfind('.');
+//	if (pos != string::npos)
+//	{
+//		cout << file.substr(pos) << endl;
+//	}
+//	else
+//	{
+//		cout << file << endl;
+//	}
+//	return 0;
+//}
 
 //int main()
 //{

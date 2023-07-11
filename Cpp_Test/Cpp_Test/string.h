@@ -8,12 +8,30 @@
  * 1.注意迭代器初始化后,大小是固定了,中途大小变大或变小都不能影响到迭代器
  * 2.迭代器区间都是左闭右开
  * 
+ * 对于字符串常量和string , 可以相互隐式类型转换,没必要实现多个重载
+ * 实现多个重载目的是追求极致效率
+ * 
+ */
+
+//string的特点
+/**
+ * string和字符串常量不一样,string可以认为是字符数组的顺序表,可以修改,交换,增删等
+ * 
+ * 
+ */
+
+//string使用优化
+/**
+ * 1.容量增加可知 -- 使用resize提前扩容
+ * 2.顺序查找修改多个元素时,每次修改pos缩减查找范围
+ * 
  */
 
 
 //string类域成员
-/**
+/** member
  * 
+ * npos
  * 
  * .
  */
@@ -109,6 +127,7 @@
  * replace(不推荐,效率低)
  * replace(size_t pos , size_t len , "");
  * repalce(pos,1,' ');//将pos位置替换成空格
+ * == str[pos] = ' ';
  * 
  * 赋值,分配
  * assign()
@@ -126,7 +145,7 @@
  * substr(size_t pos = 0, size_t len = npos) 
  * 
  * 查找
- * find(char)
+ * find(const char* s, size_t pos=0, size_t npos)
  * find(char , 位置)
  * rfind()
  * 
@@ -146,8 +165,6 @@ int main()
 	}
 	return 0;
 }
- * 
- * rfind();
  * 
  * 返回c语言的字符串(兼容)
  * c_str() //以'\0'为结束标志
@@ -170,8 +187,31 @@ int main()
 	return 0;
 }
  * 
- * .
+ * 正向查找在原字符串中第一个与指定字符串（或字符）内的任意字符匹配的字符,返回下标
+ * find_first_of(const char* s, size_t pos = 0, size_t npos)
+ * find_first_not_of()//正向查找 非指定字符串内
+ * find_last_of()	  //反向查找,指定字符串
+ * find_last_not_of   //反向查找,非指定字符串
+ * 
+ * compare() //几乎不用,一般使用运算符重载
+ * 
+ * 
  */
+
+//Non-member function overloads
+/**
+ * relational operators (string)
+ * operator+ (不建议使用)
+ * 
+ * 
+ * getline:获取数据,遇到'\n'停止,或者自定义符号
+ * istream& getline (istream& is, string& str, char delim);
+ * istream& getline (istream& is, string& str);
+ * 使用:
+ *  getline(cin,str);
+ */
+
+
 
 //[
 //长类型使用auto自动推导,减少代码量,但可读性远远降低
