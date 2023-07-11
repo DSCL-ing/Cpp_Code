@@ -193,6 +193,21 @@ int main()
  * find_last_of()	  //反向查找,指定字符串
  * find_last_not_of   //反向查找,非指定字符串
  * 
+int main1()
+{
+	//屏蔽敏感词
+	string str("Please ,replace the vowels in this sentence by asterisks");
+	size_t pos = str.find_first_of("abcd");
+	while (pos != string::npos)
+	{
+		//str.replace(pos, 1,"*");
+		str[pos] = '*';
+		pos = str.find_first_of("abcd",pos+1);
+	}
+	cout << str << endl;
+	return 0;
+}
+ * 
  * compare() //几乎不用,一般使用运算符重载
  * 
  * 
@@ -359,5 +374,26 @@ int main()
 }
   * .
   */
+
+
+//Convert from strings  从字符串转换
+/**
+ * stoi
+ * //stol(long和int一样)
+ * //stoul(无符号long)
+ * stoll(长整型longlong)
+ * stoull(无符号长整型longlong)
+ * stof
+ * stod
+ * stold
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+
 
 
