@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Note.h">
+    <ClInclude Include="Note.note">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="类.h">
@@ -27,19 +27,22 @@
     <ClInclude Include="Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GitNote.h">
+    <ClInclude Include="GitNote.note">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="OnlineJudge.h">
+    <ClInclude Include="OnlineJudge.note">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="STL.h">
+    <ClInclude Include="STL.note">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="string.h">
+    <ClInclude Include="string.note">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="算法总结.h">
+    <ClInclude Include="算法总结.note">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="myString.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
