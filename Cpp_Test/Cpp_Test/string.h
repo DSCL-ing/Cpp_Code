@@ -11,6 +11,10 @@
  * 对于字符串常量和string , 可以相互隐式类型转换,没必要实现多个重载
  * 实现多个重载目的是追求极致效率
  * 
+ * 
+ * 
+ * 
+ * 
  */
 
 //string的特点
@@ -391,6 +395,14 @@ int main()
  * 
  * 
  * 
+ */
+
+//可以在string上用的其他函数
+/**
+ * 
+ * 逆置 - 传迭代器区间
+ * std::reverse
+ * void reverse (BidirectionalIterator first, BidirectionalIterator last);.
  */
 
 

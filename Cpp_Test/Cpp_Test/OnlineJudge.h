@@ -19,7 +19,10 @@
 //所有英文字母（小写或大写）位置反转。
 //返回反转后的 s 。
 //https://leetcode.cn/problems/reverse-only-letters/
+//知识点:string[]
 
 
-
-
+//超大数相加
+//给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和并同样以字符串形式返回。
+//https://leetcode.cn/problems/add-strings/submissions/
+//知识点:string::reserve,reverse,
