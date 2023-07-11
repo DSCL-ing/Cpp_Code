@@ -4,6 +4,7 @@
 
 #include<iostream>
 #include <string>
+#include<stdlib.h>
 //#include<algorithm>
 
 //using namespace std;
@@ -45,34 +46,67 @@ public:
 	}
 
 };
-
 int main()
 {
-	string s = "hello world i love you!";
-	string newStr;
-	size_t num = 0;
-	for (auto ch : s)
+	string file("string.h.cpp");
+	size_t pos = file.rfind('.');
+	if (pos != string::npos)
 	{
-		if (ch == ' ')
-		{
-			++num;
-		}
+		cout << file.substr(pos) << endl;
 	}
-	newStr.reserve(s.size() + num * 2);
-	for (auto ch : s)
+	else
 	{
-		if (ch != ' ')
-		{
-			newStr += ch;
-		}
-		else
-		{
-			newStr += "%20";
-		}
+		cout << file << endl;
 	}
-	cout << newStr << endl;
 	return 0;
 }
+
+//int main()
+//{
+//	system("chcp 65001");
+//	string filename("string.h");
+//	FILE* fout = fopen(filename.c_str(), "r");
+//	if (fout == nullptr)
+//	{
+//		perror("fopen fail");
+//	}
+//	char ch = fgetc(fout);
+//	while (ch != EOF)
+//	{
+//		cout << ch;
+//		ch = fgetc(fout);
+//	}
+//	fclose(fout);
+//	return 0;
+//}
+
+//int main()
+//{
+//	string s = "hello world i love you!";
+//	string newStr;
+//	size_t num = 0;
+//	for (auto ch : s)
+//	{
+//		if (ch == ' ')
+//		{
+//			++num;
+//		}
+//	}
+//	newStr.reserve(s.size() + num * 2);
+//	for (auto ch : s)
+//	{
+//		if (ch != ' ')
+//		{
+//			newStr += ch;
+//		}
+//		else
+//		{
+//			newStr += "%20";
+//		}
+//	}
+//	cout << newStr << endl;
+//	return 0;
+//}
 
 //方法一
 //int main()

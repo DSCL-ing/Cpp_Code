@@ -6,7 +6,8 @@
  * 
  * 关于迭代器的特性,相关的,对数据操作往往是一次只能操作一个指针下标,即一个数据
  * 1.注意迭代器初始化后,大小是固定了,中途大小变大或变小都不能影响到迭代器
- * .
+ * 2.迭代器区间都是左闭右开
+ * 
  */
 
 
@@ -52,7 +53,8 @@
  * 作用:计算字符串的长度
  * 
  * 2.max_size():
- * 作用:字符串最大长度,实际上没什么价值
+ * 作用:字符串最大长度,实际上没什么价值 
+ * 注释:和npos不相等,可能是返回能开辟的最大空间
  * 
  * 3.resize(重点),两个重载
  * 功能:重新调整字符串大小,改size和capacity(扩容+初始化),且会初始化,
@@ -111,7 +113,8 @@
  * 赋值,分配
  * assign()
  * 
- * 
+ * 交换
+ * swap() //更快,改变的是指向 ,std中的是临时变量交换
  * 
  * 
  */
@@ -119,8 +122,54 @@
 
 //operations
 /**
+ * 截取字串
+ * substr(size_t pos = 0, size_t len = npos) 
+ * 
+ * 查找
  * find(char)
  * find(char , 位置)
+ * rfind()
+ * 
+int main()
+{
+	string file("string.h.cpp");
+	//size_t pos = file.find('.'); //只限一个'.'
+	size_t pos = file.rfind('.'); //通用,只取最后一个.开始为后缀
+	if (pos != string::npos)
+	{
+		cout << file.substr(pos) << endl;
+		//cout << file.substr(pos, file.size() - pos) << endl;
+	}
+	else
+	{
+		cout << file << endl;
+	}
+	return 0;
+}
+ * 
+ * rfind();
+ * 
+ * 返回c语言的字符串(兼容)
+ * c_str() //以'\0'为结束标志
+int main()
+{
+	system("chcp 65001"); //临时修改cmd字符集.字符集要匹配,不然输出有问题
+	string filename("string.h");
+	FILE* fout = fopen(filename.c_str(), "r"); //VS2019检查严格,关闭GS或SDL检查
+	if (fout == nullptr)
+	{
+		perror("fopen fail");
+	}
+	char ch = fgetc(fout);
+	while (ch != EOF)
+	{
+		cout << ch;
+		ch = fgetc(fout);
+	}
+	fclose(fout);
+	return 0;
+}
+ * 
  * .
  */
 
@@ -214,7 +263,7 @@ void fun(const string& s)
  */
 
 
- // auto ,capacity和modifiers综合使用
+ // iterator ,capacity和modifiers综合使用
  /**
   * 
   * 	//题目:将空格替换成%20
