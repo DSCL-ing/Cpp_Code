@@ -42,7 +42,7 @@
     <ClInclude Include="1算法总结.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="myString.h">
+    <ClInclude Include="string.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">

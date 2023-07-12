@@ -1,5 +1,5 @@
-﻿#pragma once
-
+﻿
+#pragma once
 
 
 #include<iostream>
@@ -15,46 +15,53 @@ using std::endl;
 using std::string;
 using std::swap;
 
-class A
-{
-private:
-
-	int a;
-public:
-	static int count;
-	A()
-		:a(1)
-	{
-		cout << "A()" << endl;
-		++count;
-	}
-	A(int a)
-		:a(1)
-	{
-		cout << "A()" << endl;
-		++count;
-	} 
-	A(const A& aa)
-		:a(aa.a)
-	{
-		cout << "A()" << endl;
-		++count;
-	}
-	~A()
-	{
-		cout << "~A()" << endl;
-	}
-
-};
-
-
-#include<string.h>
+#include"string.h"
 int main()
 {
-	const char* str = "";
-	cout << sizeof() << endl;
+	test::test1_string();
 	return 0;
 }
+
+//class A
+//{
+//private:
+//
+//	int a;
+//public:
+//	static int count;
+//	A()
+//		:a(1)
+//	{
+//		cout << "A()" << endl;
+//		++count;
+//	}
+//	A(int a)
+//		:a(1)
+//	{
+//		cout << "A()" << endl;
+//		++count;
+//	} 
+//	A(const A& aa)
+//		:a(aa.a)
+//	{
+//		cout << "A()" << endl;
+//		++count;
+//	}
+//	~A()
+//	{
+//		cout << "~A()" << endl;
+//	}
+//
+//};
+//
+//
+//#include<string.h>
+//int main()
+//{
+//	const char* str = "";
+//	//cout << sizeof() << endl;
+//	return 0;
+//}
 
 
 
