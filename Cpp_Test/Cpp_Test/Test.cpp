@@ -48,10 +48,11 @@ public:
 };
 
 
-
+#include<string.h>
 int main()
 {
-	cout<<std::max(1, 2);
+	const char* str = "";
+	cout << sizeof() << endl;
 	return 0;
 }
 
