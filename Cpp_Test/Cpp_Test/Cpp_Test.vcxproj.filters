@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Note.note">
+    <ClInclude Include="1Note.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="类.h">
@@ -27,22 +27,25 @@
     <ClInclude Include="Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="GitNote.note">
+    <ClInclude Include="1GitNote.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="OnlineJudge.note">
+    <ClInclude Include="1OnlineJudge.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="STL.note">
+    <ClInclude Include="1STL.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="string.note">
+    <ClInclude Include="1string.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="算法总结.note">
+    <ClInclude Include="1算法总结.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="myString.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,5 +62,10 @@
     <ClCompile Include="myString.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Cpp_Test.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
