@@ -48,7 +48,7 @@
  * 
  * switch基本不会用了,一般能用数组代替就用数组,短小精悍 
  * 
- * bool值大小是4,true真值为1,false真值为0
+ * bool值大小,true真值为1,false真值为0,sizeof(bool)==1
  * 
  * 静态变量只会初始化一次
  * 

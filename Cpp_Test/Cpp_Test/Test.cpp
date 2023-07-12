@@ -15,10 +15,9 @@ using std::endl;
 using std::string;
 using std::swap;
 
-#include"string.h"
-int main()
+int main1()
 {
-	test::test1_string();
+	cout << sizeof(bool);
 	return 0;
 }
 

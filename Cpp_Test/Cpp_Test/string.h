@@ -4,7 +4,7 @@
 #pragma once
 
 #include<string.h>
-
+#include<assert.h>
 
 namespace test{
 
@@ -27,11 +27,11 @@ namespace test{
 		{
 			_str[0] = '\0';
 		}
-
 		string(const char* s)
 			:_size(strlen(s))
 		{
 			_capacity = _size;
+			_str = new char[_capacity + 1];
 			strcpy(_str, s);
 		}
 
@@ -41,7 +41,6 @@ namespace test{
 			delete[] _str;
 			_size = _capacity = 0;
 		}
-
 
 		//copy constructor
 		string(const string& s) //拷贝构造的参数是本对象类型的引用
@@ -56,9 +55,45 @@ namespace test{
 			//深拷贝也是需要一个一个拷贝,只要是需要复制空间内容
 			strcpy(_str, s._str);
 		}
+		 string& operator=(const string& s)
+		{
+			 if (this != &s)
+			 {
+				 //考虑极端复杂情况
+				 //1._str本身很大,s很小,如果不缩容,则会浪费很多空间
+				 //2._str本身很小,s很大,则必须扩容,需要扩容很多次
+				 //干脆直接开新空间,拷贝过去
+				 char* tmp = new char[s._size+1];
+				 strcpy(tmp, s._str);
+				 delete[] _str;
+				 _str = tmp;
+				 _size =  s._size;
+				 _capacity = s._capacity;
+			 }
+			 return *this;
+		}
+
+		 //iterator
+		 typedef char* iterator;
+		 iterator begin()
+		 {
+			 return _str;
+		 }
+		 const iterator cbegin()
+		 {
+			 return _str;
+		 }
+		 char* end()
+		 {
+			 return _str+_size;
+		 }
+		 const iterator cend() const
+		 {
+			 return _str + _size;
+		 }
 
 		//Capacity
-		size_t size()
+		 size_t size() const
 		{
 			return _size;
 		}
@@ -66,6 +101,11 @@ namespace test{
 		//Element access
 		char& operator[](size_t pos)//必须返回真实数据地址
 		{
+			return _str[pos];
+		}
+		const char& operator[](size_t pos) const
+		{
+			assert(pos < _size);
 			return _str[pos];
 		}
 
@@ -77,13 +117,48 @@ namespace test{
 		
 	};
 
+	void Print(const string& s)
+	{
+		for (size_t i = 0; i < s.size(); ++i)
+		{
+			cout << s[i];
+		}
+		cout << endl;
+	}
+
 	void test1_string()
 	{
 		string s1;
 		string s2("hello");
-		s2[0] = 1;
+		string s3(s2);
+		s2[0] = 'a';
+		string s4 = s3;
 		cout << s1.c_str() << endl;
 		cout << s2.c_str() << endl;
+		cout << s3.c_str() << endl;
+		cout << s4.c_str() << endl;
+	}
+
+	void test2_string()
+	{
+		string s1("hello world!");
+		string s2(s1);
+		for (size_t i = 0; i < s1.size(); ++i)
+		{
+			++s1[i];
+		}
+		//for (size_t i = 0; i < s1.size(); ++i)
+		//{
+		//	cout << s1[i] << "";
+		//}
+		Print(s1);
+
+		string::iterator it = s2.begin();
+		while (it != s2.end())
+		{
+			cout << ++*it;
+			++it;
+		}
 	}
 
 
