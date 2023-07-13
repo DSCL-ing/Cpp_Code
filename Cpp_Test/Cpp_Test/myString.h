@@ -111,6 +111,10 @@ namespace test{
 		{
 			return _size;
 		}
+		 size_t capacity() const
+		 {
+			 return _capacity;
+		 }
 		 void reserve(size_t n)
 		 {
 			 char* tmp = new char[n + 1];
