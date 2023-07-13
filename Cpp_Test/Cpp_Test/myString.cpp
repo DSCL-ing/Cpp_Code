@@ -19,7 +19,8 @@ int main()
 {
 	//test::test1_string();
 	//test::test2_string();
-	test::test3_string();
+	//test::test3_string();
 	//test::test4_string();
+	test::test5_string();
 	return 0;
 }

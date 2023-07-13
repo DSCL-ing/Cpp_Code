@@ -117,15 +117,35 @@ namespace test{
 		 }
 		 void reserve(size_t n)
 		 {
-			 char* tmp = new char[n + 1];
-			 strcpy(tmp, _str);
-			 delete[] _str;
-			 _str = tmp; //指针,可以直接赋值,指向新的对象
-			 _capacity =  n;
+			 if (n>_capacity)
+			 {
+				 char* tmp = new char[n + 1];
+				 strcpy(tmp, _str);
+				 delete[] _str;
+				 _str = tmp; //指针,可以直接赋值,指向新的对象
+				 _capacity = n;
+			 }
 		 }
-		 void resize(size_t n)
+		 void resize(size_t n , char ch = '\0')
 		 {
-
+			 if (n <= _size)
+			 {
+				 _str[n] = '\0'; //只要放'\0',后面都识别不出来了
+				 _size = n ;
+			 }
+			 else
+			 {
+				 reserve(n);
+				 //memset();
+				 size_t begin = _size;
+				 while (begin != n)
+				 {
+					 _str[begin] = ch;
+					 ++begin;
+				 }
+				 _size = n;
+				 _str[_size] = '\0';
+			 }
 		 }
 
 		//Element access
@@ -322,6 +342,16 @@ namespace test{
 		//cout << s1 << endl;
 		s1.insert(0, 'a');
 		cout << s1 << endl;
+	}
+
+	void test5_string()
+	{
+		string s1 = "hello";
+		s1.resize(3, 'x');
+		s1.resize(6, 'x');
+		s1.resize(15, 'x');
+		s1.resize(7, 'x');
+		
 	}
 
 
