@@ -17,8 +17,11 @@ namespace test{
 		char* _str; //不能是const,因为要修改_str的内容,
 		size_t _size; //有效字符长度(不包括\0)
 		size_t _capacity; //有效容量(不包括'\0'),但真实容量为有效容量+1(包括'\0')
-		size_t static npos; //静态成员变量不能给缺省值,因为静态成员不走初始化列表,缺省值是辅助初始化列表使用的
+		static size_t npos; //静态成员变量不能给缺省值,因为静态成员不走初始化列表,缺省值是辅助初始化列表使用的
+		
 		//但是,const修饰的静态整型常量可以给缺省值,仅限整型,double什么的都不可以
+		//static const size_t N = 1;
+		//int _a[N]; //可以这么用
 
 	public:
 
@@ -33,7 +36,7 @@ namespace test{
 		//{
 		//	_str[0] = '\0';
 		//} // ------------------------通过缺省值合并到带参构造函数
-		string(const char* s = "")
+		string(const char* s = "") //---支持const char* 隐式转化成string ,走构造+拷贝构造 => 构造
 			:_size(strlen(s))
 		{
 			_capacity = _size == 0 ? 3 : _size;
@@ -116,6 +119,10 @@ namespace test{
 			 _str = tmp; //指针,可以直接赋值,指向新的对象
 			 _capacity =  n;
 		 }
+		 void resize(size_t n)
+		 {
+
+		 }
 
 		//Element access
 		char& operator[](size_t pos)//必须返回真实数据地址
@@ -156,6 +163,29 @@ namespace test{
 		{
 			append(s); 
 			return *this;
+		}
+		void insert(size_t pos ,char ch)
+		{
+			assert(pos <= _size); //'\0'处也可以插入
+			if (_size >= _capacity) //满了
+				reserve(_capacity * 2);
+			for (size_t i = _size; i >= pos; --i) //当i==0时,i--会变成最大整数
+			{
+				_str[i+1] = _str[i];
+				if (i == 0)
+				{
+					break;
+				}
+			}
+			_str[pos] = ch;
+		}
+		void insert(size_t pos , const char* s)
+		{
+
+		}
+		void erase()
+		{
+
 		}
 
 
@@ -198,7 +228,7 @@ namespace test{
 
 	};
 
-	string::npos = -1;
+	size_t test::string:: npos = -1; //类型 (域::)变量名 = 值;
 
 	//Extract string from stream
 	std::ostream& operator<<(std::ostream& out, const string& s)
@@ -277,15 +307,17 @@ namespace test{
 		cout << (s1 < s2) << endl;
 		cout << (s1 <= s2) << endl;
 		cout << s1 << s2 << endl;
+		cout << (s1 == "hello" )<< endl;
 
 	}
 	void test4_string()
 	{
 		string s1 = "hello";
-		(s1 += ' ');
-		s1+= "world";
+		//(s1 += ' ');
+		//s1+= "world";
+		//cout << s1 << endl;
+		s1.insert(0, 'a');
 		cout << s1 << endl;
-
 	}
 
 
