@@ -14,12 +14,15 @@ using std::cin;
 using std::endl;
 using std::string;
 using std::swap;
-int main()
+int main1()
 {
 	//system("chcp 65001");
-	string s1 = "hello";
-	string s2 = "Hello";
-	cout << strcmp("hello","Hello") << endl;
+	//char* s =new char[1];
+	//s[0] = '1';
+	string s1;
+	//string s2 = "Hello";
+	s1.push_back('x');
+	cout << s1 << endl;
 	return 0;
 }
 

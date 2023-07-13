@@ -15,24 +15,28 @@ namespace test{
 		//char* 和 字符数组char[] 基本等价
 		//const char* 是字符串常量 "xxxxxxxx"
 		char* _str; //不能是const,因为要修改_str的内容,
-		size_t _size; //有效数据
-		size_t _capacity; //有效容量(不包括'\0'),真实容量为有效容量+1(包括'\0')
+		size_t _size; //有效字符长度(不包括\0)
+		size_t _capacity; //有效容量(不包括'\0'),但真实容量为有效容量+1(包括'\0')
+		size_t static npos; //静态成员变量不能给缺省值,因为静态成员不走初始化列表,缺省值是辅助初始化列表使用的
+		//但是,const修饰的静态整型常量可以给缺省值,仅限整型,double什么的都不可以
+
 	public:
 
 		//constructor 
-		string()
-			//无参不能为空,因为一旦访问就会解引用空指针,不符合需求
-			//而且不能赋值为0 ,'\0', -- 
-			:_str(new char[1]) //必须使用new[]
-			, _size(0)
-			, _capacity(0)
-		{
-			_str[0] = '\0';
-		}
-		string(const char* s)
+
+		//string()
+		//	//无参不能为空,因为一旦访问就会解引用空指针,不符合需求
+		//	//而且不能赋值为0 ,'\0', -- 
+		//	:_str(new char[1]) //必须使用new[]
+		//	, _size(0)
+		//	, _capacity(0)
+		//{
+		//	_str[0] = '\0';
+		//} // ------------------------通过缺省值合并到带参构造函数
+		string(const char* s = "")
 			:_size(strlen(s))
 		{
-			_capacity = _size;
+			_capacity = _size == 0 ? 3 : _size;
 			_str = new char[_capacity + 1];
 			strcpy(_str, s);
 		}
@@ -104,9 +108,13 @@ namespace test{
 		{
 			return _size;
 		}
-		 void reserve(size_t n = 0)
+		 void reserve(size_t n)
 		 {
-			 
+			 char* tmp = new char[n + 1];
+			 strcpy(tmp, _str);
+			 delete[] _str;
+			 _str = tmp; //指针,可以直接赋值,指向新的对象
+			 _capacity =  n;
 		 }
 
 		//Element access
@@ -123,12 +131,34 @@ namespace test{
 
 
 		//Modifiers
-		void push_back(const char& ch)
+		void push_back( char ch)
 		{
-			if (_size > _capacity)
-				reserve(2 * _capacity);
+			if (_size  >= _capacity) //满了
+				reserve(_capacity * 2);
 			_str[_size] = ch;
+			++_size; //不需要给[_size] = '\0' , 因为\0在[capacity+1]处而不是在[_size]处
+			_str[_size] = '\0'; // \0不算有效字符,不用++_size
 		}
+		void append(const char* s)
+		{
+			size_t len = strlen(s);
+			if (_size+len > _capacity)//需要的容量大于现有容量
+				reserve(_size+len);
+			strcpy(_str+_size, s); //不用strcat:strcat底层需要自己找\0(如果很长则浪费),strcpy不用找,直接一步到位
+			_size += len;
+		}
+		string& operator+=( char ch) //char 和char &基本一样,但函数内传参引用的引用最好不用, s1+=' '+=""时出错
+		{
+			push_back(ch);
+			return *this;
+		}
+		string& operator+=(const char* s)
+		{
+			append(s); 
+			return *this;
+		}
+
+
 		
 		//String operator
 		const char* c_str()
@@ -167,6 +197,9 @@ namespace test{
 		}
 
 	};
+
+	string::npos = -1;
+
 	//Extract string from stream
 	std::ostream& operator<<(std::ostream& out, const string& s)
 	{
@@ -244,6 +277,14 @@ namespace test{
 		cout << (s1 < s2) << endl;
 		cout << (s1 <= s2) << endl;
 		cout << s1 << s2 << endl;
+
+	}
+	void test4_string()
+	{
+		string s1 = "hello";
+		(s1 += ' ');
+		s1+= "world";
+		cout << s1 << endl;
 
 	}
 
