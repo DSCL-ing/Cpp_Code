@@ -193,19 +193,25 @@ namespace test{
 			assert(pos <= _size); //'\0'处也可以插入
 			if (_size >= _capacity) //满了
 				reserve(_capacity * 2);
-			for (size_t i = _size; i >= pos; --i) //当i==0时,i--会变成最大整数
+			for (size_t i = _size+1; i > pos; --i) //当i==0时,i--会变成最大整数,错位一下
 			{
-				_str[i+1] = _str[i];
-				if (i == 0)
-				{
-					break;
-				}
+				_str[i] = _str[i-1];
 			}
 			_str[pos] = ch;
+			++_size; 
+			//_str[_size] ='\0';
 		}
 		void insert(size_t pos , const char* s)
 		{
-
+			size_t len = strlen(s);
+			if (_size + len > _capacity)//需要的容量大于现有容量
+				reserve(_size + len);
+			for (size_t i = _size+len ; i > pos; --i) //当i==0时,i--会变成最大整数,错位一下
+			{
+				_str[i] = _str[i-len];
+			}
+			strncpy(_str + pos, s , len);
+			_size = _size + len;
 		}
 		void erase()
 		{
@@ -340,7 +346,10 @@ namespace test{
 		//(s1 += ' ');
 		//s1+= "world";
 		//cout << s1 << endl;
-		s1.insert(0, 'a');
+		//s1.insert(0, 'a');
+		//s1.insert(s1.size(), 'a');
+		s1.insert(0, "aaa");
+		s1.insert(s1.size(), "aaa");
 		cout << s1 << endl;
 	}
 
