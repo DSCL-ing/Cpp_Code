@@ -15,8 +15,10 @@ using std::max;
 //using namespace std;
 
 #include"string.h"
-int main()
+int main1()
 {
-	test::test2_string();
+	//test::test1_string();
+	//test::test2_string();
+	test::test3_string();
 	return 0;
 }

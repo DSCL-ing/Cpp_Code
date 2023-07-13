@@ -3,8 +3,8 @@
 
 
 #include<iostream>
-#include <string>
-#include<stdlib.h>
+//#include <string>
+//#include<stdlib.h>
 //#include<algorithm>
 
 //using namespace std;
@@ -14,10 +14,12 @@ using std::cin;
 using std::endl;
 using std::string;
 using std::swap;
-
-int main1()
+int main()
 {
-	cout << sizeof(bool);
+	//system("chcp 65001");
+	string s1 = "hello";
+	string s2 = "Hello";
+	cout << strcmp("hello","Hello") << endl;
 	return 0;
 }
 
