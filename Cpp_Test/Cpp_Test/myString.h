@@ -17,8 +17,10 @@ namespace test{
 		char* _str; //不能是const,因为要修改_str的内容,
 		size_t _size; //有效字符长度(不包括\0)
 		size_t _capacity; //有效容量(不包括'\0'),但真实容量为有效容量+1(包括'\0')
+
+		//member constant (static const size_t npos = -1; //C++手册的写法)
 		static size_t npos; //静态成员变量不能给缺省值,因为静态成员不走初始化列表,缺省值是辅助初始化列表使用的
-		
+
 		//但是,const修饰的静态整型常量可以给缺省值,仅限整型,double什么的都不可以
 		//static const size_t N = 1;
 		//int _a[N]; //可以这么用
@@ -188,20 +190,21 @@ namespace test{
 			append(s); 
 			return *this;
 		}
-		void insert(size_t pos ,char ch)
+		string& insert(size_t pos ,char ch)//插入字符
 		{
-			assert(pos <= _size); //'\0'处也可以插入
+			assert(pos <= _size); //pos在'\0'处也可以插入
 			if (_size >= _capacity) //满了
 				reserve(_capacity * 2);
-			for (size_t i = _size+1; i > pos; --i) //当i==0时,i--会变成最大整数,错位一下
+			for (size_t i = _size+1; i > pos; --i) //当size_t i减到0时,--i会变成最大整数,导致奔溃,所以i只减到1
 			{
 				_str[i] = _str[i-1];
 			}
 			_str[pos] = ch;
 			++_size; 
-			//_str[_size] ='\0';
+			//_str[_size] ='\0';   //\0第一次循环就拷贝过去了
+			return *this;
 		}
-		void insert(size_t pos , const char* s)
+		string& insert(size_t pos , const char* s)//插入字符串
 		{
 			assert(pos <= _size);
 			size_t len = strlen(s);
@@ -213,10 +216,42 @@ namespace test{
 			}
 			strncpy(_str + pos, s , len);
 			_size = _size + len;
+			return *this;
 		}
-		void erase()
+		string& erase(size_t pos , size_t len = npos)//起始位置，删除长度 --删1个，删多个都满足
 		{
-
+			assert(pos <= _size);
+			if (len == npos || pos + len >= _size) //超出长度 ,前条件不能省略 , 因为后条件超出最大值后可能会溢出
+			{
+				_str[pos] = '\0';
+				_size = pos; //size = \0的下标
+			} 
+			else
+			{
+				for (size_t i = pos; i <= _size - len; i++)
+				{
+					_str[i] = _str[i + len];
+				}
+				_size = _size - len;
+			}
+			return *this;
+		}
+		void swap(string& s)
+		{
+			std::swap(_str, s._str);
+			std::swap(_size, s._size);
+			std::swap(_capacity, s._capacity);
+		}
+		size_t find(char ch , size_t pos = 0)
+		{
+			for (int i = pos; i < _size; ++i)
+			{
+				if (ch == _str[i])
+				{
+					return i;
+				}
+			}
+			return npos;
 		}
 
 
@@ -227,7 +262,9 @@ namespace test{
 			return _str;
 		}
 
+		//Non-member function overloads
 		
+
 		//relational operators
 		//必须加上const
 		bool operator<(const string& s) const
@@ -343,7 +380,7 @@ namespace test{
 	}
 	void test4_string()
 	{
-		string s1 = "hello";
+		string s1 = "0123456789";
 		//(s1 += ' ');
 		//s1+= "world";
 		//cout << s1 << endl;
@@ -351,12 +388,14 @@ namespace test{
 		//s1.insert(s1.size(), 'a');
 		s1.insert(0, "aaa");
 		s1.insert(s1.size(), "aaa");
+		s1.erase(s1.size());
+		//s1.erase(s1.size() - 2, 1);
 		cout << s1 << endl;
 	}
 
 	void test5_string()
 	{
-		string s1 = "hello";
+		string s1 = "0123456789";
 		s1.resize(3, 'x');
 		s1.resize(6, 'x');
 		s1.resize(15, 'x');
