@@ -203,10 +203,11 @@ namespace test{
 		}
 		void insert(size_t pos , const char* s)
 		{
+			assert(pos <= _size);
 			size_t len = strlen(s);
 			if (_size + len > _capacity)//需要的容量大于现有容量
 				reserve(_size + len);
-			for (size_t i = _size+len ; i > pos; --i) //当i==0时,i--会变成最大整数,错位一下
+			for (size_t i = _size+len ; i > pos+len-1; --i) //当i==0时,i--会变成最大整数,错位一下
 			{
 				_str[i] = _str[i-len];
 			}
