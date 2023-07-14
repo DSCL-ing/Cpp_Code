@@ -166,19 +166,26 @@ namespace test{
 		//Modifiers
 		void push_back( char ch)
 		{
-			if (_size  >= _capacity) //满了
+			/*
+			if (_size >= _capacity) //满了
 				reserve(_capacity * 2);
 			_str[_size] = ch;
 			++_size; //不需要给[_size] = '\0' , 因为\0在[capacity+1]处而不是在[_size]处
-			_str[_size] = '\0'; // \0不算有效字符,不用++_size
+			_str[_size] = '\0'; // \0不算有效字符,不用++_size 
+			*/
+			insert(_size, ch);
 		}
 		void append(const char* s)
 		{
+			/*
 			size_t len = strlen(s);
 			if (_size+len > _capacity)//需要的容量大于现有容量
 				reserve(_size+len);
 			strcpy(_str+_size, s); //不用strcat:strcat底层需要自己找\0(如果很长则浪费),strcpy不用找,直接一步到位
 			_size += len;
+			*/
+		
+			insert(_size, s);
 		}
 		string& operator+=( char ch) //char 和char &基本一样,但函数内传参引用的引用最好不用, s1+=' '+=""时出错
 		{
@@ -193,7 +200,7 @@ namespace test{
 		string& insert(size_t pos ,char ch)//插入字符
 		{
 			assert(pos <= _size); //pos在'\0'处也可以插入
-			if (_size >= _capacity) //满了
+			if (_size -1 > _capacity) //满了
 				reserve(_capacity * 2);
 			for (size_t i = _size+1; i > pos; --i) //当size_t i减到0时,--i会变成最大整数,导致奔溃,所以i只减到1
 			{
@@ -220,7 +227,7 @@ namespace test{
 		}
 		string& erase(size_t pos , size_t len = npos)//起始位置，删除长度 --删1个，删多个都满足
 		{
-			assert(pos <= _size);
+			assert(pos < _size); //此处不为_size原因是,删除\0没有意义,没必要加上去
 			if (len == npos || pos + len >= _size) //超出长度 ,前条件不能省略 , 因为后条件超出最大值后可能会溢出
 			{
 				_str[pos] = '\0';
@@ -244,7 +251,8 @@ namespace test{
 		}
 		size_t find(char ch , size_t pos = 0)
 		{
-			for (int i = pos; i < _size; ++i)
+			assert(pos < _size);//加不加无所谓
+			for (size_t i = pos; i < _size; ++i)
 			{
 				if (ch == _str[i])
 				{
@@ -252,6 +260,18 @@ namespace test{
 				}
 			}
 			return npos;
+		}
+		size_t find(const char* s, size_t pos = 0)
+		{
+			assert(pos < _size);
+
+			//return strstr(_str + pos, s) - _str;
+			char* p = strstr(_str + pos, s);//原理是BF暴力匹配match ,还有KMP(纸老虎) , BM(最实用)
+			//if (p == nullptr)
+			//	return -1;
+			//else
+			//	return p - _str;
+			return p == nullptr ? npos : p - _str;
 		}
 
 
@@ -378,18 +398,21 @@ namespace test{
 		cout << (s1 == "hello" )<< endl;
 
 	}
-	void test4_string()
+	void test4_string() //modifiers
 	{
+		//白盒测试
 		string s1 = "0123456789";
 		//(s1 += ' ');
 		//s1+= "world";
 		//cout << s1 << endl;
 		//s1.insert(0, 'a');
 		//s1.insert(s1.size(), 'a');
-		s1.insert(0, "aaa");
-		s1.insert(s1.size(), "aaa");
-		s1.erase(s1.size());
+		//s1.insert(0, "aaa");
+		//s1.insert(s1.size(), "aaa");
+		//s1.erase(s1.size());
 		//s1.erase(s1.size() - 2, 1);
+		int ret = s1.find("23");
+		cout << ret << endl;
 		cout << s1 << endl;
 	}
 

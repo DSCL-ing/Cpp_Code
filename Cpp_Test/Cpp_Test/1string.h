@@ -175,7 +175,7 @@ int main()
 }
  * 
  * 返回c语言的字符串(兼容)
- * c_str() //以'\0'为结束标志
+ * c_str() //以'\0'为结束标志 -- string实际以_size为准,所以c_str和string在打印上有一定区别
 int main()
 {
 	system("chcp 65001"); //临时修改cmd字符集.字符集要匹配,不然输出有问题
