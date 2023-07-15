@@ -6,10 +6,11 @@
 #include<string.h>
 #include<assert.h>
 
-namespace test{
+namespace test {
 
 	class string {
-		friend std::ostream & operator<<(std::ostream & out, const string& s);
+		//friend std::ostream& operator<<(std::ostream& out, const string& s);
+		//friend std::istream& operator>>(std::istream& in, const string& s);
 
 	private:
 		//char* 和 字符数组char[] 基本等价
@@ -68,87 +69,92 @@ namespace test{
 		}
 
 
-		 string& operator=(const string& s)
+		string& operator=(const string& s)
 		{
-			 if (this != &s)
-			 {
-				 //考虑极端复杂情况
-				 //1._str本身很大,s很小,如果不缩容,则会浪费很多空间
-				 //2._str本身很小,s很大,则必须扩容,需要扩容很多次
-				 //干脆直接开新空间,拷贝过去
-				 char* tmp = new char[s._size+1];
-				 strcpy(tmp, s._str);
-				 delete[] _str;
-				 _str = tmp;
-				 _size =  s._size;
-				 _capacity = s._capacity;
-			 }
-			 return *this;
+			if (this != &s)
+			{
+				//考虑极端复杂情况
+				//1._str本身很大,s很小,如果不缩容,则会浪费很多空间
+				//2._str本身很小,s很大,则必须扩容,需要扩容很多次
+				//干脆直接开新空间,拷贝过去
+				char* tmp = new char[s._size + 1];
+				strcpy(tmp, s._str);
+				delete[] _str;
+				_str = tmp;
+				_size = s._size;
+				_capacity = s._capacity;
+			}
+			return *this;
 		}
 
-		 //iterator
-		 typedef char* iterator;
-		 typedef const char* const_iterator;
-		 iterator begin()
-		 {
-			 return _str;
-		 }
-		 const const_iterator begin() const
-		 {
-			 return _str;
-		 }
-		 iterator end()
-		 {
-			 return _str+_size;
-		 }
-		 const const_iterator end() const
-		 {
-			 return _str + _size;
-		 }
-		 //反向迭代器暂时不写
-		 //...
+		//iterator
+		typedef char* iterator;
+		typedef const char* const_iterator;
+		iterator begin()
+		{
+			return _str;
+		}
+		const const_iterator begin() const
+		{
+			return _str;
+		}
+		iterator end()
+		{
+			return _str + _size;
+		}
+		const const_iterator end() const
+		{
+			return _str + _size;
+		}
+		//反向迭代器暂时不写
+		//...
 
-		//Capacity
-		 size_t size() const
+	   //Capacity
+		size_t size() const
 		{
 			return _size;
 		}
-		 size_t capacity() const
-		 {
-			 return _capacity;
-		 }
-		 void reserve(size_t n)
-		 {
-			 if (n>_capacity)
-			 {
-				 char* tmp = new char[n + 1];
-				 strcpy(tmp, _str);
-				 delete[] _str;
-				 _str = tmp; //指针,可以直接赋值,指向新的对象
-				 _capacity = n;
-			 }
-		 }
-		 void resize(size_t n , char ch = '\0')
-		 {
-			 if (n <= _size)
-			 {
-				 _str[n] = '\0'; //只要放'\0',后面都识别不出来了
-				 _size = n ;
-			 }
-			 else
-			 {
-				 reserve(n);
-				 //memset();
-				 size_t begin = _size;
-				 while (begin != n)
-				 {
-					 _str[begin] = ch;
-					 ++begin;
-				 }
-				 _size = n;
-				 _str[_size] = '\0';
-			 }
-		 }
+		size_t capacity() const
+		{
+			return _capacity;
+		}
+		void reserve(size_t n)
+		{
+			if (n > _capacity)
+			{
+				char* tmp = new char[n + 1];
+				strcpy(tmp, _str);
+				delete[] _str;
+				_str = tmp; //指针,可以直接赋值,指向新的对象
+				_capacity = n;
+			}
+		}
+		void resize(size_t n, char ch = '\0')
+		{
+			if (n <= _size)
+			{
+				_str[n] = '\0'; //只要放'\0',后面都识别不出来了
+				_size = n;
+			}
+			else
+			{
+				reserve(n);
+				//memset();
+				size_t begin = _size;
+				while (begin != n)
+				{
+					_str[begin] = ch;
+					++begin;
+				}
+				_size = n;
+				_str[_size] = '\0';
+			}
+		}
+		void clear()
+		{
+			_str[0] = '\0';
+			_size = 0;
+		}
 
 		//Element access
 		char& operator[](size_t pos)//必须返回真实数据地址
@@ -164,14 +170,14 @@ namespace test{
 
 
 		//Modifiers
-		void push_back( char ch)
+		void push_back(char ch)
 		{
 			/*
 			if (_size >= _capacity) //满了
 				reserve(_capacity * 2);
 			_str[_size] = ch;
 			++_size; //不需要给[_size] = '\0' , 因为\0在[capacity+1]处而不是在[_size]处
-			_str[_size] = '\0'; // \0不算有效字符,不用++_size 
+			_str[_size] = '\0'; // \0不算有效字符,不用++_size
 			*/
 			insert(_size, ch);
 		}
@@ -184,55 +190,56 @@ namespace test{
 			strcpy(_str+_size, s); //不用strcat:strcat底层需要自己找\0(如果很长则浪费),strcpy不用找,直接一步到位
 			_size += len;
 			*/
-		
+
 			insert(_size, s);
 		}
-		string& operator+=( char ch) //char 和char &基本一样,但函数内传参引用的引用最好不用, s1+=' '+=""时出错
+		string& operator+=(char ch) //char 和char &基本一样,但函数内传参引用的引用最好不用, s1+=' '+=""时出错
 		{
 			push_back(ch);
 			return *this;
 		}
 		string& operator+=(const char* s)
 		{
-			append(s); 
+			append(s);
 			return *this;
 		}
-		string& insert(size_t pos ,char ch)//插入字符
+		string& insert(size_t pos, char ch)//插入字符
 		{
 			assert(pos <= _size); //pos在'\0'处也可以插入
-			if (_size -1 > _capacity) //满了
+			if (_size - 1 > _capacity) //满了
 				reserve(_capacity * 2);
-			for (size_t i = _size+1; i > pos; --i) //当size_t i减到0时,--i会变成最大整数,导致奔溃,所以i只减到1
+			for (size_t i = _size + 1; i > pos; --i) //当size_t i减到0时,--i会变成最大整数,导致奔溃,所以i只减到1
 			{
-				_str[i] = _str[i-1];
+				_str[i] = _str[i - 1];
 			}
 			_str[pos] = ch;
-			++_size; 
+			++_size;
 			//_str[_size] ='\0';   //\0第一次循环就拷贝过去了
 			return *this;
 		}
-		string& insert(size_t pos , const char* s)//插入字符串
+		string& insert(size_t pos, const char* s)//插入字符串
 		{
 			assert(pos <= _size);
 			size_t len = strlen(s);
 			if (_size + len > _capacity)//需要的容量大于现有容量
 				reserve(_size + len);
-			for (size_t i = _size+len ; i > pos+len-1; --i) //当i==0时,i--会变成最大整数,错位一下
+			for (size_t i = _size + len; i > pos + len - 1; --i) //当i==0时,i--会变成最大整数,错位一下
 			{
-				_str[i] = _str[i-len];
+				_str[i] = _str[i - len];
 			}
-			strncpy(_str + pos, s , len);
+			strncpy(_str + pos, s, len);
 			_size = _size + len;
+			//_str[_size] = '\0';
 			return *this;
 		}
-		string& erase(size_t pos , size_t len = npos)//起始位置，删除长度 --删1个，删多个都满足
+		string& erase(size_t pos, size_t len = npos)//起始位置，删除长度 --删1个，删多个都满足
 		{
 			assert(pos < _size); //此处不为_size原因是,删除\0没有意义,没必要加上去
 			if (len == npos || pos + len >= _size) //超出长度 ,前条件不能省略 , 因为后条件超出最大值后可能会溢出
 			{
 				_str[pos] = '\0';
 				_size = pos; //size = \0的下标
-			} 
+			}
 			else
 			{
 				for (size_t i = pos; i <= _size - len; i++)
@@ -249,7 +256,7 @@ namespace test{
 			std::swap(_size, s._size);
 			std::swap(_capacity, s._capacity);
 		}
-		size_t find(char ch , size_t pos = 0)
+		size_t find(char ch, size_t pos = 0)
 		{
 			assert(pos < _size);//加不加无所谓
 			for (size_t i = pos; i < _size; ++i)
@@ -275,7 +282,7 @@ namespace test{
 		}
 
 
-		
+
 		//String operator
 		const char* c_str()
 		{
@@ -283,7 +290,7 @@ namespace test{
 		}
 
 		//Non-member function overloads
-		
+
 
 		//relational operators
 		//必须加上const
@@ -316,20 +323,51 @@ namespace test{
 
 	};
 
-	size_t test::string:: npos = -1; //类型 (域::)变量名 = 值;
+	size_t test::string::npos = -1; //类型 (域::)变量名 = 值;
 
+
+	//流插入 和 流提取 (不是必须是友元函数,不是友元也可以)
 	//Extract string from stream
 	std::ostream& operator<<(std::ostream& out, const string& s)
 	{
-		out << s._str;
+		for (auto ch : s)	//string类要打印到size
+		{
+			out << ch;
+		}
+		//out << s.c_str();  //1.非友元函数,需要调用接口 2.不能直接打印字符串,遇到\0就终止
 		return out;
+	}
+	std::istream& operator>>(std::istream& in, string& s) //此处string要修改,不能加const
+	{
+		s.clear();//每次流提取都需要清掉旧数据。
+
+		//一定是不能使用C语言的流，因为C和C++的缓冲区是不一样的。getchar什么的都不允许使用
+		char ch = in.get();  // get()是in的成员函数
+		char buff[128];
+		size_t i = 0;
+		while (ch != ' ' && ch != '\n')
+		{
+			buff[i] = ch;
+			++i;
+			if (i == 127)
+			{
+				buff[127] = '\0'; //流插入不会给'\0', 会直接覆盖掉原本的'\0',而字符数组也不会给\0,所以需要手动给
+				s += buff; //+=字符数组(字符串)底层是insert("字符串"),每次都只扩容一次,一步到位,避免了频繁扩容
+				i = 0;
+			}
+			ch = in.get();
+		}
+		if (i !=0) //0和127都可以,0更好一点,127会比0多走一步无用操作,插一个\0
+		{
+			buff[i] = '\0';
+			s += buff;
+		}
+		return in;
 	}
 
 
 	void Print(const string& s)
 	{
-
-
 		string::const_iterator it = s.begin();
 		while (it != s.end())
 		{
@@ -395,7 +433,7 @@ namespace test{
 		cout << (s1 < s2) << endl;
 		cout << (s1 <= s2) << endl;
 		cout << s1 << s2 << endl;
-		cout << (s1 == "hello" )<< endl;
+		cout << (s1 == "hello") << endl;
 
 	}
 	void test4_string() //modifiers
@@ -423,7 +461,14 @@ namespace test{
 		s1.resize(6, 'x');
 		s1.resize(15, 'x');
 		s1.resize(7, 'x');
-		
+	}
+
+	void test6_string()
+	{
+		string s1 = "01234 56789";
+		cout << s1 << endl;
+		cin >> s1;
+		cout << s1 << endl;
 	}
 
 
