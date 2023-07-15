@@ -47,3 +47,8 @@
 //只出现一次的数字
 //https://leetcode.cn/problems/single-number/submissions/
 //知识点:for-auto,vector<int>
+
+
+//杨辉三角
+//https://leetcode.cn/problems/pascals-triangle/submissions/
+//二维vector , resize , 或二维数组
