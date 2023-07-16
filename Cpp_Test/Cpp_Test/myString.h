@@ -3,8 +3,9 @@
 
 #pragma once
 
-#include<string.h>
+#include<string.h> //写在main
 #include<assert.h>
+#include<iostream> //写在main中
 
 namespace test {
 
@@ -27,6 +28,29 @@ namespace test {
 		//int _a[N]; //可以这么用
 
 	public:
+		typedef char* iterator;
+		typedef const char* const_iterator;
+
+
+		//iterator
+		iterator begin()
+		{
+			return _str;
+		}
+		const const_iterator begin() const
+		{
+			return _str;
+		}
+		iterator end()
+		{
+			return _str + _size;
+		}
+		const const_iterator end() const
+		{
+			return _str + _size;
+		}
+		//反向迭代器暂时不写
+		//...
 
 		//constructor 
 
@@ -87,27 +111,6 @@ namespace test {
 			return *this;
 		}
 
-		//iterator
-		typedef char* iterator;
-		typedef const char* const_iterator;
-		iterator begin()
-		{
-			return _str;
-		}
-		const const_iterator begin() const
-		{
-			return _str;
-		}
-		iterator end()
-		{
-			return _str + _size;
-		}
-		const const_iterator end() const
-		{
-			return _str + _size;
-		}
-		//反向迭代器暂时不写
-		//...
 
 	   //Capacity
 		size_t size() const
@@ -470,6 +473,6 @@ namespace test {
 		cin >> s1;
 		cout << s1 << endl;
 	}
-
+	
 
 }

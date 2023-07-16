@@ -23,16 +23,16 @@ int main()
 	return 0;
 }
 
-#include<string>
+//#include<string>
 //using std::string;
-//#include"myString.h"
-//int main()
-//{
-//	//test::test1_string();
-//	//test::test2_string();
-//	//test::test3_string();
-//	//test::test4_string();
-//	//test::test5_string();
-//	//test::test6_string();
-//	return 0;
-//}
+#include"myString.h"
+int main()
+{
+	//test::test1_string();
+	//test::test2_string();
+	//test::test3_string();
+	//test::test4_string();
+	//test::test5_string();
+	//test::test6_string();
+	return 0;
+}

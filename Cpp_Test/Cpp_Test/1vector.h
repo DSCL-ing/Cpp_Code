@@ -19,10 +19,30 @@
  * 
  */
 
+//iterator
+/**
+ * 迭代器失效问题 - 原数据修改后需要重新初始化迭代器
+ * 
+ * .
+ */
+
 //capacity
 /**
  * resize()
  * vector的resize使用得更频繁, 支持开空间加初始化
+ * .
+ */
+
+//Modifiers
+/**
+ * vector也不推荐使用insert和erase
+ * .
+ */
+
+//operator
+/**
+ * vector不提供find,推荐使用std::find(),string中有find是因为string的需求
+ * 
  * .
  */
 
