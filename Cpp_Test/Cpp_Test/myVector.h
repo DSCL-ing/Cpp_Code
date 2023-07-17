@@ -78,7 +78,7 @@ public:
 		}
 	}
 
-	vector<T>& operator=(const vector<T>& v)
+	vector<T>& operator=(const vector<T>& v) //深拷贝的核心
 	{
 		_start =  new T[v.capacity()];
 		_finish = _start + v.size();
