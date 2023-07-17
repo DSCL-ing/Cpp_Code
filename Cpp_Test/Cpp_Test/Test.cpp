@@ -14,7 +14,7 @@ using std::cin;
 using std::endl;
 using std::string;
 using std::swap;
-int main1()
+int main11()
 {
 	//system("chcp 65001");
 	//char* s =new char[1];
