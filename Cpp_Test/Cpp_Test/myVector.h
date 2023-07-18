@@ -5,7 +5,8 @@ template <typename T> //数组名:类型名:xx数组
 class vector
 {
 public:
-	typedef T* iterator;
+	//成员类型 //也可以用内部类,但C++都是typedef居多,不喜欢内部类
+	typedef T* iterator; 
 	typedef const T* const_iterator;
 private:
 	//构造函数太多,初始化列表重复太多麻烦,直接给缺省参数方便
@@ -59,6 +60,7 @@ public:
 		while (first!=last)
 		{
 			*_finish = *first;
+			++first;
 		}
 	}
 
@@ -81,12 +83,12 @@ public:
 	vector<T>& operator=(const vector<T>& v) //深拷贝的核心
 	{
 		_start =  new T[v.capacity()];
-		_finish = _start + v.size();
-		_end_of_storage = _start + v.capacity();
 		for (int i = 0; i < v.size(); ++i)
 		{
 			_start[i] = v._start[i];
 		}
+		_finish = _start + v.size();
+		_end_of_storage = _start + v.capacity();
 		return *this;
 	}
 
@@ -145,11 +147,12 @@ public:
 			{
 				reserve(n);
 			}
-			for (size_t i =size() ; i <= n; ++i)
+			for (size_t i = size()  ; i <= n; ++i)
 			{
 				_start[i] = val;
+				++_finish;
 			}
-			//while (_finish != _start + n)
+				//while (_finish != _start + n)
 			//{
 			//	*finish = val;
 			//	++_finish;
@@ -222,9 +225,10 @@ public:
 		iterator begin = pos+1; //增加用begin
 		while (begin != _finish)
 		{
-			*(pos - 1) = *pos;
+			*(begin - 1) = *begin;
 			++begin;
 		}
+		
 		--_finish;
 		return pos;
 	 }

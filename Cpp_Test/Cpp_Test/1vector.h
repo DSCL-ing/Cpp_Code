@@ -42,8 +42,19 @@
 //operator
 /**
  * vector不提供find,推荐使用std::find(),string中有find是因为string的需求
+ * 使用#include<algorithm>中的find
+template<class InputIterator, class T>
+  InputIterator find (InputIterator first, InputIterator last, const T& val)
+{
+  while (first!=last) {
+    if (*first==val) return first;
+    ++first;
+  }
+  return last;
+}
  * 
- * .
+ * 
+ * 
  */
 
 
