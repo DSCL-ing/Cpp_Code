@@ -12,7 +12,7 @@ private:
 	//构造函数太多,初始化列表重复太多麻烦,直接给缺省参数方便
 	iterator _start = nullptr; //数组头
 	iterator _finish = nullptr;//数组有效数据尾的下一个(类似\0位置)
-	iterator _end_of_storage = nullptr;//数组容量尾
+	iterator _end_of_storage = nullptr;//数组容量尾的下一个位置
 
 public:
 	//无参构造
@@ -198,7 +198,7 @@ public:
 		--_finish;
 	}
 
-	iterator insert(iterator pos ,const T& val)//插入
+	iterator insert(iterator pos ,const T& val)//插入//返回原来插入的位置
 	{
 		assert(pos >= _start);
 		assert(pos<=_finish);
@@ -219,7 +219,7 @@ public:
 		return pos; //防止迭代器可能因为扩容而失效,因此将迭代器作为返回值
 
 	}
-	iterator erase(iterator pos)//删除
+	iterator erase(iterator pos)//删除 //返回删除的下一个位置
 	{
 		assert(!empty());
 		iterator begin = pos+1; //增加用begin
