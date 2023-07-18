@@ -9,7 +9,7 @@ public:
 	typedef T* iterator; 
 	typedef const T* const_iterator;
 private:
-	//构造函数太多,初始化列表重复太多麻烦,直接给缺省参数方便
+	//构造函数太多,初始化列表重复太多麻烦,直接给缺省参数方便//C++11
 	iterator _start = nullptr; //数组头
 	iterator _finish = nullptr;//数组有效数据尾的下一个(类似\0位置)
 	iterator _end_of_storage = nullptr;//数组容量尾的下一个位置
@@ -82,7 +82,8 @@ public:
 
 	vector<T>& operator=(const vector<T>& v) //深拷贝的核心
 	{
-		_start =  new T[v.capacity()];
+		//_start =  new T[v.capacity()];
+		reserver(v.capacity());
 		for (int i = 0; i < v.size(); ++i)
 		{
 			_start[i] = v._start[i];
@@ -92,6 +93,11 @@ public:
 		return *this;
 	}
 
+	~vector()
+	{
+		delete[] _start;
+		_start = _finish = nullptr;
+	}
 
 	iterator begin()
 	{
