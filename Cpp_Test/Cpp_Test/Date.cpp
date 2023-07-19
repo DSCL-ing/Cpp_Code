@@ -50,6 +50,7 @@ bool Date::operator!=(const Date& d)const
 	return !(*this == d);
 }
 
+//无参默认是右操作数,还有operator*()
 Date& Date::operator++() //前置++
 {
 
