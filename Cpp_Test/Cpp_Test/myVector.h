@@ -58,8 +58,9 @@
 
 #pragma once
 #include<assert.h>
+//#include<algorithm>
 //模板参数省略:1.作为时  2.作为类型名
-template <typename T> //数组名:类型名:xx数组
+template <class T> //数组名:类型名:xx数组
 class vector
 {
 public:
@@ -70,7 +71,7 @@ private:
 	//构造函数太多,初始化列表重复太多麻烦,直接给缺省参数方便//C++11
 	iterator _start = nullptr; //数组头
 	iterator _finish = nullptr;//数组有效数据尾的下一个(类似\0位置)
-	iterator _end_of_storage = nullptr;//数组容量尾的下一个位置
+	iterator _end_of_storage = nullptr;//数组容量尾的下一个位置,有效空间的下一个位置
 
 public:
 	//无参构造
@@ -90,7 +91,7 @@ public:
 			_start[i] = val;
 		}
 	}
-	//整型重载构造
+	//有参构造整型重载
 	vector(int n, const T& val = T())
 		//:_start(nullptr)
 		//,_finish(nullptr)
@@ -105,7 +106,7 @@ public:
 		}
 	}
 	//迭代器构造
-	template <typename InputIterator>
+	template <class InputIterator>
 	vector(InputIterator first , InputIterator last)
 		//:_start(nullptr)
 		//,_finish(nullptr)
@@ -113,13 +114,13 @@ public:
 	{
 		size_t sz = last - first;
 		_start = _finish = new T[sz];
-		_finish = _start + sz;
-		_end_of_storage = _start + sz; 
 		while (first!=last)
 		{
 			*_finish = *first;
 			++first;
+			++_finish;
 		}
+		_end_of_storage = _start + sz;
 	}
 
 	//拷贝构造
@@ -128,26 +129,34 @@ public:
 		//, _finish(nullptr)
 		//, _end_of_storage(nullptr)
 	{
-
-		_start = _finish = new T[v.capacity()];
-		_finish = _start + v.size();
-		_end_of_storage = _start + v.capacity();
+		_start = new T[v.capacity()];
 		for (size_t i = 0; i < v.size(); ++i)
 		{
 			_start[i] = v._start[i];
 		}
-	}
-
-	vector<T>& operator=(const vector<T>& v) //深拷贝的核心
-	{
-		//_start =  new T[v.capacity()];
-		reserver(v.capacity());
-		for (int i = 0; i < v.size(); ++i)
-		{
-			_start[i] = v._start[i];
-		}
 		_finish = _start + v.size();
 		_end_of_storage = _start + v.capacity();
+	}
+
+	void swap(vector<T>& v)
+	{
+		//不能使用赋值,死循环
+		//_start = v._start;
+		//_finish = v._finish;
+		//_end_of_storage = v._end_of_storage;
+
+		//由于是拷贝的空间,且不能使用赋值,故交换掉,原先的会释放掉,
+		//旧空间已经交换给v了,v会在出了作用域后回收,所以不用手动释放
+		std::swap(_start, v._start);
+		std::swap(_finish, v._finish);
+		std::swap(_end_of_storage, v._end_of_storage);
+	}
+
+	vector<T>& operator=(vector<T> v) //深拷贝的核心:
+		//赋值运算符重载：操作数是vector<vector<>>,在非初始化时(初始化时时拷贝构造)走这里
+		//传值传参，v是拷贝，所以是再次调了拷贝构造,新空间了,所以相当于深拷贝
+	{
+		swap(v);
 		return *this;
 	}
 
@@ -188,12 +197,12 @@ public:
 	{
 		return _start == _finish;
 	}
-	iterator& operator[](size_t pos) //_start的类型是迭代器,所以返回迭代器
+	T& operator[](size_t pos) //_start的类型是对象,所以返回迭代器
 	{
 		assert(pos < size());
 		return _start[pos];
 	}
-	const const_iterator& operator[](size_t pos)const
+	const T& operator[](size_t pos)const
 	{
 		assert(pos < size());
 		return _start[pos];
@@ -211,16 +220,11 @@ public:
 			{
 				reserve(n);
 			}
-			for (size_t i = size()  ; i <= n; ++i)
+				while (_finish != _start + n)
 			{
-				_start[i] = val;
+				*_finish = val;
 				++_finish;
 			}
-				//while (_finish != _start + n)
-			//{
-			//	*finish = val;
-			//	++_finish;
-			//}
 		}
 	}
 
@@ -237,8 +241,8 @@ public:
 			}
 			delete[] _start;
 			_start = tmp;
-			_finish = _start + sz; //必须放在后面,因为size与_finish有关
-			_end_of_storage = _start + n;
+			_finish = tmp + sz; //必须放在后面,因为size与_finish有关
+			_end_of_storage = tmp + n;
 		}
 	}
 
@@ -297,9 +301,62 @@ public:
 		return pos;
 	 }
 
-	
-
-
-
-
 };
+
+
+//测试用例
+class Solution {
+public:
+	vector<vector<int>> generate(int numRows) {
+		vector<vector<int>> vv;
+		vv.resize(numRows, vector<int>());
+
+		for (size_t i = 0; i < vv.size(); ++i)
+		{
+			vv[i].resize(i + 1, 0);
+			vv[i][0] = vv[i][vv[i].size() - 1] = 1;
+
+			for (size_t j = 0; j < vv[i].size(); ++j)
+			{
+				if (vv[i][j] == 0)
+				{
+					vv[i][j] = vv[i - 1][j - 1] + vv[i - 1][j];
+				}
+			}
+		}
+		return vv;
+	}
+};
+
+void test_vector4()
+{
+	using namespace std;
+	vector<vector<int>> vv = Solution().generate(3);
+	for (size_t i = 0; i < vv.size(); ++i)
+	{
+		for (size_t j = 0; j < vv[i].size(); ++j)
+		{
+			cout << vv[i][j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+
+	vector<vector<int>> v3 = vv;//初始化=是拷贝构造 ,深拷贝过程中=是重载
+	for (size_t i = 0; i < v3.size(); ++i)
+	{
+		for (size_t j = 0; j < v3[i].size(); ++j)
+		{
+			cout << v3[i][j] << " ";
+		}
+		cout << endl;
+	}
+
+	vector<int> v1;
+	v1.resize(3, 1);
+	vector<int> v2 = v1; //初始化=是拷贝构造
+	for (auto e : v2)
+	{
+		cout << e << " ";
+	}
+}

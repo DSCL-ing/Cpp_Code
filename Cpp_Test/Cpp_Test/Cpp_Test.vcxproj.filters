@@ -45,13 +45,13 @@
     <ClInclude Include="myString.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="1vector.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="myVector.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="1algorithm.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="myList.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

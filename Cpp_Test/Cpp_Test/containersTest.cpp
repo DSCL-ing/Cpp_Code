@@ -6,24 +6,13 @@
 
 #include<iostream>
 #include"myVector.h"
+//#include<vector>
 
 using std::cout;
 using std::endl;
 using std::cin;
 using std::swap;
 using std::max;
-
-
-void test_vector4()
-{
-	vector<int> v1;
-	v1.resize(10, 0);
-	vector<int> v2(v1.begin(), v1.end());
-	for (auto e : v2)
-	{
-		cout << e << " ";
-	}
-}
 
 
 
