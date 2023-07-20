@@ -15,15 +15,28 @@ using std::swap;
 using std::max;
 
 
-
+//#include"Test.h"
+#include"myList.h"
 int main()
 {
-	test_vector4();
-
-	//TestVectorExpand();
-
+	//using namespace bit;
+	//list<list<int>> lt1;
+	//lt1.push_back(list<int>(1));
+	//list<list<int>> lt2(lt1);
+	//lt2.push_back(list<int>(2));
+	test::test_list();
 	return 0;
 }
+
+
+
+////#include"myVector.h"
+//int main()
+//{
+//	test_vector4();
+//
+//	return 0;
+//}
 
 
 

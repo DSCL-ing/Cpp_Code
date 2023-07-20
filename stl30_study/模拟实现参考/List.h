@@ -186,16 +186,16 @@ namespace bit
 			_head->_prev = _head;
 		}
 
+//默认构造
 		list()
 		{
 			empty_init();
 		}
-
+//迭代器构造
 		template <class Iterator>
 		list(Iterator first, Iterator last)
 		{
 			empty_init();
-
 			while (first != last)
 			{
 				push_back(*first);
@@ -216,7 +216,7 @@ namespace bit
 		{
 			std::swap(_head, tmp._head);
 		}
-
+//拷贝构造
 		list(const list<T>& lt)
 		{
 			empty_init();
