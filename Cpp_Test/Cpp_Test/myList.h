@@ -187,17 +187,54 @@ namespace test
 
 
 		//modifiers
-		//增加结点
+		//插入
+		//这里的迭代器是list迭代器
+		void insert(iterator pos , const T& x )
+		{
 
-		//删除结点//
-
-		//头删
-
-		//头插
-
-		//尾删
+		}
+		//删除
 
 		//尾插
+		void push_back(const T& x) //插入必须有具体值,库中也没有
+		{
+			node* n = new node(x);
+			node* tail = _head->_prev;
+			n->_prev = tail;
+			tail->_next = n;
+			n->_next = _head;
+			_head->_prev = n;
+		}
+
+		//头插
+		void push_front(const T& x)
+		{
+			node* n = new node(x);
+			
+			n->_next = _head->_next;
+			_head->_next->prev = n;
+			n->prev = _head;
+			_head->_next = n;
+		}
+
+		//头删
+		void pop_front()
+		{
+			node* cur = _head->_next ; //记录要删除的当前结点
+			cur->_next->_prev = _head;
+			_head->_next = cur->_next;
+			delete cur;
+		}
+
+		//尾删
+		void pop_back()
+		{
+			node* cur = _head->_prev;
+			cur->_prev->_next = _head;
+			_head->_prev = cur->_prev;
+			delete cur;
+		}
+
 
 		//clear
 		void clear()
