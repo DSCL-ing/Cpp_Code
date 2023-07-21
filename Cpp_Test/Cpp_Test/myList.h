@@ -118,6 +118,12 @@ namespace test
 		typedef list_node<T> node;
 		typedef __list_iterator<T> iterator;
 		typedef const __list_iterator<T> const_iterator;
+
+		//static int Swap;
+		//static int destruct;
+		//static int itstruct;
+		//static int cpstruct;
+
 	private:
 		node* _head;
 	public:
@@ -126,30 +132,50 @@ namespace test
 		//只构造了一个头结点
 		list()
 		{
+			//cout << "list(" << this <<")" << endl;
 			empty_init();
 		}
+		list(const T& x)
+		{
+			empty_init();
+			push_back(x);
+		}
+		//list(const T& x)
+		//{
+		//	empty_init();//建一个头结点
+		//	//...
+		//		push_back(x);
+		//}
 
 //全缺省多个结点构造
-		list(size_t n , const T& x = T())
-		{
-			empty_init();//建一个头结点
-			//...
-		}
-		list(int n , const T& x = T())
-		{
-			empty_init();//建一个头结点
-			//...
-			while (n)
-			{
-				push_back(x);
-				--n;
-			}
-		}
+		//list(size_t n , const T& x = T())
+		//{
+		//	cout << "list(size_t n , const T& x = T(" << this << ")))" << endl;
+		//	empty_init();//建一个头结点
+		//	//...
+		//	while (n)
+		//	{
+		//		push_back(x);
+		//		--n;
+		//	}
+		//}
+		//list(int n , const T& x = T())
+		//{
+		//	cout << "list(int n , const T& x = T(" << this << ")))" << endl;
+		//	empty_init();//建一个头结点
+		//	//...
+		//	while (n)
+		//	{
+		//		push_back(x);
+		//		--n;
+		//	}
+		//}
 
 //迭代器构造
 		template <class InputIterator> //可以接收任意类型的迭代器,不只是自己的迭代器
 		list(InputIterator first, InputIterator last)
 		{
+			//cout << "list(InputIterator first, InputIterator last) " << this << ")" << endl;
 			empty_init();//建一个头结点
 			while (first != last)
 			{
@@ -159,14 +185,15 @@ namespace test
 		}
 		void swap(list<T>& tmp)
 		{
+			//cout << "list(InputIterator first, InputIterator last)" << this << ")" << endl;
 			std::swap(_head, tmp._head);
 		}
 //拷贝构造
 		list(const list<T>& lt)
 		{
-			cout << "list(const list<T>& lt)"<<endl;
+			//cout << "list(const list<T>& lt)" << this << ")"<<endl;
 			empty_init();
-			list<T> tmp(lt.begin(), lt.end());
+			list<T> tmp(lt.begin(), lt.end()); //深拷贝
 			swap(tmp);
 		}
 		
@@ -175,13 +202,14 @@ namespace test
 		//传值传参，v是拷贝，所以是再次调了拷贝构造,新空间了,所以相当于深拷贝
 		//走拷贝构造会调用=重载.
 		{
-			cout << "list<T>& operator=(list<T> lt)"<<endl;
+			//cout << "operator="<<endl;
 			swap(lt);
 			return *this;
 		}
 
 		void empty_init()
 		{
+			//cout << "empty_init()" << this << ")" << endl;
 			_head = new node;
 			_head->_next = _head;
 			_head->_prev = _head;
@@ -189,7 +217,7 @@ namespace test
 
 		~list()
 		{
-			cout << "~list()"<<endl;
+			//cout << "~list()" << this << ")"<<endl;
 			clear();
 			delete _head;
 			_head = nullptr;
@@ -245,13 +273,15 @@ namespace test
 		//这里的传进来的迭代器是list的迭代器
 		void insert(iterator pos , const T& x ) //insert没有迭代器失效问题,pos依然指向同一个结点
 		{
-			node* n = new node(x); //深拷贝赋值运算符重载处
+			//cout << "insert" << *this << ")" << endl;
 			node* cur = pos._node;
 			node* prev = cur->_prev;
-			n->_prev = prev;
-			prev->_next = n;
-			n->_next = cur;
-			cur->_prev = n;
+			node* new_node = new node(x); 
+
+			prev->_next = new_node;
+			new_node->_prev = prev;
+			new_node->_next = cur;
+			cur->_prev = new_node;
 		}
 		//删除
 		iterator erase(iterator pos) //迭代器失效(野指针),返回链表下一个位置的迭代器
@@ -267,38 +297,43 @@ namespace test
 		//尾插
 		void push_back(const T& x) //插入必须有具体值,库中也没有
 		{
-			node* n = new node(x);
-			node* tail = _head->_prev;
-			n->_prev = tail;
-			tail->_next = n;
-			n->_next = _head;
-			_head->_prev = n;
+			//cout << "push_back" << this << ")" << endl;
+			//node* n = new node(x);
+			//node* tail = _head->_prev;
+			//n->_prev = tail;
+			//tail->_next = n;
+			//n->_next = _head;
+			//_head->_prev = n;
+			insert(end(), x);
 		}
 		//头插
 		void push_front(const T& x)
 		{
-			node* n = new node(x);
-			
-			n->_next = _head->_next;
-			_head->_next->_prev = n;
-			n->_prev = _head;
-			_head->_next = n;
+			//node* n = new node(x);
+			//
+			//n->_next = _head->_next;
+			//_head->_next->_prev = n;
+			//n->_prev = _head;
+			//_head->_next = n;
+			insert(begin(), x);
 		}
 		//头删
 		void pop_front()
 		{
-			node* cur = _head->_next ; //记录要删除的当前结点
-			cur->_next->_prev = _head;
-			_head->_next = cur->_next;
-			delete cur;
+			//node* cur = _head->_next ; //记录要删除的当前结点
+			//cur->_next->_prev = _head;
+			//_head->_next = cur->_next;
+			//delete cur;
+			erase(begin());
 		}
 		//尾删
 		void pop_back()
 		{
-			node* cur = _head->_prev;
-			cur->_prev->_next = _head;
-			_head->_prev = cur->_prev;
-			delete cur;
+			//node* cur = _head->_prev;
+			//cur->_prev->_next = _head;
+			//_head->_prev = cur->_prev;
+			//delete cur;
+			erase(--end());
 		}
 
 	};
@@ -307,13 +342,24 @@ namespace test
 	{
 
 		//using namespace std;
+		list<int> lt(1);
+		lt.push_back(2);
+		lt.push_back(3);
+		lt.push_back(4);
+		for (auto x : lt)
+		{
+			cout << x << endl;
+		}
+
 		list<list<int>> lt1;
-		lt1.push_back(list<int>(1));
-		lt1.push_front(list<int>(1));
-		list<list<int>>::iterator it = lt1.begin();
-		lt1.insert(it, list<int>(2));
-		lt1.erase(it);
-		list<list<int>> lt2(lt1);
+		lt1.push_back(lt);
+		//lt1.push_back(list<int>(1,1));
+		//lt1.push_front(list<int>(1));
+		//list<list<int>>::iterator it = lt1.begin();
+		//lt1.insert(it, list<int>(2));
+		//lt1.erase(it);
+		//list<list<int>> lt2(lt1);
+		list<list<int>> lt2 = lt1;
 		//lt2.push_back(list<int>(2));
 		//lt2.push_back(list<int>(2));
 		//lt2.push_back(list<int>(2));

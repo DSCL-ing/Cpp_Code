@@ -187,9 +187,15 @@ namespace bit
 		}
 
 		//默认构造
-		list(size_t n = 0, const T& x = T())
+		list()
 		{
 			empty_init();//建一个头结点
+
+		}
+		list(const T& x)
+		{
+			empty_init();//建一个头结点
+			push_back(x);
 			//...
 		}
 		//迭代器构造
@@ -229,6 +235,7 @@ namespace bit
 		// lt1 = lt3
 		list<T>& operator=(list<T> lt)
 		{
+			cout << "operator=" << endl;
 			swap(lt);
 			return *this;
 		}

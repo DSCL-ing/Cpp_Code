@@ -19,12 +19,16 @@ using std::max;
 #include"myList.h"
 int main()
 {
-	//using namespace bit;
-	//list<list<int>> lt1;
-	//lt1.push_back(list<int>(1));
-	//list<list<int>> lt2(lt1);
-	//lt2.push_back(list<int>(2));
 	test::test_list();
+	//using namespace bit;
+	//list<int> l(1);
+	//l.push_back(2);
+	//l.push_back(3);
+	//l.push_back(4);
+	//list<list<int>> lt1;
+	//lt1.push_back(l);
+	//list<list<int>> lt2(lt1);
+
 	return 0;
 }
 

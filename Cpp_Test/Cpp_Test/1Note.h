@@ -1477,6 +1477,8 @@ int main()
  * 类型:class_name<T>
  * 类名:class_name
  * 
+ * 特点:
+ * 1.类模板在参数列表中可以只写类名不写模板参数,如:list<int> 可以写成list
  * 
  */
 
