@@ -118,11 +118,40 @@ namespace test
 		typedef list_node<T> node;
 		typedef __list_iterator<T> iterator;
 		typedef const __list_iterator<T> const_iterator;
+//tese
+//static int Swap;
+//static int destruct;
+//static int itstruct;
+//static int cpstruct;
 
-		//static int Swap;
-		//static int destruct;
-		//static int itstruct;
-		//static int cpstruct;
+		//iterator
+//返回迭代器,目的是按规范通过迭代器访问结点
+//虽然迭代器不是原生指针,但是list迭代器重载了解引用运算符*,可以和指针一样解引用就能得到数据
+		iterator begin()
+		{
+			//不能直接返回链表头结点的下一个的指针,因为链表的存储空间不连续,不能对指针直接加加减减,所以需要迭代器
+
+			//需要实例化迭代器后才能使用迭代
+			//iterator it(_head->_next);
+			//return it;
+
+			//可以使用C++提供的匿名对象来简化代码
+			return iterator(_head->_next);
+		}
+		const_iterator begin() const
+		{
+			return const_iterator(_head->_next);
+		}
+		iterator end()
+		{
+			//返回链表头结点的迭代器
+			return iterator(_head);
+		}
+		const_iterator end()const
+		{
+			return const_iterator(_head);
+		}
+		//list操作这边和数据结构的带头双向循环链表差不多,重点是iterator.写操作前写将迭代器整出来
 
 	private:
 		node* _head;
@@ -233,36 +262,6 @@ namespace test
 		}
 
 
-		//iterator
-		//返回迭代器,目的是按规范通过迭代器访问结点
-		//虽然迭代器不是原生指针,但是list迭代器重载了解引用运算符*,可以和指针一样解引用就能得到数据
-		iterator begin()
-		{
-			//不能直接返回链表头结点的下一个的指针,因为链表的存储空间不连续,不能对指针直接加加减减,所以需要迭代器
-			
-			//需要实例化迭代器后才能使用迭代
-			//iterator it(_head->_next);
-			//return it;
-			
-			//可以使用C++提供的匿名对象来简化代码
-			return iterator(_head->_next);
-		}
-		const_iterator begin() const
-		{
-			return iterator(_head->_next);
-		}
-		iterator end()
-		{
-			//返回链表头结点的迭代器
-			return iterator(_head->_next);
-		}
-		const_iterator end()const
-		{
-			return iterator(_head->_next);
-		}
-
-
-		//list操作这边和数据结构的带头双向循环链表差不多,重点是iterator.写操作前写将迭代器整出来
 
 		//Capacity
 		//size实现需要迭代器计算链表长度会用就行
@@ -346,11 +345,16 @@ namespace test
 		lt.push_back(2);
 		lt.push_back(3);
 		lt.push_back(4);
-		for (auto x : lt)
-		{
-			cout << x << endl;
-		}
-
+		//for (auto x : lt)
+		//{
+		//	cout << x << endl;
+		//}
+		//list<int>::iterator it = lt.begin();
+		//while (it != lt.end())
+		//{
+		//	cout << *it << endl;
+		//	++it;
+		//}
 		list<list<int>> lt1;
 		lt1.push_back(lt);
 		//lt1.push_back(list<int>(1,1));
