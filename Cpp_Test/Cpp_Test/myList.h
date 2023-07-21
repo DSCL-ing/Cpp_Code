@@ -53,8 +53,8 @@ namespace test
 	struct __list_iterator
 	{
 		//成员类型
-		typedef __list_iterator<T> self;
 		typedef list_node<T> node;
+		typedef __list_iterator<T> self;
 		//成员变量
 		node* _node; //成员变量只需要1个结点指针,通过这个结点指针的各种操作来模拟指针
 
@@ -62,8 +62,10 @@ namespace test
 		__list_iterator(node* n)
 			:_node(n)
 		{}
-
 		//不用写拷贝构造,直接值拷贝就行了,需要的就是值拷贝,指向同一个结点
+
+		//list迭代器不用写析构函数,因为迭代器接收的是list结点,由list负责即可
+
 
 		//指针操作运算符重载,模拟指针
 
@@ -111,13 +113,67 @@ namespace test
 		}
 	};
 
+
+	template<class T>
+	struct __list_const_iterator
+	{
+		typedef list_node<T> node;
+		typedef __list_const_iterator<T> self;
+		node* _node; 
+		__list_iterator(node* n)
+			:_node(n)
+		{}
+
+		const T& operator*()
+		{
+			return _node->_data;
+		}
+		T* operator->()
+		{
+			return &(_node->date);
+		}
+
+		self& operator++()
+		{
+			_node = _node->_next;
+			return *this;
+		}
+		self operator++(int)
+		{
+			self tmp = *this;
+			_node = _node->_next;
+			return tmp;
+		}
+		self& operator--()
+		{
+			_node = (*_node)._next;
+			return *this;
+		}
+		self operator--(int)
+		{
+			self tmp = *this;
+			_node = _node->_next;
+			return tmp;
+		}
+		bool operator!=(const self& x)
+		{
+			return _node != x._node;
+		}
+		bool  operator==(const self& x)
+		{
+			return _node == x._node;
+		}
+	};
+
+
+
 	template<class T>
 	class list
 	{
 	public:
 		typedef list_node<T> node;
 		typedef __list_iterator<T> iterator;
-		typedef const __list_iterator<T> const_iterator;
+		typedef const __list_const_iterator<T> const_iterator;
 //tese
 //static int Swap;
 //static int destruct;
