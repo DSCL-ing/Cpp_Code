@@ -42,19 +42,21 @@ namespace test
 			: _next(nullptr)
 			, _prev(nullptr)
 			, _data(x)
-		{}
+		{
+			cout << "newnode" << endl;
+		}
 
 
 	};
 
 	//这里声明的是list专用的迭代器 -- 实例化后能用于访问list
 	//迭代器用于访问结点
-	template<class T>
+	template<class T, class Ref, class Ptr>//Ref会接收参数
 	struct __list_iterator
 	{
 		//成员类型
 		typedef list_node<T> node;
-		typedef __list_iterator<T> self;
+		typedef __list_iterator<T,Ref,Ptr> self;
 		//成员变量
 		node* _node; //成员变量只需要1个结点指针,通过这个结点指针的各种操作来模拟指针
 
@@ -70,14 +72,37 @@ namespace test
 		//指针操作运算符重载,模拟指针
 
 		//解引用重载能够模拟指针返回的是结点的data,和string,vector迭代器一样
-		T& operator*()
+		//
+		/**
+		 * 模拟指针的方法
+		 * 我们对list的迭代器来说,
+		 * 为了符合习惯的指针用法
+		 * 对于结构体,实体可以通过成员访问修饰符去访问成员
+		 * 
+		 * 设struct AA{_a1,_a2};如AA._a1 , (&AA)->_a1
+		 * list<AA> iterator it = lt.begin();要想list<AA>能实现通过list迭代器实现上述功能,我们对迭代器运算符进行重载
+		 * 由于我们迭代器模拟的是元素的指针,list中的元素是AA,所以让it模拟成AA的指针:&AA
+		 * 我们希望迭代器能做到和基本类型一样有(*it)._a1 ,it->_a1;
+		 * 所以,我们将迭代器重载为
+		 * *it  返回 AA   //然后it便可以实现(*it)._a1;
+		 * it-> 返回 &AA  //目的是it可以实现it->_a1 ，实际上要访问_a1的过程是it->->_a1,但这样并不协调,为了可读性,所以编译器会将其优化成为it->_a1;
+		 * 
+		 * 可以发现,要实现it->并不容易,it毕竟是个结构体,这么实现是个很好的思路
+		 * 
+		 * 运算符重载的其中一个目的是可读性要强
+		 * 
+		 */
+
+		Ref operator*()
 		{
 			return _node->_data;
 		}
 		//箭头重载很难理解,编译器做了一定优化,后续再学习
-		T* operator->()
+		//这个重载是会有编译器优化的
+
+		Ptr operator->()
 		{
-			return &(_node->date);
+			return &(_node->_data);
 		}
 
 		self& operator++()
@@ -113,57 +138,57 @@ namespace test
 		}
 	};
 
+//list_const_iterator : const迭代器需要另写一个类 -- 优化:增加模板参数
+	//template<class T>
+	//struct __list_const_iterator
+	//{
+	//	typedef list_node<T> node;
+	//	typedef __list_const_iterator<T> self;
+	//	node* _node; 
+	//	__list_const_iterator(node* n)
+	//		:_node(n)
+	//	{}
 
-	template<class T>
-	struct __list_const_iterator
-	{
-		typedef list_node<T> node;
-		typedef __list_const_iterator<T> self;
-		node* _node; 
-		__list_iterator(node* n)
-			:_node(n)
-		{}
+	//	const T& operator*()
+	//	{
+	//		return _node->_data;
+	//	}
+	//	const T* operator->()
+	//	{
+	//		return &(_node->date);
+	//	}
 
-		const T& operator*()
-		{
-			return _node->_data;
-		}
-		T* operator->()
-		{
-			return &(_node->date);
-		}
-
-		self& operator++()
-		{
-			_node = _node->_next;
-			return *this;
-		}
-		self operator++(int)
-		{
-			self tmp = *this;
-			_node = _node->_next;
-			return tmp;
-		}
-		self& operator--()
-		{
-			_node = (*_node)._next;
-			return *this;
-		}
-		self operator--(int)
-		{
-			self tmp = *this;
-			_node = _node->_next;
-			return tmp;
-		}
-		bool operator!=(const self& x)
-		{
-			return _node != x._node;
-		}
-		bool  operator==(const self& x)
-		{
-			return _node == x._node;
-		}
-	};
+	//	self& operator++()
+	//	{
+	//		_node = _node->_next;
+	//		return *this;
+	//	}
+	//	self operator++(int)
+	//	{
+	//		self tmp = *this;
+	//		_node = _node->_next;
+	//		return tmp;
+	//	}
+	//	self& operator--()
+	//	{
+	//		_node = (*_node)._next;
+	//		return *this;
+	//	}
+	//	self operator--(int)
+	//	{
+	//		self tmp = *this;
+	//		_node = _node->_next;
+	//		return tmp;
+	//	}
+	//	bool operator!=(const self& x) 
+	//	{
+	//		return _node != x._node;
+	//	}
+	//	bool  operator==(const self& x)
+	//	{
+	//		return _node == x._node;
+	//	}
+	//};
 
 
 
@@ -172,8 +197,8 @@ namespace test
 	{
 	public:
 		typedef list_node<T> node;
-		typedef __list_iterator<T> iterator;
-		typedef const __list_const_iterator<T> const_iterator;
+		typedef __list_iterator<T,T&,T*> iterator;
+		typedef __list_iterator<T,const T&,const T*> const_iterator;
 //tese
 //static int Swap;
 //static int destruct;
@@ -257,6 +282,7 @@ namespace test
 		//}
 
 //迭代器构造
+		//深拷贝核心:只要进迭代器,就可以深拷贝
 		template <class InputIterator> //可以接收任意类型的迭代器,不只是自己的迭代器
 		list(InputIterator first, InputIterator last)
 		{
@@ -264,7 +290,7 @@ namespace test
 			empty_init();//建一个头结点
 			while (first != last)
 			{
-				push_back(*first);
+				push_back(*first);//"new"一个结点,拷x进来,++first,再new一个结点,拷x进来,通过这样实现了深拷贝,new关键字容易忽略,就是malloc
 				++first;
 			}
 		}
@@ -276,16 +302,17 @@ namespace test
 //拷贝构造
 		list(const list<T>& lt)
 		{
-			//cout << "list(const list<T>& lt)" << this << ")"<<endl;
+			//深拷贝时,第一次拷贝构造是list<list<int>>,因为构造一个匿名对象,此时x是list<int> , 第二次是list<int>,拷贝构造给此时
+			cout << "list(const list<T>& lt)" << this << ")"<<endl;
 			empty_init();
 			list<T> tmp(lt.begin(), lt.end()); //深拷贝
 			swap(tmp);
 		}
 		
-		list<T>& operator=(list<T> lt) 
-		//赋值运算符重载：操作数是list<list<>>,在非初始化时(初始化时时拷贝构造)走这里
-		//传值传参，v是拷贝，所以是再次调了拷贝构造,新空间了,所以相当于深拷贝
-		//走拷贝构造会调用=重载.
+		//此处不是深拷贝核心
+		list<T>& operator=(list<T> lt) //:传值传参->拷贝构造+迭代器构造,深拷贝
+		//赋值运算符重载：操作数是list<list<>>,在非初始化时走这里,lt1 = lt2
+		//使用到的场景，直接赋值给另一个对象：lt1 = lt2 :
 		{
 			//cout << "operator="<<endl;
 			swap(lt);
@@ -313,6 +340,7 @@ namespace test
 			iterator it = begin(); //begin用于初始化it,调用默认生成的值拷贝拷贝构造
 			while (it!=end())
 			{
+				//it = erase(it);
 				erase(it++);
 			}
 		}
@@ -331,7 +359,7 @@ namespace test
 			//cout << "insert" << *this << ")" << endl;
 			node* cur = pos._node;
 			node* prev = cur->_prev;
-			node* new_node = new node(x); 
+			node* new_node = new node(x);  //new阿！！！！！！！！！！！！！！！！！new是开辟新结点，然后再把x赋值进去--直接实现了深拷贝6666
 
 			prev->_next = new_node;
 			new_node->_prev = prev;
@@ -392,15 +420,21 @@ namespace test
 		}
 
 	};
+	//std::ostream& operator<<(std::ostream& out ,list<> )
+	//{
 
-	void test_list()
+	//}
+	//测试用例
+
+
+	//深拷贝验证
+	void test_list1()
 	{
-
 		//using namespace std;
 		list<int> lt(1);
 		lt.push_back(2);
-		lt.push_back(3);
-		lt.push_back(4);
+		//lt.push_back(3);
+		//lt.push_back(4);
 		//for (auto x : lt)
 		//{
 		//	cout << x << endl;
@@ -419,7 +453,7 @@ namespace test
 		//lt1.insert(it, list<int>(2));
 		//lt1.erase(it);
 		//list<list<int>> lt2(lt1);
-		list<list<int>> lt2 = lt1;
+		//list<list<int>> lt2 = lt1;
 		//lt2.push_back(list<int>(2));
 		//lt2.push_back(list<int>(2));
 		//lt2.push_back(list<int>(2));
@@ -433,6 +467,60 @@ namespace test
 		//cout << *it;
 
 	}
+
+	//迭代器const 运算符重载 
+	void print_list(const list<int>& lt)
+	{
+
+		list<int>::const_iterator it = lt.begin();
+		while (it != lt.end())
+		{
+			//++(*cit);
+
+			cout << *it << endl;
+			++it;
+		}
+	}
+	void test_list2()
+	{
+		list<int> lt;
+		lt.push_back(1);
+		lt.push_back(2);
+		lt.push_back(3);
+		print_list(lt);
+	}
+
+
+	//迭代器运算符*,->重载,多模板参数
+	struct AA
+	{
+		int _a1;
+		int _a2;
+
+		AA(int a1 = 0, int a2 = 0)
+			:_a1(a1)
+			, _a2(a2)
+		{}
+	};
+	void test_list3()
+	{
+		list<AA> lt;
+		lt.push_back(AA(1, 1));
+		lt.push_back(AA(2, 2));
+		lt.push_back(AA(3, 3));
+
+		// AA* ptr
+		list<AA>::iterator it = lt.begin();
+		while (it != lt.end())
+		{
+			//cout << (*it)._a1 << ":" << (*it)._a2 << endl;		
+			cout << it->_a1 << ":" << it->_a2 << endl;
+			//cout << it.operator->()->_a1 << ":" << it.operator->()->_a1 << endl;
+			++it;
+		}
+		cout << endl;
+	}
+
 }
 
 

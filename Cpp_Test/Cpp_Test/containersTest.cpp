@@ -19,7 +19,9 @@ using std::max;
 #include"myList.h"
 int main()
 {
-	test::test_list();
+	test::test_list1();
+	//test::test_list2();
+	//test::test_list3();
 	//using namespace bit;
 	//list<int> l(1);
 	//l.push_back(2);

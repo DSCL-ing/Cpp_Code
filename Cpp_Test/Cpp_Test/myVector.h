@@ -132,7 +132,7 @@ public:
 		_start = new T[v.capacity()];
 		for (size_t i = 0; i < v.size(); ++i)
 		{
-			_start[i] = v._start[i];
+			_start[i] = v._start[i];//这里可能用到重载=,从而实现深拷贝
 		}
 		_finish = _start + v.size();
 		_end_of_storage = _start + v.capacity();
@@ -153,7 +153,7 @@ public:
 	}
 
 	vector<T>& operator=(vector<T> v) //深拷贝的核心:
-		//赋值运算符重载：操作数是vector<vector<>>,在非初始化时(初始化时时拷贝构造)走这里
+		//赋值运算符重载：操作数是vector<vector<>>,在非初始化时走这里，初始化时时拷贝构造
 		//传值传参，v是拷贝，所以是再次调了拷贝构造,新空间了,所以相当于深拷贝
 	{
 		swap(v);
