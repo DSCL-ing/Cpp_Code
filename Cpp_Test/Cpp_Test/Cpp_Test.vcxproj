@@ -32,6 +32,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="myList.h" />
+    <ClInclude Include="myQueue.h" />
+    <ClInclude Include="myStack.h" />
     <ClInclude Include="myString.h" />
     <ClInclude Include="1string.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

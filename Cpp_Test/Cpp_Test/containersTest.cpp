@@ -14,25 +14,38 @@ using std::cin;
 using std::swap;
 using std::max;
 
-
-//#include"Test.h"
-#include"myList.h"
+#include<stack>
 int main()
 {
-	test::test_list1();
-	//test::test_list2();
-	//test::test_list3();
-	//using namespace bit;
-	//list<int> l(1);
-	//l.push_back(2);
-	//l.push_back(3);
-	//l.push_back(4);
-	//list<list<int>> lt1;
-	//lt1.push_back(l);
-	//list<list<int>> lt2(lt1);
-
+	std::stack<int> st;
+	st.push(1);
+	st.push(2);
+	st.push(3);
+	st.push(4);
+	st.pop();
+	cout << st.top() << endl;
 	return 0;
 }
+
+
+////#include"Test.h"
+//#include"myList.h"
+//int main()
+//{
+//	test::test_list1();
+//	//test::test_list2();
+//	//test::test_list3();
+//	//using namespace bit;
+//	//list<int> l(1);
+//	//l.push_back(2);
+//	//l.push_back(3);
+//	//l.push_back(4);
+//	//list<list<int>> lt1;
+//	//lt1.push_back(l);
+//	//list<list<int>> lt2(lt1);
+//
+//	return 0;
+//}
 
 
 
