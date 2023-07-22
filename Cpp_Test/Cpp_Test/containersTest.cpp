@@ -5,8 +5,6 @@
 
 
 #include<iostream>
-#include"myVector.h"
-//#include<vector>
 
 using std::cout;
 using std::endl;
@@ -14,16 +12,60 @@ using std::cin;
 using std::swap;
 using std::max;
 
+
 #include<stack>
+class MinStack {
+private:
+    std::stack<int> st;
+    std::stack<int> mst;
+public:
+    MinStack() {
+
+    }
+
+    void push(int val) {
+        st.push(val);
+        if (mst.empty() || mst.top() > val)
+        {
+            mst.push(val);
+        }
+    }
+
+    void pop() {
+        if (mst.top() == st.top())
+        {
+            mst.pop();
+        }
+        st.pop();
+    }
+
+    int top() {
+        return st.top();
+    }
+
+    int getMin() {
+        return mst.top();
+    }
+};
 int main()
 {
-	std::stack<int> st;
-	st.push(1);
-	st.push(2);
-	st.push(3);
-	st.push(4);
-	st.pop();
-	cout << st.top() << endl;
+    MinStack ms;
+    ms.push(0);
+    ms.push(1);
+    ms.push(0);
+    cout << ms.getMin() << endl;
+    ms.pop();
+    cout << ms.getMin() << endl;
+    
+    return 0;
+}
+
+#include<stack>
+#include"myStack.h"
+int main3()
+{
+	test::tese_stack1();
+	
 	return 0;
 }
 

@@ -30,6 +30,23 @@ namespace test
 
 
 
+	//测试用例
 
+#include<stack>
+	//stack的使用
+	void tese_stack1()
+	{
+		std::stack<int> st1;
+		st1.push(1);
+		st1.push(2);
+		st1.push(3);
+		while (!st1.empty())
+		{
+			cout << st1.top() << endl;
+			st1.pop();
+		}
+	}
 
 }
+
+
