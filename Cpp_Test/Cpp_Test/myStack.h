@@ -20,10 +20,12 @@
 
 #include<assert.h>
 #include<vector>
+#include<deque>
 namespace test
 {
 
-	template<class T, class Containers=std::vector<T>>
+	//template<class T, class Containers=std::vector<T>>
+	template<class T, class Containers=std::deque<T>>
 	class stack
 	{
 	private:

@@ -1,5 +1,11 @@
 ﻿#pragma once
 
+//搜索关键字
+/**
+ * C++未做:没有用C++实现的题
+ * .
+ */
+
 //力扣注意事项:
 /**
  * 1.力扣接口型题目是按一定规范提供结构,有些参数对题目意义不大.用于维护规范而提供,按规范完成好即可
@@ -80,3 +86,13 @@
 //逆波兰表达式求值
 //https://leetcode.cn/problems/evaluate-reverse-polish-notation/submissions/
 //知识点：stack,运算后缀表达式
+//扩展:从中缀表达式转成后缀表达式(定位:stack queue)
+
+
+//用栈实现队列
+//https://leetcode.cn/problems/implement-queue-using-stacks/
+//C++未做,stack和queue
+
+//用队列实现栈
+//https://leetcode.cn/problems/implement-stack-using-queues/
+//C++未做 , stack和queue

@@ -14,11 +14,13 @@
 
 #include<list>
 #include<assert.h>
-
+#include<deque>
 
 namespace test
 {
-	template<class T, class Containers = std::list<T>>
+	//template<class T, class Containers = std::list<T>>
+	template<class T, class Containers = std::deque<T>
+>
 	class queue
 	{
 	private:
