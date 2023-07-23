@@ -301,10 +301,9 @@ public:
 		return pos;
 	 }
 
-};
 
-
-//测试用例
+	//测试用例
+/*
 class Solution {
 public:
 	vector<vector<int>> generate(int numRows) {
@@ -360,3 +359,9 @@ void test_vector4()
 		cout << e << " ";
 	}
 }
+*/
+
+
+};
+
+

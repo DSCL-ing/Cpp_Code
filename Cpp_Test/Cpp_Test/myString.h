@@ -5,7 +5,7 @@
 
 #include<string.h> //写在main
 #include<assert.h>
-#include<iostream> //写在main中
+//#include<iostream> //写在main中
 
 namespace test {
 
@@ -368,7 +368,8 @@ namespace test {
 		return in;
 	}
 
-
+	//测试用例
+	/*
 	void Print(const string& s)
 	{
 		string::const_iterator it = s.begin();
@@ -474,5 +475,5 @@ namespace test {
 		cout << s1 << endl;
 	}
 	
-
+	*/
 }

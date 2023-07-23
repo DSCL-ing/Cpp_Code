@@ -19,24 +19,52 @@
 
 
 #include<assert.h>
-
+#include<vector>
 namespace test
 {
 
+	template<class T, class Containers=std::vector<T>>
+	class stack
+	{
+	private:
+		Containers con;
+	public:
+		void push(const T& val)
+		{
+			con.push_back(val);//尾插尾删
+		}
+		void pop()
+		{
+			con.pop_back();
+		}
+		const T& top()
+		{
+			return con.back();
+		}
+		bool empty()
+		{
+			return con.empty();
+		}
+
+		size_t size()
+		{
+			return con.size();
+		}
 
 
 
+
+
+	};
 
 
 
 
 	//测试用例
-
-#include<stack>
 	//stack的使用
-	void tese_stack1()
+	void test_stack1()
 	{
-		std::stack<int> st1;
+		stack<int> st1;
 		st1.push(1);
 		st1.push(2);
 		st1.push(3);
@@ -47,6 +75,22 @@ namespace test
 		}
 	}
 
+	void test_stack2()
+	{
+		stack<int,std::list<int>> st;
+		st.push(1);
+		st.push(2);
+		st.push(3);
+		while (!st.empty())
+		{
+			cout << st.top()<<endl;
+			st.pop();
+		}
+	}
 }
+
+
+
+
 
 

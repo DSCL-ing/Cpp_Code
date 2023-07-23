@@ -30,6 +30,23 @@
  * 
  */
 
+//成员
+/**
+<Containers>
+using std::vector
+using std::list
+
+<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
+
+<algorithm>
+using std::swap;
+using std::max;
+
+
+ */
 
 //容器- Srting类
 /**

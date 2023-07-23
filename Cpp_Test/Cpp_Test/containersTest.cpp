@@ -13,61 +13,73 @@ using std::swap;
 using std::max;
 
 
-#include<stack>
-class MinStack {
-private:
-    std::stack<int> st;
-    std::stack<int> mst;
-public:
-    MinStack() {
-
-    }
-
-    void push(int val) {
-        st.push(val);
-        if (mst.empty() || mst.top() > val)
-        {
-            mst.push(val);
-        }
-    }
-
-    void pop() {
-        if (mst.top() == st.top())
-        {
-            mst.pop();
-        }
-        st.pop();
-    }
-
-    int top() {
-        return st.top();
-    }
-
-    int getMin() {
-        return mst.top();
-    }
-};
+#include<list>
+#include"myQueue.h"
 int main()
 {
-    MinStack ms;
-    ms.push(0);
-    ms.push(1);
-    ms.push(0);
-    cout << ms.getMin() << endl;
-    ms.pop();
-    cout << ms.getMin() << endl;
-    
-    return 0;
-}
-
-#include<stack>
-#include"myStack.h"
-int main3()
-{
-	test::tese_stack1();
-	
+	test::test_quque1();
 	return 0;
 }
+
+////#include<stack>
+//#include<vector>
+//#include<list>
+//#include"myStack.h"
+//int main()
+//{
+//	//test::test_stack1();
+//	test::test_stack2();
+//	return 0;
+//}
+
+//#include<stack>
+//class MinStack {
+//private:
+//    std::stack<int> st;
+//    std::stack<int> mst;
+//public:
+//    MinStack() {
+//
+//    }
+//
+//    void push(int val) {
+//        st.push(val);
+//        if (mst.empty() || mst.top() > val)
+//        {
+//            mst.push(val);
+//        }
+//    }
+//
+//    void pop() {
+//        if (mst.top() == st.top())
+//        {
+//            mst.pop();
+//        }
+//        st.pop();
+//    }
+//
+//    int top() {
+//        return st.top();
+//    }
+//
+//    int getMin() {
+//        return mst.top();
+//    }
+//};
+//int main()
+//{
+//    MinStack ms;
+//    ms.push(0);
+//    ms.push(1);
+//    ms.push(0);
+//    cout << ms.getMin() << endl;
+//    ms.pop();
+//    cout << ms.getMin() << endl;
+//    
+//    return 0;
+//}
+
+
 
 
 ////#include"Test.h"

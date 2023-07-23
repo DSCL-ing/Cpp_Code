@@ -9,22 +9,22 @@
 
 //using namespace std;
 
-using std::cout;
-using std::cin;
-using std::endl;
-using std::string;
-using std::swap;
-int main11()
-{
-	//system("chcp 65001");
-	//char* s =new char[1];
-	//s[0] = '1';
-	string s1;
-	//string s2 = "Hello";
-	s1.push_back('x');
-	cout << s1 << endl;
-	return 0;
-}
+//using std::cout;
+//using std::cin;
+//using std::endl;
+//using std::string;
+//using std::swap;
+//int main11()
+//{
+//	//system("chcp 65001");
+//	//char* s =new char[1];
+//	//s[0] = '1';
+//	string s1;
+//	//string s2 = "Hello";
+//	s1.push_back('x');
+//	cout << s1 << endl;
+//	return 0;
+//}
 
 //class A
 //{

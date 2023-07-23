@@ -424,9 +424,12 @@ namespace test
 	//{
 
 	//}
+
+
+
 	//测试用例
 
-
+/*
 	//深拷贝验证
 	void test_list1()
 	{
@@ -520,7 +523,7 @@ namespace test
 		}
 		cout << endl;
 	}
-
+	*/
 }
 
 

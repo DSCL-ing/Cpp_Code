@@ -12,13 +12,57 @@
  * 
  */
 
-
+#include<list>
 #include<assert.h>
 
 
-namespace tese
+namespace test
 {
+	template<class T, class Containers = std::list<T>>
+	class queue
+	{
+	private:
+		Containers _con;
+	public:
+		void push(const T& x)
+		{
+			_con.push_back(x);//尾插
+		}
+		void pop()
+		{
+			_con.pop_front();//头删
+		}
+		const T& front()
+		{
+			return _con.front();
+		}
+		const T& back()
+		{
+			return _con.back();
+		}
+		bool empty()
+		{
+			return _con.empty();
+		}
+		size_t size()
+		{
+			return _con.size();
+		}
+		
+	};
 
+	void test_quque1()
+	{
+		queue<int> q;
+		q.push(1);
+		q.push(2);
+		q.push(3);
+		while (!q.empty())
+		{
+			std::cout << q.front() <<" ";
+			q.pop();
+		}
+	}
 
 
 
