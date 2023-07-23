@@ -48,6 +48,27 @@ using std::max;
 
  */
 
+ //容器-双端队列 Double ended queue (deque) (据说适合头插头删尾插尾删,所以取名双端队列)
+ /**
+  * <deque>
+  * 优点
+  * 1.扩容代价低
+  * 2.头插头删尾插尾删的效率高
+  * 3.支持随机访问
+  *
+  * 缺点
+  * 1.中间插入删除难处理
+  * 2.没有vector和list优点极致
+  *
+  * 实现
+  * SGI以buff数组固定为实现,随机访问效率高,中间插入效率低
+  *
+  * 适合场景:头插头删尾插尾删频繁时->在适配器中使用比较合适
+  * 所以库中将其作为栈和队列的底层容器
+  *
+  *
+  */
+
 //容器特点总结
 /**
  * 对于vector list deque
@@ -56,6 +77,33 @@ using std::max;
  * 
  * .
  */
+
+
+//适配器 - priority_queue
+/**
+ * #include<queue>
+ * 
+ * 底层是vector的堆,完全二叉树,大堆,大的优先级高(top返回最大的)
+ * 
+ * 
+ * 使用
+ * #include<functional> //仿函数或函数对象
+ * priority_queue<int,vector<int>,greator<int>> pq; //设计不太合理 
+ * 
+ */
+
+ //适配器
+ /**
+  * //设计模式:写代码的一些套路,模板
+  * 
+  * 
+  * 
+  * stack
+  * queue
+  * priority_queue 优先级队列(类似堆)
+  *
+  * .
+  */
 
 //迭代器
 /**
@@ -73,35 +121,31 @@ using std::max;
  */
 
 
-
-//适配器
+//仿函数
 /**
- * 设计模式:写代码的一些套路,模板
  * 
+ * 
+ * greator:意思是更大的,逐渐变大,传参后变小堆.
+ * less:意思是更小的,逐渐变小,传参后变大堆,默认是大堆,可以不用传
+ * 模拟实现一个less
+struct less{ //针对int
+	bool operator()(int x,int y){ return x<y; }
+}
+模板实现
+template<class T>
+struct less{
+	bool operator()(const T& x , const T& y){ return x>y; }
+
+使用:
+int main(){
+	less<int> func;//对象
+	cout<<func(1,2) <<endl; //	打印1 --->实际上就是重载了operator
+}
  * 
  * .
  */
 
-//双端队列 Double ended queue (deque) (据说适合头插头删尾插尾删,所以取名双端队列)
-/**
- * <deque>
- * 优点
- * 1.扩容代价低
- * 2.头插头删尾插尾删的效率高
- * 3.支持随机访问
- * 
- * 缺点
- * 1.中间插入删除难处理
- * 2.没有vector和list优点极致
- * 
- * 实现
- * SGI以buff数组固定为实现,随机访问效率高,中间插入效率低
- * 
- * 适合场景:头插头删尾插尾删频繁时->在适配器中使用比较合适
- * 所以库中将其作为栈和队列的底层容器
- * 
- * 
- */
+
 
 
 
