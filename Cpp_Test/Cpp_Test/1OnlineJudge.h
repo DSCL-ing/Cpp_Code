@@ -75,3 +75,8 @@
 //是否是同一组栈的压入、弹出序列
 //https://www.nowcoder.com/practice/d77d11405cc7470d82554cb392585106?tpId=13&&tqId=11174&rp=1&ru=/activity/oj&qru=/ta/coding-interviews/question-ranking
 //知识点:stack的使用,stack的特性
+
+
+//逆波兰表达式求值
+//https://leetcode.cn/problems/evaluate-reverse-polish-notation/submissions/
+//知识点：stack,运算后缀表达式

@@ -403,7 +403,8 @@ int main()
 
 //Convert from strings  从字符串转换
 /**
- * stoi
+ * <string>
+ * std::stoi
  * //stol(long和int一样)
  * //stoul(无符号long)
  * stoll(长整型longlong)
@@ -412,7 +413,8 @@ int main()
  * stod
  * stold
  * 
- * 
+ * 使用:
+ * stoi(str);
  * 
  * 
  * 
