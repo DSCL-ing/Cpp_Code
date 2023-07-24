@@ -9,12 +9,29 @@
  *
  *
  * 使用
- * #include<functional> //仿函数或函数对象
+ * #include<functional> //仿函数或函数对象 
  * priority_queue<int,vector<int>,greator<int>> pq; //设计不太合理
+ * 
+ * 
  *
  */
-#include<deque>
-#include<vector>
+
+//仿函数
+/**
+ * 功能:
+ * 1.用于在有比较的场景下,翻转比较对象 
+ * 如,升序逆序,大小比较
+ * 
+ * 特点:
+ * 1.支持基本类型
+ * 2.支持自定义类型(需要重载 '<' 和 '>' )
+ * 3.//允许用户写仿函数来控制
+ * 
+ */
+
+#include<deque> //测试用
+#include<vector>//测试用
+#include"Date.h"//测试用
 namespace test
 {
 
@@ -41,7 +58,7 @@ class priority_queue
 {
 private:
 	Containers _con;
-	Compare _com;
+	Compare _com;//或者换成匿名对象,感觉更爽
 public:
 	void adjust_up(int child)
 	{
@@ -74,6 +91,7 @@ public:
 		while (child > 0) //child为0就不用再换了
 		{
 			if (_com(_con[parent] ,_con[child])) 
+			//if (Compare()(_con[parent] ,_con[child])) 
 			{
 				swap(_con[parent], _con[child]);
 				child = parent;
@@ -195,11 +213,13 @@ public:
 	}
 
 
+
+
 };
 
 //测试用例
 
-void test_priority_queue()
+void test_priority_queue1()
 {
 	priority_queue<int , std::deque<int>,greater<int>> pq;
 	//priority_queue<int> pq;
@@ -215,6 +235,35 @@ void test_priority_queue()
 		cout << pq.top() << endl;
 		pq.pop();
 	}
+}
+
+//struct DateLess //这个不需要重载,我们在上方写了模板,参数T可以支持了
+//{
+//	bool operator()(const Date& x, const Date& y)
+//	{
+//		return x < y;
+//	}
+//};
+struct PDateLess
+{
+	bool operator()(const Date* p1, const Date* p2)
+	{
+		return (*p1) < (*p2);
+	}
+};
+void test_priority_queue2()
+{
+	//priority_queue<Date> pq1;
+	//pq1.push(Date(2001, 1, 1));
+	//pq1.push(Date(2001, 1, 2));
+	//pq1.push(Date(2001, 1, 3));
+	//cout << pq1.top() << endl;
+	cout << "=================" << endl;
+	priority_queue<Date*,vector<Date*>,PDateLess> pq2; //显式指定才会调用PDateLess,不然会调用模板的用于比较地址
+	pq2.push(new Date(2001, 1, 1));
+	pq2.push(new Date(2001, 1, 2));
+	pq2.push(new Date(2001, 1, 3));
+	cout << *(pq2.top()) << endl;
 }
 
 

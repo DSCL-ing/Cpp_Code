@@ -27,7 +27,6 @@ bool Date::operator< (const Date& d)const
 	return _year < d._year
 		|| _year == d._year && _month < d._month
 		|| _year == d._year && _month == d._month && _day < d._day;
-
 }
 
 bool Date::operator<=(const Date& d)const

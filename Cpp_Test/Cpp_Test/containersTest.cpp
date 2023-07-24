@@ -16,7 +16,8 @@ using std::max;
 
 int main()
 {
-	test::test_priority_queue();
+	test::test_priority_queue2();
+	//test::test_priority_queue1();
 	return 0;
 }
 
