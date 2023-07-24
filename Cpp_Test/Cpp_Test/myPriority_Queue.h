@@ -13,21 +13,43 @@
  * priority_queue<int,vector<int>,greator<int>> pq; //设计不太合理
  *
  */
-
+#include<deque>
 #include<vector>
-template<class T,class Containers = std::vector<T>>
+namespace test
+{
+
+template <class T >
+struct less
+{
+	bool operator()(const T& x, const T& y)
+	{
+		return x < y;
+	}
+};
+
+template<class T>
+struct greater
+{
+	bool operator()(const T& x, const T& y)
+	{
+		return x > y;
+	}
+};
+
+template<class T, class Containers = std::vector<T>, class Compare = less<T> >
 class priority_queue
 {
 private:
 	Containers _con;
+	Compare _com;
 public:
 	void adjust_up(int child)
 	{
 		/**
- * 算法(小堆)
+ * 向上调整算法(大堆)
  * 计算父亲下标
- * 如果孩子小于父亲,交换孩子和父亲,计算新父亲下标
- * 如果孩子大于父亲,结束循环
+ * 如果孩子大于父亲,交换孩子和父亲,计算新父亲下标
+ * 如果孩子小于父亲,结束循环
  * 相等换不换都行
  *
  *
@@ -48,14 +70,14 @@ public:
 		 * 所以parent = (child-1)/2
 		 */
 
-		int parent = (chile - 1) / 2;
+		int parent = (child - 1) / 2;
 		while (child > 0) //child为0就不用再换了
 		{
-			if (_con[parent] > _con[child])
+			if (_com(_con[parent] ,_con[child])) 
 			{
 				swap(_con[parent], _con[child]);
 				child = parent;
-				parent = (chile - 1) / 2;
+				parent = (child - 1) / 2;
 			}
 			else
 			{
@@ -73,12 +95,12 @@ public:
 	{
 
 		/**
- * 算法(小堆):
+ * 向下调整算法(大堆):
  * 计算孩子下标
- * 计算最小的孩子
+ * 计算最大的孩子
  * 比较孩子和父亲
- * 如果父亲小于最小孩子,交换父亲和孩子,计算新孩子
- * 如果父亲大于最小孩子,结束循环
+ * 如果父亲小于最大孩子,交换父亲和孩子,计算新孩子
+ * 如果父亲大于于最大孩子,结束循环
  * 相等换不换都行
  *
  * 循环条件:左孩子下标不能超过数组大小
@@ -130,18 +152,19 @@ public:
 		}
 		*/
 		///优化方案
-		int child = parent * 2 + 1;
+		size_t child = parent * 2 + 1;
 		while (child < _con.size())
 		{
-			if (child + 1 < _con.size() && _con[child + 1] < _con[child])
+			//if ((child + 1 )< _con.size() && _con[child]<_con[child + 1] )
+			if ((child + 1 )< _con.size() && _com(_con[child],_con[child + 1]) )
 			{
 				child = child + 1;
 			}
-			if (_con[parent] < _con[child])
+			if (_com(_con[parent] , _con[child]))
 			{
 				swap(_con[parent], _con[child]);
 				parent = child;
-				chile = parent * 2 + 1;
+				child = parent * 2 + 1;
 			}
 			else
 			{
@@ -154,8 +177,9 @@ public:
 	}
 	void pop()
 	{
-		adjust_donw(_con[0]);
+		swap(_con[0], _con[_con.size() - 1]);
 		_con.pop_back();
+		adjust_down(0);
 	}
 	const T& top()
 	{
@@ -170,4 +194,29 @@ public:
 		return _con.size();
 	}
 
+
 };
+
+//测试用例
+
+void test_priority_queue()
+{
+	priority_queue<int , std::deque<int>,greater<int>> pq;
+	//priority_queue<int> pq;
+	pq.push(2);
+	pq.push(4);
+	pq.push(1);
+	pq.push(3);
+	pq.push(6);
+	pq.push(5);
+
+	while (!pq.empty())
+	{
+		cout << pq.top() << endl;
+		pq.pop();
+	}
+}
+
+
+
+}

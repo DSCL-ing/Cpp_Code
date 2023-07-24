@@ -79,18 +79,7 @@ using std::max;
  */
 
 
-//适配器 - priority_queue
-/**
- * #include<queue>
- * 
- * 底层是vector的堆,完全二叉树,大堆,大的优先级高(top返回最大的)
- * 
- * 
- * 使用
- * #include<functional> //仿函数或函数对象
- * priority_queue<int,vector<int>,greator<int>> pq; //设计不太合理 
- * 
- */
+
 
  //适配器
  /**

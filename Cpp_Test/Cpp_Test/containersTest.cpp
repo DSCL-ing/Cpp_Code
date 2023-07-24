@@ -12,14 +12,21 @@ using std::cin;
 using std::swap;
 using std::max;
 
+#include"myPriority_Queue.h"
 
-#include<list>
-#include"myQueue.h"
 int main()
 {
-	test::test_quque1();
+	test::test_priority_queue();
 	return 0;
 }
+
+//#include<list>
+//#include"myQueue.h"
+//int main()
+//{
+//	test::test_quque1();
+//	return 0;
+//}
 
 ////#include<stack>
 //#include<vector>
