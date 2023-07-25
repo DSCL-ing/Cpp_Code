@@ -59,6 +59,9 @@
 #pragma once
 #include<assert.h>
 #include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
 //#include<algorithm>
 //模板参数省略:1.作为时  2.作为类型名
 template <class T> //数组名:类型名:xx数组

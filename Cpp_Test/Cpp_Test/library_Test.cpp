@@ -3,6 +3,17 @@
 
 
 #include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
+using std::swap;
+using std::max;
+int main12()
+{
+
+	return 0;
+}
+
 //#include <string>
 //#include<stdlib.h>
 //#include<algorithm>

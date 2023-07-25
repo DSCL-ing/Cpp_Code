@@ -32,6 +32,9 @@
 #include<deque> //测试用
 #include<vector>//测试用
 #include"Date.h"//测试用
+using std::cout;
+using std::endl;
+using std::cin;
 namespace test
 {
 

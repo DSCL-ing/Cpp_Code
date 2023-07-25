@@ -63,6 +63,9 @@
     <ClInclude Include="myPriority_Queue.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="my_Itetator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="类.cpp">
@@ -71,10 +74,10 @@
     <ClCompile Include="Date.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Test.cpp">
+    <ClCompile Include="library_Test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="containersTest.cpp">
+    <ClCompile Include="MyContainersTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

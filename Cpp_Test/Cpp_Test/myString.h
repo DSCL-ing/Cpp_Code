@@ -7,6 +7,9 @@
 #include<assert.h>
 //#include<iostream> //写在main中
 #include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
 namespace test {
 
 	class string {

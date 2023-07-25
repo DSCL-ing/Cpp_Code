@@ -23,7 +23,7 @@
 
 #pragma once
 #include"my_Itetator.h" //测试用
-#include<iostream>
+#include<iostream> //测试用
 using std::cout;
 using std::endl;
 using std::cin;
@@ -59,7 +59,9 @@ namespace test
 	{
 		//成员类型
 		typedef list_node<T> node;
-		typedef __list_iterator<T,Ref,Ptr> self;
+		typedef __list_iterator<T,Ref,Ptr> self; //只管接收
+
+
 		//成员变量
 		node* _node; //成员变量只需要1个结点指针,通过这个结点指针的各种操作来模拟指针
 
@@ -122,13 +124,13 @@ namespace test
 		}
 		self& operator--()
 		{
-			_node = (*_node)._next;
+			_node = (*_node)._prev;
 			return *this;
 		}
 		self operator--(int)
 		{
 			self tmp = *this;
-			_node = _node->_next;
+			_node = _node->_prev;
 			return tmp;
 		}
 		bool operator!=(const self& x)
@@ -198,10 +200,16 @@ namespace test
 	template<class T>
 	class list
 	{
-	public:
+	private:
 		typedef list_node<T> node;
+	public:
+		//正向迭代器类型重命名
 		typedef __list_iterator<T,T&,T*> iterator;
-		typedef __list_iterator<T,const T&,const T*> const_iterator;
+		typedef __list_iterator<T,const T&,const T*> const_iterator; 
+
+		//反向迭代器类型重命名
+		typedef ReverseIterator<iterator, T&, T*> reverse_iterator;
+		typedef ReverseIterator<iterator, const T&, const T*> const_reverse_iterator;
 //tese
 //static int Swap;
 //static int destruct;
@@ -215,14 +223,15 @@ namespace test
 		{
 			//不能直接返回链表头结点的下一个的指针,因为链表的存储空间不连续,不能对指针直接加加减减,所以需要迭代器
 
-			//需要实例化迭代器后才能使用迭代
+			
+			//需要实例化迭代器后才能使用迭代器
 			//iterator it(_head->_next);
 			//return it;
 
 			//可以使用C++提供的匿名对象来简化代码
-			return iterator(_head->_next);
+			return iterator(_head->_next);//正向迭代器类接收链表指针构造出正向迭代器实体
 		}
-		const_iterator begin() const
+		const_iterator begin() const //const修饰的*this,也就是链表,所以链表不能修改
 		{
 			return const_iterator(_head->_next);
 		}
@@ -235,8 +244,26 @@ namespace test
 		{
 			return const_iterator(_head);
 		}
-		//list操作这边和数据结构的带头双向循环链表差不多,重点是iterator.写操作前写将迭代器整出来
 
+		//反向迭代器
+		reverse_iterator rbegin() //
+		{
+			return reverse_iterator(end());//返回反向迭代器(适配器)接收正向迭代器的对象构造出反向迭代器
+		}
+		const_reverse_iterator rbegin() const
+		{
+			return const_reverse_iterator(end());
+		}
+		reverse_iterator rend() 
+		{
+			return reverse_iterator(begin());
+		}
+		const_reverse_iterator rend() const
+		{
+			return const_reverse_iterator(begin());
+		}
+
+		//list操作这边和数据结构的带头双向循环链表差不多,重点是iterator.写操作前写将迭代器整出来
 	private:
 		node* _head;
 	public:
@@ -525,6 +552,29 @@ namespace test
 			++it;
 		}
 		std::cout << std::endl;
+	}
+
+	void test_list4()
+	{
+		list<int> lt1;
+		lt1.push_back(1);
+		lt1.push_back(2);
+		lt1.push_back(3);
+		lt1.push_back(4);
+		//list<int>::iterator it = lt1.begin();
+		//while (it != lt1.end())
+		//{
+		//	cout << *it << " ";
+		//	++it;
+		//}
+		cout << endl<< "=============" << endl;
+		list<int>::reverse_iterator rit = lt1.rbegin();
+		while (rit != lt1.rend())
+		{
+			cout << *rit << " ";
+			++rit;
+		}
+
 	}
 	
 }

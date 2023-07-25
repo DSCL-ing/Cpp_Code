@@ -15,7 +15,9 @@
 #include<list>
 #include<assert.h>
 #include<deque>
-
+using std::cout;
+using std::endl;
+using std::cin;
 namespace test
 {
 	//template<class T, class Containers = std::list<T>>
