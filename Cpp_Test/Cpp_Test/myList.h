@@ -22,8 +22,11 @@
  */
 
 #pragma once
-
-
+#include"my_Itetator.h" //测试用
+#include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
 namespace test
 {
 	//struct默认权限是public,一般也不会加权限,class才会(需要封装时使用class)
@@ -429,7 +432,7 @@ namespace test
 
 	//测试用例
 
-/*
+
 	//深拷贝验证
 	void test_list1()
 	{
@@ -480,7 +483,7 @@ namespace test
 		{
 			//++(*cit);
 
-			cout << *it << endl;
+			std::cout << *it << std::endl;
 			++it;
 		}
 	}
@@ -517,13 +520,13 @@ namespace test
 		while (it != lt.end())
 		{
 			//cout << (*it)._a1 << ":" << (*it)._a2 << endl;		
-			cout << it->_a1 << ":" << it->_a2 << endl;
+			std::cout << it->_a1 << ":" << it->_a2 << std::endl;
 			//cout << it.operator->()->_a1 << ":" << it.operator->()->_a1 << endl;
 			++it;
 		}
-		cout << endl;
+		std::cout << std::endl;
 	}
-	*/
+	
 }
 
 

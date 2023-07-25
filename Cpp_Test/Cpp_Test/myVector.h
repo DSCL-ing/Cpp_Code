@@ -58,6 +58,7 @@
 
 #pragma once
 #include<assert.h>
+#include<iostream>
 //#include<algorithm>
 //模板参数省略:1.作为时  2.作为类型名
 template <class T> //数组名:类型名:xx数组
@@ -303,7 +304,6 @@ public:
 
 
 	//测试用例
-/*
 class Solution {
 public:
 	vector<vector<int>> generate(int numRows) {
@@ -359,7 +359,7 @@ void test_vector4()
 		cout << e << " ";
 	}
 }
-*/
+
 
 
 };

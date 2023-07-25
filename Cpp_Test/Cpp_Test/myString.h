@@ -6,7 +6,7 @@
 #include<string.h> //写在main
 #include<assert.h>
 //#include<iostream> //写在main中
-
+#include<iostream>
 namespace test {
 
 	class string {

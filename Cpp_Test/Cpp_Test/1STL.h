@@ -91,7 +91,7 @@ using std::max;
   * stack
   * queue
   * priority_queue 优先级队列(类似堆)
-  *
+  * reverse_iterator 反向迭代器
   * .
   */
 

@@ -19,8 +19,13 @@
 
 
 #include<assert.h>
+#include<list>
 #include<vector>
 #include<deque>
+#include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
 namespace test
 {
 
