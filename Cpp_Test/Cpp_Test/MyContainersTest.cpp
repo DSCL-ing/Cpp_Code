@@ -5,7 +5,7 @@
 
 
 
-#include"myPriority_Queue.h"
+//#include"myPriority_Queue.h"
 
 //int main()
 //{
@@ -84,13 +84,13 @@
 
 
 //#include"Test.h"
-#include"myList.h"
-int main()
-{
+//#include"myList.h"
+//int main()
+//{
 	//test::test_list1();
 	//test::test_list2();
 	//test::test_list3();
-	test::test_list4();
+	//test::test_list4();
 	//using namespace bit;
 	//list<int> l(1);
 	//l.push_back(2);
@@ -99,9 +99,8 @@ int main()
 	//list<list<int>> lt1;
 	//lt1.push_back(l);
 	//list<list<int>> lt2(lt1);
-
-	return 0;
-}
+//	return 0;
+//}
 
 
 

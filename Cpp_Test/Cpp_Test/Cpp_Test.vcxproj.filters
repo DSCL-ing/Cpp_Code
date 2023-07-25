@@ -42,28 +42,34 @@
     <ClInclude Include="1算法总结.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="myString.h">
+    <ClInclude Include="10myString.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="myVector.h">
+    <ClInclude Include="11myVector.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="1algorithm.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="myList.h">
+    <ClInclude Include="12myList.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="myStack.h">
+    <ClInclude Include="13myStack.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="myQueue.h">
+    <ClInclude Include="14myQueue.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="myPriority_Queue.h">
+    <ClInclude Include="15myPriority_Queue.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="my_Itetator.h">
+    <ClInclude Include="16my_Itetator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="2Note.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="20inheritance.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -78,6 +84,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyContainersTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="inheritance.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

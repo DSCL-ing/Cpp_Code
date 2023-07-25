@@ -31,16 +31,19 @@
     <ClInclude Include="1algorithm.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="myList.h" />
-    <ClInclude Include="myPriority_Queue.h" />
-    <ClInclude Include="myQueue.h" />
-    <ClInclude Include="myStack.h" />
-    <ClInclude Include="myString.h" />
+    <ClInclude Include="2Note.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="12myList.h" />
+    <ClInclude Include="15myPriority_Queue.h" />
+    <ClInclude Include="14myQueue.h" />
+    <ClInclude Include="13myStack.h" />
+    <ClInclude Include="10myString.h" />
     <ClInclude Include="1string.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="myVector.h" />
-    <ClInclude Include="my_Itetator.h" />
+    <ClInclude Include="11myVector.h" />
+    <ClInclude Include="16my_Itetator.h" />
     <ClInclude Include="Test.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
@@ -52,6 +55,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="类.h" />
+    <ClInclude Include="20inheritance.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Date.cpp" />
@@ -60,6 +64,7 @@
     </ClCompile>
     <ClCompile Include="library_Test.cpp" />
     <ClCompile Include="类.cpp" />
+    <ClCompile Include="inheritance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Cpp_Test.rc" />
