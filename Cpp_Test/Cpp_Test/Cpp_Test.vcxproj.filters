@@ -77,7 +77,7 @@
     <ClCompile Include="类.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Date.cpp">
+    <ClCompile Include="1Date.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="library_Test.cpp">
@@ -86,7 +86,7 @@
     <ClCompile Include="MyContainersTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="inheritance.cpp">
+    <ClCompile Include="test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

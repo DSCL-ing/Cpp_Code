@@ -23,8 +23,31 @@
 |基类的private成员      |在派生类中不可见          |在派生类中不可见           |在派生类中不可见	  |
  * 
  * 4.2 子类赋值给父类
- *   在公有继承中,子类可以赋值给父类 并且是天然支持,没有临时变量,(不是隐式类型转换)
- *   赋值过程是通过切片方式,将从父类继承下的部分赋值给父类
+ *   在公有继承中,子类可以赋值给父类 并且是天然支持,没有临时变量,(不是隐式类型转换,不存在类型转换发生)
+ *   赋值过程是通过切片方式,将从父类继承下的部分赋值给父类,调用父类拷贝构造完成赋值
+ * $验证:
+ * student s;
+ * person& rp = s;//可以不加const -- 说明没有隐式类型转换
+ * $对于父类对象引用子类对象,父类只引用子类中继承父类的那一部分 -- 指针也差不多
+ * 
+ * 4.3 父类赋值给子类
+ *  $现阶段认为不可以
+ * 
+ * 4.4 继承中的作用域
+ * $不同作用域可以定义同一个名字的变量
+ * $不同作用域的同名函数不能构成重载,同一个作用域内同名函数才有可能构成重载
+ * a.隐藏:子类和父类有同名成员时,子类成员将屏蔽父类对同名成员的直接访问,这种情况叫做隐藏或重定义
+ * b.想指定某父类成员时,可以使用域作用限定符显式指出,语法:> 基类::基类成员
+ * 
+ * 4.5 默认成员
+ * a.子类自动生成的构造函数会自动调用父类构造函数,子类自动生成的析构函数会自动调用父类析构函数
+ * $规定:父类的成员必须通过调用父类的构造函数完成初始化
+ * b.如果子类中没写父类构造函数,则父类会自动调用无参的构造函数,但是父类写了其他构造函数,但没写无参则报错,除非全缺省
+ * c.父类构造会经过子类初始化列表,无论显式还是隐式
+ * d.需要显式指定参数完成父类初始化时,可以在初始化列表中显式写出父类构造函数Person(<参数>),
+ * $理解:继承下来的父类可以理解成隐藏的子类成员,和其他子类成员一样,需要初始化,只是在调用时需要显式指定出来
+ * e.拷贝构造初始化列表写法:Person(s) -- 切片:父类拷贝构造需要父类对象,通过子类切片得到父类对象
+ * 
  * 
  * 5.父类不能用子类的成员
  * a.保证了析构时析构子类后父类不会析构到野指针
@@ -56,19 +79,69 @@ class Person
 {
 protected:
 	string _name = "peter";
-	int _age = 18;
 public:
-	void Print()
+	Person()
 	{
-		cout << "name:" << _name << endl;
-		cout << "age:" << _age << endl;
+
 	}
+	Person(string name)
+		:_name( name)
+	{
+		cout << "Person()" << endl;
+	}
+	Person(const Person& p)
+	{
+		cout << "Person(const Person& p)" << endl;
+		_name = p._name;
+	}
+	Person& operator=(const Person& p)
+	{
+		cout << "operator=(const Person& p)" << endl;
+		if (this != &p)
+		{
+			_name = p._name;
+		}
+		return *this;
+	}
+	~Person()
+	{
+		cout << "~Person()" << endl;
+	}
+
+
 };
 //   派生类derived  继承方式    基类 base_class
 class Student :     public     Person
 {
-protected:
-	int _stuid;
+private:
+	int _num;//学号
+public:
+	Student(string name , int num)
+		:Person(name)
+		,_num(num)
+	{
+		cout << "Student()" << endl;
+	}
+	Student(const Student& s)
+		:Person(s)
+		,_num(s._num)
+	{
+		cout << "Student(const Student& s)" << endl;
+	}
+	Student& operator=(const Student& s)
+	{
+		cout << "operator=(const Student& s)" << endl;
+		if (&s != this)
+		{
+			Person::operator=(s);
+			_num = s._num;
+		}
+		return *this;
+	}
+	~Student()
+	{
+		cout << "~Student()" << endl;
+	}
 };
 
 class Teacher
@@ -76,3 +149,6 @@ class Teacher
 protected:
 	int _jobid;
 };
+
+
+

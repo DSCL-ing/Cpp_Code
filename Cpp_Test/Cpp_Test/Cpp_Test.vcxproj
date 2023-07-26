@@ -58,13 +58,13 @@
     <ClInclude Include="20inheritance.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Date.cpp" />
+    <ClCompile Include="1Date.cpp" />
     <ClCompile Include="MyContainersTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="library_Test.cpp" />
     <ClCompile Include="类.cpp" />
-    <ClCompile Include="inheritance.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Cpp_Test.rc" />
