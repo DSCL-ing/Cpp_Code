@@ -9,21 +9,11 @@ using std::cin;
 using std::swap;
 using std::max;
 
-void fun(int a= 0, char b = 1)
-{
-	cout << "fun(int a, char b)" << endl;
-}
 
-int fun(int a = 1, char b =1)
-{
-	cout <<"fun(char b, int a)" << endl;
-	return 0;
-}
 
-int main()
+int main11()
 {
-	fun(1, 'a');
-	fun('a', 1);
+
 	return 0;
 }
 
