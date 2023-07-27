@@ -14,12 +14,20 @@ using std::max;
 //	return 0;
 //}
 
-#include"20inheritance.h"
+#include"21polymorphism.h"
 int main()
 {
-	Student s1("zhangsan" , 20);
-	Student s2(s1);
-	Person p = s1;
-
+	//test_polymorphism1();
+	test_polymorphism2();
 	return 0;
 }
+
+//#include"20inheritance.h"
+//int main()
+//{
+//	Student s1("zhangsan" , 20);
+//	Student s2(s1);
+//	Person p = s1;
+//
+//	return 0;
+//}
