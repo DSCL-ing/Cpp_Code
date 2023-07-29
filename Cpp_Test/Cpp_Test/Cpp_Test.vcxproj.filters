@@ -18,13 +18,10 @@
     <ClInclude Include="1Note.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="类.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Test.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Date.h">
+    <ClInclude Include="1Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="1GitNote.h">
@@ -77,9 +74,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="类.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="1Date.cpp">
       <Filter>源文件</Filter>
     </ClCompile>

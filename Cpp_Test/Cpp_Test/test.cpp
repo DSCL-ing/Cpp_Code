@@ -21,7 +21,8 @@ int main()
 	//test1::test_polymorphism2();
 	//test2::test_VFTable1();
 	//test2::test_VFTable2();
-	test3::test_VFTable1();
+	//test3::test_VFTable1();
+	test3::test_VFTable2();
 	return 0;
 }
 
