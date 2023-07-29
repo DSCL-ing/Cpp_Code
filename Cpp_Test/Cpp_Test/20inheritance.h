@@ -102,11 +102,31 @@ main(){A::CreateObj()};
  * $菱形继承意味着两个父类都继承了爷爷类,所以两个父类都有相同的爷爷成员,导致孙子会有两个相同的成员
  * a.二义性是指从父类继承的变量不知道是哪个父类的,通过指定父类类域可以解决二义性
  * b.数据冗余:两份相同继承
- * c.解决:虚继承:>待学
+ * c.解决:虚继承:>
  * 
+ 演示
+ 非虚继承的菱形继承
+  [ A成员  ] B -|
+  [ B成员  ]	|
+  [ A成员  ] C -|-D
+  [ C成员  ]	|
+  [ D成员  ]   -|
+
+ 虚继承的菱形继承
+  [ A的偏移地址  ] B -|
+  [ B成员        ]    |
+  [ A的偏移地址  ] C -|-D
+  [ C成员        ]    |
+  [ D成员        ]    |
+  [ A成员        ] A -|
+
+ * $ 偏移量的作用:目的是让子类对象切片后的父类对象指针能找到A
+ *  
+ 
+
  * 8.3虚继承/虚拟继承  
  * 语法:>在继承方式前加上virtual
- * 表现:>a对象为所有子孙共享,子孙指针域内原非虚继承的位置变成 存放a的偏移量的指针
+ * 表现:>a对象为所有子孙共享,子孙指针域内原非虚继承的位置变成 存放a的偏移量的指针,A的成员则在D的最下方,D的成员后面(比D还后)
  * 注意:虚拟继承不能在其他地方使用
  * 
  * 8.4 虚继承的调试
@@ -116,6 +136,20 @@ main(){A::CreateObj()};
  * $a.继承不会改变函数的类型
  * $b. 由a ==> 继承下来的函数中,this参数的类型还是父类指针(重要) ************ ,
  * 
+ * 
+ * 
+ */
+
+/** 补充
+ * 虚继承和虚函数没有直接关系,容易混淆
+ * 
+ * 
+ * 菱形继承没有虚基表
+ *  
+ * 菱形虚拟继承才有虚基表
+ * 
+ * 如果没有虚函数,那应该是没虚函数表,函数都在代码段,和普通函数一样
+ * .
  */
 
 #include<string>
@@ -198,6 +232,74 @@ class Teacher
 protected:
 	int _jobid;
 };
+
+namespace test1
+{
+	class A
+	{
+	public:
+		void func1()
+		{
+			cout << "A:func1()" << endl;
+		}
+		int _a;
+	};
+	// class B : public A
+	class B : virtual public A
+	{
+	public:
+		void func1()
+		{
+			cout << "B:func1()" << endl;
+		}
+		void func2()
+		{
+			cout << "B:func2()" << endl;
+		}
+		int _b;
+	};
+	// class C : public A
+	class C : virtual public A
+	{
+		void func1()
+		{
+			cout << "C:func1()" << endl;
+		}
+		void func3()
+		{
+			cout << "C:func3()" << endl;
+		}
+
+	public:
+		int _c;
+	};
+	class D : public B, public C
+	{
+	public:
+		void func1()
+		{
+			cout << "D:func1()" << endl;
+		}
+		void func4()
+		{
+			cout << "D:func4()" << endl;
+		}
+		int _d;
+	};
+
+	void test_inheritance1()
+	{
+		D d;
+		d.B::_a = 1;
+		d.C::_a = 2;
+		d._b = 3;
+		d._c = 4;
+		d._d = 5;
+	}
+
+}
+
+
 
 
 
