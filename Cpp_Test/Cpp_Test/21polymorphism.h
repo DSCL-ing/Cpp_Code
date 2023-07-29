@@ -72,7 +72,9 @@
  * 虚表中存放着对象各自的虚函数
  * 
  * 1.1.虚函数表/虚表
- * 虚函数表本质是一个虚函数指针数组,由虚函数的数量决定大小,元素中虚函数指针顺序由声明顺序决定,，一般情况这个数组最后面放了一个nullptr
+ * 虚函数表本质是一个虚函数指针数组,由虚函数的数量决定大小,元素中虚函数指针顺序由声明顺序决定,
+ * $ 虚表数组最后面放了一个nullptr(VS才有,g++没有)
+ * $虚表在编译过程就生成了,每个类都有自己的虚表,虚表指针在构造函数中完成初始化
  * 
  * 1.2 虚函数的另一个名字|覆盖|的来由
  * $ 重写后就把重写后的函数的地址覆盖掉虚表里原来的未重写的地址:
@@ -101,7 +103,6 @@
  * $ 
  *
  */
-
 #include<string>
 #include<iostream>
 using std::cout;
@@ -109,50 +110,171 @@ using std::endl;
 using std::cin;
 using std::string;
 
-class Person 
+//test 
+namespace test1
 {
-public:
-	//虚函数:在函数前面加virtual
-	virtual void BuyTicket() { cout << "买票-全价" << endl; }
 
-	virtual ~Person() { cout << "~Person()" << endl; }
-};
+	class Person
+	{
+	public:
+		//虚函数:在函数前面加virtual
+		virtual void BuyTicket() { cout << "买票-全价" << endl; }
 
-class Student : public Person
-{
-public:
-	//重写/覆盖:虚函数且函数名字类型等完全一样
-	virtual void BuyTicket() { cout << "买票-半价" << endl; }
+		virtual ~Person() { cout << "~Person()" << endl; }
+	};
 
-	virtual ~Student() { cout << "~Student()" << endl; }
-};
+	class Student : public Person
+	{
+	public:
+		//重写/覆盖:虚函数且函数名字类型等完全一样
+		virtual void BuyTicket() { cout << "买票-半价" << endl; }
+
+		virtual ~Student() { cout << "~Student()" << endl; }
+	};
+
+	//测试用例
+
+	//多态的用法
+	void fun(Person& p)
+	{
+		p.BuyTicket();
+	}
+	void test_polymorphism1()
+	{
+		Person p;
+		Student s;
+		fun(p);
+		fun(s);
+	}
+
+	void test_polymorphism2()
+	{
+		//Person p;
+		//Student s;
+		cout << " ================ " << endl;
+
+		//多态中析构函数有virtual和无virtual区别 -- 
+		Person* p1 = new Person();
+		Person* p2 = new Student();
+		delete p1;
+		delete p2;
+	}
 
 
 
-//测试用例
-
-//多态的用法
-void fun(Person& p)
-{
-	p.BuyTicket();
 }
-void test_polymorphism1()
-{
-	Person p;
-	Student s;
-	fun(p);
-	fun(s);
-}
 
-void test_polymorphism2()
-{
-	Person p;
-	Student s;
-	cout << " ================ " << endl;
 
-	//有virtual和无virtual区别
-	Person* p1 = new Person();
-	Person* p2 = new Student();
-	delete p1;
-	delete p2;
+namespace test2
+{
+	class Base
+	{
+	public:
+		virtual void Func1()
+		{
+			cout << "Base::Func1()" << endl;
+		}
+		virtual void Func2()
+		{
+			cout << "Base::Func2()" << endl;
+		}
+		//void Func3()
+		//{
+		//	cout << "Base::Func3()" << endl;
+		//}
+	private:
+		int _b = 1;
+	};
+
+	class Derive : public Base
+	{
+	public:
+		virtual void Func1()
+		{	
+			cout << "Derive::Func1()" << endl;
+		}
+		virtual void Func4()
+		{
+			cout << "Derive::Func4()" << endl;
+		}
+	private:
+		int _d = 2;
+	};
+
+	//测试用例
+
+	////程序打印虚表
+	/// 
+	typedef void(*VF_PTR)();//重命名一个函数指针,要用函数指针,需要重命名//定义一个虚函数指针
+	void PrintVFTable(VF_PTR* p) //形参:虚函数指针数组
+	{
+		for (int i = 0; p[i] != nullptr; ++i)
+		{
+			cout<< p[i]<<endl; //打印地址方法1
+			//cout<< (void*)p[i]<<endl; //打印地址方法2 //cout自动识别类型,p是void*类型
+
+			//调用虚函数方法1:函数指针,因为p是void,所以定义一个void的函数指针f,再调用
+			//void (*f)() = p[i];
+			//f();
+			
+			//调用虚函数方法2 直接通过函数指针调用 ,需要编译器推导类型
+			//p[i]();
+
+			//调用虚函数方法3 :实际上和2一样,是2的正确版,显式给出了正确类型的指针
+			VF_PTR f = p[i];
+			f();
+		}
+	}
+
+	/** 注意
+	 * 1.打印过程注意bug
+	 * 建议在打印前重新生成项目,
+	 * 程序在运行过程中虚表指针位的nullptr位置可能会变动,导致打印过程中有可能会打印出多个指针,或者调试过程中00 00 00 00在很后面
+	 * 
+	 * 2.内存窗口
+	 * a.内存窗口太小的话可能会隐藏搜索功能
+	 * b.内存窗口最右上角有个小小按钮可以选择显示字节,建议选择1字节,就能显示成 00 00 00 00 ,因为每一对数都是1字节
+	 * 
+	 */
+
+	void test_VFTable1()
+	{
+		Base b;
+		Derive d;
+		//传参方法1
+		//1.32位DEBUG中指针是4字节,int符合,所以用int
+		//2.在对指针操作时,首先要确定指针的位数,所以,先取地址,然后强转为int*(4字节指针).再解引用,得到4字节地址.不然会地址混乱,导致奔溃
+		//3.得到4字节的b对象的地址后,由于虚表指针就位于b对象的首地址,故将其强转成VF_PTR类型的指针后,就是虚表的首地址了
+		//$ 注:指针类型是会影响到指针如何解引用的,第一次中强转int目的是得到4字节指针,第二次强转目的是得到VF_PTR类型的指针
+		PrintVFTable((VF_PTR*)(*(int*)&b)); 
+		//
+		cout <<"============="<< endl;
+
+		//传参方法2 -- 一步到位,二级指针厉害,自动分析,任何场景都能用,32位或64位都可以
+		//$ 注:
+		PrintVFTable(*(VF_PTR**)&d);
+
+	}
+
+	//技巧:通过指针位置推导变量的空间逻辑位置划分
+	void test_VFTable2()
+	{
+		typedef void(*VF_PTR)();
+		Base b;
+		Derive d;
+
+		int x = 0;//局部变量 -- 栈
+		int* y = new int;//指向堆中的整型指针  --- 堆 
+		static int z = 0; //静态变量 --静态区,
+		const char* str = "xxxxxxxxxxxxxxxxxxx";//字符串常量 -- 常量区
+
+		cout << &x << endl;					  //局部变量:0113FC8C	栈  区
+		cout << y << endl;					  //动态申请:0118E7E8	堆  区
+		cout << &z << endl;					  //静态变量:006CE45C	静态区(数据段)
+		cout << (void*)str << endl;			  //常    量:006CBDD0	常量区(代码段)
+		cout << *(VF_PTR**)&b << endl;		  //父类虚表:006CBBC0	容易推出,虚表在常量区
+		cout << *(VF_PTR**)&d << endl;		  //子类虚表:006CBBF0	
+	//分析:虚表在编译后基本不会改变了,因为继承都是我们在编译阶段(写代码阶段)完成,在程序运行过程中基本不会再发生变化,所以放在常量区合适
+		//-->> 有的编译器可能会放在静态区(符合共享性质).
+	}
 }

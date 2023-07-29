@@ -17,8 +17,10 @@ using std::max;
 #include"21polymorphism.h"
 int main()
 {
-	//test_polymorphism1();
-	test_polymorphism2();
+	//test::test_polymorphism1();
+	//test1::test_polymorphism2();
+	//test2::test_VFTable1();
+	test2::test_VFTable2();
 	return 0;
 }
 
