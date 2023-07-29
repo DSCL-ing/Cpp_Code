@@ -65,7 +65,7 @@
  * 
  */
 
-//原理
+//单继承虚表原理
 /**
  * 1.虚函数表指针(virtual function table pointer) /也叫虚表指针
  *   如果在类中定义了虚函数,则对象中会增加一个指针,叫虚函数表指针__vfptr,虚函数表指针在成员的前面,直接占了4/8字节
@@ -94,15 +94,25 @@
  * a.子类会继承父类的虚函数表(开辟一个新的数组,浅拷贝)
  * b.如果派生类重写了基类中某个虚函数，用派生类自己的虚函数覆盖虚表中基类的虚函数,如果子类没有重写,则虚函数表和父类的虚函数表的元素完全一样,
  * c.派生类自己新增加的虚函数,从继承的虚表的最后一个元素开始,按其在派生类中的声明次序增加到派生类虚表的最后。
+ * $ 派生类自己的虚函数放在继承的虚表的后面,没有继承就顺序从头开始放,总而言之,自己的虚函数位置一定比继承的虚函数位置后
  * d.虚函数和普通函数一样的，都是存在代码段的，只是他的指针又存到了虚表中。另外对象中存的不是虚表，存的是虚表指针
  * 
  * 5.针对直接定义的对象分析
  * a.同一类型直接定义的对象共享同一个虚表
  * b.子类对象直接赋值给父类对象后就变成了父类对象,只拷贝成员,不拷贝虚表,虚表还是父类的
  *  因为父类对象中有子类对象的虚表不合理,有的话会分不清是父类还是子类的虚表,父类对象一定是父类的虚表,子类对象一定是子类的虚表
- * $ 
- *
+ *  
  */
+
+/** 多继承虚表
+ * 1.子类会继承所有父类的虚表,有多少个父类就有多少个虚表
+ * $ 自己的虚函数在VS中放在第一个继承的虚表的后面. 
+ * 
+ * 2.当多继承的父类中有相同的虚函数时(两个父类都有fun1虚函数),子类重写会把相应的继承下来的父类的虚表都覆盖(合逻辑)
+ * 
+ * .
+ */
+
 #include<string>
 #include<iostream>
 using std::cout;
@@ -110,7 +120,7 @@ using std::endl;
 using std::cin;
 using std::string;
 
-//test 
+//test 入门演示
 namespace test1
 {
 
@@ -164,7 +174,7 @@ namespace test1
 
 }
 
-
+//单继承打印虚表
 namespace test2
 {
 	class Base
@@ -200,8 +210,6 @@ namespace test2
 	private:
 		int _d = 2;
 	};
-
-	//测试用例
 
 	////程序打印虚表
 	/// 
@@ -239,21 +247,21 @@ namespace test2
 
 	void test_VFTable1()
 	{
+		//&d 就是拿到了d对象的首元素的地址
 		Base b;
 		Derive d;
 		//传参方法1
 		//1.32位DEBUG中指针是4字节,int符合,所以用int
-		//2.在对指针操作时,首先要确定指针的位数,所以,先取地址,然后强转为int*(4字节指针).再解引用,得到4字节地址.不然会地址混乱,导致奔溃
-		//3.得到4字节的b对象的地址后,由于虚表指针就位于b对象的首地址,故将其强转成VF_PTR类型的指针后,就是虚表的首地址了
-		//$ 注:指针类型是会影响到指针如何解引用的,第一次中强转int目的是得到4字节指针,第二次强转目的是得到VF_PTR类型的指针
+		//2.在对指针操作时,首先要确定指针的位数,所以,先取地址,然后强转为int*(指针4字节).再解引用,得到4字节的首地址.不然得到的还是对象,一大块
+		//3.得到b对象的首地址后,由于虚表指针就位于b对象的首地址,故将其强转成VF_PTR类型的指针后,就是虚表的首地址了
 		PrintVFTable((VF_PTR*)(*(int*)&b)); 
 		//
 		cout <<"============="<< endl;
 
 		//传参方法2 -- 一步到位,二级指针厉害,自动分析,任何场景都能用,32位或64位都可以
-		//$ 注:
+		//1.由于PrintVFTable的参数是指针,所以实参必须是指针,因此需要&d得到指针
+		//2.对象b原本指向就是虚表(首地址),即b的首地址的类型是VF_PTR*,所以&b后就变成VF_PTR**,再解引用就是VF_PTR*,**解引用过程自动转化成指针而不是对象(一大快)
 		PrintVFTable(*(VF_PTR**)&d);
-
 	}
 
 	//技巧:通过指针位置推导变量的空间逻辑位置划分
@@ -277,4 +285,65 @@ namespace test2
 	//分析:虚表在编译后基本不会改变了,因为继承都是我们在编译阶段(写代码阶段)完成,在程序运行过程中基本不会再发生变化,所以放在常量区合适
 		//-->> 有的编译器可能会放在静态区(符合共享性质).
 	}
+}
+
+
+namespace test3
+{
+	//eax寄存器:一般存函数地址
+	//ecx寄存器:一般存this地址
+
+	class Base1 {
+	public:
+		virtual void func1() { cout << "Base1 ::func1" << endl; }
+		virtual void func2() { cout << "Base1 ::func2" << endl; }
+	private:
+		int b1;
+	};
+	class Base2 {
+	public:
+		virtual void func1() { cout << "Base2 ::func1" << endl; }
+		virtual void func2() { cout << "Base2 ::func2" << endl; }
+	private:
+		int b2;
+	};
+	class Derive : public Base1, public Base2 {
+	public:
+		virtual void func1() { cout << "Derive::func1" << endl; }
+		virtual void func3() { cout << "Derive::func3" << endl; }
+	private:
+		int d1;
+	};
+
+	typedef void(*VF_PTR)();
+	void PrintVFtable(VF_PTR table[])
+	{
+		for (int i = 0; table[i]!=nullptr; i++)
+		{
+			cout << (void*)table[i]<<"  ";
+			VF_PTR f = table[i];
+			f();
+		}
+	}
+
+	void test_VFTable1()
+	{
+		//观察多继承虚表位置
+		Derive d;
+		//方法1
+		//PrintVFtable(*(VF_PTR**)&d);//Base1的虚表
+		//cout << "  ==================== " << endl;
+		//PrintVFtable((*(VF_PTR**)((char*)&d + sizeof(Base1))));//偏移到Base2.
+
+		//方法2 -- 切片自动定位到对应父类对象的首元素的地址,直接就是指针了,不需要像d一样先取地址
+		Base1* ptr1 = &d;
+		Base2* ptr2 = &d;
+		PrintVFtable(*(VF_PTR**)ptr1);
+		cout << "  ==================== " << endl;
+		PrintVFtable((VF_PTR*)*(int*)ptr2);
+
+
+
+	}
+
 }

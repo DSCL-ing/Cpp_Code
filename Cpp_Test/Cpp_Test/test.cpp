@@ -20,7 +20,8 @@ int main()
 	//test::test_polymorphism1();
 	//test1::test_polymorphism2();
 	//test2::test_VFTable1();
-	test2::test_VFTable2();
+	//test2::test_VFTable2();
+	test3::test_VFTable1();
 	return 0;
 }
 
