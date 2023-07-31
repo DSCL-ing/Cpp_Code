@@ -22,7 +22,7 @@
  */
 
 #pragma once
-#include"my_Itetator.h" //测试用
+#include"16my_Itetator.h" //测试用
 #include<iostream> //测试用
 using std::cout;
 using std::endl;
@@ -35,6 +35,7 @@ namespace test
 	template<class T>
 	struct list_node
 	{
+		//一个完整的结点,包含前,后,和自己
 		list_node<T>* _next;
 		list_node<T>* _prev;
 		T _data;//
@@ -265,7 +266,7 @@ namespace test
 
 		//list操作这边和数据结构的带头双向循环链表差不多,重点是iterator.写操作前写将迭代器整出来
 	private:
-		node* _head;
+		node* _head;//链表的操作就是从一个头开始,所以链表的成员就一个头指针
 	public:
 		//构造函数目前只写三个,1.无参,只创建头结点 2.迭代器构造 3.初始化n个结点 (不想写)
 

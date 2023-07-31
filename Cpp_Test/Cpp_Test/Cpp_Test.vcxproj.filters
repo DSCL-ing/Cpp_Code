@@ -72,6 +72,9 @@
     <ClInclude Include="21polymorphism.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="22BST.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="1Date.cpp">
