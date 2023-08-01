@@ -162,65 +162,64 @@ namespace test
 				}
 				else
 				{
-					//二路
-					if (cur->_left && cur->_right)
-					{
-						node* maxLeftSubTreeNode = cur->_left;
-						while (maxLeftNode)
-						{
-							maxLeftSubTreeNode = maxLeftSubTreeNode->right;
-						}
-						node* rightNode = maxLeftSubTreeNode->_right;
-						while (rightNode)
-						{
-							rightNode = rightNode->_right;
-						}
-						rightNode->_right = cur->_right;
-						parent->_left = maxLeftSubTreeNode;
-						
+					/**     
+					 * 单路模拟图
+					 *          0				       0				 
+					 *        /    \			     /    \				 
+					 *       1      1			    1      1			 
+					 *      / \    / \			   / \    / \			 
+					 *     n   0  0   n			  0   n  n   0 			 
+					 * 
+					 * 1为要删除的结点 ,0为结点 ,n为null
+					 * 
+					 * 	1.左子树为空           2.右子树为空
+					 *            0	  0			        0  0		
+					 * 	         /     \		       /     \	
+					 * 	        1       1		      1       1	
+					 * 	       / \     / \		     / \     / \	
+					 * 	      n   0   n   0 	    0   n   0   n 
+					 * 
+					 * //只需要将删除结点的非空子树接到父亲上即可 -- 
+					 * 
+					 */
 
-
-					}
-					//单路
-					else
+					//必须先从删除结点的左子树或右子树为空开始,然后再反向向上判断父亲
+					
+					//要删除的结点的左子树为空
+					if (cur->_left == nullptr)
 					{
-						////叶子
-						//if (!cur->_left && !cur->_right)
-						//{
-						//	if (parent->_key > key)
-						//	{
-						//		parent->_left = nullptr;
-						//	}
-						//	else
-						//	{
-						//		parent->_right = nullptr;
-						//	}
-						//}
-						////单子树
-						//else
-						//{
-						if (key == _root->_key)
+						//删除的结点是父亲的左孩子吗
+						if (cur == parent->_left)
 						{
-							node* cur = _root;
-							_root = _root->_left ? _root->_left : _root->_right;
+							//左子树为空就把右子树接上去
+							parent->_left = cur->_right;
 							delete cur;
-							return true;
 						}
-						if (parent->_key > cur->_key)
+						else //右孩子
 						{
-							parent->_left = cur->_left ? cur->_left : cur->_right;;
+							parent->_right = cur->_right;
 							delete cur;
-							return true;
 						}
-						else
-						{
-							parent->_right = cur->_left ? cur->_left : cur->_right;
-							delete cur;
-							return true;
-						}
-						//}
 					}
+					else//要删除的结点的右子树为空
+					{
+						//删除的结点是父亲的左孩子吗
+						if (cur == parent->_left)
+						{
+							//右子树为空就把左子树接上去
+							parent->_left = cur->_left;
+							delete cur;
+						}
+						else //右孩子
+						{
+							parent->_right = cur->_left;
+							delete cur;
+						}
+					}
+					return true;
 				}
+
+			
 			}
 			return false;
 		}
@@ -292,15 +291,15 @@ namespace test
 		//bst.erase(4);
 		//bst.erase(6);
 		//bst.erase(3);
-		//bst.erase(8);
+		//bst.erase(8);  -- 根没处理好前先别删
 		//bst.erase(7);
 		//bst.InOrderTraversal();
 
-		bst.erase(8);
-		bst.erase(3);
-		bst.erase(14);
-		bst.erase(14);
-		bst.InOrderTraversal();
+		//bst.erase(8);
+		//bst.erase(3);
+		//bst.erase(14);
+		//bst.erase(14);
+		//bst.InOrderTraversal();
 
 	}
 
