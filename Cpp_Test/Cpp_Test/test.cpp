@@ -10,7 +10,8 @@ using std::max;
 #include"22BST.h"
 int main()
 {
-	test::test_BST1();
+	//test::test_BST1();
+	test::test_BST2();
 	return 0;
 }
 

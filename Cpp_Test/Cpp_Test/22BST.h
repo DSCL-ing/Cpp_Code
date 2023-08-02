@@ -59,8 +59,6 @@ namespace test
 		node* _root = nullptr;
 	public:
 
-
-
 		bool insert(const K& key)
 		{
 			//插入
@@ -140,38 +138,6 @@ namespace test
 			return false;
 		}
 
-		bool findR()
-		{
-			_findR();
-		}
-
-		bool _findR(node* root , const K& key)
-		{
-			/**
-			 * 
-			 * 不是二叉树的遍历
-			 * 
-			 * 按搜索树的特征进行递归
-			 * 
-			 */
-			if (key == root->_key) //条件
-			{
-				return true;
-			}
-			if (root == nullptr) //条件
-			{
-				return false;
-			}
-			if (key > root->_key) //如果比大于_key,则往右走
-			{
-				_findR(root->_right, key); //如果小于_key,则往左走
-			}
-			else
-			{
-				_findR(root->_left, key);
-			}
-		}
-
 		bool erase(const K& key)
 		{
 			//删除
@@ -215,12 +181,12 @@ namespace test
 					 *
 					 * 1为要删除的结点 ,0为结点 ,n为null
 					 *
-					 * 	1.左子树为空           2.右子树为空
-					 *            0	  0			        0  0
-					 * 	         /     \		       /     \
-					 * 	        1       1		      1       1
-					 * 	       / \     / \		     / \     / \
-					 * 	      n   0   n   0 	    0   n   0   n
+					 * 	1.左子树为空              |   2.右子树为空
+					 *            0	 |  0		  |         0   |   0
+					 * 	         /   |   \		  |        /    |    \
+					 * 	        1    |    1		  |       1     |     1
+					 * 	       / \   |   / \	  | 	 / \    |    / \
+					 * 	      n   0  |  n   0 	  |     0   n   |   0   n
 					 *
 					 * //只需要将删除结点的非空子树接到父亲上即可 --
 					 *
@@ -308,7 +274,7 @@ namespace test
 						 *
 						 *
 						 */
-						node* pminRight = cur; //要删除的结点的右子树的最小结点的父亲
+						node* pminRight = cur; //要删除的结点的右子树的最小结点的父亲 -- 作用是辅助删除替代结点
 						node* minRight = cur->_right;//要删除的结点的右子树的最小结点
 						//找右子树最小结点
 						while (minRight->_left)
@@ -340,6 +306,8 @@ namespace test
 			return false;
 		}
 
+		//递归----------------------------------------------------------------------------------------------------------
+		
 		//无参递归常用方法：套壳：
 		/**
 		 * 由于递归需要访问到私有成员,而外界访问私有成员需要友元或使用接口get什么什么
@@ -356,6 +324,22 @@ namespace test
 			_InOrderTraversal(_root);
 		}
 
+		bool findR(const K& key)
+		{
+			return _findR(_root, key);
+		}
+
+
+		bool insertR(const K& key)
+		{
+			return _insertR(_root, key);
+		}
+
+		bool eraseR(const K& key)
+		{
+			return _eraseR(_root ,key);
+		}
+
 	private:
 
 		void _InOrderTraversal(node* root)
@@ -367,6 +351,100 @@ namespace test
 			_InOrderTraversal(root->_left);
 			cout << root->_key << " ";
 			_InOrderTraversal(root->_right);
+		}
+
+		bool _findR(node* root, const K& key)
+		{
+			/**
+			 *
+			 * 不是二叉树的遍历
+			 *
+			 * 按搜索树的特征进行递归
+			 *
+			 */
+			if (key == root->_key) //条件
+			{
+				return true;
+			}
+			if (root == nullptr) //条件
+			{
+				return false;
+			}
+			if (key > root->_key) //如果比大于_key,则往右走
+			{
+				return _findR(root->_right, key); //如果小于_key,则往左走
+			}
+			else
+			{
+				return _findR(root->_left, key);
+			}
+		}
+
+		bool _insertR(node*& root, const K& key)
+		{
+
+			if (root == nullptr)
+			{
+				root = new node(key);//引用的妙用 -- 最优方案
+				return true;
+			}
+			//有return就可以不加else了
+			if (key > root->_key)
+			{
+				return _insertR(root->_right, key);
+			}
+			else
+			{
+				return _insertR(root->_left, key);
+			}
+		}
+		
+		bool _eraseR(node*& root, const K& key)
+		{
+			if (root == nullptr)
+			{
+				return false;
+			}
+			if (root->_key == key)
+			{
+				node* del = root;
+				if (!root->_left )
+				{
+					root = root->_right;
+					delete del;
+					return true;
+				}
+				else if (!root->_right)
+				{
+					root = root->_left;
+					delete del;
+					return true;
+				}
+				else
+				{
+					node* maxLeft = root->_left; //递归法用了左子树最大结点,迭代法用了右子树最小结点,一样的
+					while (maxLeft->_right)
+					{
+						maxLeft = maxLeft->_right;
+					}
+					//root->_key = maxLeft->_key; //这里不能赋值了,因为下面要删除的是key,所以要交换.或者maxLeft->_key
+					std::swap(root->_key, maxLeft->_key);
+
+					//循环法此处需要特殊处理的就是左为空和右为空的两种情况.
+					//此处调递归,实现复用 -- 转换成在子树中删除 -- 递归好处是代码更简洁
+					return _eraseR(root->_left, key);//从要删除结点的左子树开始
+
+				}
+			}
+			else if (key > root->_key)
+			{
+				return _eraseR(root->_right, key);
+			}
+			else
+			{
+				return _eraseR(root->_left, key);
+			}
+
 		}
 	};
 
@@ -417,6 +495,57 @@ namespace test
 		bst.erase(3);
 		bst.erase(14);
 		bst.erase(1);
+		bst.InOrderTraversal();
+
+	}
+
+
+	//Recursion Test
+	void test_BST2()
+	{
+		
+		int a[] = { 8, 3, 1, 10, 6, 4, 7, 14, 13 };
+		BSTree<int> bst;
+
+		//测试插入
+		for (auto i : a)
+		{
+			bst.insertR(i);
+		}
+		bst.InOrderTraversal();
+
+		//测试递归find
+		cout << endl;
+		for (auto i : a)
+		{
+			if (bst.findR(i))
+			{
+				cout << "找到了" << endl;
+			}
+			else
+			{
+				cout << "没找到" << endl;
+			}
+		}
+
+		//删除单路和叶子测试
+		//bst.eraseR(10);
+		//bst.eraseR(14);
+		//bst.eraseR(13);
+		//bst.eraseR(1);
+		//bst.eraseR(4);
+		//bst.eraseR(6);
+		//bst.eraseR(3);
+		//bst.eraseR(8);  // 根没处理好前先别删
+		//bst.eraseR(7);
+		//bst.InOrderTraversal();
+
+				//删除多路测试
+		bst.eraseR(8);
+		bst.eraseR(10);
+		bst.eraseR(3);
+		bst.eraseR(14);
+		bst.eraseR(1);
 		bst.InOrderTraversal();
 
 	}
