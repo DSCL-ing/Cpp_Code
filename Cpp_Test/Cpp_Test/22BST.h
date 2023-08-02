@@ -3,6 +3,9 @@
 //BST binary search tree /binary sort tree
 /**
  * 中文名:二叉搜索树或二叉排序树
+ * 
+ * 
+ * 
  * 注:空树也是BST
  * 性质:
  * 左子树的所有键值小于根,根小于右子树的所有键值
@@ -53,6 +56,12 @@ namespace test
 	private:
 		node* _root = nullptr;
 	public:
+
+		~BSTree()
+		{
+			
+		}
+
 		bool insert(const K& key)
 		{
 			//插入
@@ -144,6 +153,8 @@ namespace test
 			 * 
 			 * 叶子和单路可以合并
 			 * 
+			 * 删除后不需要置空,因为删除最后都会去链接下一个结点,而叶子结点下面都为空,最终一定会为空
+			 * 
 			 */
 			node* parent = _root;
 			node* cur = _root;
@@ -162,6 +173,7 @@ namespace test
 				}
 				else
 				{
+
 					/**     
 					 * 单路模拟图
 					 *          0				       0				 
@@ -188,39 +200,106 @@ namespace test
 					//要删除的结点的左子树为空
 					if (cur->_left == nullptr)
 					{
+						//处理根是要删除的结点前，必须先判断是单路或多路，所以if写在里面,写在外面会把多路吃掉,导致问题
+						if (cur == _root)
+						{
+							if (cur == _root)
+							{
+								_root = cur->_left;
+							}
+						}
 						//删除的结点是父亲的左孩子吗
 						if (cur == parent->_left)
 						{
 							//左子树为空就把右子树接上去
 							parent->_left = cur->_right;
-							delete cur;
 						}
 						else //右孩子
 						{
 							parent->_right = cur->_right;
-							delete cur;
 						}
+						delete cur;
+						//cur = nullptr;
 					}
-					else//要删除的结点的右子树为空
+					else if(cur->_right == nullptr)//要删除的结点的右子树为空
 					{
+						if (cur == _root)
+						{
+							if (cur == _root)
+							{
+								_root = cur->_left;
+							}
+						}
 						//删除的结点是父亲的左孩子吗
 						if (cur == parent->_left)
 						{
 							//右子树为空就把左子树接上去
 							parent->_left = cur->_left;
-							delete cur;
 						}
 						else //右孩子
 						{
 							parent->_right = cur->_left;
-							delete cur;
 						}
+						delete cur;
+						//cur = nullptr;
 					}
-					return true;
+					else
+					{
+						/**
+						 * 用左子树的最大结点或右子树的最小结点替代法(默认右子树)
+						 * 
+						 * mr:右子树最小结点,1要删除的结点
+						 * 多路情况下与头结点无关,因为让代替的结点的key直接赋值给要删除的结点,最终删除的实际是替代结点
+						 * 通过key赋值从而达到删除
+						 * 
+						 * 情况一
+						 *        0                      1      
+						 *       / \                    / \
+						 *      0   1                  0   0
+						 *         / \                    / \
+						 *        0   0                  mr  0
+						 *           / \                      \ 
+						 *          mr  0                      0
+						 * 
+						 * 情况二
+						 * 	     0				         1      	
+						 * 	    / \				        / \		
+						 * 	   0   1			  	   0   mr		
+						 * 	      / \			  	        \		
+						 * 	     0   mr			  	         0	    
+						 * 		 	  \       	  	        / \	
+						 * 		 	   0      
+						 * 
+						 * 
+						 */
+						node* pminRight = cur;
+						node* minRight = cur->_right;
+						//找右子树最小结点
+						while (minRight->_left)
+						{
+							pminRight = minRight;
+							minRight = minRight->_left;
+						}
+						//找到右子树最小结点后直接赋值 -- 完成替代
+						cur->_key = minRight->_key;//
+
+						//替代完成后,需要回收minrRight结点 -- 回收处理
+						if (pminRight->_right == minRight)//如果循环没有进去,即第一个minRight->_left为空,right可能不为空
+						{
+							pminRight->_right = minRight->_right;
+
+						}
+						else //循环进入了
+						{
+							pminRight->_left = minRight->_right;
+						}
+
+						delete minRight;
+
+					}
 				}
 
-			
-			}
+			}	
 			return false;
 		}
 
@@ -283,23 +362,24 @@ namespace test
 			}
 		}
 
-		//删除单路和叶子测试
-		//bst.erase(10);
-		//bst.erase(14);
-		//bst.erase(13);
-		//bst.erase(1);
-		//bst.erase(4);
-		//bst.erase(6);
-		//bst.erase(3);
-		//bst.erase(8);  -- 根没处理好前先别删
-		//bst.erase(7);
-		//bst.InOrderTraversal();
+		////删除单路和叶子测试
+		bst.erase(10);
+		bst.erase(14);
+		bst.erase(13);
+		bst.erase(1);
+		bst.erase(4);
+		bst.erase(6);
+		bst.erase(3);
+		bst.erase(8);  // 根没处理好前先别删
+		bst.erase(7);
+		bst.InOrderTraversal();
 
+		//删除多路测试
 		//bst.erase(8);
 		//bst.erase(3);
 		//bst.erase(14);
 		//bst.erase(14);
-		//bst.InOrderTraversal();
+		bst.InOrderTraversal();
 
 	}
 

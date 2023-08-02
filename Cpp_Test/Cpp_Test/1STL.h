@@ -73,7 +73,7 @@ using std::max;
 /**
  * 对于vector list deque
  * vector排序最快,一般list或deque排序是将数据拷贝到vecotr排序完再拷贝回去
- * 
+ * 序列式顺序表,序列式容器,关联式容器 -- stl
  * 
  * .
  */
