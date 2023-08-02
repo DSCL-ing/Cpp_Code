@@ -59,10 +59,7 @@ namespace test
 		node* _root = nullptr;
 	public:
 
-		~BSTree()
-		{
 
-		}
 
 		bool insert(const K& key)
 		{
@@ -141,6 +138,38 @@ namespace test
 				}
 			}
 			return false;
+		}
+
+		bool findR()
+		{
+			_findR();
+		}
+
+		bool _findR(node* root , const K& key)
+		{
+			/**
+			 * 
+			 * 不是二叉树的遍历
+			 * 
+			 * 按搜索树的特征进行递归
+			 * 
+			 */
+			if (key == root->_key) //条件
+			{
+				return true;
+			}
+			if (root == nullptr) //条件
+			{
+				return false;
+			}
+			if (key > root->_key) //如果比大于_key,则往右走
+			{
+				_findR(root->_right, key); //如果小于_key,则往左走
+			}
+			else
+			{
+				_findR(root->_left, key);
+			}
 		}
 
 		bool erase(const K& key)
