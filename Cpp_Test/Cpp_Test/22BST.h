@@ -35,16 +35,31 @@
  * 拓展:平衡二叉树,红黑树,AVL树
  */
 
-/** 二叉搜索树的应用
- * 1.K模型(key):K模型只有key作为关键码,结构中只存储key,关键码即为需要搜索到的值
- *   
- * 2.KV模型(key-value):每一个关键码都有与之对应的值Value,即<key,value>键值对.
+/** 二叉搜索树的应用(应用搜索场景)
+ * $ 要求:能比较大小,整型,字符串(包括汉字,符号等,底层都是ascii),日期类等等(重载了比较)
  * 
- * .
+ * 1.K模型(key):
+ * K模型只有key作为关键码,结构中只存储key,关键码即为需要搜索到的值
+ * $ 解决 |在不在?| 问题
+ *   a.门禁系统:人脸识别(需要有冗余,有缺陷,机器学习优化)
+ *   b.车库系统(正确识别,出入操作不同)
+ *   c.检查一篇文章中单词拼写是否正确 (另一个方法字典树,以后学)
+ * 
+ * 
+ * 2.KV模型(key-value):
+ * 每一个关键码都有与之对应的值Value,即<key,value>键值对.
+ * $ 通过一个值查找另一个值
+ *   a.中英文互译词典
+ * . b.电话号码查找快递信息
+ *   c.电话号码+验证码查询考试成绩
  */
+#include<iostream>
+#include<string>
+using std::cout;
+using std::endl;
+using std::cin;
 
-
-namespace test
+namespace key
 {
 	template<class K>
 	struct BSTreeNode
@@ -96,7 +111,7 @@ namespace test
 			}
 			node* parent = _root;
 			node* cur = _root;
-			while (cur != nullptr)
+			while (cur)
 			{
 				if (cur->_key > key)
 				{
@@ -110,9 +125,10 @@ namespace test
 				}
 				else
 				{
-					return false;
+					return false; //不允许相等
 				}
 			}
+			//循环结束,即找到nullptr结点
 			cur = new node(key);
 			if (parent->_key > key)
 			{
@@ -640,6 +656,247 @@ namespace test
 		cout << endl;
 		bst4.InOrderTraversal();
 		cout << endl;
+	}
+
+
+}
+
+
+namespace key_value
+{
+	template<class K,class V>
+	struct BSTreeNode
+	{
+		BSTreeNode* _left;
+		BSTreeNode* _right;
+		K _key;
+		V _value;
+
+
+		BSTreeNode(const K& key,const V& value)
+			:_key(key)
+			,_value(value)
+			, _left(nullptr)
+			, _right(nullptr)
+		{}
+	};
+
+	template<class K,class V>
+	class BSTree
+	{
+	public:
+		typedef BSTreeNode<K,V> node;
+	private:
+		node* _root = nullptr;
+	public:
+
+		bool insert(const K& key , const V& value)
+		{
+			if (_root == nullptr)
+			{
+				_root = new node(key,value);
+				return true;
+			}
+			node* parent = _root;
+			node* cur = _root;
+			while (cur != nullptr)
+			{
+				if (cur->_key > key)
+				{
+					parent = cur;
+					cur = cur->_left;
+				}
+				else if (cur->_key < key)
+				{
+					parent = cur;
+					cur = cur->_right;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			cur = new node(key,value);
+			if (parent->_key > key)
+			{
+				parent->_left = cur;
+			}
+			else
+			{
+				parent->_right = cur;
+			}
+			return true;
+		}
+
+		node* find(const K& key)
+		{
+			node* cur = _root;
+			while (cur)
+			{
+				if (cur->_key > key)
+				{
+					cur = cur->_left;
+				}
+				else if (cur->_key < key)
+				{
+					cur = cur->_right;
+				}
+				else
+				{
+					return cur;
+				}
+			}
+			return nullptr;
+		}
+
+		bool erase(const K& key)
+		{
+
+			node* parent = _root;
+			node* cur = _root;
+
+			while (cur)
+			{
+				if (cur->_key > key)
+				{
+					parent = cur;
+					cur = cur->_left;
+				}
+				else if (cur->_key < key)
+				{
+					parent = cur;
+					cur = cur->_right;
+				}
+				else
+				{
+
+					if (cur->_left == nullptr)
+					{
+						if (cur == _root)
+						{
+							_root = cur->_right;
+						}
+						else
+						{
+							if (cur == parent->_left)
+							{
+								parent->_left = cur->_right;
+							}
+							else
+							{
+								parent->_right = cur->_right;
+							}
+						}
+						delete cur;
+					}
+					else if (cur->_right == nullptr)
+					{
+						if (cur == _root)
+						{
+							_root = cur->_left;
+						}
+						else
+						{
+							if (cur == parent->_left)
+							{
+								parent->_left = cur->_left;
+							}
+							else
+							{
+								parent->_right = cur->_left;
+							}
+							delete cur;
+						}
+					}
+					else
+					{
+						node* pminRight = cur;
+						node* minRight = cur->_right;
+						while (minRight->_left)
+						{
+							pminRight = minRight;
+							minRight = minRight->_left;
+						}
+						cur->_key = minRight->_key;//
+						cur->_value = minRight->_value;
+
+						if (pminRight->_right == minRight)
+						{
+							pminRight->_right = minRight->_right;
+						}
+						else
+						{
+							pminRight->_left = minRight->_right;
+						}
+
+						delete minRight;
+					}
+					return true;
+				}
+
+			}
+			return false;
+		}
+
+		void InOrderTraversal()
+		{
+			_InOrderTraversal(_root);
+		}
+
+	public:
+		BSTree() = default;
+
+		~BSTree()
+		{
+			Destroy(_root);
+		}
+
+		BSTree(const BSTree<K, V>& t)
+		{
+			_root = copy(t._root);
+		}
+
+		BSTree<K,V>& operator=(BSTree<K,V> t)
+		{
+			swap(_root, t._root);
+			return *this;
+		}
+
+	private:
+		void Destroy(node*& root)
+		{
+			if (!root)
+			{
+				return;
+			}
+			Destroy(root->_left);
+			Destroy(root->_right);
+			delete root;
+			root = nullptr;
+		}
+
+		void _InOrderTraversal(node* root)
+		{
+			if (root == nullptr)
+			{
+				return;
+			}
+			_InOrderTraversal(root->_left);
+			cout << root->_key << " ";
+			_InOrderTraversal(root->_right);
+		}
+	};
+
+	//中英文互译
+	void test_BST1()
+	{
+		key_value::BSTree<std::string, std::string> dict;
+		dict.insert("sort", "排序");
+		dict.insert("left", "左边");
+		dict.insert("sort", "排序");
+		dict.insert("sort", "排序");
+		dict.insert("sort", "排序");
+		dict.insert("sort", "排序");
 	}
 
 

@@ -10,9 +10,9 @@ using std::max;
 #include"22BST.h"
 int main()
 {
-	//test::test_BST1();
-	//test::test_BST2();
-	test::test_BST3();
+	//key::test_BST1();
+	//key::test_BST2();
+	key::test_BST3();
 	return 0;
 }
 
