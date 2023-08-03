@@ -340,7 +340,47 @@ namespace test
 			return _eraseR(_root ,key);
 		}
 
+		~BSTree()
+		{
+			Destroy(_root);
+			//_root = nullptr; //指针写法
+		}
+
+		BSTree(const BSTree& t)
+		{
+
+		}
+
 	private:
+		void Destroy(node*& root)//引用写法 -- 代码更简洁
+		{
+			//后序删除
+			if (!root)
+			{
+				return;
+			}
+			Destroy(root->_left);
+			Destroy(root->_right);
+			delete root;
+			root = nullptr;
+		}
+
+		void copy(node* root,node* troot)
+		{
+			//前序拷贝 -- 复制一份,与搜索树特性无关
+			if (troot)
+			{
+				root = new node(troot->_key);
+			}
+			else
+			{
+				root = nullptr;
+			}
+			copy(root->_left, troot->_left);
+			copy(root->_right, troot->_right);
+
+		}
+
 
 		void _InOrderTraversal(node* root)
 		{
