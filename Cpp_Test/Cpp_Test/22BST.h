@@ -664,7 +664,7 @@ namespace key
 
 namespace key_value
 {
-	template<class K,class V>
+	template<class K, class V>
 	struct BSTreeNode
 	{
 		BSTreeNode* _left;
@@ -673,28 +673,28 @@ namespace key_value
 		V _value;
 
 
-		BSTreeNode(const K& key,const V& value)
+		BSTreeNode(const K& key, const V& value)
 			:_key(key)
-			,_value(value)
+			, _value(value)
 			, _left(nullptr)
 			, _right(nullptr)
 		{}
 	};
 
-	template<class K,class V>
+	template<class K, class V>
 	class BSTree
 	{
 	public:
-		typedef BSTreeNode<K,V> node;
+		typedef BSTreeNode<K, V> node;
 	private:
 		node* _root = nullptr;
 	public:
 
-		bool insert(const K& key , const V& value)
+		bool insert(const K& key, const V& value)
 		{
 			if (_root == nullptr)
 			{
-				_root = new node(key,value);
+				_root = new node(key, value);
 				return true;
 			}
 			node* parent = _root;
@@ -716,7 +716,7 @@ namespace key_value
 					return false;
 				}
 			}
-			cur = new node(key,value);
+			cur = new node(key, value);
 			if (parent->_key > key)
 			{
 				parent->_left = cur;
@@ -856,7 +856,7 @@ namespace key_value
 			_root = copy(t._root);
 		}
 
-		BSTree<K,V>& operator=(BSTree<K,V> t)
+		BSTree<K, V>& operator=(BSTree<K, V> t)
 		{
 			swap(_root, t._root);
 			return *this;
@@ -893,12 +893,29 @@ namespace key_value
 		key_value::BSTree<std::string, std::string> dict;
 		dict.insert("sort", "排序");
 		dict.insert("left", "左边");
-		dict.insert("sort", "排序");
-		dict.insert("sort", "排序");
-		dict.insert("sort", "排序");
-		dict.insert("sort", "排序");
+		dict.insert("right", "右边");
+		dict.insert("string", "字符串");
+		dict.insert("insert", "插入");
+		dict.insert("erase", "删除");
+
+		//key_value::BSTreeNode<std::string, std::string>* ret = dict.find("string");
+		std::string str;
+		while (cin >> str) 
+			//结束流提取循环的方法
+			//1.ctrl+C强行终止程序
+			//2.ctrl+Z+回车,输入结束命令,柔和
+		{
+			auto ret = dict.find(str);
+			if (ret)
+			{
+				cout << ret->_key << ":" << ret->_value << endl;
+			}
+			else
+			{
+				cout << "无此单词" << endl;
+			}
+		}
+
 	}
 
-
 }
-

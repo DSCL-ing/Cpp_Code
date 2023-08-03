@@ -12,7 +12,8 @@ int main()
 {
 	//key::test_BST1();
 	//key::test_BST2();
-	key::test_BST3();
+	//key::test_BST3();
+	key_value::test_BST1();
 	return 0;
 }
 
