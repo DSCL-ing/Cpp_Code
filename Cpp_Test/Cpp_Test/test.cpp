@@ -11,7 +11,8 @@ using std::max;
 int main()
 {
 	//test::test_BST1();
-	test::test_BST2();
+	//test::test_BST2();
+	test::test_BST3();
 	return 0;
 }
 

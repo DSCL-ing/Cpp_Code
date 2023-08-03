@@ -340,6 +340,8 @@ namespace test
 			return _eraseR(_root ,key);
 		}
 
+		BSTree() = default;//指定强制生成默认构造,有缺省值就用缺省值,没缺省值就随机值
+
 		~BSTree()
 		{
 			Destroy(_root);
@@ -348,7 +350,13 @@ namespace test
 
 		BSTree(const BSTree& t)
 		{
+			_root = copy(t._root);
+		}
 
+		BSTree<K>& operator=( BSTree<K> t)
+		{
+			swap(_root, t._root);
+			return *this;
 		}
 
 	private:
@@ -365,22 +373,32 @@ namespace test
 			root = nullptr;
 		}
 
-		void copy(node* root,node* troot)
+		//void copy(node*& root,node* troot)// 前序拷贝 , 两个参数,可以使用引用
+		//{
+		//	if (troot)
+		//	{
+		//		root = new node(troot->_key);
+		//	}
+		//	else
+		//	{
+		//		root = nullptr;
+		//		return;
+		//	}
+		//	copy(root->_left, troot->_left);
+		//	copy(root->_right, troot->_right);
+		//}
+
+		node* copy(node* root) //前序创建,后序链接 ; 一个参数
 		{
-			//前序拷贝 -- 复制一份,与搜索树特性无关
-			if (troot)
+			if (!root)
 			{
-				root = new node(troot->_key);
+				return nullptr;
 			}
-			else
-			{
-				root = nullptr;
-			}
-			copy(root->_left, troot->_left);
-			copy(root->_right, troot->_right);
-
+			node* newRoot = new node(root->_key);
+			newRoot->_left = copy(root->_left);
+			newRoot->_right = copy(root->_right);
+			return newRoot;
 		}
-
 
 		void _InOrderTraversal(node* root)
 		{
@@ -588,6 +606,28 @@ namespace test
 		bst.eraseR(1);
 		bst.InOrderTraversal();
 
+	}
+
+	//constructor
+	void test_BST3()
+	{
+		int a[] = { 8, 3, 1, 10, 6, 4, 7, 14, 13 };
+		BSTree<int> bst1;
+		for (auto i : a)
+		{
+			bst1.insertR(i);
+		}
+		bst1.InOrderTraversal();
+		cout << endl;
+		BSTree<int> bst2(bst1); //拷贝构造
+		BSTree<int> bst3 = bst1; // 拷贝构造
+		BSTree<int> bst4;  bst4 = bst1; // 赋值运算符重载
+		bst2.InOrderTraversal();
+		cout << endl;
+		bst3.InOrderTraversal();
+		cout << endl;
+		bst4.InOrderTraversal();
+		cout << endl;
 	}
 
 
