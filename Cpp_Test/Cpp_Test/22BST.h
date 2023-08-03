@@ -882,7 +882,7 @@ namespace key_value
 				return;
 			}
 			_InOrderTraversal(root->_left);
-			cout << root->_key << " ";
+			cout << root->_key << ":" << root->_value << endl;
 			_InOrderTraversal(root->_right);
 		}
 	};
@@ -916,6 +916,26 @@ namespace key_value
 			}
 		}
 
+	}
+
+	void test_BST2()
+	{
+		std::string arr[] = { "苹果", "西瓜", "苹果", "西瓜", "苹果", "苹果", "西瓜",
+"苹果", "香蕉", "苹果", "香蕉" };
+		key_value::BSTree<std::string, int> countTree;
+		for (auto s : arr)
+		{
+			auto ret = countTree.find(s);
+			if (!ret)
+			{
+			countTree.insert(s, 1);
+			}
+			else
+			{
+				++ret->_value;
+			}
+		}
+		countTree.InOrderTraversal();
 	}
 
 }
