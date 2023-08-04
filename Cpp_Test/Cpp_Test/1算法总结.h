@@ -3,8 +3,11 @@
 
 //实现某功能
 /**
- * 先描述所有应用此功能的场景
- * .
+ * 1.先描述所有应用此功能的场景
+ * 
+ * 2.寻找特征,分类
+ * 
+ * 
  */
 
 //空间利用率
@@ -24,7 +27,24 @@
  * 
  */
 
-
+//一些技巧
+/**
+ * 命题和否命题.
+   bool pInLeft = isInTree(root->left,p);
+   bool pInRight = !pInLeft;
+   bool qInLeft = isInTree(root->left,q);
+   bool qInRight = !qInLeft;
+   //都在左->递归左子树
+   if(pInLeft&&qInLeft)
+       return lowestCommonAncestor(root->left,p,q);
+   //都在右->递归右子树
+   else if(pInRight&&qInRight)  
+       return lowestCommonAncestor(root->right,p,q);
+   //一左一右 --> 性质:最近的公共祖先
+   else     
+       return root;
+ * .
+ */
 
 
 

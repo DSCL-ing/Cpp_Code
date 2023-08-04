@@ -18,49 +18,35 @@ struct TreeNode {
 class Solution {
 public:
     vector<vector<int>> levelOrder(TreeNode* root) {
+        TreeNode* front = root;
         vector<vector<int>> vv;
-        vv.push_back(vector<int>());
-        if (!root)
+        if (!front)
         {
-            return vv;
+            return vv; //按题目要求,空结点需要返回没有空间的vv
         }
-        int levelNum = 0;
         queue<TreeNode*> q;
-        q.push(root);
-        int qSize = q.size();
-        //int next_qSize = 0;
+        q.push(front);
+        int levelSize = 1;
         while (!q.empty())
         {
-            root = q.front();
-
-            if (root)
+            vector<int> v;
+            while (levelSize > 0)
             {
-                //vv.push_back(vector<int>());
-                vv[levelNum].push_back(root->val);
+                --levelSize;
+                 front = q.front();
+                q.pop();
+                v.push_back(front->val);
+                if (front->left)
+                    q.push(front->left);
+                if (front->right)
+                    q.push(front->right);
             }
-            q.pop();
-            --qSize;
-
-            if (root->left)
-            {
-                q.push(root->left);
-                //++next_qSize;
-            }
-            if (root->right)
-            {
-                q.push(root->right);
-                //++next_qSize;
-            }
-            if (!qSize)
-            {
-                //vv.push_back(v);
-                vv.push_back(vector<int>());
-                ++levelNum;
-                qSize = q.size();
-            }
+            vv.push_back(v);
+            levelSize = q.size();
         }
         return vv;
     }
+
 };
 
 int main()

@@ -105,3 +105,17 @@
 //606. 根据二叉树创建字符串(用括号括起来必要的每个结点的值,并将这些括号组成一个字符串)
 //https://leetcode.cn/problems/construct-string-from-binary-tree/
 //知识点:string对象,to_string,string+= , 二叉树递归,
+
+
+//102. 二叉树的层序遍历1
+//https://leetcode.cn/problems/binary-tree-level-order-traversal/
+//知识点:队列queue , vector,二维vector插入,二叉树
+
+//107. 二叉树的层序遍历 II
+//https://leetcode.cn/problems/binary-tree-level-order-traversal-ii/
+//知识点:队列queue , vector,二维vector插入,vector逆置,二叉树
+
+//236. 二叉树的最近公共祖先
+//https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
+//方法1:递归
+//方法2:链表,DFS,求链表交点
