@@ -1,47 +1,96 @@
 ﻿
 #pragma once
 #include<iostream>
-using std::cout;
-using std::endl;
-using std::cin;
-using std::swap;
-using std::max;
+#include<vector>
+#include<queue>
 
-#include"22BST.h"
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+};
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> vv;
+        vv.push_back(vector<int>());
+        if (!root)
+        {
+            return vv;
+        }
+        int levelNum = 0;
+        queue<TreeNode*> q;
+        q.push(root);
+        int qSize = q.size();
+        //int next_qSize = 0;
+        while (!q.empty())
+        {
+            root = q.front();
+
+            if (root)
+            {
+                //vv.push_back(vector<int>());
+                vv[levelNum].push_back(root->val);
+            }
+            q.pop();
+            --qSize;
+
+            if (root->left)
+            {
+                q.push(root->left);
+                //++next_qSize;
+            }
+            if (root->right)
+            {
+                q.push(root->right);
+                //++next_qSize;
+            }
+            if (!qSize)
+            {
+                //vv.push_back(v);
+                vv.push_back(vector<int>());
+                ++levelNum;
+                qSize = q.size();
+            }
+        }
+        return vv;
+    }
+};
+
 int main()
 {
-	//key::test_BST1();
-	//key::test_BST2();
-	//key::test_BST3();
-	//key_value::test_BST1();
-	key_value::test_BST2();
+    int a[] = { 8, 3, 1, 10, 6, 4, 7, 14, 13 };
+    TreeNode A(1);
+    TreeNode B(2);
+    TreeNode C(3);
+    TreeNode D(4);
+    TreeNode E(5);
+    A.left = &B;
+    A.right = &C;
+    B.left = &D;
+    C.right = &E;
+    
+    Solution s;
+    std::vector<vector<int>> vv = s.levelOrder(&A);
+
+    auto it= vv.begin();
+    while (it != vv.end())
+    {
+        auto iit = (*it).begin();
+        while (iit != (*it).end())
+        {
+            cout << *iit << endl;
+            ++iit;
+        }
+        ++it;
+    }
+
+
 	return 0;
 }
-
-
-//int main()
-//{
-//	double d = 1.1;
-//	int& ri = d;
-//	return 0;
-//}
-
-//#include"21polymorphism.h"
-//int main()
-//{
-//	//test::test_polymorphism1();
-//	//test1::test_polymorphism2();
-//	//test2::test_VFTable1();
-//	//test2::test_VFTable2();
-//	//test3::test_VFTable1();
-//	test3::test_VFTable2();
-//	return 0;
-//}
-
-//#include"20inheritance.h"
-//int main()
-//{
-//	test1::test_inheritance1();
-//
-//	return 0;
-//}

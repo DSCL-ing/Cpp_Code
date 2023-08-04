@@ -2,6 +2,21 @@
 //note
 //参照string
 
+//vector的使用
+/**
+ * 原则:遵循尾插(自动扩容),其他情况容易越界 
+ *   无论几维vector,只要是一步一步尾插的,都不会越界
+ * 
+ * 对于二维vector的使用案例
+方法1:
+	vv.push_back(vector<int>()); //先尾插入一行
+	vv[i].push_back(int_value); //再尾插入列
+方法2:
+	v.push_back(int_value);   //先把一维数组插满
+	vv.push_back(v);		  //再插入一维数组v
+ * 
+ */
+
 //C++二维vector (和二维数组不一样,与数组类似,用法超越了二维数组)
 /**
  * 二维vector逻辑结构
