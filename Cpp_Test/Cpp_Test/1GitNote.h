@@ -32,6 +32,14 @@
  */
 
 
+/** 操作
+ * 
+ * 1.查看文件的历史修改情况
+ * 将链接中的github.com替换成github.githistory.xyz
+ * 
+ */
+
+
 
 
 

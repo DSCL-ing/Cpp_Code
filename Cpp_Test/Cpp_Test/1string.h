@@ -402,7 +402,7 @@ int main()
 
 
 //Convert from strings  从字符串转换
-/**
+/** C++11
  * <string>
  * std::stoi
  * //stol(long和int一样)
@@ -418,6 +418,12 @@ int main()
  * 
  * 
  * 
+ */
+
+//转换成字符串
+/** C++11
+ * to_string(value);
+ * .
  */
 
 //可以在string上用的其他函数

@@ -96,3 +96,12 @@
 //用队列实现栈
 //https://leetcode.cn/problems/implement-stack-using-queues/
 //C++未做 , stack和queue
+
+
+//215. 数组中的第K个最大元素
+//https://leetcode.cn/problems/kth-largest-element-in-an-array/
+//C++未做,优先级队列
+
+//606. 根据二叉树创建字符串(用括号括起来必要的每个结点的值,并将这些括号组成一个字符串)
+//https://leetcode.cn/problems/construct-string-from-binary-tree/
+//知识点:string对象,to_string,string+= , 二叉树递归,
