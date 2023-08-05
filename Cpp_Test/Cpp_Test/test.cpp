@@ -17,36 +17,35 @@ struct TreeNode {
 
 class Solution {
 public:
-    vector<vector<int>> levelOrder(TreeNode* root) {
-        TreeNode* front = root;
-        vector<vector<int>> vv;
-        if (!front)
-        {
-            return vv; //按题目要求,空结点需要返回没有空间的vv
-        }
-        queue<TreeNode*> q;
-        q.push(front);
-        int levelSize = 1;
-        while (!q.empty())
-        {
-            vector<int> v;
-            while (levelSize > 0)
-            {
-                --levelSize;
-                 front = q.front();
-                q.pop();
-                v.push_back(front->val);
-                if (front->left)
-                    q.push(front->left);
-                if (front->right)
-                    q.push(front->right);
-            }
-            vv.push_back(v);
-            levelSize = q.size();
-        }
-        return vv;
+    TreeNode* treeToDoublyList(TreeNode* root) {
+        return Convert(root);
+    }
+    void InOrderConvert(TreeNode* cur, TreeNode*& prev) {
+        if (!cur)
+            return;
+        InOrderConvert(cur->left, prev);
+        cur->left = prev;
+        if (prev)
+            prev->right = cur;
+        prev = cur;
+        InOrderConvert(cur->right, prev);
     }
 
+    TreeNode* Convert(TreeNode* root) {
+        if (!root)
+            return nullptr;
+
+        //第一个结点new一个或者为nullptr
+        TreeNode* prev = nullptr;
+        InOrderConvert(root, prev);
+        TreeNode* head = root;
+
+        while (head && head->left)
+        {
+            head = head->left;
+        }
+        return head;
+    }
 };
 
 int main()
@@ -63,19 +62,10 @@ int main()
     C.right = &E;
     
     Solution s;
-    std::vector<vector<int>> vv = s.levelOrder(&A);
+    //std::vector<vector<int>> vv = s.levelOrder(&A);
+    s.treeToDoublyList(&A);
 
-    auto it= vv.begin();
-    while (it != vv.end())
-    {
-        auto iit = (*it).begin();
-        while (iit != (*it).end())
-        {
-            cout << *iit << endl;
-            ++iit;
-        }
-        ++it;
-    }
+
 
 
 	return 0;

@@ -119,3 +119,9 @@
 //https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/
 //方法1:递归
 //方法2:链表,DFS,求链表交点
+
+//剑指 Offer 36. 二叉搜索树与双向链表
+//https://leetcode.cn/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/
+//JZ36 二叉搜索树与双向链表
+//https://www.nowcoder.com/practice/947f6eb80d944a84850b0538bf0ec3a5?tpId=13&&tqId=11179&rp=1&ru=/activity/oj&qru=/ta/coding-interviews/question-ranking
+//知识点：搜索二叉树，递归，链表，难度中等偏上
