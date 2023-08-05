@@ -31,7 +31,8 @@
 
 #include<deque> //测试用
 #include<vector>//测试用
-#include"Date.h"//测试用
+#include"1Date.h"//测试用
+#include<iostream>
 using std::cout;
 using std::endl;
 using std::cin;
