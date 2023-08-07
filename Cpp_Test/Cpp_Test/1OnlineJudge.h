@@ -127,3 +127,9 @@
 //知识点：搜索二叉树，递归，链表，难度中等偏上
 
 
+//105. 从前序与中序遍历序列构造二叉树(结点无相同value)
+//https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+//知识点:
+//扩展补充:
+// 前序序列每一个元素都是"根" - 前序的每一个元素都对应着每一棵子树的根,可以通过前序的元素去确定子树的位置 -- 迭代走
+// 中序序列功能:分隔出左右区间
