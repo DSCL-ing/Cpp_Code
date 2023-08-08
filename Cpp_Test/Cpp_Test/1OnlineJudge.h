@@ -135,5 +135,10 @@
 // 中序序列功能:分隔出左右区间
 //扩展题目：106. 从中序与后序遍历序列构造二叉树
 //https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
+//后序是前序的逆置,从后往前
 
+//144. 二叉树的前序遍历 -- 非递归（迭代-模拟递归）
+//https://leetcode.cn/problems/binary-tree-preorder-traversal/
+//扩展题目 94. 二叉树的中序遍历 -- 非递归（迭代-模拟递归）
+//https://leetcode.cn/problems/binary-tree-inorder-traversal/description/
 
