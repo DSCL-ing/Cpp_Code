@@ -75,6 +75,9 @@
     <ClInclude Include="22BST.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="23map_set.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="1Date.cpp">

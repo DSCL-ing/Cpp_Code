@@ -4,9 +4,39 @@
 
 
 
+#include<iostream>
+#include<set>
+using std::cout;
+using std::endl;
+using std::cin;
+//集合的互异性验证
+using std::set;
+void test_set1()
+{
+	std::set<int> s1;
+	s1.insert(3);
+	s1.insert(1);
+	s1.insert(4);
+	s1.insert(2);
+	s1.insert(1);
+	s1.insert(2);
+	std::set<int>::iterator it1 = s1.begin();
+	while (it1 != s1.end())
+	{
+		std::cout << *it1 << " ";
+		++it1;
+	} //Result:>1 2 3 4
+	cout << endl;
+}
+
+int main()
+{
+	test_set1();
+
+	return 0;
+}
 
 //#include"myPriority_Queue.h"
-
 //int main()
 //{
 //	//test::test_priority_queue2();

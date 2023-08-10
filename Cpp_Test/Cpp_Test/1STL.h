@@ -35,6 +35,8 @@
 <Containers>
 using std::vector
 using std::list
+using std::set
+using std::map
 
 <iostream>
 using std::cout;
@@ -73,8 +75,21 @@ using std::max;
 /**
  * 对于vector list deque
  * vector排序最快,一般list或deque排序是将数据拷贝到vecotr排序完再拷贝回去
- * 序列式顺序表,序列式容器,关联式容器 -- stl
+
+ * 序列式顺序表,序列式容器, -- 线性
+ * vector(向量)
+ * list(链表)
+ * forward_list(单链表)
+ * priority_queue(优先级队列)
+ * 序列式容器适配器
+ * stack(栈)
+ * queue（队列）
+ * deque(双端队列)
  * 
+ * 关联式容器, -- 非线性
+ * map 
+ * set(集合)
+ *
  * .
  */
 
@@ -87,10 +102,12 @@ using std::max;
   * 适配器是一种设计模式(设计模式是一套被反复使用的、多数人知晓的、经过分类编目的、
   * 代码设计经验的总结)，该种模式是将一个类的接口转换成客户希望的另外一个接口。
   * 
-  * 
+  * 容器适配器
   * stack
   * queue
   * priority_queue 优先级队列(类似堆)
+  * 
+  * 迭代器适配器
   * reverse_iterator 反向迭代器
   * .
   */
