@@ -9,10 +9,10 @@
 using std::cout;
 using std::endl;
 using std::cin;
-//集合的互异性验证
 using std::set;
 void test_set1()
 {
+//集合的互异性验证 -- 迭代器
 	std::set<int> s1;
 	s1.insert(3);
 	s1.insert(1);
@@ -27,11 +27,56 @@ void test_set1()
 		++it1;
 	} //Result:>1 2 3 4
 	cout << endl;
+	//范围for
+	for (auto e : s1)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+}
+void test_set2()
+{
+	std::set<int> s1;
+	s1.insert(3);
+	s1.insert(1);
+	s1.insert(4);
+	s1.insert(2);
+	s1.insert(1);
+	s1.insert(2);
+	int x;
+//func:find() -> Test -- 间接判断
+	/*while (cin >> x)
+	{
+		auto ret = s1.find(x);
+		if (ret != s1.end())
+		{
+			cout << "在" << endl;
+		}
+		else
+		{
+			cout << "不在" << endl;
+		}
+	}*/
+//count 直接判断 
+	while (cin >> x)
+	{
+		if (s1.count(x))
+		{
+			cout << "在" << endl;
+		}
+		else
+		{
+			cout << "不在" << endl;
+		}
+	}
+
+
 }
 
 int main()
 {
-	test_set1();
+	//test_set1();
+	test_set2();
 
 	return 0;
 }
