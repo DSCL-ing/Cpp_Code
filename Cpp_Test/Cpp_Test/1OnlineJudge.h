@@ -141,6 +141,8 @@
 //https://leetcode.cn/problems/binary-tree-preorder-traversal/
 //扩展题目 94. 二叉树的中序遍历 -- 非递归（迭代-模拟递归）
 //https://leetcode.cn/problems/binary-tree-inorder-traversal/description/
+//思路：都是模拟递归，将问题分解成子问题：左树和根的右子树。
+//区别是访问根的条件不一样
 
 
 
