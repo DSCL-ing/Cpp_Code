@@ -141,12 +141,13 @@
 //https://leetcode.cn/problems/binary-tree-preorder-traversal/
 //扩展题目 94. 二叉树的中序遍历 -- 非递归（迭代-模拟递归）
 //https://leetcode.cn/problems/binary-tree-inorder-traversal/description/
+//扩展题目:145. 二叉树的后序遍历
+//https://leetcode.cn/problems/binary-tree-postorder-traversal/
 /**思路：
  * 都是模拟递归，将问题分解成子问题：左树和根的右子树。.区别是访问根的条件不一样
  * $.从栈中取出左路结点,意味着左路结点访问完了
  * $.左路结点入栈即开始访问左路结点
  */
-
 
 
 
