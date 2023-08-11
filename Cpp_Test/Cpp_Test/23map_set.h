@@ -77,6 +77,9 @@ template <class T1,class T2>
 
  * 头文件<map>
  * 
+ * map在逻辑结构中和set一样,key不能修改,但value可以修改.因为value与结构无关,只是附带值
+ * 
+ * 
  */
 
 
