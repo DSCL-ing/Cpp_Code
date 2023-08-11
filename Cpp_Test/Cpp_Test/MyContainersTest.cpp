@@ -82,14 +82,28 @@ void test_multiset1()
 	s1.insert(4);
 	s1.insert(2);
 	s1.insert(1);
+	s1.insert(1);
+	s1.insert(1);
 	s1.insert(2);
-	std::set<int>::iterator it1 = s1.begin();
+	//初识multiset
+	//std::set<int>::iterator it1 = s1.begin(); //也可以用set
+	std::multiset<int>::iterator it1 = s1.begin();
 	while (it1 != s1.end())
 	{
 		std::cout << *it1 << " ";
 		++it1;
 	} //Result:>1 2 3 4
 	cout << endl;
+
+	//验证multiset的第一个重复值是中序遍历到的第一个key
+	//思路:将第一个find及后面所有相同的值打印出来,查看是否包含了所有的该值
+
+	auto ret = s1.find(1);
+	while (ret != s1.end() && *ret == 1)
+	{
+		cout << *ret << " ";
+			++ret;
+	}
 
 }
 
