@@ -106,12 +106,29 @@ void test_multiset1()
 	}
 
 }
+#include<map>
+#include<string>
+using std::string;
+void test_map1()
+{
+	std::map<string, string>  dict;
+	dict.insert(std::pair<string, string>("sort", "排序")); //匿名对象插入
+	dict.insert(std::make_pair("string", "字符串"));    //pair封装插入
+	dict.insert(std::make_pair("count", "计数"));
+	auto it = dict.begin();
+	while (it != dict.end())
+	{
+		cout << it->first << ":" << it->second << endl;
+		++it;
+	}
+}
 
 int main()
 {
 	//test_set1();
 	//test_set2();
-	test_multiset1();
+	//test_multiset1();
+	test_map1();
 
 	return 0;
 }

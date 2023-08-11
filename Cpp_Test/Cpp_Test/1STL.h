@@ -37,6 +37,8 @@ using std::vector
 using std::list
 using std::set
 using std::map
+using std::pair
+using std::make_pair
 
 <iostream>
 using std::cout;
@@ -86,9 +88,15 @@ using std::max;
  * queue（队列）
  * deque(双端队列)
  * 
- * 关联式容器, -- 非线性
+ * 关联式容器, -- 非线性 --存<key,value>结构的键值对,数据检索效率比序列式容器高
+ * stl实现了两种关联式容器--树形结构和哈希结构
+ * 树形结构关联式容器 -- 底层:平衡搜索二叉树(红黑树)
  * map 
  * set(集合)
+ * multimap
+ * multiset
+ * 
+ * 哈希结构关联式容器
  * 
  * 序列式和关联式容器区别
  * $ 序列式主要使用push 插入 , 而关联式只能使用insert插入
@@ -135,6 +143,7 @@ using std::max;
 //仿函数(看起来像函数)  
 /**
  * 仿函数(Functor)又称为函数对象(Function Object)
+ * 
  * 
  * greator:意思是更大的,逐渐变大,传参后变小堆.
  * less:意思是更小的,逐渐变小,传参后变大堆,默认是大堆,可以不用传
