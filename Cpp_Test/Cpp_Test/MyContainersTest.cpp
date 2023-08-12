@@ -111,6 +111,7 @@ void test_multiset1()
 using std::string;
 void test_map1()
 {
+	//map的使用
 	std::map<string, string>  dict;
 	dict.insert(std::pair<string, string>("sort", "排序")); //匿名对象插入
 	dict.insert(std::make_pair("string", "字符串"));    //pair封装插入
@@ -123,12 +124,35 @@ void test_map1()
 	}
 }
 
+void test_map2()
+{
+	string arr[] = { "苹果", "西瓜", "苹果", "西瓜", "苹果", "苹果", "西瓜","苹果", "香蕉", "苹果", "香蕉" };
+	std::map<string, int> countMap;
+	for (auto e : arr)
+	{
+		auto ret = countMap.find(x);
+		if (ret==countMap.end())
+		{
+			countMap.insert(std::pair<string, int>(x, 1));
+		}
+		else
+		{
+			++ret->second;
+		}
+	}
+	for (auto& s : countMap)
+	{
+		cout << s.first << ":" << s.second << endl;
+	}
+}
+
 int main()
 {
 	//test_set1();
 	//test_set2();
 	//test_multiset1();
-	test_map1();
+	//test_map1();
+	test_map2();
 
 	return 0;
 }

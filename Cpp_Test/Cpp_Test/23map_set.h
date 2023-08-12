@@ -10,6 +10,8 @@
  * 
  * map和set的迭代器函数实现都是一样的,begin和const begin一样,都是不可修改...
  * 
+ * map和set逻辑是基本一样的,只是map多了一个value,但value不会对结构有影响,只在应用层面有差别
+ * 
  */
 
 //set
