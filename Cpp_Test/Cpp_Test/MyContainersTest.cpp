@@ -128,7 +128,7 @@ void test_map2()
 {
 	string arr[] = { "苹果", "西瓜", "苹果", "西瓜", "苹果", "苹果", "西瓜","苹果", "香蕉", "苹果", "香蕉" };
 	std::map<string, int> countMap;
-	for (auto e : arr)
+	/*for (auto e : arr)
 	{
 		auto ret = countMap.find(x);
 		if (ret==countMap.end())
@@ -139,11 +139,19 @@ void test_map2()
 		{
 			++ret->second;
 		}
+	}*/
+
+	for (auto& e : arr)
+	{
+		++countMap[e];
 	}
+
 	for (auto& s : countMap)
 	{
 		cout << s.first << ":" << s.second << endl;
 	}
+
+
 }
 
 int main()

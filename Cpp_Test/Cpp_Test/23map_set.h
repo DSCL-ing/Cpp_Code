@@ -81,6 +81,15 @@ template <class T1,class T2>
  * 
  * map在逻辑结构中和set一样,key不能修改,但value可以修改.因为value与结构无关,只是附带值
  * 
+ * 成员函数:
+ * insert
+ * $ pair<iterator,bool> insert (const value_type& val); //返回插入位置和插入信息的键值对pair
+ * 
+ * erase
+ * $ size_type erase (const key_type& k); // 返回已删除的个数
+ * 
+ * at
+ * $ value_type& at(const key_type& k);  //返回key对应的value的引用
  * 
  */
 
