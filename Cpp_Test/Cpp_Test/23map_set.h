@@ -105,10 +105,10 @@ template <class T1,class T2>
  * this->insert(make_pair(k,value_type()))
  * make_pair(k,value_type())
  * 
- * ().second
- * *((this->insert(make_pair(k,value_type()))).first)
- * (this->insert(make_pair(k,value_type()))).first
- * this->insert(make_pair(k,value_type()))
+ * (*((this->insert(make_pair(k,value_type()))).first)).second //得到value的引用
+ * *((this->insert(make_pair(k,value_type()))).first) //*it -- 得到相应结点pair(key,value)的引用
+ * (this->insert(make_pair(k,value_type()))).first    //pair.first == iterator --> it
+ * this->insert(make_pair(k,value_type()))            //返回pair(iterator,bool)
  * make_pair(k,value_type())
  */
 

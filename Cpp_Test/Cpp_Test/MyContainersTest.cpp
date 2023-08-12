@@ -148,7 +148,7 @@ void test_map2()
 
 	for (auto& s : countMap)
 	{
-		cout << s.first << ":" << s.second << endl;
+		cout <<  s.first << ":" << s.second << endl;
 	}
 
 
@@ -161,6 +161,7 @@ int main()
 	//test_multiset1();
 	//test_map1();
 	test_map2();
+
 
 	return 0;
 }
