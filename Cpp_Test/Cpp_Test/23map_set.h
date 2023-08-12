@@ -91,6 +91,25 @@ template <class T1,class T2>
  * at
  * $ value_type& at(const key_type& k);  //返回key对应的value的引用
  * 
+ * operator[] -- 强力函数
+ * 1.查找 -- []
+ * 2.查找+修改   -- [] + =赋值 已有数据赋值
+ * 3.查找+插入  -- [] + =赋值 未有数据
+ * 
+ * $ 等价于以下代码 (*((this->insert(make_pair(k,value_type()))).first)).second
+ * 
+ * ().second
+ * (*(this->insert(make_pair(k,value_type())).first)).second
+ * *(this->insert(make_pair(k,value_type())).first)
+ * this->insert(make_pair(k,value_type())).first
+ * this->insert(make_pair(k,value_type()))
+ * make_pair(k,value_type())
+ * 
+ * ().second
+ * *((this->insert(make_pair(k,value_type()))).first)
+ * (this->insert(make_pair(k,value_type()))).first
+ * this->insert(make_pair(k,value_type()))
+ * make_pair(k,value_type())
  */
 
 
