@@ -83,7 +83,11 @@ template <class T1,class T2>
  * 
  * 成员函数:
  * insert
- * $ pair<iterator,bool> insert (const value_type& val); //返回插入位置和插入信息的键值对pair
+ * $ pair<iterator,bool> insert (const pair<key_type,value_type>& p); 
+ * //返回插入位置和插入信息的键值对pair
+ * $ 如果插入失败,则返回已存在的key的位置的pair(iterator,false)
+ * $ 如果插入成功,则返回新插入的key的位置的pair(iterator,true)
+ * $ 插入与value无关,成功和失败只看key是否存在
  * 
  * erase
  * $ size_type erase (const key_type& k); // 返回已删除的个数
@@ -92,24 +96,26 @@ template <class T1,class T2>
  * $ value_type& at(const key_type& k);  //返回key对应的value的引用
  * 
  * operator[] -- 强力函数
- * 1.查找 -- []
- * 2.查找+修改   -- [] + =赋值 已有数据赋值
- * 3.查找+插入  -- [] + =赋值 未有数据
- * 
+ * 1.查找 -- []  -- 已存在是查找  cout<<map[key]<<endl;
+ * 2.插入 -- []  -- 不存在是插入 -- key是不存在的值则插入
+ * 3.查找+修改   -- [] + =赋值 已有数据赋值
+ * 4.查找+插入   -- [] + =赋值 未有数据
  * $ 等价于以下代码 (*((this->insert(make_pair(k,value_type()))).first)).second
- * 
- * ().second
- * (*(this->insert(make_pair(k,value_type())).first)).second
- * *(this->insert(make_pair(k,value_type())).first)
- * this->insert(make_pair(k,value_type())).first
- * this->insert(make_pair(k,value_type()))
- * make_pair(k,value_type())
- * 
+ * ||代码分解
  * (*((this->insert(make_pair(k,value_type()))).first)).second //得到value的引用
  * *((this->insert(make_pair(k,value_type()))).first) //*it -- 得到相应结点pair(key,value)的引用
  * (this->insert(make_pair(k,value_type()))).first    //pair.first == iterator --> it
  * this->insert(make_pair(k,value_type()))            //返回pair(iterator,bool)
  * make_pair(k,value_type())
+ * 
+$ 模拟实现operator[]
+template<class T1, class T2>
+T2& operator[](const T1& key)
+{
+	std::pair<iterator,bool> ret = insert(make_pair(key, T2());
+	return ret.first->second;
+}
+ * 
  */
 
 

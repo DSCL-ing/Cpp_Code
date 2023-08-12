@@ -154,6 +154,13 @@ void test_map2()
 
 }
 
+template<class T1, class T2>
+T2& operator[](const T1& key)
+{
+	std::pair<iterator,bool> ret = insert(make_pair(key, T2());
+	return ret.first->second;
+}
+
 int main()
 {
 	//test_set1();
