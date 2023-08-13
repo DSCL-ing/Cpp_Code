@@ -118,6 +118,12 @@ T2& operator[](const T1& key)
  * 
  */
 
+//multimap
+/**
+ * 和map区别，没有了operator[]
+ * .
+ */
+
 
 
 
