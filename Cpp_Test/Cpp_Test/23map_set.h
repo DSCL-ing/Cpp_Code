@@ -120,7 +120,7 @@ T2& operator[](const T1& key)
 
 //multimap
 /**
- * 和map区别，没有了operator[]
+ * 和map区别，没有了operator[] -- 因为key和value没有一一映射关系了
  * .
  */
 
