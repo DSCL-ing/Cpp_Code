@@ -69,9 +69,10 @@
  * $ 如果更新后有平衡因子的绝对值>1,则需要调整平衡树
  * 3.调整平衡树
  * 
+ * note:
+ * 新增的结点,只会影响到他祖先的这一路径的结点
  * 
  */
-
 #include<iostream>
 using std::cout;
 using std::endl;
@@ -84,7 +85,7 @@ namespace test
 	template<class K, class V>
 	class AVLTreeNode
 	{
-		//三叉链
+		//三叉链: left right parent
 		AVLTreeNode* left;
 		AVLTreeNode* right;
 		AVLTreeNode* parent;
