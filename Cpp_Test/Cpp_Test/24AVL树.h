@@ -96,8 +96,28 @@ public:
 		}
 		node* cur = _root;
 		node* parent = nullptr;
+		while (cur)
+		{
+			if (kv.first > cur->_kv.first)
+			{
+				parent = cur;
+				cur = cur->right;
+			}
+			else if (kv.first < cur->_kv.first)
+			{
+				parent = cur;
+				cur = cur->left;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		node* tmp = new node(kv);
+		if (kv > parent->_kv.first)
+		{
+			parent->right = 
+		}
 
-
-		while()
 	}
 };
