@@ -58,66 +58,102 @@
  */
 
 
+//模拟实现AVL -- map底层
+/**
+ * 
+ * 
+ * insert插入
+ * 1.三叉链链接到位(链接上插入的结点,新结点也要链接上父亲)
+ * 2.更新平衡因子
+ * $ 如果更新后所有的平衡因子都为-1,0,1其中一个,则不需要调整平衡树
+ * $ 如果更新后有平衡因子的绝对值>1,则需要调整平衡树
+ * 3.调整平衡树
+ * 
+ * 
+ */
 
-template<class K,class V>
-class AVLTreeNode
+#include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
+
+namespace test
 {
-	//三叉链
-	AVLTreeNode* left;
-	AVLTreeNode* right;
-	AVLTreeNode* parent;
-	pair<K, V> _kv;     //键值对
-	int _bf;            //balance factor -- 平衡因子
 
-	AVLTreeNode(const pair<K,V>& kv)
-		:left(nullptr)
-		,right(nullptr)
-		,parent(nullptr)
-		,pair(kv)
-		,bf(0)
-	{}
 
-};
-
-template<class K, class T>
-class AVLTree
-{
-public:
-	typedef AVLTreeNode<K, V> node;
-private:
-	node* _root;
-public:
-	bool Insert(const pair(K,V>& kv)
+	template<class K, class V>
+	class AVLTreeNode
 	{
-		if (!root)
+		//三叉链
+		AVLTreeNode* left;
+		AVLTreeNode* right;
+		AVLTreeNode* parent;
+		pair<K, V> _kv;     //键值对
+		int _bf;            //balance factor -- 平衡因子
+
+		AVLTreeNode(const pair<K, V>& kv)
+			:left(nullptr)
+			, right(nullptr)
+			, parent(nullptr)
+			, pair(kv)
+			, bf(0)
+		{}
+
+	};
+
+	template<class K, class T>
+	class AVLTree
+	{
+	public:
+		typedef AVLTreeNode<K, V> node;
+	private:
+		node* _root;
+	public:
+		bool Insert(const pair(K, V > & kv)
 		{
-			_root = new node(kv);
-			return true;
-		}
-		node* cur = _root;
-		node* parent = nullptr;
-		while (cur)
-		{
-			if (kv.first > cur->_kv.first)
+			if (!root)
 			{
-				parent = cur;
-				cur = cur->right;
+				_root = new node(kv);
+				return true;
 			}
-			else if (kv.first < cur->_kv.first)
+			node* cur = _root;
+			node* parent = nullptr;
+			while (cur)
 			{
-				parent = cur;
-				cur = cur->left;
+				if (kv.first > cur->_kv.first)
+				{
+					parent = cur;
+					cur = cur->right;
+				}
+				else if (kv.first < cur->_kv.first)
+				{
+					parent = cur;
+					cur = cur->left;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			cur = new node(kv);
+			if (kv > parent->_kv.first)
+			{
+				parent->right = cur;
+
 			}
 			else
 			{
-				return false;
+				parent->left = cur;
 			}
+			cur->_parent = parent;
+			cur->_bf = 0;
+			
+			return true;
 		}
-		node* tmp = new node(kv);
-		if (kv > parent->_kv.first)
-		{
-			parent->right = 
-		}
+	};
+
+	void test_AVL1()
+	{
 
 	}
-};
+}
