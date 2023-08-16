@@ -113,7 +113,7 @@ namespace test
 	public:
 		typedef AVLTreeNode<K, V> node;
 	private:
-		node* _root;
+		node* _root = nullptr;
 	public:
 		bool Insert(const pair(K, V > & kv)
 		{
