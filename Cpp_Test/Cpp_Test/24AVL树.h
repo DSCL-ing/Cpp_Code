@@ -2,6 +2,10 @@
 
 /** note
  * 
+ * AVL树,也叫高度平衡搜索二叉树
+ * 
+ * 
+ * 
  * 命名:两位俄罗斯的数学家G.M.Adelson-Velskii和E.M.Landis在1962年发明解决二叉搜索树退化成单支树的方法
  * -- 所以AVL树以两位俄罗斯数学家的名的开头命名A.V.L.
  * 
@@ -13,6 +17,9 @@
  * 一棵AVL树或者是空树，或者是具有以下性质的二叉搜索树：
  * $ 它的左右子树都是AVL树
  * $ 左右子树高度之差(简称平衡因子)的绝对值不超过1(-1/0/1)
+ * balance factor(平衡因子/平衡系数) -- AVL树不一定有平衡因子(有些算法没有)
+ * 
+ * ? 为什么高度差不能绝对为0? 因为有些情况高度差绝对不可能为0 -- 如偶数个结点时
  * 
  * 搜索时间复杂度:
  * 
@@ -52,5 +59,45 @@
 
 
 
+template<class K,class V>
+class AVLTreeNode
+{
+	//三叉链
+	AVLTreeNode* left;
+	AVLTreeNode* right;
+	AVLTreeNode* parent;
+	pair<K, V> _kv;     //键值对
+	int _bf;            //balance factor -- 平衡因子
+
+	AVLTreeNode(const pair<K,V>& kv)
+		:left(nullptr)
+		,right(nullptr)
+		,parent(nullptr)
+		,pair(kv)
+		,bf(0)
+	{}
+
+};
+
+template<class K, class T>
+class AVLTree
+{
+public:
+	typedef AVLTreeNode<K, V> node;
+private:
+	node* _root;
+public:
+	bool Insert(const pair(K,V>& kv)
+	{
+		if (!root)
+		{
+			_root = new node(kv);
+			return true;
+		}
+		node* cur = _root;
+		node* parent = nullptr;
 
 
+		while()
+	}
+};

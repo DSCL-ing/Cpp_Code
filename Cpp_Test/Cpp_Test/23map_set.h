@@ -56,7 +56,7 @@
 /**
  * 认识map
  * 1.认识pair
- //pair的定义(键值对)
+ //pair的定义(键值对) --- 结构体 
 template <class T1, class T2>
 struct pair
 {
@@ -116,6 +116,10 @@ T2& operator[](const T1& key)
 	return ret.first->second;
 }
  * 
+ * map的迭代器:
+ * $ map的迭代器是双向迭代器
+ *  -- 快排需要随机迭代器支持,所以map不能直接通过迭代器使用sort
+ * 
  */
 
 //multimap
@@ -123,6 +127,8 @@ T2& operator[](const T1& key)
  * 和map区别，没有了operator[] -- 因为key和value没有一一映射关系了
  * .
  */
+
+
 
 
 
