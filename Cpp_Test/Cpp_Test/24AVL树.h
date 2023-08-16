@@ -70,9 +70,14 @@
  * 3.调整平衡树
  * 
  * note:
- * 新增的结点,只会影响到他祖先的这一路径的结点
+ * $ 新增的结点,只会影响到他祖先的这一路径的结点
+ * $ 往上更新爷爷结点取决于parent的高度是否发生变化.变了则往上更新(前提是平衡状态),不变则不再更新.
+ *   parent._bf如果更新后为0,说明结点插在矮树这边,使左右子树平衡,即高度不变
+ *   parent._bf如果更行后为-1或1,说明左子树高或右子树高了,高度变了
+ * $ 如果parent-_bf为2,则需要先处理,不能再继续更新(不再平衡)
  * 
  */
+#include<assert.h>
 #include<iostream>
 using std::cout;
 using std::endl;
@@ -90,7 +95,7 @@ namespace test
 		AVLTreeNode* right;
 		AVLTreeNode* parent;
 		pair<K, V> _kv;     //键值对
-		int _bf;            //balance factor -- 平衡因子
+		int _bf;            //balance factor -- 平衡因子 :默认规定为右子树高度减去左子树高度
 
 		AVLTreeNode(const pair<K, V>& kv)
 			:left(nullptr)
@@ -149,6 +154,37 @@ namespace test
 			cur->_parent = parent;
 			cur->_bf = 0;
 			
+			while (parent)
+			{
+				if (cur == parent->left)
+				{
+					--parent->_bf;
+				}
+				else 
+				{
+					++parent->_bf;
+				}
+
+				if (parent->_bf == 0)
+				{
+					break;
+				}
+				else if (parent->_bf == 1 || parent->_bf == -1)
+				{
+					cur = parent;
+					parent = parent->parent;
+				}
+				else if (parent->_bf == 2 || parent->_bf == -2)
+				{
+					//
+				}
+				else
+				{
+					assert(false);
+				}
+
+			}
+
 			return true;
 		}
 	};
