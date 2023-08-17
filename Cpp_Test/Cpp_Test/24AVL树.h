@@ -314,6 +314,17 @@ namespace test
 			parent->_bf = subL->_bf = 0;
 
 		}
+
+		void RotateLR(node*parent)
+		{
+			RotateL(parent->_left);
+			RotateR(parent);
+		}
+		void RotateRL(node* parent)
+		{
+			RotateL(parent->_right);
+			RotateR(parent);
+		}
 	
 	};
 
