@@ -47,6 +47,7 @@
     </ClInclude>
     <ClInclude Include="11myVector.h" />
     <ClInclude Include="16my_Itetator.h" />
+    <ClInclude Include="24AVL树.h" />
     <ClInclude Include="Test.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>

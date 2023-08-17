@@ -41,9 +41,13 @@
  * $ 如果父根是整棵树的根,则调整完后需要更新根节点
  * 助记:原有位置有子树的,被取代的,按从根开始插入,得到的位置就是新位置
  * 
- * ? 为什么叫右单旋?  可以理解成右下旋
+ * ? 为什么叫右单旋?  可以理解成右下旋  -- 右边高右边旋
  * 
  * 2.左单旋(右右): 基本和右单旋一样
+ * 
+ * $ 单旋：你的右变我的左，我的左变你的右（先断子树后父树）
+ * 
+ * 
  * 
  * 3.新结点插入较高左子树的右侧(左右) :
  * $ 先左单旋再右单旋(先左子树的子(两个绝对值为1的)树旋,后两个父(两个绝对值为2的)旋)
@@ -91,18 +95,18 @@ namespace test
 	class AVLTreeNode
 	{
 		//三叉链: left right parent
-		AVLTreeNode* left;
-		AVLTreeNode* right;
-		AVLTreeNode* parent;
+		AVLTreeNode* _left;
+		AVLTreeNode* _right;
+		AVLTreeNode* _parent;
 		pair<K, V> _kv;     //键值对
 		int _bf;            //balance factor -- 平衡因子 :默认规定为右子树高度减去左子树高度
 
 		AVLTreeNode(const pair<K, V>& kv)
-			:left(nullptr)
-			, right(nullptr)
-			, parent(nullptr)
-			, pair(kv)
-			, bf(0)
+			:_left(nullptr)
+			, _right(nullptr)
+			, _parent(nullptr)
+			, _pair(kv)
+			, _ bf(0)
 		{}
 
 	};
@@ -129,12 +133,12 @@ namespace test
 				if (kv.first > cur->_kv.first)
 				{
 					parent = cur;
-					cur = cur->right;
+					cur = cur->_right;
 				}
 				else if (kv.first < cur->_kv.first)
 				{
 					parent = cur;
-					cur = cur->left;
+					cur = cur->_left;
 				}
 				else
 				{
@@ -142,21 +146,21 @@ namespace test
 				}
 			}
 			cur = new node(kv);
-			if (kv > parent->_kv.first)
+			if (kv ->_parent->_kv.first)
 			{
-				parent->right = cur;
+				parent->_right = cur;
 
 			}
 			else
 			{
-				parent->left = cur;
+				parent->_left = cur;
 			}
 			cur->_parent = parent;
 			cur->_bf = 0;
 			
 			while (parent)
 			{
-				if (cur == parent->left)
+				if (cur == parent->_left)
 				{
 					--parent->_bf;
 				}
@@ -172,7 +176,7 @@ namespace test
 				else if (parent->_bf == 1 || parent->_bf == -1)
 				{
 					cur = parent;
-					parent = parent->parent;
+					parent = parent->_parent;
 				}
 				else if (parent->_bf == 2 || parent->_bf == -2)
 				{
@@ -187,6 +191,122 @@ namespace test
 
 			return true;
 		}
+	private:
+		/**左单旋
+		 * 设x 为   x           y为   y        z为 z
+		 *        1   1             1                 1
+		 * 
+		 * 
+		 * a,b,c一定是是x,y,z三种情况之一  
+		 * 
+		 * 当c为x情况下,在经过祖先c插入的一定是符合左单旋 -- 右右(右右分别为1,c)
+		 * 
+		 *           p(parent)
+		 *       a        sR(subR)
+		 *              b(subRL)  c
+		 * 
+		 * 左单旋操作
+		 * 1.旋转
+		 * $.将b链接到p的左边 然后更新b的_parent , _parent=p(前提是b不为空)
+		 * $.将p链接到sR,然后更新p的_parent , _parent=sR
+		 * 2.更新根
+		 * $.如果是根(pparent==nullptr),则更新_root , _root=subR 
+		 * $.如果不是根,判断是祖先结点的左还是右,然后再链接上,最后记得更新_parent
+		 * 3.更新parent和subR的平衡因子_bf, 旋转后平衡因子都为0 
+		 * 
+		 */
+		void RotateL(node* parent)//左单旋 -- parent是|bf|为2的结点
+		{
+			
+			node* pparent = parent->_parent;
+			node* subR = parent->_right;//sR
+			node* subRL = subR->_left; //b
+			
+			//1.将b链接到p的右边 然后更新b的parent=p(前提是b不为空)
+			parent->_right = subRL;
+			if (subRL)
+			{
+				subRL->_parent = parent;
+			}
+
+			//2.将p链接到sR,然后更新p的parent=sR
+			subR->_left = parent;
+			parent->_parent = subR;
+
+
+			//3.更新根
+			if (!pparent)
+			{
+				_root = subR;
+				_root->_parent = nullptr;
+			}
+			else
+			{
+				if (pparent->_left == parent)
+				{
+					pparent->_left = subR;
+					subR->_parent = pparent;
+				}
+				else
+				{
+					pparent->_right = subR;
+					subR->_parent = pparent;
+				}
+			}
+			parent->_bf = subR->_bf = 0;
+
+		}
+
+
+		/**
+		 * 
+		 *            p(parent)
+		 *        sL(subL)      c  
+		 *       a   b(subLR)  
+		 * 
+		 */
+		void RotateR(node* parent)//右单旋 -- parent是|bf|为2的结点
+		{
+
+			node* pparent = parent->_parent;
+			node* subL = parent->_left;//sR	
+			node* subLR = subL->_right; //b
+
+			//1.将b链接到p的左边 然后更新b的parent=p(前提是b不为空)
+			parent->_left = subRL;
+			if (subLR)
+			{
+				subLR->_parent = parent;
+			}
+
+			//2.将p链接到sL,然后更新p的parent=sL
+			subL->_right = parent;
+			parent->_parent = subL;
+
+
+			//3.更新根
+			if (!pparent)
+			{
+				_root = subL;
+				_root->_parent = nullptr;
+			}
+			else
+			{
+				if (pparent->_left == parent)
+				{
+					pparent->_left = subL;
+					subL->_parent = pparent;
+				}
+				else
+				{
+					pparent->_right = subL;
+					subL->_parent = pparent;
+				}
+			}
+			parent->_bf = subL->_bf = 0;
+
+		}
+	
 	};
 
 	void test_AVL1()
