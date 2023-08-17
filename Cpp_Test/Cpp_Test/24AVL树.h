@@ -28,7 +28,7 @@
 
 //AVL树的旋转
 /**
- * 1.右单旋(左左):新结点插入在较高左子树的左树 -- (设为该左子树的根为"根",不一定是整棵树的根)
+ * 1.右单旋(左左,-2-1):新结点插入在较高左子树的左树 -- (设为该左子树的根为"根",不一定是整棵树的根)
  * $ 插入前,AVL树是平衡的
  * 插入后,以根的父节点为根的这棵子树不平衡 -- 设为"父根"
  * 旋转:将父根取出,根代替父根的位置,而父根取代根的右子树.如果根有右子树,则根的右子树成为父根的左子树
@@ -43,7 +43,7 @@
  * 
  * ? 为什么叫右单旋?  可以理解成右下旋  -- 右边高右边旋
  * 
- * 2.左单旋(右右): 基本和右单旋一样
+ * 2.左单旋(右右+2+1): 和右单旋一样
  * 
  * $ 单旋：你的右变我的左，我的左变你的右（先断子树后父树）
  * 
@@ -181,6 +181,14 @@ namespace test
 				else if (parent->_bf == 2 || parent->_bf == -2)
 				{
 					//
+					if (parent->_bf == 2 && cur->_bf == 1)
+					{
+						RotateL(parent);
+					}
+					else if (parent->_bf == -2 && cur->_bf == -1)
+					{
+						RotateR(parent);
+					}
 				}
 				else
 				{
@@ -215,7 +223,7 @@ namespace test
 		 * 3.更新parent和subR的平衡因子_bf, 旋转后平衡因子都为0 
 		 * 
 		 */
-		void RotateL(node* parent)//左单旋 -- parent是|bf|为2的结点
+		void RotateL(node* parent)//左单旋 -- parent是bf为2的结点
 		{
 			
 			node* pparent = parent->_parent;
@@ -235,7 +243,7 @@ namespace test
 
 
 			//3.更新根
-			if (!pparent)
+			if (parent == _root)
 			{
 				_root = subR;
 				_root->_parent = nullptr;
@@ -265,7 +273,7 @@ namespace test
 		 *       a   b(subLR)  
 		 * 
 		 */
-		void RotateR(node* parent)//右单旋 -- parent是|bf|为2的结点
+		void RotateR(node* parent)//右单旋 -- parent是bf为-2的结点
 		{
 
 			node* pparent = parent->_parent;
@@ -285,7 +293,7 @@ namespace test
 
 
 			//3.更新根
-			if (!pparent)
+			if (parent == _root)
 			{
 				_root = subL;
 				_root->_parent = nullptr;
