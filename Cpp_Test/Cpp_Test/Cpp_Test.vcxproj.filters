@@ -78,7 +78,7 @@
     <ClInclude Include="23map_set.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="24AVL树.h">
+    <ClInclude Include="24AVLTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

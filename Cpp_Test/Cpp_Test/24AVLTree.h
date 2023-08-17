@@ -91,32 +91,33 @@
 using std::cout;
 using std::endl;
 using std::cin;
+using std::pair;
 
 namespace test
 {
 
 
 	template<class K, class V>
-	class AVLTreeNode
+	struct AVLTreeNode
 	{
 		//三叉链: left right parent
 		AVLTreeNode* _left;
 		AVLTreeNode* _right;
 		AVLTreeNode* _parent;
-		pair<K, V> _kv;     //键值对
+		std::pair<K, V> _kv;     //键值对
 		int _bf;            //balance factor -- 平衡因子 :默认规定为右子树高度减去左子树高度
 
-		AVLTreeNode(const pair<K, V>& kv)
+		AVLTreeNode(const std::pair<K, V>& kv)
 			:_left(nullptr)
-			, _right(nullptr)
-			, _parent(nullptr)
-			, _pair(kv)
-			, _ bf(0)
+			,_right(nullptr)
+			,_parent(nullptr)
+			,_kv(kv)
+			,_bf(0)
 		{}
 
 	};
 
-	template<class K, class T>
+	template<class K, class V>
 	class AVLTree
 	{
 	public:
@@ -124,9 +125,9 @@ namespace test
 	private:
 		node* _root = nullptr;
 	public:
-		bool Insert(const pair(K, V > & kv)
+		bool Insert(const std::pair<K, V>& kv)
 		{
-			if (!root)
+			if (!_root)
 			{
 				_root = new node(kv);
 				return true;
@@ -151,7 +152,7 @@ namespace test
 				}
 			}
 			cur = new node(kv);
-			if (kv ->_parent->_kv.first)
+			if (kv.first>parent->_kv.first)
 			{
 				parent->_right = cur;
 
@@ -180,8 +181,8 @@ namespace test
 				}
 				else if (parent->_bf == 1 || parent->_bf == -1)
 				{
-					cur = parent;
 					parent = parent->_parent;
+					cur = cur->_parent;
 				}
 				else if (parent->_bf == 2 || parent->_bf == -2)
 				{
@@ -200,7 +201,7 @@ namespace test
 					}
 					else if (parent->_bf == 2 && cur->_bf == -1)
 					{
-
+						RotateRL(parent);
 					}
 					else
 					{
@@ -213,10 +214,25 @@ namespace test
 				}
 
 			}
-
 			return true;
 		}
+	public:
+		void AVLInOrderTraversal()
+		{
+			_AVLInOrderTraversal(_root);
+		}
 	private:
+		void AVLInOrderTraversal(node* root)
+		{
+			if (root == nullptr)
+			{
+				return;
+			}
+			_AVLInOrderTraversal(root->_left);
+			cout << "key:> " << root->_kv.first << " " << "bf:> " << root->_bf << endl;
+			_AVLInOrderTraversal(root->_right);
+		}
+
 		/**左单旋
 		 * 设x 为   x           y为   y        z为 z
 		 *        1   1             1                 1
@@ -298,7 +314,7 @@ namespace test
 			node* subLR = subL->_right; //b
 
 			//1.将b链接到p的左边 然后更新b的parent=p(前提是b不为空)
-			parent->_left = subRL;
+			parent->_left = subLR;
 			if (subLR)
 			{
 				subLR->_parent = parent;
@@ -340,6 +356,10 @@ namespace test
 		 *  a          b      c--高度h-1       d
 		 *  a          b      c                         
 		 * 
+		 * 
+		 * 
+		 * 
+		 * 
 		 *  $ 在sLR处插入都会引发旋转,因为d矮了
 		 *  
 		 * 旋转:先左旋,后右旋
@@ -349,7 +369,7 @@ namespace test
 		 * 3.更新平衡因子
 		 * $.插在右边,sL为-1
 		 * $.插在左边,p为-1
-		 * $,如果插入后sLR为0(刚好sLR是新插入的),则还是原来的
+		 * $,如果插入后sLR为0(刚好sLR是新插入的),即h=0，整棵树就3结点，平衡后都是0
 		 *
 		 * 
 		 * 
@@ -357,7 +377,7 @@ namespace test
 		 */
 		void RotateLR(node*parent) //左右
 		{
-			node* subL = parent->left;
+			node* subL = parent->_left;
 			node* subLR = subL->_right;
 			int bf = subLR->_bf;
 			RotateL(parent->_left);
@@ -376,8 +396,9 @@ namespace test
 			}
 			else if (bf == 0)
 			{
-				subL->_bf = -1;
-				parent->_bf = 1;
+				subL->_bf = 0;
+				parent->_bf = 0;
+				subLR->_bf = 0;
 			}
 			else//以防万一，安全一点
 			{
@@ -430,6 +451,13 @@ namespace test
 
 	void test_AVL1()
 	{
+		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 };
+		test::AVLTree<int, int> a;
+		for (auto i : arr)
+		{
+			a.Insert(std::make_pair(i,i));
+		}
+		
 
 	}
 }
