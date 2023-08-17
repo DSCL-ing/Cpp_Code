@@ -194,6 +194,18 @@ namespace test
 					{
 						RotateR(parent);
 					}
+					else if (parent->_bf == -2 && cur->_bf == 1)
+					{
+						RotateLR(parent);
+					}
+					else if (parent->_bf == 2 && cur->_bf == -1)
+					{
+
+					}
+					else
+					{
+						assert(false);
+					}
 				}
 				else
 				{
@@ -337,20 +349,82 @@ namespace test
 		 * 3.更新平衡因子
 		 * $.插在右边,sL为-1
 		 * $.插在左边,p为-1
-		 * $,如果插入后sLR为0(sLR是新插入的),则不变
+		 * $,如果插入后sLR为0(刚好sLR是新插入的),则还是原来的
+		 *
+		 * 
 		 * 
 		 * 
 		 */
 		void RotateLR(node*parent) //左右
 		{
+			node* subL = parent->left;
+			node* subLR = subL->_right;
+			int bf = subLR->_bf;
 			RotateL(parent->_left);
 			RotateR(parent);
+			if (bf == 1)
+			{
+				parent->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+				subL->_bf = -1;//必须手动置零
+				subLR->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+			}
+			else if (bf == -1)
+			{
+				parent->_bf = 1;//必须手动置零
+				subL->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+				subLR->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+			}
+			else if (bf == 0)
+			{
+				subL->_bf = -1;
+				parent->_bf = 1;
+			}
+			else//以防万一，安全一点
+			{
+				assert(false);
+			}
 		}
-		void RotateRL(node* parent)
+
+
+		/**
+		 * 
+		 *                       p
+		 *    |a--高度h                  sR                          
+		 *     a              sRL                 |d|--高度h  
+		 *     a            b      c--高度h-1      d          
+		 *                  b      c               d                     
+		 * 
+		 */
+		void RotateRL(node* parent) //右左
 		{
-			RotateL(parent->_right);
+			node* subR = parent->_right;
+			node* subRL = subR->_left;
+			int bf = subRL->_bf;
+			RotateL(parent->_left);
 			RotateR(parent);
+			if (bf == 1)
+			{
+				parent->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+				subR->_bf = -1;//必须手动置零
+				subRL->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+			}
+			else if (bf == -1)
+			{
+				parent->_bf = 1;//必须手动置零
+				subR->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+				subRL->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+			}
+			else if (bf == 0)
+			{
+				subR->_bf = -1;
+				parent->_bf = 1;
+			}
+			else//以防万一，安全一点
+			{
+				assert(false);
+			}
 		}
+
 	
 	};
 
