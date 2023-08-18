@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 /** note
- * 
+ * 简称:AVLT
  * AVL树,也叫高度平衡搜索二叉树
  * 
  * 
