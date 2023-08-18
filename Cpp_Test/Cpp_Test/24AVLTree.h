@@ -168,18 +168,18 @@ namespace test
 			}
 			cur->_parent = parent;
 			//cur->_bf = 0;
-			cout << parent->_bf << " ";
+			//cout << "插入后父亲的平衡因子:>"<<parent->_bf << " ";
 			while (parent)
 			{
 				if (cur == parent->_left)
 				{
-					--parent->_bf;
-					cout << parent->_bf << " ";
+					--(parent->_bf);
+					//cout << "更新后父亲的平衡因子:>"<<parent->_bf << " ";
 				}
 				else 
 				{
-					++parent->_bf;
-					cout << parent->_bf << " ";
+					++(parent->_bf);
+					//cout << "更新后父亲的平衡因子:>" << parent->_bf << " ";
 				}
 
 				if (parent->_bf == 0)
@@ -196,26 +196,27 @@ namespace test
 					//
 					if (parent->_bf == 2 && cur->_bf == 1)
 					{
-						cout << "RotateL" << " ";
+						//cout << "RotateL" << " ";
 						RotateL(parent);
 					}
 					else if (parent->_bf == -2 && cur->_bf == -1)
 					{
-						cout << "RotateR" << " ";
+						//cout << "RotateR" << " ";
 						RotateR(parent);
 					}
 					else if (parent->_bf == -2 && cur->_bf == 1)
 					{
-						cout << "RotateLR" << " ";
+						//cout << "RotateLR" << " ";
 						RotateLR(parent);
 					}
 					else if (parent->_bf == 2 && cur->_bf == -1)
 					{
-						cout << "RotateRL" << " ";
+						//cout << "RotateRL" << " ";
 						RotateRL(parent);
 					}
 					else
 					{
+						cout << " 错误的结点的父 " << parent->_kv.first << " 错误的结点的子 " << cur->_kv.first << " ";
 						assert(false);
 					}
 					break;
@@ -226,7 +227,7 @@ namespace test
 				}
 
 			}
-			cout << endl;
+			//cout << endl;
 			return true;
 		}
 	public:
@@ -235,8 +236,64 @@ namespace test
 			_AVLInOrderTraversal(_root);
 		}
 
+		bool isBalanceTree()
+		{
+			return _isBalanceTree(_root);
+		}
+
+		int Height()
+		{
+			return _Height(_root);
+		}
+
 	private:
-		void AVLInOrderTraversal(node* root)
+
+		bool _isBalanceTree(node* root)
+		{
+			if (!root)
+			{
+				return true;
+			}
+			//左右子树高度差的模或bf的模是否小于2
+			int leftH = _Height(root->_left);
+			int rightH = _Height(root->_right);
+			int diff = rightH - leftH;
+			int Hdiff_abs = abs(rightH - leftH);
+			//if (abs(root->_bf) >2 || Hdiff_abs > 2)
+			//{
+			//	cout << "左右子树高度差的模或bf的模大于2,key为:>" << root->_kv.first << endl;
+			//	return false;
+			//}
+
+			////左右子树的高度差的模是否为bf
+			//if (diff != root->_bf)
+			//{
+			//	cout << "左右子树的高度差的模不等于平衡因子,key为:>"<<root->_kv.first <<" 平衡因子为: "<< root->_bf << endl;
+			//	//return false;
+
+			//}
+
+			return abs(root->_bf) < 2
+				&& Hdiff_abs < 2
+				&& diff == root->_bf
+				&& _isBalanceTree(root->_left)
+				&& _isBalanceTree(root->_right);
+
+		}
+
+		int _Height(node* root)
+		{
+			if (!root)
+			{
+				return 0;
+			}
+			int leftH = _Height(root->_left);
+			int rightH = _Height(root->_right);
+
+			return leftH > rightH ? leftH + 1 : rightH + 1;
+		}
+
+		void _AVLInOrderTraversal(node* root)
 		{
 			if (root == nullptr)
 			{
@@ -247,6 +304,8 @@ namespace test
 			_AVLInOrderTraversal(root->_right);
 		}
 
+
+		
 		/**左单旋
 		 * 设x 为   x           y为   y        z为 z
 		 *        1   1             1                 1
@@ -272,7 +331,6 @@ namespace test
 		 */
 		void RotateL(node* parent)//左单旋 -- parent是bf为2的结点
 		{
-			node* pparent = parent->_parent;
 			node* subR = parent->_right;//sR
 			node* subRL = subR->_left; //b
 			
@@ -282,6 +340,8 @@ namespace test
 			{
 				subRL->_parent = parent;
 			}
+
+			node* pparent = parent->_parent;
 
 			//2.将p链接到sR,然后更新p的parent=sR
 			subR->_left = parent;
@@ -299,18 +359,16 @@ namespace test
 				if (pparent->_left == parent)
 				{
 					pparent->_left = subR;
-					subR->_parent = pparent;
 				}
 				else
 				{
 					pparent->_right = subR;
-					subR->_parent = pparent;
 				}
+					subR->_parent = pparent;
 			}
 			parent->_bf = subR->_bf = 0;
 
 		}
-
 
 		/**
 		 * 
@@ -321,7 +379,6 @@ namespace test
 		 */
 		void RotateR(node* parent)//右单旋 -- parent是bf为-2的结点
 		{
-			node* pparent = parent->_parent;
 			node* subL = parent->_left;//sR	
 			node* subLR = subL->_right; //b
 
@@ -331,6 +388,8 @@ namespace test
 			{
 				subLR->_parent = parent;
 			}
+
+			node* pparent = parent->_parent;
 
 			//2.将p链接到sL,然后更新p的parent=sL
 			subL->_right = parent;
@@ -348,13 +407,12 @@ namespace test
 				if (pparent->_left == parent)
 				{
 					pparent->_left = subL;
-					subL->_parent = pparent;
 				}
 				else
 				{
 					pparent->_right = subL;
-					subL->_parent = pparent;
 				}
+				subL->_parent = pparent;
 			}
 			parent->_bf = subL->_bf = 0;
 
@@ -397,27 +455,26 @@ namespace test
 			if (bf == 1)
 			{
 				parent->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
-				subL->_bf = -1;//必须手动置零
 				subLR->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+				subL->_bf = -1;//必须手动置零
 			}
 			else if (bf == -1)
 			{
 				parent->_bf = 1;//必须手动置零
-				subL->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
 				subLR->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+				subL->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
 			}
 			else if (bf == 0)
 			{
-				subL->_bf = 0;
 				parent->_bf = 0;
 				subLR->_bf = 0;
+				subL->_bf = 0;
 			}
 			else//以防万一，安全一点
 			{
 				assert(false);
 			}
 		}
-
 
 		/**
 		 * 
@@ -437,14 +494,14 @@ namespace test
 			RotateL(parent);
 			if (bf == 1) //插在右边,右边平衡,左边不平衡
 			{
-				parent->_bf = -1;
 				subR->_bf = 0;
+				parent->_bf = -1;
 				subRL->_bf = 0;
 			}
 			else if (bf == -1) //插在左边,左边平衡,右边不平衡
 			{
+				subR->_bf = 1;
 				parent->_bf = 0;
-				subR->_bf = -1;
 				subRL->_bf = 0;
 			}
 			else if (bf == 0)
@@ -459,6 +516,7 @@ namespace test
 			}
 		}
 
+
 	
 	};
 
@@ -466,13 +524,29 @@ namespace test
 	{
 		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 }; //结点7:左右 结点9:右 结点26:左 结点18:右左 结点15:左右
 		//int arr[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16, 14 }; //只有一个右左,结点6
-		test::AVLTree<int, int> a;
+		test::AVLTree<int, int> t;
 		for (auto i : arr)
 		{
 			cout << "i:>" << i << "\t";
-			a.Insert(std::make_pair(i,i));
+			t.Insert(std::make_pair(i,i));
 			cout << endl;
 		}
-		
+		t.AVLInOrderTraversal();
+		cout << "是否为AVL树? " << t.isBalanceTree() << endl;
+	}
+
+#include<time.h>
+	void test_AVL2()
+	{
+		srand((size_t)time(0));
+		const size_t N = 1000;
+		test::AVLTree<int, int> t;
+		for (size_t i = 0; i < N; ++i)
+		{
+			size_t x = rand();
+			//cout << "x:>" << x << "\t";
+			t.Insert(std::make_pair(x, x));
+		}
+		cout << t.isBalanceTree()<<endl;
 	}
 }

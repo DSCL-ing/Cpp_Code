@@ -31,6 +31,9 @@
     <ClInclude Include="1algorithm.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="1编译器设置与调试.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="21polymorphism.h" />
     <ClInclude Include="22BST.h" />
     <ClInclude Include="23map_set.h" />

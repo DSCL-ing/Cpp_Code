@@ -10,7 +10,8 @@ using std::set;
 #include"24AVLTree.h"
 int main()
 {
-	test::test_AVL1();
+	//test::test_AVL1();
+	test::test_AVL2();
 	return 0;
 }
 

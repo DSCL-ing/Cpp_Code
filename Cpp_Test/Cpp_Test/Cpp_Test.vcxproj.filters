@@ -81,6 +81,9 @@
     <ClInclude Include="24AVLTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="1编译器设置与调试.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="1Date.cpp">
