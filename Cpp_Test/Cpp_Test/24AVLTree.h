@@ -120,7 +120,6 @@ namespace test
 			,_kv(kv)
 			,_bf(0)
 		{}
-
 	};
 
 	template<class K, class V>
@@ -168,17 +167,19 @@ namespace test
 				parent->_left = cur;
 			}
 			cur->_parent = parent;
-			cur->_bf = 0;
-			
+			//cur->_bf = 0;
+			cout << parent->_bf << " ";
 			while (parent)
 			{
 				if (cur == parent->_left)
 				{
 					--parent->_bf;
+					cout << parent->_bf << " ";
 				}
 				else 
 				{
 					++parent->_bf;
+					cout << parent->_bf << " ";
 				}
 
 				if (parent->_bf == 0)
@@ -195,24 +196,29 @@ namespace test
 					//
 					if (parent->_bf == 2 && cur->_bf == 1)
 					{
+						cout << "RotateL" << " ";
 						RotateL(parent);
 					}
 					else if (parent->_bf == -2 && cur->_bf == -1)
 					{
+						cout << "RotateR" << " ";
 						RotateR(parent);
 					}
 					else if (parent->_bf == -2 && cur->_bf == 1)
 					{
+						cout << "RotateLR" << " ";
 						RotateLR(parent);
 					}
 					else if (parent->_bf == 2 && cur->_bf == -1)
 					{
+						cout << "RotateRL" << " ";
 						RotateRL(parent);
 					}
 					else
 					{
 						assert(false);
 					}
+					break;
 				}
 				else
 				{
@@ -220,6 +226,7 @@ namespace test
 				}
 
 			}
+			cout << endl;
 			return true;
 		}
 	public:
@@ -227,6 +234,7 @@ namespace test
 		{
 			_AVLInOrderTraversal(_root);
 		}
+
 	private:
 		void AVLInOrderTraversal(node* root)
 		{
@@ -264,7 +272,6 @@ namespace test
 		 */
 		void RotateL(node* parent)//左单旋 -- parent是bf为2的结点
 		{
-			
 			node* pparent = parent->_parent;
 			node* subR = parent->_right;//sR
 			node* subRL = subR->_left; //b
@@ -282,7 +289,7 @@ namespace test
 
 
 			//3.更新根
-			if (parent == _root)
+			if (!pparent)
 			{
 				_root = subR;
 				_root->_parent = nullptr;
@@ -314,7 +321,6 @@ namespace test
 		 */
 		void RotateR(node* parent)//右单旋 -- parent是bf为-2的结点
 		{
-
 			node* pparent = parent->_parent;
 			node* subL = parent->_left;//sR	
 			node* subLR = subL->_right; //b
@@ -427,24 +433,25 @@ namespace test
 			node* subR = parent->_right;
 			node* subRL = subR->_left;
 			int bf = subRL->_bf;
-			RotateL(parent->_left);
-			RotateR(parent);
-			if (bf == 1)
+			RotateR(parent->_right);
+			RotateL(parent);
+			if (bf == 1) //插在右边,右边平衡,左边不平衡
 			{
-				parent->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
-				subR->_bf = -1;//必须手动置零
-				subRL->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+				parent->_bf = -1;
+				subR->_bf = 0;
+				subRL->_bf = 0;
 			}
-			else if (bf == -1)
+			else if (bf == -1) //插在左边,左边平衡,右边不平衡
 			{
-				parent->_bf = 1;//必须手动置零
-				subR->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
-				subRL->_bf = 0;//虽然左旋和右旋已经置零，但是以防万一，安全一点，再次置零
+				parent->_bf = 0;
+				subR->_bf = -1;
+				subRL->_bf = 0;
 			}
 			else if (bf == 0)
 			{
-				subR->_bf = -1;
-				parent->_bf = 1;
+				subR->_bf = 0;
+				parent->_bf = 0;
+				subRL->_bf = 0;
 			}
 			else//以防万一，安全一点
 			{
@@ -457,13 +464,15 @@ namespace test
 
 	void test_AVL1()
 	{
-		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 };
+		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 }; //结点7:左右 结点9:右 结点26:左 结点18:右左 结点15:左右
+		//int arr[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16, 14 }; //只有一个右左,结点6
 		test::AVLTree<int, int> a;
 		for (auto i : arr)
 		{
+			cout << "i:>" << i << "\t";
 			a.Insert(std::make_pair(i,i));
+			cout << endl;
 		}
 		
-
 	}
 }
