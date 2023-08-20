@@ -123,10 +123,10 @@ namespace test
 
 		AVLTreeNode(const std::pair<K, V>& kv)
 			:_left(nullptr)
-			,_right(nullptr)
-			,_parent(nullptr)
-			,_kv(kv)
-			,_bf(0)
+			, _right(nullptr)
+			, _parent(nullptr)
+			, _kv(kv)
+			, _bf(0)
 		{}
 	};
 
