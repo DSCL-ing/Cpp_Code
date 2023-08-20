@@ -157,7 +157,9 @@ namespace test
 			 * $ 需要旋转的情形(为了保持规则4(一样多的黑结点):
 			 * 在不修改新插入结点颜色的情况下,无论怎么变色都不平衡,即不能维持规则4的情况下,只能进行旋转操作(降高度才能保持黑同规则) --
 			 * $ 降高度其实是改变不同路径的长度,-- 维持黑同规则的最终手段
-			 * $ 不能直接把p变黑,因为p的另一条子路可能会有黑,变的话可能会违反规则4(黑同)
+			 * 
+			 * ? 双红且u为黑的情况下(双旋),为什么不能直接把p变黑? 
+			 * $ 不能直接把p变黑,因为p的另一条子路可能会有黑,变的话可能会违反规则4(黑同) -- 必须保持双红,通过旋转调整 ->g变红,cur变黑
 			 *
 			 * 单旋情形									    旋转后
 			 *            g(黑)							 |	           p(黑)
@@ -175,7 +177,7 @@ namespace test
 			 *
 			 * $ 注:
 			 * 1.u为黑的情况是由子结点向上调整产生的(因为每次插入的结点都是红色,调整才能变黑) , 且cur结点原来是黑色的,红色是由下面结点调整的
-			 * 2.u不存在(叔叔路径会缺一个黑),说明cur一定是新增结点, -- ,插在红p则平衡不了,需要旋转
+			 * 2.u不存在(变色后叔叔路径会缺一个黑 ),说明cur一定是新增结点, -- ,插在红p则平衡不了,需要旋转
 			 *
 			 * 继续调整的跨度为cur->grandfather , 因为父亲位于中间位置,最后修改的是祖父,只有祖父对上面的结点有影响
 			 *
@@ -186,31 +188,93 @@ namespace test
 
 			while (parent && parent == RED) //parent==RED 说明parent一定不是根,即一定存在祖父
 			{
-				node* g = parent->_parent;
+				node* g = parent->_parent; //grandfather
 
-				if (cur == parent->_right)
+				if (parent == g->_right)
 				{
-					node* u = g->left;
+					node* u = g->_left; //uncle
+					//uncle存在且为红
 					if (u && u->_col == RED)
 					{
+						g->_col = RED;
 						parent->_col = BLACK;
-						cur->_col = RED;
+						u->_col = BLACK;
+						//cur->_col = RED;
+
+						//循环继续走:
+						cur = g; //为什么? 因为grandfather 变红了
+						parent = g->_parent;
 					}
+					//uncle不存在或uncle为黑
 					else
 					{
+						/**
+						 * 祖父右单旋情形									    旋转后
+						 *            g(黑)							 |	           p(黑)
+						 *   u(黑)           p(红) 				     |	   g(红)           c(红)
+						 *                         c(红)			 | u(黑)	c的左(黑)
+						 */
 						if (cur == parent->_right)
 						{
 							RotateL(g);
+							parent->_col = BLACK;
+							g->_col = RED;
+							//u->_col = BLACK;
+							//cur->_col = RED;
 						}
+						/**
+						 * 双旋情形                                      旋转后
+						 *            g(黑)						     |                 c(黑)
+						 *    p(红)             u(黑)				 |          p(红)		 g(红)         
+						 *  x      c(红)        					 | 		x 			       u(黑)  
+						 */
+						else
+						{
+							RotateRL(parent);
+							g->_col = RED;
+							cur->_col = BLACK;
+							//parent->_col = RED;
+							/* u->_col = BLACK;*/ //可能不存在.
 
+						}
+						break;
 					}
 
 				}
 				else
 				{
+					node* u = g->_right; //uncle
+//uncle存在且为红
+					if (u && u->_col == RED)
+					{
+						g->_col = RED;
+						parent->_col = BLACK;
+						u->_col = BLACK;
+						//cur->_col = RED;
+						cur = g;
+						parent = g->_parent;
+					}
+					//uncle不存在或uncle为黑
+					else
+					{
+						if (cur == parent->_left)
+						{
+							RotateR(g);
+							parent->_col = BLACK;
+							g->_col = RED;
+						}
+						else
+						{
+							RotateRL(parent);
+							g->_col = RED;
+							cur->_col = BLACK;
+							//parent->_col = RED;
+							/* u->_col = BLACK;*/ //可能不存在.
+						}
+						break;
 
+					}
 				}
-				break;
 			}
 
 			return true;
