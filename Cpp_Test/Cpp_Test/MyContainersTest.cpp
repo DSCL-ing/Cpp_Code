@@ -1,19 +1,7 @@
 ﻿
 #pragma once
 
-#include<iostream>
-#include<set>
-using std::cout;
-using std::endl;
-using std::cin;
-using std::set;
-#include"24AVLTree.h"
-int main()
-{
-	//test::test_AVL1();
-	test::test_AVL2();
-	return 0;
-}
+
 
 //#include<iostream>
 //#include<set>

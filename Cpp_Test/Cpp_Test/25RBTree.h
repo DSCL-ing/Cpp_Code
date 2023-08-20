@@ -89,6 +89,7 @@ namespace test
 			if (!_root)
 			{
 				_root = new node(kv);
+				_root->_col = BLACK;
 				return true;
 			}
 			node* cur = _root;
@@ -186,10 +187,9 @@ namespace test
 			 *
 			 */
 
-			while (parent && parent == RED) //parent==RED 说明parent一定不是根,即一定存在祖父
+			while (parent && parent->_col == RED) //parent==RED 说明parent一定不是根,即一定存在祖父
 			{
 				node* g = parent->_parent; //grandfather
-
 				if (parent == g->_right)
 				{
 					node* u = g->_left; //uncle
@@ -203,7 +203,7 @@ namespace test
 
 						//循环继续走:
 						cur = g; //为什么? 因为grandfather 变红了
-						parent = g->_parent;
+						parent = cur->_parent;
 					}
 					//uncle不存在或uncle为黑
 					else
@@ -225,13 +225,13 @@ namespace test
 						/**
 						 * 双旋情形                                      旋转后
 						 *            g(黑)						     |                 c(黑)
-						 *    p(红)             u(黑)				 |          p(红)		 g(红)         
-						 *  x      c(红)        					 | 		x 			       u(黑)  
+						 *   u(黑)           p(红) 					 |          g(红)		 p(红)         
+						 *                c(红)        		    	 | 		u(黑) 			       x        
 						 */
 						else
 						{
-							RotateL(parent);
-							RotateR(g);
+							RotateR(parent);
+							RotateL(g);
 							g->_col = RED;
 							cur->_col = BLACK;
 							//parent->_col = RED;
@@ -245,7 +245,7 @@ namespace test
 				else
 				{
 					node* u = g->_right; //uncle
-//uncle存在且为红
+					//uncle存在且为红
 					if (u && u->_col == RED)
 					{
 						g->_col = RED;
@@ -253,7 +253,7 @@ namespace test
 						u->_col = BLACK;
 						//cur->_col = RED;
 						cur = g;
-						parent = g->_parent;
+						parent = cur->_parent;
 					}
 					//uncle不存在或uncle为黑
 					else
@@ -264,10 +264,16 @@ namespace test
 							parent->_col = BLACK;
 							g->_col = RED;
 						}
+						/**
+						 * 双旋情形                                      旋转后
+						 *            g(黑)						     |                 c(黑)
+						 *    p(红)             u(黑)				 |          p(红)		 g(红)         
+						 *  x      c(红)        					 | 		x 			       u(黑)  
+						 */
 						else
 						{
-							RotateR(parent);
-							RotateL(g);
+							RotateL(parent);
+							RotateR(g);
 							g->_col = RED;
 							cur->_col = BLACK;
 							//parent->_col = RED;
@@ -278,7 +284,7 @@ namespace test
 					}
 				}
 			}
-
+			_root->_col = BLACK;
 			return true;
 
 		}
@@ -324,7 +330,7 @@ namespace test
 				return;
 			}
 			_InOrderTraversal(root->_left);
-			cout << "key:> " << root->_kv.first << " ";
+			cout << root->_kv.first << " ";
 			_InOrderTraversal(root->_right);
 		}
 
@@ -372,8 +378,8 @@ namespace test
 		 */
 		void RotateR(node* parent)
 		{
-			node* subL = parent->_left; /
-				node * subLR = subL->_right;
+			node* subL = parent->_left; 
+			node* subLR = subL->_right;
 
 			parent->_left = subLR;
 			if (subLR)
@@ -405,13 +411,19 @@ namespace test
 				subL->_parent = pparent;
 			}
 		}
-
-
-
-
-
-
 	};
+
+	void test_RBTree1()
+	{
+		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 }; 
+		//int arr[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16, 14 };
+		test::RBTree<int, int> t;
+		for (auto i : arr)
+		{
+			t.Insert(std::make_pair(i, i));
+		}
+		t.InOrderTraversal();
+	}
 
 }
 
