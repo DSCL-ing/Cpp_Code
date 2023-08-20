@@ -230,7 +230,8 @@ namespace test
 						 */
 						else
 						{
-							RotateRL(parent);
+							RotateL(parent);
+							RotateR(g);
 							g->_col = RED;
 							cur->_col = BLACK;
 							//parent->_col = RED;
@@ -265,11 +266,12 @@ namespace test
 						}
 						else
 						{
-							RotateRL(parent);
+							RotateR(parent);
+							RotateL(g);
 							g->_col = RED;
 							cur->_col = BLACK;
 							//parent->_col = RED;
-							/* u->_col = BLACK;*/ //可能不存在.
+							/* u->_col = BLACK;*/ //不能放开,u可能不存在
 						}
 						break;
 
@@ -359,8 +361,6 @@ namespace test
 				}
 				subR->_parent = pparent;
 			}
-			parent->_bf = subR->_bf = 0;
-
 		}
 
 		/**
@@ -404,65 +404,10 @@ namespace test
 				}
 				subL->_parent = pparent;
 			}
-			parent->_bf = subL->_bf = 0;
-
 		}
 
-		/**
-		 *
-		 *                       p
-		 *       sL                           |d--高度h
-		 * |a|--高度h    sLR                   d
-		 *  a          b      c--高度h-1       d
-		 *  a          b      c
-		 *
-		 */
-		void RotateLR(node* parent)
-		{
-			node* subL = parent->_left;
-			node* subLR = subL->_right;
-			int bf = subLR->_bf;
-			RotateL(parent->_left);
-			RotateR(parent);
-			if (bf == 1)
-			{
-				parent->_bf = 0;
-				subLR->_bf = 0;
-				subL->_bf = -1;
-			}
-			else//以防万一，安全一点
-			{
-				assert(false);
-			}
-		}
 
-		/**
-		 *
-		 *                       p
-		 *    |a--高度h                  sR
-		 *     a              sRL                 |d|--高度h
-		 *     a            b      c--高度h-1      d
-		 *                  b      c               d
-		 *
-		 */
-		void RotateRL(node* parent) //右左
-		{
-			node* subR = parent->_right;
-			node* subRL = subR->_left;
-			int bf = subRL->_bf;
-			RotateR(parent->_right);
-			RotateL(parent);
-			if (bf == 1) //插在右边,右边平衡,左边不平衡
-			{
-				subR->_bf = 0;
-				parent->_bf = -1;
-				subRL->_bf = 0;
-			}
-			else//以防万一，安全一点
-			{
-				assert(false);
-			}
-		}
+
 
 
 
