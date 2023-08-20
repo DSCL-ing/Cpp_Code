@@ -472,15 +472,17 @@ namespace test
 	void test_RBTree2() //随机数测试
 	{
 		srand((size_t)time(0));
-		const size_t N = 100000;
+		const size_t N = 5000000;
 		test::RBTree<int, int> t;
 		for (size_t i = 0; i < N; ++i)
 		{
-			size_t x = rand()*i - rand();
+			size_t x = rand()+i;
+			//size_t x = rand()*i - rand();
 			//cout << "x:>" << x << "\t";
 			t.Insert(std::make_pair(x, x));
 		}
-		cout << t.isBalanceTree() << endl;
+		//cout << t.isBalanceTree() << endl;
+		cout <<"RBT高度:>"<< t.Height() << endl;
 	}
 
 }

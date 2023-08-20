@@ -1,0 +1,73 @@
+﻿  1Date.cpp
+  Main_DataStructure.cpp
+C:\Users\26390\Desktop\BaiduSyncdisk\VS2019\Cpp_Code\Cpp_Test\Cpp_Test\25RBTree.h(474,24): warning C4267: “参数”: 从“size_t”转换到“unsigned int”，可能丢失数据
+C:\Users\26390\Desktop\BaiduSyncdisk\VS2019\Cpp_Code\Cpp_Test\Cpp_Test\24AVLTree.h(549,24): warning C4267: “参数”: 从“size_t”转换到“unsigned int”，可能丢失数据
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\utility(242,16): warning C4244: “初始化”: 从“_Ty”转换到“_Ty1”，可能丢失数据
+          with
+          [
+              _Ty=unsigned __int64
+          ]
+          and
+          [
+              _Ty1=int
+          ]
+C:\Users\26390\Desktop\BaiduSyncdisk\VS2019\Cpp_Code\Cpp_Test\Cpp_Test\25RBTree.h(481): message : 查看对正在编译的函数 模板 实例化“std::pair<K,V>::pair<unsigned __int64,unsigned __int64,0>(std::pair<unsigned __int64,unsigned __int64> &&) noexcept”的引用
+          with
+          [
+              K=int,
+              V=int
+          ]
+C:\Users\26390\Desktop\BaiduSyncdisk\VS2019\Cpp_Code\Cpp_Test\Cpp_Test\25RBTree.h(481): message : 查看对正在编译的函数 模板 实例化“std::pair<K,V>::pair<unsigned __int64,unsigned __int64,0>(std::pair<unsigned __int64,unsigned __int64> &&) noexcept”的引用
+          with
+          [
+              K=int,
+              V=int
+          ]
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\utility(242,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty2”，可能丢失数据
+          with
+          [
+              _Ty=unsigned __int64
+          ]
+          and
+          [
+              _Ty2=int
+          ]
+  MyContainersTest.cpp
+  library_Test.cpp
+  test.cpp
+C:\Users\26390\Desktop\BaiduSyncdisk\VS2019\Cpp_Code\Cpp_Test\Cpp_Test\test.cpp(354,23): warning C4267: “参数”: 从“size_t”转换到“unsigned int”，可能丢失数据
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\utility(242,16): warning C4244: “初始化”: 从“_Ty”转换到“_Ty1”，可能丢失数据
+          with
+          [
+              _Ty=unsigned __int64
+          ]
+          and
+          [
+              _Ty1=int
+          ]
+C:\Users\26390\Desktop\BaiduSyncdisk\VS2019\Cpp_Code\Cpp_Test\Cpp_Test\test.cpp(360): message : 查看对正在编译的函数 模板 实例化“std::pair<K,V>::pair<unsigned __int64,unsigned __int64,0>(std::pair<unsigned __int64,unsigned __int64> &&) noexcept”的引用
+          with
+          [
+              K=int,
+              V=int
+          ]
+C:\Users\26390\Desktop\BaiduSyncdisk\VS2019\Cpp_Code\Cpp_Test\Cpp_Test\test.cpp(360): message : 查看对正在编译的函数 模板 实例化“std::pair<K,V>::pair<unsigned __int64,unsigned __int64,0>(std::pair<unsigned __int64,unsigned __int64> &&) noexcept”的引用
+          with
+          [
+              K=int,
+              V=int
+          ]
+D:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\utility(242,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty2”，可能丢失数据
+          with
+          [
+              _Ty=unsigned __int64
+          ]
+          and
+          [
+              _Ty2=int
+          ]
+  正在生成代码
+  Previous IPDB not found, fall back to full compilation.
+  All 37 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  已完成代码的生成
+  Cpp_Test.vcxproj -> C:\Users\26390\Desktop\BaiduSyncdisk\VS2019\Cpp_Code\Cpp_Test\x64\Release\Cpp_Test.exe

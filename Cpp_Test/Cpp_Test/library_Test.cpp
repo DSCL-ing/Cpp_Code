@@ -27,16 +27,7 @@
 //using std::max;
 
 
-//#include"22BST.h"
-//int main1()
-//{
-//	//key::test_BST1();
-//	//key::test_BST2();
-//	//key::test_BST3();
-//	//key_value::test_BST1();
-//	key_value::test_BST2();
-//	return 0;
-//}
+
 
 
 //int main()
