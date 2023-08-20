@@ -54,7 +54,7 @@ using std::pair;
 namespace test
 {
 
-	enum Colour{ RED, BLACK };
+	enum Colour { RED, BLACK };
 
 	template<class K, class V>
 	struct RBTreeNode
@@ -123,76 +123,103 @@ namespace test
 
 
 			/** 红黑树的实现 -- 插入
- *
- *
- *
- * 红黑树默认插入的结点为红色 -- 规则3更容易实现,不冲突规则
- * 注:不许修改新插入结点的颜色,规定吧,满足红黑树,待研究
- *
- * 1.如果插入位置的父亲是红色的处理:
- * 插入后根据规则3,因为插入的结点是红色,所以parent必须变黑 -- 上黑下红规律
- * $ 如果父亲变黑了,且叔叔存在且为红,则将叔叔也要跟则变黑(规则4),然后再将爷爷变红(规则4)
- * -- 如果爷爷的父亲是黑的,则处理结束 . 否则循环,直至到根
- * $ 如果经过处理后,根变为红色,则最终需要将根置为黑色
- *
- * 2.如果插入的位置没有叔叔的处理:旋转 -- 将祖父旋下来
- * $ 插入在父亲的左边,则右旋
- *
- * 如果插入位置的父亲是黑色,则不需要处理
- * ...
- * 
- * ------------------------------------------------------------------------------------------
- *
- *  直接变色情形
- *             g
- *    u(红)          p(红)
- *                        c(红)
- *
- * 情形1：该树为空树，直接插入根结点的位置，违反性质1，把节点颜色有红改为黑即可。
- * 情形2：插入节点N的父节点P为黑色，不违反任何性质，无需做任何修改。
- * 情形3: 插入结点N的父节点P为红色,叔叔u为红色
- *
- * $ 需要旋转的情形(为了保持规则4(一样多的黑结点):
- * 在不修改新插入结点颜色的情况下,无论怎么变色都不平衡,即不能维持规则4的情况下,只能进行旋转操作(降高度才能保持黑同规则) --
- * $ 降高度其实是改变不同路径的长度,-- 维持黑同规则的最终手段
- * $ 不能直接把p变黑,因为p的另一条子路可能会有黑,变的话可能会违反规则4(黑同)
- *
- * 单旋情形									    旋转后
- *            g(黑)							 |	           p(黑)
- *   u(黑)           p(红) 				     |	   g(红)           c(红)
- *                         c(红)			 | u(黑)	c的左(黑)
- *
- * 双旋情形                                      旋转后
- *            g(黑)						     |                 c(黑)
- *   u(黑)             p(红) 				 |     g(红)                  p(红)
- *                 c(红)					 |  u(黑)  c的左(黑)
- *
- * 情形4/5: p为红,u为黑/或u不存在
- * 操作: 旋转,直线单旋,折现双旋
- * 变则:双旋(cur->黑,g->红)
- *
- * $ 注:
- * 1.u为黑的情况是由子结点向上调整产生的(因为每次插入的结点都是红色,调整才能变黑) , 且cur结点原来是黑色的,红色是由下面结点调整的
- * 2.u不存在(叔叔路径会缺一个黑),说明cur一定是新增结点, -- ,插在红p则平衡不了,需要旋转
- *
- * 继续调整的跨度为cur->grandfather
- * 
- * 
- * 综上,循环条件为parent的颜色(parent存在),如果父亲是黑色,简单,循环结束.如果父亲是红色,需要处理
- *
- */
+			 *
+			 *
+			 *
+			 * 红黑树默认插入的结点为红色 -- 规则3更容易实现,不冲突规则
+			 * 注:不许修改新插入结点的颜色,规定吧,满足红黑树,待研究
+			 *
+			 * 1.如果插入位置的父亲是红色的处理:
+			 * 插入后根据规则3,因为插入的结点是红色,所以parent必须变黑 -- 上黑下红规律
+			 * $ 如果父亲变黑了,且叔叔存在且为红,则将叔叔也要跟则变黑(规则4),然后再将爷爷变红(规则4)
+			 * -- 如果爷爷的父亲是黑的,则处理结束 . 否则循环,直至到根
+			 * $ 如果经过处理后,根变为红色,则最终需要将根置为黑色
+			 *
+			 * 2.如果插入的位置没有叔叔的处理:旋转 -- 将祖父旋下来
+			 * $ 插入在父亲的左边,则右旋
+			 *
+			 * 如果插入位置的父亲是黑色,则不需要处理
+			 * ...
+			 *
+			 * ------------------------------------------------------------------------------------------
+			 *
+			 *  直接变色情形							     修改后
+			 *             g(黑)						 |	            g(红)				
+			 *    u(红)          p(红)				     |	    u(黑)         p(黑)			
+			 *                        c(红)              |	                       c(红)      
+			 *
+			 * 情形1：该树为空树，直接插入根结点的位置，违反性质1，把根节点颜色由红改为黑即可。
+			 * 情形2：插入节点N的父节点P为黑色，不违反任何性质，无需做任何修改。
+			 * 情形3: 插入结点N的父节点P为红色,叔叔u为红色
+			 * $ 操作: 把 u和p改成黑,G改成红,如果G为根,再改成黑(调整结束再改也无所谓)
+			 * $ 解释:本来就一行黑,修改后如果G不改则会多了一个黑,与G的兄弟子树(有的话)不平衡.若G是根则无所谓
+			 * 
+			 * $ 需要旋转的情形(为了保持规则4(一样多的黑结点):
+			 * 在不修改新插入结点颜色的情况下,无论怎么变色都不平衡,即不能维持规则4的情况下,只能进行旋转操作(降高度才能保持黑同规则) --
+			 * $ 降高度其实是改变不同路径的长度,-- 维持黑同规则的最终手段
+			 * $ 不能直接把p变黑,因为p的另一条子路可能会有黑,变的话可能会违反规则4(黑同)
+			 *
+			 * 单旋情形									    旋转后
+			 *            g(黑)							 |	           p(黑)
+			 *   u(黑)           p(红) 				     |	   g(红)           c(红)
+			 *                         c(红)			 | u(黑)	c的左(黑)
+			 *
+			 * 双旋情形                                      旋转后
+			 *            g(黑)						     |                 c(黑)
+			 *   u(黑)             p(红) 				 |     g(红)                  p(红)
+			 *                 c(红)					 |  u(黑)  c的左(黑)
+			 *
+			 * 情形4/5: p为红,u为黑/或u不存在
+			 * 操作: 旋转,直线单旋,折现双旋
+			 * 变则:双旋(cur->黑,g->红)
+			 *
+			 * $ 注:
+			 * 1.u为黑的情况是由子结点向上调整产生的(因为每次插入的结点都是红色,调整才能变黑) , 且cur结点原来是黑色的,红色是由下面结点调整的
+			 * 2.u不存在(叔叔路径会缺一个黑),说明cur一定是新增结点, -- ,插在红p则平衡不了,需要旋转
+			 *
+			 * 继续调整的跨度为cur->grandfather , 因为父亲位于中间位置,最后修改的是祖父,只有祖父对上面的结点有影响
+			 *
+			 *
+			 * 综上,循环条件为parent的颜色(parent存在),如果父亲是黑色,简单,循环结束.如果父亲是红色,需要处理
+			 *
+			 */
 
-			while (parent && parent == BLACK)
+			while (parent && parent == RED) //parent==RED 说明parent一定不是根,即一定存在祖父
 			{
+				node* g = parent->_parent;
 
+				if (cur == parent->_right)
+				{
+					node* u = g->left;
+					if (u && u->_col == RED)
+					{
+						parent->_col = BLACK;
+						cur->_col = RED;
+					}
+					else
+					{
+						if (cur == parent->_right)
+						{
+							RotateL(g);
+						}
+
+					}
+
+				}
+				else
+				{
+
+				}
+				break;
 			}
-			
+
 			return true;
+
 		}
 	public:
-		void AVLInOrderTraversal()
+		void InOrderTraversal()
 		{
-			_AVLInOrderTraversal(_root);
+			_InOrderTraversal(_root);
 		}
 
 		bool isBalanceTree()
@@ -209,20 +236,6 @@ namespace test
 
 		bool _isBalanceTree(node* root)
 		{
-			if (!root)
-			{
-				return true;
-			}
-			int leftH = _Height(root->_left);
-			int rightH = _Height(root->_right);
-			int diff = rightH - leftH;
-			int Hdiff_abs = abs(rightH - leftH);
-
-			return abs(root->_bf) < 2
-				&& Hdiff_abs < 2
-				&& diff == root->_bf
-				&& _isBalanceTree(root->_left)
-				&& _isBalanceTree(root->_right);
 
 		}
 
@@ -238,21 +251,21 @@ namespace test
 			return leftH > rightH ? leftH + 1 : rightH + 1;
 		}
 
-		void _AVLInOrderTraversal(node* root)
+		void _InOrderTraversal(node* root)
 		{
 			if (root == nullptr)
 			{
 				return;
 			}
-			_AVLInOrderTraversal(root->_left);
-			cout << "key:> " << root->_kv.first << " " << "bf:> " << root->_bf << endl;
-			_AVLInOrderTraversal(root->_right);
+			_InOrderTraversal(root->_left);
+			cout << "key:> " << root->_kv.first << " ";
+			_InOrderTraversal(root->_right);
 		}
 
 		void RotateL(node* parent)
 		{
 			node* subR = parent->_right;
-			node* subRL = subR->_left; 
+			node* subRL = subR->_left;
 
 			parent->_right = subRL;
 			if (subRL)
@@ -295,8 +308,8 @@ namespace test
 		 */
 		void RotateR(node* parent)
 		{
-			node* subL = parent->_left;/
-			node* subLR = subL->_right; 
+			node* subL = parent->_left; /
+				node * subLR = subL->_right;
 
 			parent->_left = subLR;
 			if (subLR)
@@ -340,7 +353,7 @@ namespace test
 		 *  a          b      c
 		 *
 		 */
-		void RotateLR(node* parent) 
+		void RotateLR(node* parent)
 		{
 			node* subL = parent->_left;
 			node* subLR = subL->_right;
@@ -352,18 +365,6 @@ namespace test
 				parent->_bf = 0;
 				subLR->_bf = 0;
 				subL->_bf = -1;
-			}
-			else if (bf == -1)
-			{
-				parent->_bf = 1;
-				subLR->_bf = 0;
-				subL->_bf = 0;
-			}
-			else if (bf == 0)
-			{
-				parent->_bf = 0;
-				subLR->_bf = 0;
-				subL->_bf = 0;
 			}
 			else//以防万一，安全一点
 			{
@@ -393,18 +394,6 @@ namespace test
 				parent->_bf = -1;
 				subRL->_bf = 0;
 			}
-			else if (bf == -1) //插在左边,左边平衡,右边不平衡
-			{
-				subR->_bf = 1;
-				parent->_bf = 0;
-				subRL->_bf = 0;
-			}
-			else if (bf == 0)
-			{
-				subR->_bf = 0;
-				parent->_bf = 0;
-				subRL->_bf = 0;
-			}
 			else//以防万一，安全一点
 			{
 				assert(false);
@@ -415,6 +404,7 @@ namespace test
 
 	};
 
+}
 
 
 
