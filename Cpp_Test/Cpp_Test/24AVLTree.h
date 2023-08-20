@@ -239,9 +239,9 @@ namespace test
 			return true;
 		}
 	public:
-		void AVLInOrderTraversal()
+		void InOrderTraversal()
 		{
-			_AVLInOrderTraversal(_root);
+			_InOrderTraversal(_root);
 		}
 
 		bool isBalanceTree()
@@ -301,15 +301,15 @@ namespace test
 			return leftH > rightH ? leftH + 1 : rightH + 1;
 		}
 
-		void _AVLInOrderTraversal(node* root)
+		void _InOrderTraversal(node* root)
 		{
 			if (root == nullptr)
 			{
 				return;
 			}
-			_AVLInOrderTraversal(root->_left);
+			_InOrderTraversal(root->_left);
 			cout << "key:> " << root->_kv.first << " " << "bf:> " << root->_bf << endl;
-			_AVLInOrderTraversal(root->_right);
+			_InOrderTraversal(root->_right);
 		}
 
 
@@ -539,7 +539,7 @@ namespace test
 			t.Insert(std::make_pair(i,i));
 			cout << endl;
 		}
-		t.AVLInOrderTraversal();
+		t.InOrderTraversal();
 		cout << "是否为AVL树? " << t.isBalanceTree() << endl;
 	}
 
@@ -551,7 +551,7 @@ namespace test
 		test::AVLTree<int, int> t;
 		for (size_t i = 0; i < N; ++i)
 		{
-			size_t x = rand();
+			size_t x = rand() * i - rand();
 			//cout << "x:>" << x << "\t";
 			t.Insert(std::make_pair(x, x));
 		}

@@ -54,7 +54,7 @@ using std::pair;
 namespace test
 {
 
-	enum Colour { RED, BLACK };
+	enum Colour { RED, BLACK }; //...保证结点不是红色就是黑色
 
 	template<class K, class V>
 	struct RBTreeNode
@@ -89,7 +89,7 @@ namespace test
 			if (!_root)
 			{
 				_root = new node(kv);
-				_root->_col = BLACK;
+				_root->_col = BLACK; //根结点给黑
 				return true;
 			}
 			node* cur = _root;
@@ -296,7 +296,27 @@ namespace test
 
 		bool isBalanceTree()
 		{
-			return _isBalanceTree(_root);
+			//需要判断3个规则
+			//1.根为黑
+			if (_root && _root->_col == RED)
+			{
+				cout << "错误:根是红色" << endl;
+				return false;
+			}
+
+			//2.不能有连续得红
+			//3.黑同
+			int benchmark = 0;
+			node* cur = _root;
+			while (cur)
+			{
+				if (cur->_col == BLACK)
+				{
+					++benchmark;
+				}
+				cur = cur->_left;
+			}
+			return _check(_root, 0, benchmark);
 		}
 
 		int Height()
@@ -306,9 +326,30 @@ namespace test
 
 	private:
 
-		bool _isBalanceTree(node* root)
+		bool _check(node* root,int blackNum,int benchmark) //blackNum:该层已经过的黑色结点个数.   benchmark:基准值,随便一条路径的黑色结点的个数
 		{
+			if (!root) //
+			{
+				if (blackNum != benchmark)
+				{
+					cout << "错误:存在不同路径的黑色结点数量不相同" << endl;
+					return false;
+				}
+				return true;//_root为空,递归结束. 非_root,路径递归结束 -- 很妙,不用再外面判空
+			}
 
+			if (root->_col == BLACK)
+			{
+				++blackNum;
+			}
+
+			if (root->_col == RED && /*root->_parent(由第一个if知parent一定存在)&&*/  root->_parent->_col == RED)//检查父子是否同时为红
+			{
+				cout << root->_kv.first << " 错误,与父节点同时为红色";
+				return false;
+			}
+
+			return _check(root->_left, blackNum, benchmark) && _check(root->_right, blackNum, benchmark);
 		}
 
 		int _Height(node* root)
@@ -413,7 +454,7 @@ namespace test
 		}
 	};
 
-	void test_RBTree1()
+	void test_RBTree1() //常规测试
 	{
 		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 }; 
 		//int arr[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16, 14 };
@@ -423,6 +464,23 @@ namespace test
 			t.Insert(std::make_pair(i, i));
 		}
 		t.InOrderTraversal();
+		cout << endl;
+		cout << t.isBalanceTree() << endl;
+	}
+
+#include<time.h>
+	void test_RBTree2() //随机数测试
+	{
+		srand((size_t)time(0));
+		const size_t N = 100000;
+		test::RBTree<int, int> t;
+		for (size_t i = 0; i < N; ++i)
+		{
+			size_t x = rand()*i - rand();
+			//cout << "x:>" << x << "\t";
+			t.Insert(std::make_pair(x, x));
+		}
+		cout << t.isBalanceTree() << endl;
 	}
 
 }
