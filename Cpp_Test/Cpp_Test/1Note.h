@@ -1676,7 +1676,9 @@ int main()
  * 
  * $ 使用模板后,变量多使用auto自动推导类型,这样可以容易得知是模板的类型(模板习惯用auto)
  * 
- * .
+ * $ typedef 类模板的内嵌类型需要加上typename -- 编译器无法区分是类型还是静态变量(静态变量也是通过类域使用)
+ * typedef typename rep::const_iterator iterator;
+ * 
  */
 
 
