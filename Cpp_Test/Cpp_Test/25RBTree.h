@@ -87,6 +87,30 @@ namespace test
 	private:
 		node* _root = nullptr;
 	public:
+
+
+
+		node* find(const K& key)
+		{
+			node* cur = _root;
+			while (cur)
+			{
+				if (key < cur->_kv.first)
+				{
+					cur = cur->_left;
+				}
+				else if (key > cur->_kv.first)
+				{
+					cur = cur->_right;
+				}
+				else
+				{
+					return cur;
+				}
+			}
+			return nullptr;
+		}
+
 		bool Insert(const std::pair<K, V>& kv)
 		{
 			//BST流程
@@ -327,8 +351,23 @@ namespace test
 		{
 			return _Height(_root);
 		}
+		~RBTree()
+		{
+			Destroy(_root);
+		}
 
 	private:
+		void Destroy(node*& root)
+		{
+			if (!root)
+			{
+				return;
+			}
+			Destroy(root->_left);
+			Destroy(root->_right);
+			delete root;
+			root = nullptr;
+		}
 
 		bool _check(node* root,int blackNum,int benchmark) //blackNum:该层已经过的黑色结点个数.   benchmark:基准值,随便一条路径的黑色结点的个数
 		{
@@ -487,6 +526,24 @@ namespace test
 		}
 		//cout << t.isBalanceTree() << endl;
 		cout <<"RBT高度:>"<< t.Height() << endl;
+	}
+
+	void test_RBTree3()
+	{
+		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 };
+		//int arr[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16, 14 };
+		test::RBTree<int, int> t;
+		for (auto i : arr)
+		{
+			t.Insert(std::make_pair(i, i));
+		}
+
+
+			auto* ret = t.find(15);
+			if (ret)
+				cout << ret->_kv.first;
+
+
 	}
 
 }

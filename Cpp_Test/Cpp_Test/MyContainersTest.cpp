@@ -242,28 +242,30 @@
 //}
 
 
-#include<iostream>
-using std::cout;
-using std::endl;
-using std::cin;
-#include"Test.h"
-#include"12myList.h"
-int main()
-{
-	//test::test_list1();
-	//test::test_list2();
-	//test::test_list3();
-	//test::test_list4();
-	using namespace b;
-	list<int> lt(1);
-	lt.push_back(2);
-	lt.push_back(3);
-	lt.push_back(4);
-	list<list<int>> lt1;
-	lt1.push_back(lt);
-	list<list<int>> lt2(lt1);
-	return 0;
-}
+//#include<iostream>
+//using std::cout;
+//using std::endl;
+//using std::cin;
+//#include"Test.h"
+//#include"12myList.h"
+//int main()
+//{
+//	//test::test_list1();
+//	//test::test_list2();
+//	//test::test_list3();
+//	//test::test_list4();
+//
+//	//深拷贝测试
+//	using namespace b;
+//	list<int> lt(1);
+//	lt.push_back(2);
+//	lt.push_back(3);
+//	lt.push_back(4);
+//	list<list<int>> lt1;
+//	lt1.push_back(lt);
+//	list<list<int>> lt2(lt1); 
+//	return 0;
+//}
 
 
 
