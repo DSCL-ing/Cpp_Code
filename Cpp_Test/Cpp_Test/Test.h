@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include<assert.h>
 
-namespace bit
+namespace b
 {
 	template<class T>
 	struct list_node

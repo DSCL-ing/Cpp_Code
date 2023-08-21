@@ -50,6 +50,33 @@ namespace test
 			cout << "newnode" << endl;
 		}
 
+		//拷贝原理 
+		
+		/**
+		 * 
+		 *  list<int> lt(1) 初始化过程：
+		 * 	先走拷贝构造，
+		 * 	走init建一个头结点
+		 * 	然后insert, insert中会建一个新结点, 值为1, 完成插入
+		 * 
+		 * 	list<list<int>> lt1 初始化过程
+		 * 	走默认构造, 空初始化一个list<T>头结点的过程(newnode之前), 再走默认构造, 建一个list<int>结点的匿名对象, 走的是拷贝构造(匿名对象传给x),
+		 *  将匿名对象拷贝进去.析构匿名对象, list<list<int>>默认构造完成
+		 * 
+		 * 	list<list<int>> lt2(lt1) 初始化过程
+		 * 	走拷贝构造, empty(就是头结点过程), ... 和lt1初始化过程一样
+		 * 	建一个临时变量(接收迭代器构造的list)走迭代器构造, empty(建一个lt1的头结点), push_back
+		 * 	交换头和临时头的内容, 完成拷贝构造
+		 * 
+		 * 	在第一层迭代器构造中, 将lt1插进的过程有两层拷贝构造
+		 * 	第一层拷贝构造 -- x == lt1
+		 * 	push过程newnode(x == lt)->第二层拷贝构造:--通过初始化列表走的 解决问题
+		 * 
+		 * 	综合发现 : 多重结点类只需要完成第一层深拷贝, 即可完成多层深拷贝
+		 * 	因为每次都会new新结点, 且初始化列表赋值过程不是值拷贝, 而是会调用类类型的构造函数
+		 */
+
+
 
 	};
 
@@ -409,7 +436,7 @@ namespace test
 			return iterator(next);
 		}
 		//尾插
-		void push_back(const T& x) //插入必须有具体值,库中也没有
+		void push_back(const T& x) //插入必须有具体值,总不能插入一个匿名对象
 		{
 			//cout << "push_back" << this << ")" << endl;
 			//node* n = new node(x);
