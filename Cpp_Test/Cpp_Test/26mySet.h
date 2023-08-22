@@ -10,7 +10,7 @@ namespace test
 		{
 			operator()(const K& key) //类似函数重载
 			{
-				return key;
+				return key; //返回key --重载原函数
 			}
 		};
 

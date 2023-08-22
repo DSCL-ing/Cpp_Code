@@ -18,7 +18,7 @@ namespace test
 		RBTreeNode* _left;
 		RBTreeNode* _right;
 		RBTreeNode* _parent;
-		T _data;
+		T _data; //data是key或pair
 		Colour _col;
 
 		RBTreeNode(const T& data)
@@ -38,17 +38,17 @@ namespace test
 	private:
 		node* _root = nullptr;
 	public:
-		keyOfT kof;//kof是个仿函数,返回不同的参数
 		node* find(const K& key)
 		{
+			keyOfT kof;//kof是个仿函数,根据不同参数返回不同的参数对象
 			node* cur = _root;
 			while (cur)
 			{
-				if (key < cur->_kv.first)
+				if (key < kof(cur->_data)) // --------------------------------------------
 				{
 					cur = cur->_left;
 				}
-				else if (key > cur->_kv.first)
+				else if (key > kof(cur->_data)) // --------------------------------------------
 				{
 					cur = cur->_right;
 				}
@@ -60,8 +60,9 @@ namespace test
 			return nullptr;
 		}
 
-		bool insert(const std::pair<K, V>& kv)
+		bool insert(const T& data)
 		{
+			keyOfT kof;
 			if (!_root)
 			{
 				_root = new node(kv);
@@ -72,12 +73,12 @@ namespace test
 			node* parent = nullptr;
 			while (cur)
 			{
-				if (kv.first > cur->_kv.first)
+				if (kof(data)> kof(cur->_data)) // --------------------------------------------
 				{
 					parent = cur;
 					cur = cur->_right;
 				}
-				else if (kv.first < cur->_kv.first)
+				else if (kof(data) < kof(cur->_data)) // --------------------------------------------
 				{
 					parent = cur;
 					cur = cur->_left;
@@ -88,7 +89,7 @@ namespace test
 				}
 			}
 			cur = new node(kv);
-			if (kv.first > parent->_kv.first)
+			if (kof(_data) > kof(cur->_data)) // --------------------------------------------
 			{
 				parent->_right = cur;
 			}
@@ -158,7 +159,6 @@ namespace test
 							cur->_col = BLACK;
 						}
 						break;
-
 					}
 				}
 			}
@@ -221,6 +221,7 @@ namespace test
 
 		bool _check(node* root, int blackNum, int benchmark) 
 		{
+			keyOfT kof;
 			if (!root) //
 			{
 				if (blackNum != benchmark)
@@ -238,7 +239,7 @@ namespace test
 
 			if (root->_col == RED &&  root->_parent->_col == RED)
 			{
-				cout << root->_kv.first << " 错误,与父节点同时为红色";
+				cout << kof(root->_data) << " 错误,与父节点同时为红色"; // --------------------------------------------
 				return false;
 			}
 
@@ -259,12 +260,13 @@ namespace test
 
 		void _InOrderTraversal(node* root)
 		{
+			keyOfT kof;
 			if (root == nullptr)
 			{
 				return;
 			}
 			_InOrderTraversal(root->_left);
-			cout << root->_kv.first << " ";
+			cout << kof(root->_data) << " "; // --------------------------------------------
 			_InOrderTraversal(root->_right);
 		}
 

@@ -10,7 +10,7 @@ namespace test
 		{ 
 			operator()(const pair<K,T>& kv) //类似函数重载
 			{
-				return kv.first;
+				return kv.first; //返回pair的key
 			}
 		};
 
