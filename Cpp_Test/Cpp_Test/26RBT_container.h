@@ -30,13 +30,16 @@ namespace test
 		{}
 	};
 
-	template<class T, class Ptr, typename Ref>
+	template<class T, class Ref, typename Ptr>
 	struct __RBTree_iterator
 	{
 		typedef RBTreeNode<T> node;
 		node* _node;
+		__RBTree_iterator(node* node)
+			:_node(node)
+		{}
 
-		typedef __RBTree_iterator<T,Ptr,Ref> Self;
+		typedef __RBTree_iterator<T,Ref,Ptr> Self;
 
 		Ref operator*()
 		{
@@ -52,7 +55,22 @@ namespace test
 		}
 		Self operator++()
 		{
-			
+			//++逻辑
+			/**
+			 * 如果右子树不为空,则下一个是右子树的最左节点
+			 * 
+			 * 如果右子树完了,则父亲也完了.
+			 * 
+			 * 如果我是父亲的左,完了则走父亲
+			 * 
+			 * 直到没有父亲,结束
+			 * 
+			 * 方法1:三叉链非递归
+			 * 方法2:借助栈,非递归
+			 * 
+			 */
+
+			return *this;
 		}
 		//operator--()
 		//{
@@ -79,9 +97,9 @@ namespace test
 			return iterator(cur);//返回中序的第一个结点,最左结点
 		}
 
-		iterator end()
+		iterator end() //end是最一个位置的下一个
 		{
-			return iterator(nullptr);
+			return iterator(nullptr);//暂时可以这么写
 		}
 
 

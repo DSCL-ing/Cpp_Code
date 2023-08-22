@@ -28,6 +28,9 @@ namespace test
 		{
 			return _t.end();
 		}
+
+
+
 		
 
 	public:
@@ -45,6 +48,13 @@ namespace test
 		s.insert(1);
 		s.insert(3);
 		s.insert(2);
+		set<int>::iterator it = s.begin();
+		while (it!=s.end())
+		{
+			cout << *it << " ";
+			++it;
+		}
+
 	}
 }
 
