@@ -3,11 +3,13 @@
 
 
 
-//#include<iostream>
+#include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
+
+
 //#include<set>
-//using std::cout;
-//using std::endl;
-//using std::cin;
 //using std::set;
 //#include"25RBTree.h"
 ////#include"24AVLTree.h" //性能比较测试 -- 高度
@@ -16,7 +18,7 @@
 //	//test::test_RBTree1();
 //	//test::test_RBTree2();
 //	//test::test_AVL2();  //性能比较测试 -- 高度
-//	test::test_RBTree3();
+//	//test::test_RBTree3();
 //
 //	return 0;
 //}

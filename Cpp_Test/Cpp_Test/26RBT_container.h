@@ -53,7 +53,7 @@ namespace test
 		{
 			return _node != x._node;
 		}
-		Self operator++()
+		Self& operator++()
 		{
 			//++逻辑
 			/**
@@ -69,7 +69,40 @@ namespace test
 			 * 方法2:借助栈,非递归
 			 * 
 			 */
-
+			//if (!_node) //还不知为何不需要判空
+			//{
+			//	return *this;
+			//}
+			
+			/**
+			 * 特性:
+			 * -- 除了右子树为空,每个结点的下一个是他的右子树走到空的那一个,
+			 * 
+			 * 1.如果右子树不为空,,每个结点的下一个是他的右子树的最左结点,右子树往左走走到空的那一个,
+			 * 2.如果右子树为空,则下一个是他所在的左子树的那个结点(祖先),cur往父亲的右倒着走,走到第一个出现的父亲的左,这个父亲就是下一个结点
+			 * 
+			 */
+			if (_node->_right) 
+			{
+				node* cur = _node->_right;
+				while (cur->_left)
+				{
+					cur = cur->_left;
+				}
+				_node = cur;
+			}
+			else
+			{
+				node* cur = _node;
+				node* parent = _node->_parent;
+				while (parent && parent->_right == cur)
+				{
+					cur = parent;
+					parent = parent->_parent;
+				}
+				_node = parent;
+			}
+			
 			return *this;
 		}
 		//operator--()
@@ -130,13 +163,15 @@ namespace test
 
 		bool insert(const T& data)
 		{
-			keyOfT kof;
 			if (!_root)
 			{
 				_root = new node(data);
 				_root->_col = BLACK; 
 				return true;
 			}
+			
+			keyOfT kof;
+
 			node* cur = _root;
 			node* parent = nullptr;
 			while (cur)
@@ -157,7 +192,7 @@ namespace test
 				}
 			}
 			cur = new node(data);
-			if (kof(data) > kof(cur->_data)) // --------------------------------------------
+			if (kof(data) > kof(parent->_data)) // --------------------------------------------
 			{
 				parent->_right = cur;
 			}

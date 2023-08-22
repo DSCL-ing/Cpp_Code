@@ -45,15 +45,16 @@ namespace test
 	void test_mySet1()
 	{
 		test::set<int> s;
+		s.insert(2);
 		s.insert(1);
 		s.insert(3);
-		s.insert(2);
 		set<int>::iterator it = s.begin();
 		while (it!=s.end())
 		{
 			cout << *it << " ";
 			++it;
 		}
+		
 
 	}
 }
