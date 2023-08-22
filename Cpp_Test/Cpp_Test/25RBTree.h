@@ -111,7 +111,7 @@ namespace test
 			return nullptr;
 		}
 
-		bool Insert(const std::pair<K, V>& kv)
+		bool insert(const std::pair<K, V>& kv)
 		{
 			//BST流程
 			if (!_root)
@@ -504,7 +504,7 @@ namespace test
 		test::RBTree<int, int> t;
 		for (auto i : arr)
 		{
-			t.Insert(std::make_pair(i, i));
+			t.insert(std::make_pair(i, i));
 		}
 		t.InOrderTraversal();
 		cout << endl;
@@ -522,7 +522,7 @@ namespace test
 			size_t x = rand()+i;
 			//size_t x = rand()*i - rand();
 			//cout << "x:>" << x << "\t";
-			t.Insert(std::make_pair(x, x));
+			t.insert(std::make_pair(x, x));
 		}
 		//cout << t.isBalanceTree() << endl;
 		cout <<"RBT高度:>"<< t.Height() << endl;
@@ -535,7 +535,7 @@ namespace test
 		test::RBTree<int, int> t;
 		for (auto i : arr)
 		{
-			t.Insert(std::make_pair(i, i));
+			t.insert(std::make_pair(i, i));
 		}
 
 

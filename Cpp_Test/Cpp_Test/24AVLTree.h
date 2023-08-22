@@ -138,7 +138,7 @@ namespace test
 	private:
 		node* _root = nullptr;
 	public:
-		bool Insert(const std::pair<K, V>& kv)
+		bool insert(const std::pair<K, V>& kv)
 		{
 			if (!_root)
 			{
@@ -536,7 +536,7 @@ namespace test
 		for (auto i : arr)
 		{
 			cout << "i:>" << i << "\t";
-			t.Insert(std::make_pair(i,i));
+			t.insert(std::make_pair(i,i));
 			cout << endl;
 		}
 		t.InOrderTraversal();
@@ -554,7 +554,7 @@ namespace test
 			size_t x = rand() + i;
 			//size_t x = rand() * i - rand();
 			//cout << "x:>" << x << "\t";
-			t.Insert(std::make_pair(x, x));
+			t.insert(std::make_pair(x, x));
 		}
 		//cout << t.isBalanceTree()<<endl;
 		cout << "AVLT高度:>" << t.Height() << endl;

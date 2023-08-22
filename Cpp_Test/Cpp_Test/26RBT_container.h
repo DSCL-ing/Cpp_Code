@@ -12,33 +12,33 @@ namespace test
 
 	enum Colour { RED, BLACK }; 
 
-	template<class K, class V>
+	template<class T> //T是什么,为什么只传T? T为key或pair,T是key或者key-value类型
 	struct RBTreeNode
 	{
 		RBTreeNode* _left;
 		RBTreeNode* _right;
 		RBTreeNode* _parent;
-		std::pair<K, V> _kv;
+		T _data;
 		Colour _col;
 
-		RBTreeNode(const std::pair<K, V>& kv)
+		RBTreeNode(const T& data)
 			: _left(nullptr)
 			, _right(nullptr)
 			, _parent(nullptr)
-			, _kv(kv)
+			, _data(data)
 			, _col(RED)
 		{}
 	};
 
-	template<class K, class V>
+	template<class K,class T, class keyOfT>
 	class RBTree
 	{
 	public:
-		typedef RBTreeNode<K, V> node;
+		typedef RBTreeNode<T> node;
 	private:
 		node* _root = nullptr;
 	public:
-
+		keyOfT kof;//kof是个仿函数,返回不同的参数
 		node* find(const K& key)
 		{
 			node* cur = _root;
@@ -60,7 +60,7 @@ namespace test
 			return nullptr;
 		}
 
-		bool Insert(const std::pair<K, V>& kv)
+		bool insert(const std::pair<K, V>& kv)
 		{
 			if (!_root)
 			{
@@ -339,55 +339,6 @@ namespace test
 			}
 		}
 	};
-
-	void test_RBTree1() 
-	{
-		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 };
-		//int arr[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16, 14 };
-		test::RBTree<int, int> t;
-		for (auto i : arr)
-		{
-			t.Insert(std::make_pair(i, i));
-		}
-		t.InOrderTraversal();
-		cout << endl;
-		cout << t.isBalanceTree() << endl;
-	}
-
-#include<time.h>
-	void test_RBTree2() //随机数测试
-	{
-		srand((size_t)time(0));
-		const size_t N = 5000000;
-		test::RBTree<int, int> t;
-		for (size_t i = 0; i < N; ++i)
-		{
-			size_t x = rand() + i;
-			//size_t x = rand()*i - rand();
-			//cout << "x:>" << x << "\t";
-			t.Insert(std::make_pair(x, x));
-		}
-		//cout << t.isBalanceTree() << endl;
-		cout << "RBT高度:>" << t.Height() << endl;
-	}
-
-	void test_RBTree3()
-	{
-		int arr[] = { 16, 3, 7, 11, 9, 26, 18, 14, 15 };
-		//int arr[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16, 14 };
-		test::RBTree<int, int> t;
-		for (auto i : arr)
-		{
-			t.Insert(std::make_pair(i, i));
-		}
-
-
-		auto* ret = t.find(15);
-		if (ret)
-			cout << ret->_kv.first;
-
-
-	}
 
 }
 
