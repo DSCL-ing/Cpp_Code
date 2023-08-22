@@ -10,7 +10,7 @@ namespace test
 	private:
 		struct setKeyOfT//命名? 返回RBT的类型T接收的 set的key
 		{
-			operator()(const K& key) //类似函数重载
+			const K& operator()(const K& key) //类似函数重载
 			{
 				return key; //返回key --重载原函数
 			}
@@ -39,6 +39,13 @@ namespace test
 
 	};
 
+	void test_mySet1()
+	{
+		test::set<int> s;
+		s.insert(1);
+		s.insert(3);
+		s.insert(2);
+	}
 }
 
 

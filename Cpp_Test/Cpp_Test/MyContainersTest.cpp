@@ -1,10 +1,23 @@
 ﻿
 #pragma once
+#include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
+#include"26myMap.h"
+#include"26mySet.h"
+int main()
+{
+	test::test_myMap1();
+	test::test_mySet1();
+	return 0;
+}
 
 
 
-//#include<iostream>
+
 //#include<set>
+//#include<iostream>
 //using std::cout;
 //using std::endl;
 //using std::cin;

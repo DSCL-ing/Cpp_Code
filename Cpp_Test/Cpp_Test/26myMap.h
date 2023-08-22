@@ -9,15 +9,15 @@ namespace test
 	private:
 		struct mapKeyOfT//命名? 返回RBT的类型T接收的 map的key
 		{ 
-			operator()(const pair<K,T>& kv) //类似函数重载
+			const K& operator()(const pair<const K,V>& kv) //类似函数重载
 			{
 				return kv.first; //返回pair的key
 			}
 		};
 	private:
-		RBTree<K, T, mapKeyOfT>_t;
+		RBTree<K, pair<const K, V>, mapKeyOfT> _t;
 	public:
-		typedef typename RBTree<K, K, setKeyOfT>::iterator iterator; //使用类域的要加typename,以防和静态变量冲突
+		typedef typename RBTree<K, pair<const K,V>, mapKeyOfT>::iterator iterator; //使用类域的要加typename,以防和静态变量冲突
 
 		iterator begin()
 		{
@@ -29,13 +29,21 @@ namespace test
 		}
 
 	public:
-		bool insert(const pair<K, T>& kv)
+		bool insert(const pair<const K, V>& kv)
 		{
 			return _t.insert(kv);
 		}
 
 
 	};
+
+	void test_myMap1()
+	{
+		test::map<int, int> m;
+		m.insert(std::make_pair(1, 1));
+		m.insert(std::make_pair(3, 3));
+		m.insert(std::make_pair(2, 2));
+	}
 
 }
 

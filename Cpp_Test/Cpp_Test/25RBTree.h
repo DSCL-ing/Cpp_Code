@@ -76,6 +76,7 @@ namespace test
 			, _parent(nullptr)
 			, _kv(kv)
 			, _col(RED)
+			//库中还有结点数量 count
 		{}
 	};
 

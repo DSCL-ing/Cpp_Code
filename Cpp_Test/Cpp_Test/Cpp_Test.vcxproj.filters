@@ -87,6 +87,15 @@
     <ClInclude Include="25RBTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="26mySet.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="26myMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="26RBT_container.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="1Date.cpp">

@@ -46,11 +46,11 @@ namespace test
 		{
 			return &(_node->_data);
 		}
-		operator!=(const Self& x)
+		bool operator!=(const Self& x)
 		{
 			return _node != x._node;
 		}
-		operator++()
+		Self operator++()
 		{
 			
 		}
@@ -59,12 +59,12 @@ namespace test
 
 		//}
 	};
-
-	template<class K,class T, class keyOfT>
+	//参数K用在find,erase等,虽然K也可以被T取代了,但没必要,K更快
+	template<class K,class T, class keyOfT> //库中还有1个compare，先不写了
 	class RBTree
 	{
 	public:
-		typedef RBTreeNode<T> node;
+		typedef RBTreeNode<T> node; //T是key或pair
 	public:
 		typedef __RBTree_iterator<T, T&, T*> iterator;
 		typedef __RBTree_iterator<T, const T&, const T*> const_iterator;
@@ -115,7 +115,7 @@ namespace test
 			keyOfT kof;
 			if (!_root)
 			{
-				_root = new node(kv);
+				_root = new node(data);
 				_root->_col = BLACK; 
 				return true;
 			}
@@ -138,8 +138,8 @@ namespace test
 					return false;
 				}
 			}
-			cur = new node(kv);
-			if (kof(_data) > kof(cur->_data)) // --------------------------------------------
+			cur = new node(data);
+			if (kof(data) > kof(cur->_data)) // --------------------------------------------
 			{
 				parent->_right = cur;
 			}
