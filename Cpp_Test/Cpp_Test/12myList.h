@@ -82,7 +82,7 @@ namespace test
 
 	//这里声明的是list专用的迭代器 -- 实例化后能用于访问list
 	//迭代器用于访问结点
-	template<class T, class Ref, class Ptr>//Ref会接收参数
+	template<class T, class Ref, class Ptr>//Ref会接收参数 -- Ref会接收T&和const T&等,一个模板解决
 	struct __list_iterator
 	{
 		//成员类型

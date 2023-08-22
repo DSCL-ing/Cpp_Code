@@ -30,11 +30,48 @@ namespace test
 		{}
 	};
 
+	template<class T, class Ptr, typename Ref>
+	struct __RBTree_iterator
+	{
+	public:
+		typedef RBTreeNode<T> node;
+		typedef __RBTree_iterator<T,Ptr,Ref> Self;
+	private:
+		node* _node;
+
+		Ref operator*()
+		{
+			return _node->_data;
+		}
+		Ptr operator->()
+		{
+			return &(_node->_data);
+		}
+		operator!=(const Self& x)
+		{
+			return _node != x._node;
+		}
+		operator++()
+		{
+			
+		}
+		//operator--()
+		//{
+
+		//}
+	};
+
 	template<class K,class T, class keyOfT>
 	class RBTree
 	{
 	public:
 		typedef RBTreeNode<T> node;
+	public:
+		typedef __RBTree_iterator<T, T&, T*> iterator;
+		typedef __RBTree_iterator<T, const T&, const T*> const_iterator;
+
+
+
 	private:
 		node* _root = nullptr;
 	public:
