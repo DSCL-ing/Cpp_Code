@@ -33,11 +33,10 @@ namespace test
 	template<class T, class Ptr, typename Ref>
 	struct __RBTree_iterator
 	{
-	public:
 		typedef RBTreeNode<T> node;
-		typedef __RBTree_iterator<T,Ptr,Ref> Self;
-	private:
 		node* _node;
+
+		typedef __RBTree_iterator<T,Ptr,Ref> Self;
 
 		Ref operator*()
 		{
@@ -70,6 +69,20 @@ namespace test
 		typedef __RBTree_iterator<T, T&, T*> iterator;
 		typedef __RBTree_iterator<T, const T&, const T*> const_iterator;
 
+		iterator begin() 
+		{
+			node* cur = _root;
+			while (cur && cur->_left)//不能走到空
+			{
+				cur = cur->_left;
+			}
+			return iterator(cur);//返回中序的第一个结点,最左结点
+		}
+
+		iterator end()
+		{
+			return iterator(nullptr);
+		}
 
 
 	private:

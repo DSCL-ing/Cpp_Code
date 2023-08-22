@@ -549,7 +549,7 @@ void main()
  * 
  * 使用nullptr:
  * 1.使用nullptr不需要包头文件,因为nullptr是C++11中作为新关键字引入的
- * 2.C++11中,sizeof(nulllptr)与sizeof((void*)0)所占字节数相同
+ * 2.C++11中,sizeof(nullptr)与sizeof((void*)0)所占字节数相同
  * 3.为了提高代码的健壮性,在后续表示指针空值时最好使用nullptr
  * (健壮性也叫鲁棒性:在异常和危险情况下系统生存的能力)
  * 
