@@ -59,14 +59,14 @@ namespace test
 			:_node(node)
 		{}
 
-
-// 1、typedef __RBTreeIterator<T, T&, T*> itertaor;  拷贝构造
-// 2、 typedef __RBTreeIterator<T, const T&, const T*> const_itertaor;
-//  支持普通迭代器构造const迭代器的构造函数
-		__RBTree_iterator(const __RBTree_iterator<T,T&,T*>& it)
+		//因为set迭代器涉及到普通迭代器转换成const迭代器,所以需要写这个拷贝构造用于类型转换,
+		//但是如果T是constK.那么Ref就是const constT&,显然不能这么写,所以需要固定<T,T&,T*>这种写法专门用给set
+		__RBTree_iterator(const __RBTree_iterator<T,T&,T*>& it) 
 			:_node(it._node)
 		{}
 
+		//Ref为 T& 或 const T& 
+		//Ptr为 T* 或 const T*
 		typedef __RBTree_iterator<T, Ref, Ptr> Self;
 
 		Ref operator*()
