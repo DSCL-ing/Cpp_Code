@@ -7,27 +7,28 @@ using std::endl;
 using std::cin;
 using std::pair;
 
+
 namespace test
 {
 
-//与库中的RBT差异
-/**
- *
- * 库中还有结点数量 count
- *
- * 库中RBT是带头结点哨兵卫的,头结点的左是中序第一个(最小结点),右节点是中序的最后一个(最大结点),
- * 哨兵卫的parent指向根节点,根节点的parent指向哨兵卫
- *
- * 库中的begin直接取head的left -- 函数:leftmost() //最左结点
- * 库中的end 是head的right -- 不是rightmost,rightmost是最右结点,end是最右结点的下一个
- * 库中的end 需要判断一下,防止只有左子树的歪脖子树时,end == head->right,死循环
- * 
- * 和库的区别就是end,库的end能走回到head,我的不能,只能走到空就没了d
- * 
- */
+	//与库中的RBT差异
+	/**
+	 *
+	 * 库中还有结点数量 count
+	 *
+	 * 库中RBT是带头结点哨兵卫的,头结点的左是中序第一个(最小结点),右节点是中序的最后一个(最大结点),
+	 * 哨兵卫的parent指向根节点,根节点的parent指向哨兵卫
+	 *
+	 * 库中的begin直接取head的left -- 函数:leftmost() //最左结点
+	 * 库中的end 是head的right -- 不是rightmost,rightmost是最右结点,end是最右结点的下一个
+	 * 库中的end 需要判断一下,防止只有左子树的歪脖子树时,end == head->right,死循环
+	 *
+	 * 和库的区别就是end,库的end能走回到head,我的不能,只能走到空就没了d
+	 *
+	 */
 
 
-	enum Colour { RED, BLACK }; 
+	enum Colour { RED, BLACK };
 
 	template<class T> //T是什么,为什么只传T? T为key或pair,T是key或者key-value类型
 	struct RBTreeNode
@@ -150,7 +151,7 @@ namespace test
 	};
 
 	//参数K用在find,erase等,虽然K也可以被T取代了,但没必要,K更快
-	template<class K,class T, class keyOfT> //库中还有1个compare，先不写了
+	template<class K, class T, class keyOfT> //库中还有1个compare，先不写了
 	class RBTree
 	{
 	public:
@@ -159,7 +160,7 @@ namespace test
 		typedef __RBTree_iterator<T, T&, T*> iterator;
 		typedef __RBTree_iterator<T, const T&, const T*> const_iterator;
 
-		iterator begin() 
+		iterator begin()
 		{
 			node* cur = _root;
 			while (cur && cur->_left)//不能走到空
@@ -200,22 +201,22 @@ namespace test
 			return nullptr;
 		}
 
-		bool insert(const T& data)
+		pair<iterator, bool> insert(const T& data)
 		{
 			if (!_root)
 			{
 				_root = new node(data);
-				_root->_col = BLACK; 
-				return true;
+				_root->_col = BLACK;
+				return pair<iterator(_root), true>;
 			}
-			
+
 			keyOfT kof;
 
 			node* cur = _root;
 			node* parent = nullptr;
 			while (cur)
 			{
-				if (kof(data)> kof(cur->_data)) // --------------------------------------------
+				if (kof(data) > kof(cur->_data)) // --------------------------------------------
 				{
 					parent = cur;
 					cur = cur->_right;
@@ -241,18 +242,18 @@ namespace test
 			}
 			cur->_parent = parent;
 
-			while (parent && parent->_col == RED) 
+			while (parent && parent->_col == RED)
 			{
-				node* g = parent->_parent; 
+				node* g = parent->_parent;
 				if (parent == g->_right)
 				{
-					node* u = g->_left; 
+					node* u = g->_left;
 					if (u && u->_col == RED)
 					{
 						g->_col = RED;
 						parent->_col = BLACK;
 						u->_col = BLACK;
-						cur = g; 
+						cur = g;
 						parent = cur->_parent;
 					}
 					else
@@ -276,7 +277,7 @@ namespace test
 				}
 				else
 				{
-					node* u = g->_right; 
+					node* u = g->_right;
 					if (u && u->_col == RED)
 					{
 						g->_col = RED;
@@ -361,7 +362,7 @@ namespace test
 			root = nullptr;
 		}
 
-		bool _check(node* root, int blackNum, int benchmark) 
+		bool _check(node* root, int blackNum, int benchmark)
 		{
 			keyOfT kof;
 			if (!root) //
@@ -379,7 +380,7 @@ namespace test
 				++blackNum;
 			}
 
-			if (root->_col == RED &&  root->_parent->_col == RED)
+			if (root->_col == RED && root->_parent->_col == RED)
 			{
 				cout << kof(root->_data) << " 错误,与父节点同时为红色"; // --------------------------------------------
 				return false;

@@ -6,14 +6,15 @@ using std::endl;
 using std::cin;
 
 
-#include"26myMap.h"
-#include"26mySet.h"
+//#include"26myMap.h"
+//#include"26mySet.h"
 int main()
 {
+	int x = 0;
 	//test::test_myMap1();
 	//test::test_mySet1();
 
-	test::test_myMap2();
+	//test::test_myMap2();
 	return 0;
 }
 

@@ -34,6 +34,10 @@
     <ClInclude Include="1编译器设置与调试.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <Text Include="1编辑器快捷键.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
+    </Text>
     <ClInclude Include="21polymorphism.h" />
     <ClInclude Include="22BSTree.h" />
     <ClInclude Include="23map_set.h" />
