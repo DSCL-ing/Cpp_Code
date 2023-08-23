@@ -29,7 +29,7 @@ namespace test
 		}
 
 	public:
-		bool insert(const pair<const K, V>& kv)
+		pair<iterator,bool> insert(const pair<const K, V>& kv)
 		{
 			return _t.insert(kv);
 		}

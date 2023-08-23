@@ -207,9 +207,9 @@ namespace test
 			{
 				_root = new node(data);
 				_root->_col = BLACK;
-				return pair<iterator(_root), true>;
+				return std::make_pair(iterator(_root), true);
 			}
-
+			
 			keyOfT kof;
 
 			node* cur = _root;
@@ -228,7 +228,7 @@ namespace test
 				}
 				else
 				{
-					return false;
+					return std::make_pair(iterator(cur), false);
 				}
 			}
 			cur = new node(data);
@@ -242,6 +242,8 @@ namespace test
 			}
 			cur->_parent = parent;
 
+			//调整/旋转
+			node* newnode = cur;//调整过程cur会发生变化,将cur结点记住 -- 记住原来key的位置
 			while (parent && parent->_col == RED)
 			{
 				node* g = parent->_parent;
@@ -306,8 +308,7 @@ namespace test
 				}
 			}
 			_root->_col = BLACK;
-			return true;
-
+			return std::make_pair(iterator(newnode), true);
 		}
 	public:
 		void InOrderTraversal()

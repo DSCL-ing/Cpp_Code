@@ -34,7 +34,7 @@ namespace test
 		
 
 	public:
-		bool insert(const K& key)
+		pair<iterator, bool> insert(const K& key)
 		{
 			return _t.insert(key);
 		}
