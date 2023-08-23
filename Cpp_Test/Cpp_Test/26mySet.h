@@ -3,7 +3,7 @@
 #include"26RBT_container.h"
 namespace test
 {
-
+	//set通过普通迭代器使用const迭代器实现限制key不能被修改
 
 	template<class K>
 	class set
@@ -80,6 +80,7 @@ namespace test
 		cout << *++it << " ";
 		cout << *--it << " ";
 		cout << endl;
+		//*it = 1;////不允许赋值,表达式必须是可以修改的左值 .不能给常量赋值
 		
 
 	}

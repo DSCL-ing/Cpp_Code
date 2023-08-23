@@ -6,6 +6,9 @@ namespace test
 	template<class K,class V>
 	class map
 	{
+
+		//map通过pair中的const K 限制了Key不能被修改
+
 	private:
 		struct mapKeyOfT//命名? 返回RBT的类型T接收的 map的key
 		{ 
@@ -63,6 +66,8 @@ namespace test
 		cout << (--it)->first << " ";
 		cout << endl;
 
+		//it->second = 1; //可以赋值
+		//it->first = 1;//不允许赋值,表达式必须是可以修改的左值 .不能给常量赋值
 	}
 
 	void test_myMap2()
@@ -107,7 +112,7 @@ namespace test
 	{
 		cout <<  s.first << ":" << s.second << endl;
 	}
-
+	
 
 }
 

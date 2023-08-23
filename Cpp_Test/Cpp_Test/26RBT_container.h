@@ -64,6 +64,11 @@ namespace test
 		__RBTree_iterator(const __RBTree_iterator<T,T&,T*>& it) 
 			:_node(it._node)
 		{}
+		//这个构造函数的作用,当迭代器模板被实例化成普通迭代器时,他就是构造函数
+		//    被实例化成const迭代器时,他是带参构造函数 --------->那么说,这个函数起到了一石二鸟的作用?
+		//const类型的作为返回值的迭代器接收(带参构造)隐式类型(拷贝构造)转换过来的临时变量? --应该也没这么复杂,直接建const临时变量拿来用可能
+
+
 
 		//Ref为 T& 或 const T& 
 		//Ptr为 T* 或 const T*
