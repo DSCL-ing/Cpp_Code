@@ -59,6 +59,14 @@ namespace test
 			:_node(node)
 		{}
 
+
+// 1、typedef __RBTreeIterator<T, T&, T*> itertaor;  拷贝构造
+// 2、 typedef __RBTreeIterator<T, const T&, const T*> const_itertaor;
+//  支持普通迭代器构造const迭代器的构造函数
+		__RBTree_iterator(const __RBTree_iterator<T,T&,T*>& it)
+			:_node(it._node)
+		{}
+
 		typedef __RBTree_iterator<T, Ref, Ptr> Self;
 
 		Ref operator*()

@@ -29,13 +29,13 @@ namespace test
 	 *
 	 */
 
-		iterator begin()const
+		iterator begin()
 		{
 			return _t.begin(); //begin是普通迭代器,返回值是const,发生隐式类型转换(单参数)
 			//如果有相应的构造函数,则支持隐式类型转换 ,但此时迭代器没有参数为迭代器的构造函数,需要添加
 			//
 		}
-		iterator end()const
+		iterator end()
 		{
 			return _t.end();
 		}
