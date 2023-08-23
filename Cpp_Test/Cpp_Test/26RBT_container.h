@@ -6,6 +6,8 @@ using std::cout;
 using std::endl;
 using std::cin;
 using std::pair;
+using std::make_pair;
+using std::string;
 
 
 namespace test
@@ -175,6 +177,20 @@ namespace test
 			return iterator(nullptr);//暂时可以这么写
 		}
 
+		const_iterator begin()const
+		{
+			node* cur = _root;
+			while (cur && cur->_left)
+			{
+				cur = cur->_left;
+			}
+			return iterator(cur);
+		}
+
+		const_iterator end() const
+		{
+			return iterator(nullptr);
+		}
 
 	private:
 		node* _root = nullptr;

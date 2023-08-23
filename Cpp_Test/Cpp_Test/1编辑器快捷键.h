@@ -49,7 +49,8 @@ vs全屏 alt + shift + enter
 
 切换到选项 alt （字母选择生效）   选择 enter
 
-编译不启动F5  （shift+F5结束调试）//(Debugging/Debug,又称除错)
+生成:编译不启动 ctrl+B
+（shift+F5结束调试）//(Debugging/Debug,又称除错)
 调试(逐语句)F11（进函数内部，详细）
 调试（逐过程）F10（不进函数，粗略）
 调试 (跳出)shift+F9(跳出当前栈帧)

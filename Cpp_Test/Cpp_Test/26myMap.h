@@ -34,6 +34,12 @@ namespace test
 			return _t.insert(kv);
 		}
 
+		V& operator[](const K& key)
+		{
+			pair<iterator,bool> ret = insert(make_pair(key, V()));
+			return ret.first->second;
+		}
+
 	};
 
 	void test_myMap1()
@@ -61,19 +67,49 @@ namespace test
 
 	void test_myMap2()
 	{
-			//map的使用
-	map<std::string, std::string>  dict;
-	dict.insert(std::pair<std::string, std::string>("sort", "排序")); //匿名对象插入
-	dict.insert(std::make_pair("string", "字符串"));    //pair封装插入
-	dict.insert(std::make_pair("count", "计数"));
-	dict.insert(std::make_pair("count", "(计数)")); //插入失败的
-	auto it = dict.begin();
-	while (it != dict.end())
+		//map的使用
+		map<std::string, std::string>  dict;
+		dict.insert(std::pair<std::string, std::string>("sort", "排序")); //匿名对象插入
+		dict.insert(std::make_pair("string", "字符串"));    //pair封装插入
+		dict.insert(std::make_pair("count", "计数"));
+		dict.insert(std::make_pair("count", "(计数)")); //插入失败的
+		auto it = dict.begin();
+		while (it != dict.end())
+		{
+			cout << it->first << ":" << it->second << endl;
+			++it;
+		}
+	}
+
+	void test_myMap3()
+{
+	std::string arr[] = { "苹果", "西瓜", "苹果", "西瓜", "苹果", "苹果", "西瓜","苹果", "香蕉", "苹果", "香蕉" };
+	map<std::string, int> countMap;
+	/*for (auto e : arr)
 	{
-		cout << it->first << ":" << it->second << endl;
-		++it;
+		auto ret = countMap.find(x);
+		if (ret==countMap.end())
+		{
+			countMap.insert(std::pair<string, int>(x, 1));
+		}
+		else
+		{
+			++ret->second;
+		}
+	}*/
+
+	for (auto& e : arr)
+	{
+		++countMap[e];
 	}
+
+	for (auto& s : countMap)
+	{
+		cout <<  s.first << ":" << s.second << endl;
 	}
+
+
+}
 
 }
 
