@@ -49,7 +49,7 @@ namespace test
 		s.insert(1);
 		s.insert(3);
 
-		//set<int>::iterator it = s.begin();
+		set<int>::iterator it = s.begin();
 		//while (it!=s.end())
 		//{
 		//	cout << *it << " ";
@@ -59,6 +59,9 @@ namespace test
 		{
 			cout << e << " ";
 		}
+		cout << *++it << " ";
+		cout << *--it << " ";
+		cout << endl;
 		
 
 	}

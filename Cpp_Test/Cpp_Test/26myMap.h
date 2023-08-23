@@ -34,7 +34,6 @@ namespace test
 			return _t.insert(kv);
 		}
 
-
 	};
 
 	void test_myMap1()
@@ -43,7 +42,7 @@ namespace test
 		m.insert(std::make_pair(1, 1));
 		m.insert(std::make_pair(3, 3));
 		m.insert(std::make_pair(2, 2));
-		map<int,int>::iterator it = m.begin();
+		test::map<int,int>::iterator it = m.begin();
 		//while (it != m.end())
 		//{
 		//	cout << it->first << " ";
@@ -53,12 +52,29 @@ namespace test
 		{
 			cout << e.first << " ";
 		}
+
+		cout << (++it)->first << " ";
+		cout << (--it)->first << " ";
+		cout << endl;
+
+	}
+
+	void test_myMap2()
+	{
+			//map的使用
+	map<std::string, std::string>  dict;
+	dict.insert(std::pair<std::string, std::string>("sort", "排序")); //匿名对象插入
+	dict.insert(std::make_pair("string", "字符串"));    //pair封装插入
+	dict.insert(std::make_pair("count", "计数"));
+	dict.insert(std::make_pair("count", "(计数)")); //插入失败的
+	auto it = dict.begin();
+	while (it != dict.end())
+	{
+		cout << it->first << ":" << it->second << endl;
+		++it;
+	}
 	}
 
 }
-
-
-
-
 
 

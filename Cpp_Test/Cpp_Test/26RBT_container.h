@@ -10,6 +10,23 @@ using std::pair;
 namespace test
 {
 
+//与库中的RBT差异
+/**
+ *
+ * 库中还有结点数量 count
+ *
+ * 库中RBT是带头结点哨兵卫的,头结点的左是中序第一个(最小结点),右节点是中序的最后一个(最大结点),
+ * 哨兵卫的parent指向根节点,根节点的parent指向哨兵卫
+ *
+ * 库中的begin直接取head的left -- 函数:leftmost() //最左结点
+ * 库中的end 是head的right -- 不是rightmost,rightmost是最右结点,end是最右结点的下一个
+ * 库中的end 需要判断一下,防止只有左子树的歪脖子树时,end == head->right,死循环
+ * 
+ * 和库的区别就是end,库的end能走回到head,我的不能,只能走到空就没了d
+ * 
+ */
+
+
 	enum Colour { RED, BLACK }; 
 
 	template<class T> //T是什么,为什么只传T? T为key或pair,T是key或者key-value类型
@@ -39,7 +56,7 @@ namespace test
 			:_node(node)
 		{}
 
-		typedef __RBTree_iterator<T,Ref,Ptr> Self;
+		typedef __RBTree_iterator<T, Ref, Ptr> Self;
 
 		Ref operator*()
 		{
@@ -58,31 +75,31 @@ namespace test
 			//++逻辑
 			/**
 			 * 如果右子树不为空,则下一个是右子树的最左节点
-			 * 
+			 *
 			 * 如果右子树完了,则父亲也完了.
-			 * 
+			 *
 			 * 如果我是父亲的左,完了则走父亲
-			 * 
+			 *
 			 * 直到没有父亲,结束
-			 * 
+			 *
 			 * 方法1:三叉链非递归
 			 * 方法2:借助栈,非递归
-			 * 
+			 *
 			 */
-			//if (!_node) //还不知为何不需要判空
-			//{
-			//	return *this;
-			//}
-			
-			/**
-			 * 特性:
-			 * -- 除了右子树为空,每个结点的下一个是他的右子树走到空的那一个,
-			 * 
-			 * 1.如果右子树不为空,,每个结点的下一个是他的右子树的最左结点,右子树往左走走到空的那一个,
-			 * 2.如果右子树为空,则下一个是他所在的左子树的那个结点(祖先),cur往父亲的右倒着走,走到第一个出现的父亲的左,这个父亲就是下一个结点
-			 * -- 沿着到根的路径往上走，找孩子是左子树的那个祖先
-			 */
-			if (_node->_right) 
+			 //if (!_node) //还不知为何不需要判空
+			 //{
+			 //	return *this;
+			 //}
+
+			 /**
+			  * 特性:
+			  * -- 除了右子树为空,每个结点的下一个是他的右子树走到空的那一个,
+			  *
+			  * 1.如果右子树不为空,,每个结点的下一个是他的右子树的最左结点,右子树往左走走到空的那一个,
+			  * 2.如果右子树为空,则下一个是他所在的左子树的那个结点(祖先),cur往父亲的右倒着走,走到第一个出现的父亲的左,这个父亲就是下一个结点
+			  * -- 沿着到根的路径往上走，找孩子是左子树的那个祖先
+			  */
+			if (_node->_right)
 			{
 				node* cur = _node->_right;
 				while (cur->_left)
@@ -102,14 +119,36 @@ namespace test
 				}
 				_node = parent;
 			}
-			
+
 			return *this;
 		}
-		//operator--()
-		//{
-
-		//}
+		Self& operator--()
+		{
+			//和++对称
+			if (_node->_left)
+			{
+				node* cur = _node->_left;
+				while (cur->_right)
+				{
+					cur = cur->_right;
+				}
+				_node = cur;
+			}
+			else
+			{
+				node* cur = _node;
+				node* parent = _node->_parent;
+				while (parent && parent->_left == cur)
+				{
+					cur = parent;
+					parent = parent->_parent;
+				}
+				_node = parent;
+			}
+			return *this;
+		}
 	};
+
 	//参数K用在find,erase等,虽然K也可以被T取代了,但没必要,K更快
 	template<class K,class T, class keyOfT> //库中还有1个compare，先不写了
 	class RBTree

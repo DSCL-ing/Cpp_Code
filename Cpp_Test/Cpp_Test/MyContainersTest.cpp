@@ -10,8 +10,10 @@ using std::cin;
 #include"26mySet.h"
 int main()
 {
-	test::test_myMap1();
-	test::test_mySet1();
+	//test::test_myMap1();
+	//test::test_mySet1();
+
+	test::test_myMap2();
 	return 0;
 }
 
