@@ -48,11 +48,16 @@ namespace test
 		s.insert(2);
 		s.insert(1);
 		s.insert(3);
-		set<int>::iterator it = s.begin();
-		while (it!=s.end())
+
+		//set<int>::iterator it = s.begin();
+		//while (it!=s.end())
+		//{
+		//	cout << *it << " ";
+		//	++it;
+		//}
+		for (auto& e : s)
 		{
-			cout << *it << " ";
-			++it;
+			cout << e << " ";
 		}
 		
 
