@@ -34,16 +34,22 @@
     <ClInclude Include="1编译器设置与调试.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="0收藏.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <Text Include="1编辑器快捷键.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
     </Text>
-    <ClInclude Include="21polymorphism.h" />
+    <ClInclude Include="21polymorphism.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="22BSTree.h" />
     <ClInclude Include="23map_set.h" />
     <ClInclude Include="26myMap.h" />
     <ClInclude Include="26mySet.h" />
     <ClInclude Include="26RBT_container.h" />
+    <ClInclude Include="27hash.h" />
     <ClInclude Include="2Note.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
