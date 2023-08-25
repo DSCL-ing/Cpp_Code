@@ -94,7 +94,63 @@ using std::cin;
  * 
  */
 
+#include<iostream>
+using std::cout;
+using std::endl;
+using std::pair;
+using std::make_pair;
+#include<vector>
 
+namespace OpenAddress
+{
+
+	//state:状态
+	enum state { EMPTY, EXIST, DELETE }; //ctrl shitf U 一键变大
+
+	template<class K, class V>
+	struct HashData
+	{
+		pair<K, V> _kv;
+		state _state = EMPTY;
+	};
+
+
+
+	template<class K,class V>
+	class HashTable
+	{
+	private:
+		std::vector<HashData<K, V>> _tables;
+	public:
+		bool insert()
+		{
+
+		}
+		HashData<K, V> find(const K& key)
+		{
+			if (_tables.size() == 0)
+			{
+				return false;
+			}
+			size_t hashi = key % _tables.size();
+
+			//线性探测
+			size_t i = 1;
+			size_t index = hashi;
+			while (_tables[index]._state != EXIST) //数组中数据的状态是“存在”
+			{
+
+			}
+
+
+		}
+		bool erase()
+		{
+
+		}
+	};
+		
+}
 
 
 
