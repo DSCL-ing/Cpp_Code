@@ -126,20 +126,23 @@ namespace OpenAddress
 		{
 
 		}
-		HashData<K, V> find(const K& key)
+		HashData<K, V>* find(const K& key)
 		{
 			if (_tables.size() == 0)
 			{
 				return false;
 			}
-			size_t hashi = key % _tables.size();
+			size_t hashi = key % _tables.size();//起始位置
 
 			//线性探测
 			size_t i = 1;
 			size_t index = hashi;
 			while (_tables[index]._state != EXIST) //数组中数据的状态是“存在”
 			{
-
+				//元素状态为存在且key相等,则返回该元素地址?为什么不返回引用
+				
+				//不存在则继续往下遍历,走到底就从头开始,直到走完一圈
+				//如果走完一圈,回到起始位置后,结束循环
 			}
 
 
