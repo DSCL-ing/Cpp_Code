@@ -4,7 +4,7 @@
 
 
 
-
+shift+alt+] 将选定内容扩展到包含块
 
 Ctrl + U  选中代码全部转化为小写 /ctrl +shift + U 全部转成大写
 

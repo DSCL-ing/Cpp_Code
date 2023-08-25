@@ -96,7 +96,7 @@
     <ClInclude Include="26RBT_container.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="27hash.h">
+    <ClInclude Include="28hash.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="0收藏.h">
@@ -129,5 +129,10 @@
     <Text Include="1编辑器快捷键.h">
       <Filter>头文件</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="27unordered_hash.h">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
