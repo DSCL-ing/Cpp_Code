@@ -184,7 +184,7 @@ namespace OpenAddress
 
 			//线性探测
 			size_t index = hashi;
-			while (_tables[index]._state != EMPTY) //数组中数据的状态是“存在”
+			while (_tables[index]._state != EMPTY) //数组中数据的状态不为空,即是“存在”或"删除"都进行查找
 			{
 				//哈希值应该有范围的
 
@@ -212,6 +212,13 @@ namespace OpenAddress
 		bool erase(const K& key)
 		{
 			//找到key的位置,找不到返回否,找到则删除
+			/** 删除原理
+			 * 
+			 * 为了因为冲突而插在非哈希值位置的元素,
+			 * 删除要将其置为|删除|状态,满足(空不查找,删除和存在都要查找)
+			 * 
+			 * 
+			 */
 			HashData<K, V> ret = find(key);
 			if (ret)
 			{
