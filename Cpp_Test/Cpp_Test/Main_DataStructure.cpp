@@ -9,6 +9,14 @@ using std::endl;
 using std::cin;
 
 
+#include"28hash.h"
+int main()
+{
+	OpenAddress::test_hash1();
+	return 0;
+}
+
+
 //#include<set>
 //using std::set;
 //#include"25RBTree.h"

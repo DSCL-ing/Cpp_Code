@@ -111,7 +111,7 @@ namespace OpenAddress
 	struct HashData 
 	{
 		pair<K, V> _kv; //键值对
-		state _state = EMPTY; //状态
+		state _state = EMPTY; //状态//默认是空
 	};
 
 
@@ -121,10 +121,14 @@ namespace OpenAddress
 	{
 	private:
 		std::vector<HashData<K, V>> _tables;
-		size_t _n;
+		size_t _n = 0;
 	public:
 		bool insert(const pair<K,V>& kv)
 		{
+			if (find(kv.first))//找到就不能插入 unique
+			{
+				return false;
+			}
 			//负载因子超过0.7和空表就扩容 -- 负载因子是直接算出来的 -- 负载因子== 个数/容量
 			//扩容:
 			/**
@@ -132,7 +136,7 @@ namespace OpenAddress
 			 * 遍历旧表,调用自己的insert,重新映射到新表
 			 *
 			 */
-			if (_tables.size() == 0 || _n * 10 / _tables.capacity() >= 7) //整型算不出小数
+			if (_tables.size() == 0 || _n * 10 / _tables.size() >= 7) //整型算不出小数
 			{
 				//空表和旧表都要开辟新表
 				size_t newsize = _tables.size() == 0 ? 10 : _tables.size() * 2;
@@ -144,13 +148,15 @@ namespace OpenAddress
 				//遍历旧表
 				for (auto& data : _tables)
 				{
-					if (data.state == EXIST);
+					if (data._state == EXIST)//只要存在就插入
+						//?插入后,新表没有delete了,问题:如果该位置没删除之前插入一个值x,即下一个线性探测位置存在,
+						//  然后负载因子0.7了,扩容,该位置delete变empty了,那再次find(x)能不能找得到? ---- 想多了,扩容后重新计算位置了,会有新的delete
 					{
 						newht.insert(data._kv);
 					}
 				}		
 				//swap(newht._tables, _tables); //
-				_tables.swap(newht); //好像这个好一点
+				_tables.swap(newht._tables); //好像这个好一点
 			}
 
 			 //常规插入
@@ -158,11 +164,12 @@ namespace OpenAddress
 			 //线性探测,如果当前哈希值位置状态存在,则进入循环 -- 
 			
 			size_t hashi = kv.first % _tables.size();
-			size_t i = 0;
+			size_t i = 1;
 			size_t index = hashi;
 			while (_tables[index]._state == EXIST) //所有都存在呢??????? --走完一圈就跳出来
 			{
-				index = hash + i; //该结构是为了和其他如二次探测的算法结构类似
+				index = hashi + i; //该结构是为了和其他如二次探测的算法结构类似
+				++i;
 				index %= _tables.size();//每次都模,一满就从0开始
 				if (index == hashi)
 				{
@@ -171,7 +178,7 @@ namespace OpenAddress
 			}
 			
 			_tables[index]._kv = kv;
-			_tables[index].state = EXIST;
+			_tables[index]._state = EXIST;
 			++_n;
 
 			return true;
@@ -179,13 +186,14 @@ namespace OpenAddress
 
 		HashData<K, V>* find(const K& key)
 		{
-			if (_tables.size() == 0) //如果为空返回false;
+			if (_tables.size() == 0) //如果为数组空则不可能找到,返回空;
 			{
-				return false;
+				return nullptr;
 			}
-			size_t hashi = key % _tables.size();//起始位置
 
+			size_t hashi = key % _tables.size();//起始位置
 			//线性探测
+			size_t i = 1;
 			size_t index = hashi;
 			while (_tables[index]._state != EMPTY) //数组中数据的状态不为空,即是“存在”或"删除"都进行查找
 			{
@@ -197,10 +205,11 @@ namespace OpenAddress
 					return &_tables[index];
 				}
 
-				++index;
+				index = hashi + i;
+				++i;
 				index %= _tables.size();
 
-				if (index = hashi)
+				if (index == hashi)
 				{
 					break;
 				}
@@ -222,10 +231,10 @@ namespace OpenAddress
 			 * 
 			 * 
 			 */
-			HashData<K, V> ret = find(key);
+			HashData<K, V>* ret = find(key);
 			if (ret)
 			{
-				ret._state = DELETE;
+				ret->_state = DELETE;
 				--_n;
 				return true;
 			}
@@ -235,6 +244,45 @@ namespace OpenAddress
 			}
 		}
 	};
+
+	void test_hash1()
+	{
+		int a[] = { 3,33,2,13,5,12,102 };
+		OpenAddress::HashTable<int,int> ht;
+		
+		//insert test
+		for (auto i : a)
+		{
+			ht.insert(std::make_pair(i, i));
+		}
+		//ht.insert(std::make_pair(15, 15));
+		ht.erase(3);
+		ht.insert(std::make_pair(0,0));
+		ht.insert(std::make_pair(9,9));
+		
+
+		//find and erase test
+		if (ht.find(33))
+		{
+			cout << "13在" << endl;
+		}
+		else
+		{
+			cout << "13不在" << endl;
+		}
+
+		ht.erase(13);
+
+		if (ht.find(13))
+		{
+			cout << "13在" << endl;
+		}
+		else
+		{
+			cout << "13不在" << endl;
+		}
+
+	}
 
 }
 
