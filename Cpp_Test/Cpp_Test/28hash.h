@@ -137,6 +137,8 @@ namespace OpenAddress
 				//空表和旧表都要开辟新表
 				size_t newsize = _tables.size() == 0 ? 10 : _tables.size() * 2;
 				HashTable<K,V> newht; //new HashTable
+
+				//要满足随机插入特性,需要扩容并初始化所有的容量,所以需要使用resize,不能使用reserve
 				newht._tables.resize(newsize);
 
 				//遍历旧表
@@ -156,10 +158,11 @@ namespace OpenAddress
 			 //线性探测,如果当前哈希值位置状态存在,则进入循环 -- 
 			
 			size_t hashi = kv.first % _tables.size();
+			size_t i = 0;
 			size_t index = hashi;
 			while (_tables[index]._state == EXIST) //所有都存在呢??????? --走完一圈就跳出来
 			{
-				++index;
+				index = hash + i; //该结构是为了和其他如二次探测的算法结构类似
 				index %= _tables.size();//每次都模,一满就从0开始
 				if (index == hashi)
 				{

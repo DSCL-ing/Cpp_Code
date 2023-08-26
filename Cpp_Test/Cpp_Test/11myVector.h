@@ -58,8 +58,11 @@
 
   //capacity
   /**
-   * resize()
-   * vector的resize使用得更频繁, 支持开空间加初始化
+   * $resize()
+   * vector的resize使用得更频繁, 支持开空间加初始化 -- 能满足扩容后的空间随机访问
+   * 
+   * 
+   * $reserve只能扩容,不初始化,不能访问未初始化的空间
    * .
    */
 
