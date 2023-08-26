@@ -255,14 +255,11 @@ namespace OpenAddress
 		{
 			ht.insert(std::make_pair(i, i));
 		}
-		//ht.insert(std::make_pair(15, 15));
-		ht.erase(3);
-		ht.insert(std::make_pair(0,0));
-		ht.insert(std::make_pair(9,9));
+		ht.insert(std::make_pair(15, 15));
 		
 
 		//find and erase test
-		if (ht.find(33))
+		if (ht.find(13))
 		{
 			cout << "13在" << endl;
 		}
@@ -284,6 +281,14 @@ namespace OpenAddress
 
 	}
 
+}
+
+
+namespace HashBucket //哈希桶
+{
+	//插入:头插有什么好处? 1.高效O(1)
+
+	//负载因子越大,冲突的概率越高,查找效率越低,空间利用率越高
 }
 
 
