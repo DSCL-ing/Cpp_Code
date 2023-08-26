@@ -49,6 +49,20 @@
  *
  */
 
+//构造函数
+/**
+ *  explicit vector (const allocator_type& alloc = allocator_type()); 
+ * // vector<> v; //nullptr
+ *  
+ *  explicit vector (size_type n, const value_type& val = value_type(),const allocator_type& alloc = allocator_type()); 
+ * // vector<> v(n,val); //init n identical  value  n个相同的值
+ * 
+ *  template <class InputIterator>
+ *       vector (InputIterator first, InputIterator last,const allocator_type& alloc = allocator_type());
+ *  //vector<> v(begin,end); 
+ * 
+ */
+
  //iterator
  /**
   * 迭代器失效问题 - 原数据修改后需要重新初始化迭代器
