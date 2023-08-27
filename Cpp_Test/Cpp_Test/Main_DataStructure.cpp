@@ -12,7 +12,10 @@ using std::cin;
 #include"28hash.h"
 int main()
 {
-	OpenAddress::test_hash1();
+	//OpenAddress::test_hash1();
+
+	HashBucket::test_hash1();
+
 	return 0;
 }
 

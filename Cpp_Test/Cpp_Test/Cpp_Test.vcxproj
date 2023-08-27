@@ -44,8 +44,10 @@
     <ClInclude Include="21polymorphism.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="22BSTree.h" />
-    <ClInclude Include="23map_set.h" />
+    <ClInclude Include="22BSTree.hpp" />
+    <ClInclude Include="23map_set.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="26myMap.h" />
     <ClInclude Include="26mySet.h" />
     <ClInclude Include="26RBT_container.h" />

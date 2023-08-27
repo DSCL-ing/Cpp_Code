@@ -72,7 +72,7 @@
     <ClInclude Include="21polymorphism.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="22BSTree.h">
+    <ClInclude Include="22BSTree.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="23map_set.h">

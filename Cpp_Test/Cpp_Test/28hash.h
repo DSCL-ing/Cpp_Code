@@ -108,11 +108,11 @@ namespace OpenAddress
 	enum state { EMPTY, EXIST, DELETE }; //ctrl shitf U 一键变大
 
 	template<class K, class V>
-	struct HashData 
+	struct HashData
 	{
 		pair<K, V> _kv; //键值对
 		state _state = EMPTY; //状态//默认是空
-	};
+	};//HashData_end
 
 
 	template<class K, class V>
@@ -122,7 +122,7 @@ namespace OpenAddress
 		std::vector<HashData<K, V>> _tables;
 		size_t _n = 0;
 	public:
-		bool insert(const pair<K,V>& kv)
+		bool insert(const pair<K, V>& kv)
 		{
 			if (find(kv.first))//找到就不能插入 unique
 			{
@@ -139,7 +139,7 @@ namespace OpenAddress
 			{
 				//空表和旧表都要开辟新表
 				size_t newsize = _tables.size() == 0 ? 10 : _tables.size() * 2;
-				HashTable<K,V> newht; //new HashTable
+				HashTable<K, V> newht; //new HashTable
 
 				//要满足随机插入特性,需要扩容并初始化所有的容量,所以需要使用resize,不能使用reserve
 				newht._tables.resize(newsize);
@@ -153,15 +153,15 @@ namespace OpenAddress
 					{
 						newht.insert(data._kv);
 					}
-				}		
+				}
 				//swap(newht._tables, _tables); //
 				_tables.swap(newht._tables); //好像这个好一点
 			}
 
-			 //常规插入
-			 //计算哈希值
-			 //线性探测,如果当前哈希值位置状态存在,则进入循环 -- 
-			
+			//常规插入
+			//计算哈希值
+			//线性探测,如果当前哈希值位置状态存在,则进入循环 -- 
+
 			size_t hashi = kv.first % _tables.size();
 			size_t i = 1;
 			size_t index = hashi;
@@ -175,13 +175,13 @@ namespace OpenAddress
 					break;
 				}
 			}
-			
+
 			_tables[index]._kv = kv;
 			_tables[index]._state = EXIST;
 			++_n;
 
 			return true;
-		}
+		} //insert_end
 
 		HashData<K, V>* find(const K& key)
 		{
@@ -218,17 +218,17 @@ namespace OpenAddress
 			}
 			return nullptr;
 			//出循环后,说明没找到,返回空
-		}
+		}//find_end
 
 		bool erase(const K& key)
 		{
 			//找到key的位置,找不到返回否,找到则删除
 			/** 删除原理
-			 * 
+			 *
 			 * 为了因为冲突而插在非哈希值位置的元素,
 			 * 删除要将其置为|删除|状态,满足(空不查找,删除和存在都要查找)
-			 * 
-			 * 
+			 *
+			 *
 			 */
 			HashData<K, V>* ret = find(key);
 			if (ret)
@@ -241,21 +241,22 @@ namespace OpenAddress
 			{
 				return false;
 			}
-		}
-	};
+		} //erase_end
+
+	}; //HashTable_end
 
 	void test_hash1()
 	{
 		int a[] = { 3,33,2,13,5,12,102 };
-		OpenAddress::HashTable<int,int> ht;
-		
+		OpenAddress::HashTable<int, int> ht;
+
 		//insert test
 		for (auto i : a)
 		{
 			ht.insert(std::make_pair(i, i));
 		}
 		ht.insert(std::make_pair(15, 15));
-		
+
 
 		//find and erase test
 		if (ht.find(13))
@@ -288,36 +289,159 @@ namespace HashBucket //哈希桶
 	//enum State{ EMPTY,EXIST,DELETE };//不需要状态
 
 	//建一个原生结点方便控制
-	template<class K,class V>
+	template<class K, class V>
 	struct HashNode
 	{
-		HashNode* _next; //单链表
+		HashNode* _next = nullptr; //单链
 		pair<K, V> _kv; //KV都是存键值对
-	};
 
+		HashNode(const pair<K, V>& kv)
+			:_kv(kv)
+		{}
 
+	}; //HashNode_end
 
-
-	//插入:头插有什么好处? 1.高效O(1) 
-
-	//负载因子越大,冲突的概率越高,查找效率越低,空间利用率越高
-	//负载因子越小,冲突的概率越低,查找效率越高,空间利用率越低 : 空间换时间
-
-	//最好的情况是负载因子==1,相当于平均每个下标挂一个. 先负载因子==1时扩容 
-
-	//扩容直接将原结点挪动下来 -- 每一个结点都需要重新计算hash值
-
-	//find简单
-
-	//erase单链表删除,有一点麻烦(基础)
+	//计算哈希值用的太多了,可以考虑封装成函数
 
 	template<class K, class V>
 	class HashTable
 	{
+	public:
+		typedef HashNode<K, V> node;
+	public:
+		size_t _n = 0;
+		std::vector<node*> _tables;
 
-	};
+	public:
+		bool insert(const pair<K, V>& kv)
+		{
+			//插入:头插有什么好处? 1.高效O(1) 
+			
+			//负载因子越大,冲突的概率越高,查找效率越低,空间利用率越高
+			//负载因子越小,冲突的概率越低,查找效率越高,空间利用率越低 : 空间换时间
+			
+			//最好的情况是负载因子==1,相当于平均每个下标挂一个. 先负载因子==1时扩容 
+			
+			//扩容直接将原结点挪动下来 -- 每一个结点都需要重新计算hash值插入
+			if (find(kv.first)!=nullptr)
+			{
+				return false;
+			}
+
+			//负载因子为1时扩容,什么时候负载因子为1? : 平均每个数组元素下边挂一个结点,即结点数量==数组大小
+			//空表时呢? 空表时结点数量也 == 数组大小 == 0
+			if (_n == _tables.size())//负载因子
+			{
+				size_t newsize = _tables.size() == 0 ? 10 : 2 * _tables.size();
+				/*_tables.resize(newsize,nullptr);*/ //不能直接resize,因为会使原数据全部丢失
+				std::vector<node*> newht(newsize, nullptr);
+
+				//遍历旧表,插到新表
+				for (auto& cur : _tables)//拿到每个元素:元素是一个存放结点的指针变量(通过这个指针变量可以使用*和->控制结点行为,但这个指针变量是vector的元素,不操作vector则不会收到影响)
+				{
+					while (cur) //遍历悬挂的单链表
+					{
+						node* next = cur->_next;
+						/*newht.insert(cur._kv);*/ //不能这么写,因为这就是个顺序表,不是闭散列哈希表
+
+						size_t hashi = cur->_kv.first % newht.size();
+
+						cur->_next = newht[hashi];
+						newht[hashi] = cur;
+
+						cur = next;
+					}
+				}
+				_tables.swap(newht);
+				//需不需要主动释放旧数组? 不需要出了insert自动释放
+				//newht.~vector();C++11
+			}
+			//常规插入
+			size_t hashi = kv.first % _tables.size();
+
+			node* newnode = new node(kv);
+			newnode->_next = _tables[hashi];
+			_tables[hashi] = newnode;
+			++_n;
+
+			return true;
+		}//insert_end
+
+		//find和erase都需要查找:因为有key,只需要确定哈希值去遍历就行
+
+		node* find(const K& key)
+		{
+			if (_n == 0)
+			{
+				return nullptr;
+			}
+			size_t hashi = key % _tables.size();
+			node* cur = _tables[hashi];
+
+			while (cur)
+			{
+				if (cur->_kv.first == key)
+				{
+					return cur;
+				}
+				cur = cur->_next;
+			}
+
+			return nullptr;
+		} //find_end
+
+		bool erase(const K& key)
+		{
+			size_t hashi = key % _tables.size();
+
+			node* cur = _tables[hashi];
+			node* prev = nullptr;
+			while (cur)
+			{
+				if (cur->_kv.first == key)
+				{
+					if (!prev)
+					{
+						_tables[hashi] = cur->_next;
+					}
+					else
+					{
+						prev->_next = cur->_next;
+					}
+					delete cur;
+
+					return true;
+				}
+				prev = cur;
+				cur = cur->_next;
+			}
+			
+			return false;
+		}//erase_end
+
+	};//HashBucket_end
 
 
+	void test_hash1()
+	{
+		int a[] = { 3,33,2,13,5,12,102 };
+		HashBucket::HashTable<int, int> ht;
+
+		for (auto& i : a)
+		{
+			ht.insert(make_pair(i, i));
+		}
+
+		ht.insert(make_pair(15, 15));
+		ht.insert(make_pair(25, 25));
+		ht.insert(make_pair(35, 35));
+		ht.insert(make_pair(45, 45));
+
+		//find 不用测试,嵌在insert里了
+		ht.erase(12);
+		ht.erase(3);
+		ht.erase(33);
+	}
 
 }
 
