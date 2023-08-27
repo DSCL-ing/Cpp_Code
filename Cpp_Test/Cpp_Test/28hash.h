@@ -301,9 +301,28 @@ namespace HashBucket //哈希桶
 
 	}; //HashNode_end
 
-	//计算哈希值用的太多了,可以考虑封装成函数
 
-	template<class K, class V>
+	template<typename K>
+	struct HashFunc //默认仿函数
+	{
+		size_t operator()(const K& key)
+		{
+			return key;
+		}
+	};
+
+	template<typename K>
+	struct HashFunc<std::string>
+	{
+		size_t operator()(const std::string& s)
+		{
+
+			return s;
+		}
+	};
+
+	//计算哈希值用的太多了,可以考虑封装成函数
+	template<class K, class V,class Hash = HashFunc<K>>
 	class HashTable
 	{
 	public:
@@ -315,6 +334,7 @@ namespace HashBucket //哈希桶
 	public:
 		bool insert(const pair<K, V>& kv)
 		{
+			Hash hash;
 			//插入:头插有什么好处? 1.高效O(1) 
 			
 			//负载因子越大,冲突的概率越高,查找效率越低,空间利用率越高
@@ -344,7 +364,7 @@ namespace HashBucket //哈希桶
 						node* next = cur->_next;
 						/*newht.insert(cur._kv);*/ //不能这么写,因为这就是个顺序表,不是闭散列哈希表
 
-						size_t hashi = cur->_kv.first % newht.size();
+						size_t hashi = hash(cur->_kv.first) % newht.size();
 
 						cur->_next = newht[hashi];
 						newht[hashi] = cur;
@@ -357,7 +377,7 @@ namespace HashBucket //哈希桶
 				//newht.~vector();C++11
 			}
 			//常规插入
-			size_t hashi = kv.first % _tables.size();
+			size_t hashi = hash(kv.first) % _tables.size();
 
 			node* newnode = new node(kv);
 			newnode->_next = _tables[hashi];
@@ -375,7 +395,7 @@ namespace HashBucket //哈希桶
 			{
 				return nullptr;
 			}
-			size_t hashi = key % _tables.size();
+			size_t hashi = hash(key) % _tables.size();
 			node* cur = _tables[hashi];
 
 			while (cur)
@@ -442,7 +462,7 @@ namespace HashBucket //哈希桶
 		ht.erase(3);
 		ht.erase(33);
 	}
-
+	
 }
 
 
