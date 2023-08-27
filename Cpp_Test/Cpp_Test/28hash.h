@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-
-#include<unordered_set>
-#include<unordered_map>
+//#include<unordered_map>
+//#include<unordered_set>
+#include<string>
 #include<iostream>
 using std::cout;
 using std::endl;
@@ -91,8 +91,11 @@ using std::cin;
 	 * 按照哈希函数：Hash(key) = key% p(p<=m),将关键码转换成哈希地址
 	 * 映射关系是模出来的
 	 * 缺点:可能会冲突,不同的值映射到了同一个位置(哈希冲突)
+	 * 注意:模数最好为素数,需要证明,使用素数冲突少一点
 	 *
 	 */
+
+
 
 #include<iostream>
 using std::cout;
@@ -284,6 +287,25 @@ namespace OpenAddress
 }
 
 
+//哈希桶的时间复杂度
+/**
+ * 
+ * 最坏情况O(n) :所有值都冲突,插在一个数组元素上
+ * 
+ * 但最坏情况基本不会发生,因为扩容存在,每次扩容都会重新计算哈希值,所以哈希桶一般不看最坏情况,和快排类似 
+ * 
+ * 增删查改时间复杂度:O(1)
+ * 
+ * 性能分析:统计各个桶的长度的概率,很少有极端场景出现
+ * 
+ * 万一有极端场景出现的解决方案
+ * 1.负载因子控制:减小负载因子,空间换时间
+ * 2.单个桶超过一定长度(java好像是8),这个桶不同链表改成红黑树 -- 通过联合体/共用体来控制  -- 绝对解决太长问题
+ * 
+ * .
+ */
+
+
 namespace HashBucket //哈希桶
 {
 	//enum State{ EMPTY,EXIST,DELETE };//不需要状态
@@ -301,7 +323,7 @@ namespace HashBucket //哈希桶
 
 	}; //HashNode_end
 
-
+	//解决key不同类型取模的问题
 	template<typename K>
 	struct HashFunc //默认仿函数
 	{
@@ -310,14 +332,30 @@ namespace HashBucket //哈希桶
 			return key;
 		}
 	};
-
-	template<typename K>
-	struct HashFunc<std::string>
+	template<>
+	struct HashFunc<std::string> //string 特化
 	{
+		//字符串哈希处理
+		/**
+		 * 一般处理是将字符串的每个字符加起来(字符可以加)
+		 * 
+		 * 但直接相加很容易发生冲突,如aabb,bbaa.abab等
+		 * 
+		 * (衍生场景:字符串比对:来一个地址很长,通过相加计算他的哈希值,然后搜索库中的哈希表中,把冲突的几个拿出来比对.这种方法比一个一个比对快很多.)
+		 * 
+		 * 使用BKDR算法
+		 * https://www.cnblogs.com/-clq/archive/2012/05/31/2528153.html
+		 * 
+		 */
 		size_t operator()(const std::string& s)
 		{
-
-			return s;
+			size_t ret = 0;
+			for (auto ch : s)
+			{
+				ret += ch;
+				ret *= 31;
+			}
+			return ret;
 		}
 	};
 
@@ -332,6 +370,32 @@ namespace HashBucket //哈希桶
 		std::vector<node*> _tables;
 
 	public:
+
+		size_t GetNextPrime(size_t prime)
+		{
+			// SGI -- 控制每次扩容的值为素数 --- 目前没有证据必要是素数 ,java没有使用这种方法
+			// 因为每次扩容的值为素数不好控制,SGI给定一个数组
+			static const int __stl_num_primes = 28; //一共28个值
+			static const unsigned long __stl_prime_list[__stl_num_primes] =
+			{
+				53, 97, 193, 389, 769,
+				1543, 3079, 6151, 12289, 24593,
+				49157, 98317, 196613, 393241, 786433,
+				1572869, 3145739, 6291469, 12582917, 25165843,
+				50331653, 100663319, 201326611, 402653189, 805306457,
+				1610612741, 3221225473, 4294967291
+			};
+			size_t i = 0;//后面复用需要
+			for ( ;i < __stl_num_primes; ++i)
+			{
+				if (__stl_prime_list[i] > prime) 
+					return __stl_prime_list[i];    //返回比实参大的元素
+			}
+
+			return __stl_prime_list[i];
+		}
+
+
 		bool insert(const pair<K, V>& kv)
 		{
 			Hash hash;
@@ -352,7 +416,9 @@ namespace HashBucket //哈希桶
 			//空表时呢? 空表时结点数量也 == 数组大小 == 0
 			if (_n == _tables.size())//负载因子
 			{
-				size_t newsize = _tables.size() == 0 ? 10 : 2 * _tables.size();
+				size_t newsize = GetNextPrime(_tables.size());
+
+				//size_t newsize = _tables.size() == 0 ? 10 : 2 * _tables.size();
 				/*_tables.resize(newsize,nullptr);*/ //不能直接resize,因为会使原数据全部丢失
 				std::vector<node*> newht(newsize, nullptr);
 
@@ -391,6 +457,8 @@ namespace HashBucket //哈希桶
 
 		node* find(const K& key)
 		{
+			Hash hash;
+
 			if (_n == 0)
 			{
 				return nullptr;
@@ -412,7 +480,8 @@ namespace HashBucket //哈希桶
 
 		bool erase(const K& key)
 		{
-			size_t hashi = key % _tables.size();
+			Hash hash;
+			size_t hashi = hash(key) % _tables.size();
 
 			node* cur = _tables[hashi];
 			node* prev = nullptr;
@@ -439,6 +508,30 @@ namespace HashBucket //哈希桶
 			return false;
 		}//erase_end
 
+		size_t MaxBucketSize()
+		{
+			size_t max = 0;
+			for (size_t i = 0; i < _tables.size(); ++i)
+			{
+				auto cur = _tables[i];
+				size_t size = 0;
+				while (cur)
+				{
+					++size;
+					cur = cur->_next;
+				}
+
+				//printf("[%d]->%d\n", i, size);
+				if (size > max)
+				{
+					max = size;
+				}
+			}
+
+			return max;
+		}
+
+
 	};//HashBucket_end
 
 
@@ -461,6 +554,31 @@ namespace HashBucket //哈希桶
 		ht.erase(12);
 		ht.erase(3);
 		ht.erase(33);
+	}
+
+	void test_hash2()
+	{
+		std::string arr[] = { "苹果", "西瓜", "苹果", "西瓜", "苹果", "苹果", "西瓜","苹果", "香蕉", "苹果", "香蕉" };
+		HashBucket::HashTable<std::string, std::string> ht; 
+		for (auto& s : arr)
+		{
+			ht.insert(std::make_pair(s,s));
+		}
+	}
+
+	//性能分析 -- 自己改成高随机算法再测试
+	void test_hash3()
+	{
+		size_t N = 900000;
+		HashTable<int, int> ht;
+		srand(time(0));
+		for (size_t i = 0; i < N; ++i)
+		{
+			size_t x = rand() + i;
+			ht.insert(make_pair(x, x));
+		}
+
+		cout << ht.MaxBucketSize() << endl;
 	}
 	
 }

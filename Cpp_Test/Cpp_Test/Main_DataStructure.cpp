@@ -13,9 +13,8 @@ using std::cin;
 int main()
 {
 	//OpenAddress::test_hash1();
-
-	HashBucket::test_hash1();
-
+	//HashBucket::test_hash1();
+	HashBucket::test_hash2();
 	return 0;
 }
 
