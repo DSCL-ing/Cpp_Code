@@ -115,7 +115,6 @@ namespace OpenAddress
 	};
 
 
-
 	template<class K, class V>
 	class HashTable
 	{
@@ -286,6 +285,19 @@ namespace OpenAddress
 
 namespace HashBucket //哈希桶
 {
+	//enum State{ EMPTY,EXIST,DELETE };//不需要状态
+
+	//建一个原生结点方便控制
+	template<class K,class V>
+	struct HashNode
+	{
+		HashNode* _next; //单链表
+		pair<K, V> _kv; //KV都是存键值对
+	};
+
+
+
+
 	//插入:头插有什么好处? 1.高效O(1) 
 
 	//负载因子越大,冲突的概率越高,查找效率越低,空间利用率越高
@@ -298,6 +310,15 @@ namespace HashBucket //哈希桶
 	//find简单
 
 	//erase单链表删除,有一点麻烦(基础)
+
+	template<class K, class V>
+	class HashTable
+	{
+
+	};
+
+
+
 }
 
 
