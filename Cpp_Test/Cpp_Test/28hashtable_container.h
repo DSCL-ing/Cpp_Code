@@ -48,7 +48,10 @@ namespace HashBucket
 		}
 	};
 
-	struct __hash_iterator;
+	struct __hash_iterator
+	{
+
+	};
 
 	template<class K, class T,class keyOfT,class Hash = HashFunc<K>>
 	class HashTable
@@ -63,7 +66,7 @@ namespace HashBucket
 
 		size_t GetNextPrime(size_t prime)
 		{
-			static const int __stl_num_primes = 28; //一共28个值
+			static const int __stl_num_primes = 28;
 			static const unsigned long __stl_prime_list[__stl_num_primes] =
 			{
 				53, 97, 193, 389, 769,
@@ -73,11 +76,11 @@ namespace HashBucket
 				50331653, 100663319, 201326611, 402653189, 805306457,
 				1610612741, 3221225473, 4294967291
 			};
-			size_t i = 0;//后面复用需要
+			size_t i = 0;
 			for ( ;i < __stl_num_primes; ++i)
 			{
 				if (__stl_prime_list[i] > prime) 
-					return __stl_prime_list[i];    //返回比实参大的元素
+					return __stl_prime_list[i];   
 			}
 
 			return __stl_prime_list[i];
