@@ -9,14 +9,14 @@ using std::endl;
 using std::cin;
 
 
-#include"28hash.h"
-int main()
-{
-	//OpenAddress::test_hash1();
-	//HashBucket::test_hash1();
-	HashBucket::test_hash2();
-	return 0;
-}
+//#include"27hashtable.h"
+//int main()
+//{
+//	//OpenAddress::test_hash1();
+//	//HashBucket::test_hash1();
+//	HashBucket::test_hash2();
+//	return 0;
+//}
 
 
 //#include<set>

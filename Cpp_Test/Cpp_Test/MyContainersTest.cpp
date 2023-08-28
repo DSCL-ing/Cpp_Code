@@ -5,7 +5,14 @@ using std::cout;
 using std::endl;
 using std::cin;
 
-
+#include"28myMap_unordered.h"
+#include"28mySet_unordered.h"
+int main()
+{
+	test::test_My_unordered_map1();
+	test::test_My_unordered_set1();
+	return 0;
+}
 
 //#include"26myMap.h"
 //#include"26mySet.h"

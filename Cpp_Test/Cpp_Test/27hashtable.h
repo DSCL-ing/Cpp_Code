@@ -571,7 +571,7 @@ namespace HashBucket //哈希桶
 	{
 		size_t N = 900000;
 		HashTable<int, int> ht;
-		srand(time(0));
+		srand((size_t)time(0));
 		for (size_t i = 0; i < N; ++i)
 		{
 			size_t x = rand() + i;

@@ -51,10 +51,13 @@
     <ClInclude Include="26myMap.h" />
     <ClInclude Include="26mySet.h" />
     <ClInclude Include="26RBT_container.h" />
-    <ClInclude Include="28hash.h" />
+    <ClInclude Include="27hashtable.h" />
     <None Include="27unordered_hash.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
+    <ClInclude Include="28hashtable_container.h" />
+    <ClInclude Include="28myMap_unordered.h" />
+    <ClInclude Include="28mySet_unordered.h" />
     <ClInclude Include="2Note.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>

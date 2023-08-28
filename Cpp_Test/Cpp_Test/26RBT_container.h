@@ -210,15 +210,15 @@ namespace test
 	public:
 		node* find(const K& key)
 		{
-			keyOfT kof;//kof是个仿函数,根据不同参数返回不同的参数对象
+			keyOfT kot;//kot是个仿函数,根据不同参数返回不同的参数对象
 			node* cur = _root;
 			while (cur)
 			{
-				if (key < kof(cur->_data)) // --------------------------------------------
+				if (key < kot(cur->_data)) // --------------------------------------------
 				{
 					cur = cur->_left;
 				}
-				else if (key > kof(cur->_data)) // --------------------------------------------
+				else if (key > kot(cur->_data)) // --------------------------------------------
 				{
 					cur = cur->_right;
 				}
@@ -239,18 +239,18 @@ namespace test
 				return std::make_pair(iterator(_root), true);
 			}
 			
-			keyOfT kof;
+			keyOfT kot;
 
 			node* cur = _root;
 			node* parent = nullptr;
 			while (cur)
 			{
-				if (kof(data) > kof(cur->_data)) // --------------------------------------------
+				if (kot(data) > kot(cur->_data)) // --------------------------------------------
 				{
 					parent = cur;
 					cur = cur->_right;
 				}
-				else if (kof(data) < kof(cur->_data)) // --------------------------------------------
+				else if (kot(data) < kot(cur->_data)) // --------------------------------------------
 				{
 					parent = cur;
 					cur = cur->_left;
@@ -261,7 +261,7 @@ namespace test
 				}
 			}
 			cur = new node(data);
-			if (kof(data) > kof(parent->_data)) // --------------------------------------------
+			if (kot(data) > kot(parent->_data)) // --------------------------------------------
 			{
 				parent->_right = cur;
 			}
@@ -394,7 +394,7 @@ namespace test
 
 		bool _check(node* root, int blackNum, int benchmark)
 		{
-			keyOfT kof;
+			keyOfT kot;
 			if (!root) //
 			{
 				if (blackNum != benchmark)
@@ -412,7 +412,7 @@ namespace test
 
 			if (root->_col == RED && root->_parent->_col == RED)
 			{
-				cout << kof(root->_data) << " 错误,与父节点同时为红色"; // --------------------------------------------
+				cout << kot(root->_data) << " 错误,与父节点同时为红色"; // --------------------------------------------
 				return false;
 			}
 
@@ -433,13 +433,13 @@ namespace test
 
 		void _InOrderTraversal(node* root)
 		{
-			keyOfT kof;
+			keyOfT kot;
 			if (root == nullptr)
 			{
 				return;
 			}
 			_InOrderTraversal(root->_left);
-			cout << kof(root->_data) << " "; // --------------------------------------------
+			cout << kot(root->_data) << " "; // --------------------------------------------
 			_InOrderTraversal(root->_right);
 		}
 

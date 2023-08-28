@@ -96,10 +96,19 @@
     <ClInclude Include="26RBT_container.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="28hash.h">
+    <ClInclude Include="27hashtable.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="0收藏.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="28mySet_unordered.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="28myMap_unordered.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="28hashtable_container.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
