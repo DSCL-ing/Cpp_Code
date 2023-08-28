@@ -48,6 +48,8 @@ namespace HashBucket
 		}
 	};
 
+	struct __hash_iterator;
+
 	template<class K, class T,class keyOfT,class Hash = HashFunc<K>>
 	class HashTable
 	{
