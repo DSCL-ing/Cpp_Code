@@ -5,8 +5,14 @@
 
 namespace test
 {
-	
-	template<class K>
+	//template < 
+	// class Key,                        // unordered_set::key_type/value_type
+	//	class Hash = hash<Key>,           // unordered_set::hasher
+	//	class Pred = equal_to<Key>,       // unordered_set::key_equal
+	//	class Alloc = allocator<Key>      // unordered_set::allocator_type
+	//> class unordered_set;
+
+	template<class K, class Hash = HashBucket::HashFunc<K>>
 	class unordered_set
 	{
 	public:
@@ -24,7 +30,7 @@ namespace test
 		}
 
 	private:
-		HashBucket::HashTable<K, K, setKeyOfT> _ht;
+		HashBucket::HashTable<K, K, setKeyOfT , Hash> _ht;
 
 	}; //unordered_set_end;
 

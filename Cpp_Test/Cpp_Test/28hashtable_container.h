@@ -25,6 +25,7 @@ namespace HashBucket
 	}; //HashNode_end
 
 
+	//见27.
 	template<typename K>
 	struct HashFunc 
 	{
@@ -48,12 +49,93 @@ namespace HashBucket
 		}
 	};
 
+
+
+	template<class K , class T, class Ref, class Ptr, class keyOfT,class Hash>
 	struct __hash_iterator
 	{
+//迭代器怎么写?
+/**
+ * 1.迭代器需要什么模板类?
+ * -> 先写符号重载,看需要什么:写了++,需要结点,哈希表
+ * 
+ * 2.需要什么函数重载?
+ * -> ++ . -- , != , * , -> ,
+ * 
+ */
+	public:
+		typedef HashNode<T> node;
+		typedef HashTable<K, T, keyOfT,Hash> HashTable;
+		node* _node;
+		HashTable* _ht;
 
-	};
+		typedef __hash_iterator<K,T, Ref, Ptr,keyOfT , Hash > iterator;
+		typedef __hash_iterator<K,T, Ref, Ptr,keyOfT , Hash > Self;
 
-	template<class K, class T,class keyOfT,class Hash = HashFunc<K>>
+		__hash_iterator(T* node, const HashTable* ht) //普通构造函数 --- 绝对不能用引用,因为迭代器是有可能会修改指针,使用引用可能会改崩原指针,
+			:_node(node)
+			,_ht(ht)
+		{}
+
+		T& operator*()
+		{
+			return _node->_data;
+		}
+		T* operator->()
+		{
+			return &_node->_data;
+		}
+		bool operator!=(const Self& s)
+		{
+			return _node != s._node;
+		}
+
+		Self& operator++() //迭代器++返回什么? 返回新的迭代器
+		{
+			/** 迭代器怎么++ ?
+			 * 条件:
+			 * 
+			 * 1.当前结点为空
+			 *  a.循环,计算哈希值,找下一个不为空的数组
+			 *   循环出口:1.哈希值超过数组最大长度 2.找到不为空的元素
+			 *   循环入口:1
+			 *   循环结束后:返回空--没找到
+			 * 
+			 * 2.当前结点非空
+			 *  a.返回下一个位置
+			 * 
+			 */
+			Hash hash;
+			keyOfT kot;
+			if (_node->_next)  //_node&& _node->_next  迭代器不会为空,直到end为止,end再加就崩了,看库怎么限制法
+			{
+				_node = _node->_next;
+				
+			}
+			else
+			{
+				size_t hashi = hash(kot(_node->_data))% _ht->_tables.size();//计算哈希值
+				size_t sz = _ht->_tables.size();
+				while (hashi < sz)
+				{
+					if (_ht->_tables[hashi])
+					{
+						_node = _ht->_tables[hashi];
+					}
+					++hashi;
+				}
+				if (sz == hashi)
+				{
+					_node = nullptr;
+				}
+			}
+			return *this;
+		} //operater++_end;
+
+
+	}; //iterator_end;
+
+	template<class K, class T,class keyOfT,class Hash >
 	class HashTable
 	{
 	public:

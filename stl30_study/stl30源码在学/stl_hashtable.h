@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 1996,1997
  * Silicon Graphics Computer Systems, Inc.
  *
@@ -55,16 +55,18 @@ struct __hashtable_node
 
 template <class Value, class Key, class HashFcn,
           class ExtractKey, class EqualKey, class Alloc = alloc>
-class hashtable;
+class hashtable; //
 
 template <class Value, class Key, class HashFcn,
           class ExtractKey, class EqualKey, class Alloc>
-struct __hashtable_iterator;
+struct __hashtable_iterator;//
 
 template <class Value, class Key, class HashFcn,
           class ExtractKey, class EqualKey, class Alloc>
-struct __hashtable_const_iterator;
+struct __hashtable_const_iterator;//
 
+
+//普通迭代器
 template <class Value, class Key, class HashFcn,
           class ExtractKey, class EqualKey, class Alloc>
 struct __hashtable_iterator {
@@ -101,6 +103,7 @@ struct __hashtable_iterator {
 };
 
 
+//const迭代器
 template <class Value, class Key, class HashFcn,
           class ExtractKey, class EqualKey, class Alloc>
 struct __hashtable_const_iterator {
@@ -159,6 +162,7 @@ inline unsigned long __stl_next_prime(unsigned long n)
 }
 
 
+//哈希表
 template <class Value, class Key, class HashFcn,
           class ExtractKey, class EqualKey,
           class Alloc>
@@ -498,6 +502,9 @@ private:
 
 };
 
+
+
+//operator++
 template <class V, class K, class HF, class ExK, class EqK, class A>
 __hashtable_iterator<V, K, HF, ExK, EqK, A>&
 __hashtable_iterator<V, K, HF, ExK, EqK, A>::operator++()
@@ -544,6 +551,33 @@ __hashtable_const_iterator<V, K, HF, ExK, EqK, A>::operator++(int)
   return tmp;
 }
 
+
+
+//operator==
+template <class V, class K, class HF, class Ex, class Eq, class A>
+bool operator==(const hashtable<V, K, HF, Ex, Eq, A>& ht1,
+    const hashtable<V, K, HF, Ex, Eq, A>& ht2)
+{
+    typedef typename hashtable<V, K, HF, Ex, Eq, A>::node node;
+    if (ht1.buckets.size() != ht2.buckets.size())
+        return false;
+    for (int n = 0; n < ht1.buckets.size(); ++n) {
+        node* cur1 = ht1.buckets[n];
+        node* cur2 = ht2.buckets[n];
+        for (; cur1 && cur2 && cur1->val == cur2->val;
+            cur1 = cur1->next, cur2 = cur2->next)
+        {
+        }
+        if (cur1 || cur2)
+            return false;
+    }
+    return true;
+}
+
+
+
+
+
 #ifndef __STL_CLASS_PARTIAL_SPECIALIZATION
 
 template <class V, class K, class HF, class ExK, class EqK, class All>
@@ -589,24 +623,13 @@ distance_type(const __hashtable_const_iterator<V, K, HF, ExK, EqK, All>&)
 
 #endif /* __STL_CLASS_PARTIAL_SPECIALIZATION */
 
-template <class V, class K, class HF, class Ex, class Eq, class A>
-bool operator==(const hashtable<V, K, HF, Ex, Eq, A>& ht1,
-                const hashtable<V, K, HF, Ex, Eq, A>& ht2)
-{
-  typedef typename hashtable<V, K, HF, Ex, Eq, A>::node node;
-  if (ht1.buckets.size() != ht2.buckets.size())
-    return false;
-  for (int n = 0; n < ht1.buckets.size(); ++n) {
-    node* cur1 = ht1.buckets[n];
-    node* cur2 = ht2.buckets[n];
-    for ( ; cur1 && cur2 && cur1->val == cur2->val;
-          cur1 = cur1->next, cur2 = cur2->next)
-      {}
-    if (cur1 || cur2)
-      return false;
-  }
-  return true;
-}  
+
+
+
+
+
+
+
 
 #ifdef __STL_FUNCTION_TMPL_PARTIAL_ORDER
 
@@ -617,6 +640,8 @@ inline void swap(hashtable<Val, Key, HF, Extract, EqKey, A>& ht1,
 }
 
 #endif /* __STL_FUNCTION_TMPL_PARTIAL_ORDER */
+
+
 
 
 template <class V, class K, class HF, class Ex, class Eq, class A>
@@ -636,6 +661,8 @@ hashtable<V, K, HF, Ex, Eq, A>::insert_unique_noresize(const value_type& obj)
   ++num_elements;
   return pair<iterator, bool>(iterator(tmp, this), true);
 }
+
+
 
 template <class V, class K, class HF, class Ex, class Eq, class A>
 typename hashtable<V, K, HF, Ex, Eq, A>::iterator 
@@ -680,6 +707,8 @@ hashtable<V, K, HF, Ex, Eq, A>::find_or_insert(const value_type& obj)
   return tmp->val;
 }
 
+
+
 template <class V, class K, class HF, class Ex, class Eq, class A>
 pair<typename hashtable<V, K, HF, Ex, Eq, A>::iterator,
      typename hashtable<V, K, HF, Ex, Eq, A>::iterator> 
@@ -702,6 +731,8 @@ hashtable<V, K, HF, Ex, Eq, A>::equal_range(const key_type& key)
   }
   return pii(end(), end());
 }
+
+
 
 template <class V, class K, class HF, class Ex, class Eq, class A>
 pair<typename hashtable<V, K, HF, Ex, Eq, A>::const_iterator, 
@@ -726,6 +757,9 @@ hashtable<V, K, HF, Ex, Eq, A>::equal_range(const key_type& key) const
   }
   return pii(end(), end());
 }
+
+
+
 
 template <class V, class K, class HF, class Ex, class Eq, class A>
 typename hashtable<V, K, HF, Ex, Eq, A>::size_type 
@@ -760,6 +794,9 @@ hashtable<V, K, HF, Ex, Eq, A>::erase(const key_type& key)
   }
   return erased;
 }
+
+
+
 
 template <class V, class K, class HF, class Ex, class Eq, class A>
 void hashtable<V, K, HF, Ex, Eq, A>::erase(const iterator& it)
@@ -829,6 +866,9 @@ hashtable<V, K, HF, Ex, Eq, A>::erase(const const_iterator& it)
                  const_cast<hashtable*>(it.ht)));
 }
 
+
+
+
 template <class V, class K, class HF, class Ex, class Eq, class A>
 void hashtable<V, K, HF, Ex, Eq, A>::resize(size_type num_elements_hint)
 {
@@ -866,6 +906,7 @@ void hashtable<V, K, HF, Ex, Eq, A>::resize(size_type num_elements_hint)
   }
 }
 
+
 template <class V, class K, class HF, class Ex, class Eq, class A>
 void hashtable<V, K, HF, Ex, Eq, A>::erase_bucket(const size_type n, 
                                                   node* first, node* last)
@@ -886,6 +927,7 @@ void hashtable<V, K, HF, Ex, Eq, A>::erase_bucket(const size_type n,
   }
 }
 
+
 template <class V, class K, class HF, class Ex, class Eq, class A>
 void 
 hashtable<V, K, HF, Ex, Eq, A>::erase_bucket(const size_type n, node* last)
@@ -899,6 +941,8 @@ hashtable<V, K, HF, Ex, Eq, A>::erase_bucket(const size_type n, node* last)
     --num_elements;
   }
 }
+
+
 
 template <class V, class K, class HF, class Ex, class Eq, class A>
 void hashtable<V, K, HF, Ex, Eq, A>::clear()

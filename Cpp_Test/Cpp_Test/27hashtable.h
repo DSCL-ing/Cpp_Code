@@ -323,7 +323,9 @@ namespace HashBucket //哈希桶
 
 	}; //HashNode_end
 
+
 	//解决key不同类型取模的问题
+	//仿函数--给不同类型增加可以取模的对象
 	template<typename K>
 	struct HashFunc //默认仿函数
 	{
