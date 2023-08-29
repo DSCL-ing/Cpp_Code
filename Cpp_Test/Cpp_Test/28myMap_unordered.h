@@ -11,7 +11,7 @@ namespace test
 	//	class Alloc = allocator< pair<const Key, T> >  // unordered_map::allocator_type
 	//> class unordered_map;
 
-	template<class K,class V>
+	template<class K,class V,class Hash = HashFunc<K>>
 	class unordered_map
 	{
 	private:

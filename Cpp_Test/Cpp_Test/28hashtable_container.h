@@ -49,10 +49,14 @@ namespace HashBucket
 		}
 	};
 
+	template<class K, class T, class Ref, class Ptr, class keyOfT, class Hash>
+	struct __Hash_iterator;
 
+	template<class K, class T, class keyOfT, class Hash >
+	class HashTable;
 
 	template<class K , class T, class Ref, class Ptr, class keyOfT,class Hash>
-	struct __hash_iterator
+	struct __Hash_iterator
 	{
 //迭代器怎么写?
 /**
@@ -63,16 +67,17 @@ namespace HashBucket
  * -> ++ . -- , != , * , -> ,
  * 
  */
-	public:
+
+		typedef __Hash_iterator<K, T, Ref, Ptr, keyOfT, Hash > iterator;
+		typedef __Hash_iterator<K, T, Ref, Ptr, keyOfT, Hash > Self;
+
 		typedef HashNode<T> node;
 		typedef HashTable<K, T, keyOfT,Hash> HashTable;
+
 		node* _node;
 		HashTable* _ht;
 
-		typedef __hash_iterator<K,T, Ref, Ptr,keyOfT , Hash > iterator;
-		typedef __hash_iterator<K,T, Ref, Ptr,keyOfT , Hash > Self;
-
-		__hash_iterator(T* node, const HashTable* ht) //普通构造函数 --- 绝对不能用引用,因为迭代器是有可能会修改指针,使用引用可能会改崩原指针,
+		__Hash_iterator(T* node, const HashTable* ht) //普通构造函数 --- 绝对不能用引用,因为迭代器是有可能会修改指针,使用引用可能会改崩原指针,
 			:_node(node)
 			,_ht(ht)
 		{}
@@ -133,6 +138,7 @@ namespace HashBucket
 		} //operater++_end;
 
 
+
 	}; //iterator_end;
 
 	template<class K, class T,class keyOfT,class Hash >
@@ -140,11 +146,31 @@ namespace HashBucket
 	{
 	public:
 		typedef HashNode<T> node;
-	public:
+		typedef __Hash_iterator<K, T, T&, T*, keyOfT, Hash> iterator;
+	private:
 		size_t _n = 0;
 		std::vector<node*> _tables;
 
 	public:
+		iterator begin()
+		{
+			size_t hashi = 0;
+			size_t sz = _tables.size(); //调试能减少进入函数
+			while (hashi < sz)
+			{
+				if (_tables[hashi])
+				{
+					return iterator(_table[hashi],this);
+				}
+				++hashi;
+			}
+			return iterator(nullptr,this);
+		} // begin_end;
+
+		iterator end()
+		{
+			return iterator(nullptr, this);
+		}
 
 		size_t GetNextPrime(size_t prime)
 		{

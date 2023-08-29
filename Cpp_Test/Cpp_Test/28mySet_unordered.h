@@ -15,7 +15,7 @@ namespace test
 	template<class K, class Hash = HashBucket::HashFunc<K>>
 	class unordered_set
 	{
-	public:
+	private:
 		 struct setKeyOfT
 		{
 			const K& operator()(const K& key)
@@ -24,6 +24,20 @@ namespace test
 			}
 		};
 	public:
+		typedef typename HashBucket::HashTable<K, K, setKeyOfT, Hash>::iterator iterator;
+
+	public:
+		iterator begin()
+		{
+			return _ht.begin();
+		}
+
+		iterator end()
+		{
+			return _ht.end();
+		}
+
+
 		bool insert(const K& key)
 		{
 			return _ht.insert(key);
@@ -36,8 +50,22 @@ namespace test
 
 	void test_My_unordered_set1()
 	{
+		int a[] = { 3, 33, 2, 13, 5, 12, 1002 };
+
 		test::unordered_set<int> s;
-		s.insert(1);
+		//s.insert(1);
+		
+		for (auto i : a)
+		{
+			s.insert(i);
+		}
+
+		test::unordered_set<int>::iterator it = s.begin();
+		while (it!=s.end())
+		{
+			return 
+		}
+
 	}
 
 
