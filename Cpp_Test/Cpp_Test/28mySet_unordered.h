@@ -24,7 +24,7 @@ namespace test
 			}
 		};
 	public:
-		typedef typename HashBucket::HashTable<K, K, setKeyOfT, Hash>::iterator iterator;
+		typedef typename HashBucket::HashTable<K, K, setKeyOfT, Hash>::const_iterator iterator;
 
 	public:
 		iterator begin()
@@ -63,7 +63,8 @@ namespace test
 		test::unordered_set<int>::iterator it = s.begin();
 		while (it!=s.end())
 		{
-			return 
+			cout << *it << endl;
+			++it;
 		}
 
 	}

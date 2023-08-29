@@ -11,7 +11,7 @@ namespace test
 	//	class Alloc = allocator< pair<const Key, T> >  // unordered_map::allocator_type
 	//> class unordered_map;
 
-	template<class K,class V,class Hash = HashFunc<K>>
+	template<class K,class V,class Hash = HashBucket::HashFunc<K>>
 	class unordered_map
 	{
 	private:
@@ -29,7 +29,7 @@ namespace test
 		}
 
 	private:
-		HashBucket::HashTable<K, pair<const K, V>, mapKeyOfT> _ht;
+		HashBucket::HashTable<K, pair<const K, V>, mapKeyOfT, Hash> _ht;
 
 	}; //unordered_map_end
 

@@ -60,7 +60,8 @@ namespace test
 		{}
 
 		//因为set迭代器涉及到普通迭代器转换成const迭代器,所以需要写这个拷贝构造用于类型转换,
-		//但是如果T是constK.那么Ref就是const constT&,显然不能这么写,所以需要固定<T,T&,T*>这种写法专门用给set
+		//原因1:如果T是constK(map传的).那么Ref就是const constT&,显然不能这么写,所以需要固定<T,T&,T*>这种写法专门用给set
+		//原因2:(set)const迭代器实例化后为<T,const T&, const T*> ,接收不了<T,T&,T*>的参数
 		__RBTree_iterator(const __RBTree_iterator<T,T&,T*>& it) 
 			:_node(it._node)
 		{}

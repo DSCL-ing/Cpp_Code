@@ -146,5 +146,8 @@
     <None Include="0备忘录.h">
       <Filter>头文件</Filter>
     </None>
+    <None Include="0报错.h">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>

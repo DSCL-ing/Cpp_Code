@@ -9,7 +9,7 @@ using std::cin;
 #include"28mySet_unordered.h"
 int main()
 {
-	test::test_My_unordered_map1();
+	//test::test_My_unordered_map1();
 	test::test_My_unordered_set1();
 	return 0;
 }

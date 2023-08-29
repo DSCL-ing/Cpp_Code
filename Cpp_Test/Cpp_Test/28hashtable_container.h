@@ -26,7 +26,7 @@ namespace HashBucket
 
 
 	//见27.
-	template<typename K>
+	template<class K>
 	struct HashFunc 
 	{
 		size_t operator()(const K& key)
@@ -68,18 +68,23 @@ namespace HashBucket
  * 
  */
 
-		typedef __Hash_iterator<K, T, Ref, Ptr, keyOfT, Hash > iterator;
+		typedef __Hash_iterator<K, T, T&, T*, keyOfT, Hash > iterator;
 		typedef __Hash_iterator<K, T, Ref, Ptr, keyOfT, Hash > Self;
 
 		typedef HashNode<T> node;
 		typedef HashTable<K, T, keyOfT,Hash> HashTable;
 
 		node* _node;
-		HashTable* _ht;
+		const HashTable* _ht; //不允许修改
 
-		__Hash_iterator(T* node, const HashTable* ht) //普通构造函数 --- 绝对不能用引用,因为迭代器是有可能会修改指针,使用引用可能会改崩原指针,
+		__Hash_iterator(node* node, const HashTable* ht) //普通构造函数 --- 绝对不能用引用,因为迭代器是有可能会修改指针,使用引用可能会改崩原指针,
 			:_node(node)
 			,_ht(ht)
+		{}
+
+		__Hash_iterator(const iterator& it)
+			:_node(it._node)
+			,_ht(it._ht)
 		{}
 
 		T& operator*()
@@ -120,12 +125,14 @@ namespace HashBucket
 			else
 			{
 				size_t hashi = hash(kot(_node->_data))% _ht->_tables.size();//计算哈希值
+				++hashi;//这个已经是空了,从下一个开始,
 				size_t sz = _ht->_tables.size();
 				while (hashi < sz)
 				{
 					if (_ht->_tables[hashi])
 					{
 						_node = _ht->_tables[hashi];
+						break;
 					}
 					++hashi;
 				}
@@ -144,32 +151,46 @@ namespace HashBucket
 	template<class K, class T,class keyOfT,class Hash >
 	class HashTable
 	{
+		template<class K, class T, class Ref, class Ptr, class keyOfT, class Hash>
+		friend struct __Hash_iterator;
+
+
 	public:
 		typedef HashNode<T> node;
 		typedef __Hash_iterator<K, T, T&, T*, keyOfT, Hash> iterator;
+		typedef __Hash_iterator<K, T, const T&,const T*, keyOfT, Hash> const_iterator;
 	private:
 		size_t _n = 0;
 		std::vector<node*> _tables;
 
 	public:
-		iterator begin()
+		iterator begin() 
 		{
-			size_t hashi = 0;
-			size_t sz = _tables.size(); //调试能减少进入函数
-			while (hashi < sz)
+			node* cur = nullptr;
+			for (size_t i = 0; i < _tables.size(); ++i)
 			{
-				if (_tables[hashi])
+				if (_tables[i])
 				{
-					return iterator(_table[hashi],this);
+					cur = _tables[i];
+					break;
 				}
-				++hashi;
 			}
-			return iterator(nullptr,this);
+			return iterator(cur,this);
 		} // begin_end;
 
 		iterator end()
 		{
 			return iterator(nullptr, this);
+		}
+
+		const_iterator begin() const
+		{
+			return begin();
+		}
+
+		const_iterator end() const
+		{
+			return end();
 		}
 
 		size_t GetNextPrime(size_t prime)
