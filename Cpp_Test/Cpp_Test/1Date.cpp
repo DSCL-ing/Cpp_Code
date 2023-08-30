@@ -1,4 +1,4 @@
-﻿
+﻿#pragma once
 
 #include"1Date.h"
 

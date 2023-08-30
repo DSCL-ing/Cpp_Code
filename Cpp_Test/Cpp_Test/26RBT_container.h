@@ -49,6 +49,8 @@ namespace test
 			, _col(RED)
 		{}
 	};
+	//const_iterator<T,const T&,const T*>
+	//iterator<T, T&, T*>
 
 	template<class T, class Ref, typename Ptr>
 	struct __RBTree_iterator
@@ -60,8 +62,9 @@ namespace test
 		{}
 
 		//因为set迭代器涉及到普通迭代器转换成const迭代器,所以需要写这个拷贝构造用于类型转换,
-		//原因1:如果T是constK(map传的).那么Ref就是const constT&,显然不能这么写,所以需要固定<T,T&,T*>这种写法专门用给set
-		//原因2:(set)const迭代器实例化后为<T,const T&, const T*> ,接收不了<T,T&,T*>的参数
+		//原因1:如果是set把constK传给T.那么const迭代器的Ref就是const constT&,显然不能这么写
+		//原因2:const迭代器实例化后为<T,const T&, const T*> ,接收不了<T,T&,T*>的参数 -- 同一个类模板,只要模板参数不同就是不同类型了--多一个const也不行,类模板看<>一不一样
+		//综上得知,问题为类型转换问题,即需要单独给const迭代器写一个构造函数,参数为普通迭代器,即可解决类型转换问题
 		__RBTree_iterator(const __RBTree_iterator<T,T&,T*>& it) 
 			:_node(it._node)
 		{}
@@ -215,11 +218,11 @@ namespace test
 			node* cur = _root;
 			while (cur)
 			{
-				if (key < kot(cur->_data)) // --------------------------------------------
+				if (key < kot(cur->_data)) // -------------------------------------------- 只需要重载一个 '<' 或 '>' 就可以比较大小
 				{
 					cur = cur->_left;
 				}
-				else if (key > kot(cur->_data)) // --------------------------------------------
+				else if (kot(cur->_data) < key) // --------------------------------------------只需要重载一个 '<' 或 '>' 就可以比较大小
 				{
 					cur = cur->_right;
 				}
@@ -246,12 +249,12 @@ namespace test
 			node* parent = nullptr;
 			while (cur)
 			{
-				if (kot(data) > kot(cur->_data)) // --------------------------------------------
+				if (kot(cur->_data) < kot(data)  ) // --------------------------------------------只需要重载一个 '<' 或 '>' 就可以比较大小
 				{
 					parent = cur;
 					cur = cur->_right;
 				}
-				else if (kot(data) < kot(cur->_data)) // --------------------------------------------
+				else if (kot(data) < kot(cur->_data)) // --------------------------------------------只需要重载一个 '<' 或 '>' 就可以比较大小
 				{
 					parent = cur;
 					cur = cur->_left;
@@ -262,7 +265,7 @@ namespace test
 				}
 			}
 			cur = new node(data);
-			if (kot(data) > kot(parent->_data)) // --------------------------------------------
+			if ( kot(parent->_data) < kot(data)) // --------------------------------------------
 			{
 				parent->_right = cur;
 			}

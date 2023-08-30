@@ -15,12 +15,12 @@ using namespace std;
 class Date
 {
 
-private:
+public: //因为日期类的成员是需要经常访问,外界也需要获取,所以public,
 	int _year; // 年
 	int _month; // 月
 	int _day; // 日
 	//int& _ref ;
-	const int c = 1;
+	const int c = 1; //语法学习->const成员和初始化列表的必须操作 -- const成员必须要有缺省参数 -- 以防初始化列表没有给值 -- 常量必须有值
 
 public:
 	Date() //构造函数
@@ -28,7 +28,7 @@ public:
 		,_day()  //--day放这的意思是初始化列表的初始化顺序与初始化列表的顺序无关,只与声明的位置有关
 		,_month()
 		//,_ref()//引用必须在,且必须有引用对象,且必须引用对象初始化过
-		,c()//const修饰的成员必须在,且必须赋值(初始化列表能给0)
+		,c(2)//const修饰的成员必须在,且必须赋值(初始化列表能给0)
 		//还有一个没带无参构造的自定义类型(类)成员
 	{}
 
@@ -94,7 +94,8 @@ public:
 	}
 
 
-	//年月日规定
+
+	//一个月有多少天,规定的一个月的天数
 	int getRegulationMonthDays(int year, int Month)const;
 
 	//恢复初始化
