@@ -9,8 +9,17 @@ using std::cin;
 #include"28mySet_unordered.h"
 int main()
 {
+	int a = 1;
+	int b = 2;
+	int* c = &a;
+	  int ** const p = &c;
+	(**p)++;
+	p = &b;
+	++*p;
+	cout << **p;
+
 	//test::test_My_unordered_map1();
-	test::test_My_unordered_set1();
+	//test::test_My_unordered_set1();
 	return 0;
 }
 

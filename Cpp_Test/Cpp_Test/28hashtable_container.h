@@ -49,11 +49,12 @@ namespace HashBucket
 		}
 	};
 
-	template<class K, class T, class Ref, class Ptr, class keyOfT, class Hash>
-	struct __Hash_iterator;
+	//template<class K, class T, class Ref, class Ptr, class keyOfT, class Hash>
+	//struct __Hash_iterator; 
 
+	//根据声明顺序,使用下面的类需要前置声明
 	template<class K, class T, class keyOfT, class Hash >
-	class HashTable;
+	class HashTable; 
 
 	template<class K , class T, class Ref, class Ptr, class keyOfT,class Hash>
 	struct __Hash_iterator
@@ -87,11 +88,11 @@ namespace HashBucket
 			,_ht(it._ht)
 		{}
 
-		T& operator*()
+		Ref operator*()
 		{
 			return _node->_data;
 		}
-		T* operator->()
+		Ptr operator->()
 		{
 			return &_node->_data;
 		}
@@ -185,12 +186,12 @@ namespace HashBucket
 
 		const_iterator begin() const
 		{
-			return begin();
+			return begin(); //类型转换即可
 		}
 
 		const_iterator end() const
 		{
-			return end();
+			return end(); //类型转换即可
 		}
 
 		size_t GetNextPrime(size_t prime)

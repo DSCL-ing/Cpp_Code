@@ -25,6 +25,7 @@ namespace test
 		};
 	public:
 		typedef typename HashBucket::HashTable<K, K, setKeyOfT, Hash>::const_iterator iterator;
+		typedef typename HashBucket::HashTable<K, K, setKeyOfT, Hash>::const_iterator const_iterator;
 
 	public:
 		iterator begin()
@@ -36,11 +37,24 @@ namespace test
 		{
 			return _ht.end();
 		}
+		const_iterator begin()const
+		{
+			return _ht.begin();
+		}
 
+		const_iterator end()const
+		{
+			return _ht.end();
+		}
 
 		bool insert(const K& key)
 		{
 			return _ht.insert(key);
+		}
+
+		iterator find(const K& key)
+		{
+
 		}
 
 	private:

@@ -1142,7 +1142,19 @@ int main()
 
 //const
 /**
-* 引入:
+ * C语言:
+ * 1.const A *p 限制p的内容不能被修改
+ * 2.A const *p 限制p的内容不能被修改
+ * 3.A * const p 限制指针变量p不能被修改
+ * 4.const A * const p -- 上面两种结合,都不能被修改
+ * 
+ * 总结:
+ * $ const在*的左边(无论在哪,只要在左边)就是限制*p不能被修改 -- const *p
+ * $ const在*的右边,则是限制指针p不能再修改                  -- const  p
+ * $ const不会影响到下下层对象,只会影响当前对象
+ * 
+ * 
+ * 引入:
  * 1.成员函数默认隐藏的第一个参数为 'class_name *this' ;
  * 2.如果被const修饰的变量类型会变成  'const 类型名'
  * 3.const实例化有一个类,const classA a; &a的类型是const classA;
