@@ -425,7 +425,6 @@ namespace HashBucket
 			return false;
 		}
 
-		// 休息一下：15:55继续
 		// size_t newsize = GetNextPrime(_tables.size());
 		size_t GetNextPrime(size_t prime)
 		{

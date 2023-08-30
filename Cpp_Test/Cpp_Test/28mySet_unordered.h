@@ -47,15 +47,21 @@ namespace test
 			return _ht.end();
 		}
 
-		bool insert(const K& key)
+		pair<iterator,bool> insert(const K& key)
 		{
 			return _ht.insert(key);
 		}
 
 		iterator find(const K& key)
 		{
-			node* cur = _ht.find(key);
+			return _ht.find(key);
 		}
+
+		bool erase(const K& key)
+		{
+			return _ht.erase(key);
+		}
+
 
 	private:
 		HashBucket::HashTable<K, K, setKeyOfT , Hash> _ht;
@@ -73,6 +79,10 @@ namespace test
 		{
 			s.insert(i);
 		}
+		s.insert(54);
+		s.insert(107);
+		
+		s.erase(33);
 
 		test::unordered_set<int>::iterator it = s.begin();
 		while (it!=s.end())

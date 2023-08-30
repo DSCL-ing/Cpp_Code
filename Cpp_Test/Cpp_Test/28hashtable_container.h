@@ -217,13 +217,14 @@ namespace HashBucket
 		}
 
 
-		bool insert(const T& data)
+		pair<iterator,bool> insert(const T& data)
 		{
 			keyOfT kot;
 			Hash hash;
-			if (find(kot(data))!=nullptr)
+			iterator it = find(kot(data));
+			if (it!=end())
 			{
-				return false;
+				return make_pair(it,false);
 			}
 
 			if (_n == _tables.size())
@@ -246,7 +247,7 @@ namespace HashBucket
 						cur = next;
 					}
 				}
-				_tables.swap(newht);
+				_tables.swap(newht); 
 			}
 			size_t hashi = hash(kot(data)) % _tables.size();
 
@@ -255,17 +256,17 @@ namespace HashBucket
 			_tables[hashi] = newnode;
 			++_n;
 
-			return true;
+			return make_pair(iterator(_tables[hashi],this),true);
 		}//insert_end
 
-		iterator* find(const K& key)
+		iterator find(const K& key)
 		{
 			keyOfT kot;
 			Hash hash;
 
 			if (_n == 0)
 			{
-				return iterator(nullptr,this);
+				return end();
 			}
 			size_t hashi = hash(key) % _tables.size();
 			node* cur = _tables[hashi];
@@ -274,15 +275,15 @@ namespace HashBucket
 			{
 				if (kot(cur->_data) == key)
 				{
-					return cur;
+					break;
 				}
 				cur = cur->_next;
 			}
 
-			return nullptr;
+			return iterator(cur,this);
 		} //find_end
 
-		bool erase(const K& key)
+		bool erase(const K& key) //可以返回bool,库中返回 1或0 和 迭代器,选择bool也可以
 		{
 			keyOfT kot;
 
