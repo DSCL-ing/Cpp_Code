@@ -373,6 +373,21 @@ namespace HashBucket //哈希桶
 
 	public:
 
+		~HashTable()
+		{
+			for (auto& cur : _tables)
+			{
+				while (cur)
+				{
+					node* next = cur->_next;
+					delete cur;
+					cur = next;
+				}
+			}
+			//析构,只需要析构主动申请的空间,栈空间不需要,防止内存泄漏
+		}
+
+
 		size_t GetNextPrime(size_t prime)
 		{
 			// SGI -- 控制每次扩容的值为素数 --- 目前没有证据必要是素数 ,java没有使用这种方法

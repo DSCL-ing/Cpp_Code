@@ -49,8 +49,6 @@ namespace HashBucket
 		}
 	};
 
-	//template<class K, class T, class Ref, class Ptr, class keyOfT, class Hash>
-	//struct __Hash_iterator; 
 
 	//根据声明顺序,使用下面的类需要前置声明
 	template<class K, class T, class keyOfT, class Hash >
@@ -67,6 +65,7 @@ namespace HashBucket
  * 2.需要什么函数重载?
  * -> ++ . -- , != , * , -> ,
  * 
+ * 3.写外部函数调用,看需要什么
  */
 
 		typedef __Hash_iterator<K, T, T&, T*, keyOfT, Hash > iterator;
@@ -193,6 +192,21 @@ namespace HashBucket
 		{
 			return end(); //类型转换即可
 		}
+
+		~HashTable()
+		{
+			for (auto& cur : _tables)
+			{
+				while (cur)
+				{
+					node* next = cur->_next;
+					delete cur;
+					cur = next;
+				}
+			}
+			//析构,只需要析构主动申请的空间,栈空间不需要,防止内存泄漏
+		}
+
 
 		size_t GetNextPrime(size_t prime)
 		{
