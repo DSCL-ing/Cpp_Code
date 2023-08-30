@@ -258,14 +258,14 @@ namespace HashBucket
 			return true;
 		}//insert_end
 
-		node* find(const K& key)
+		iterator* find(const K& key)
 		{
 			keyOfT kot;
 			Hash hash;
 
 			if (_n == 0)
 			{
-				return nullptr;
+				return iterator(nullptr,this);
 			}
 			size_t hashi = hash(key) % _tables.size();
 			node* cur = _tables[hashi];

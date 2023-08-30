@@ -54,7 +54,7 @@ namespace test
 
 		iterator find(const K& key)
 		{
-
+			node* cur = _ht.find(key);
 		}
 
 	private:
