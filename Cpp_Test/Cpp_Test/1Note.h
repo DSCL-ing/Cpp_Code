@@ -1604,7 +1604,7 @@ int main()
 //非类型模板参数
 /**
  * 模板参数分为类型形参和非类型形参
- * $类型模板参数用于解决typedef type reType_name;
+ * $类型模板参数用于解决typedef type reType_name; -- 自定义类型
  *
  * $非类型模板参数用于解决宏常量,#define N 10 ;
  * 演示:template<class T ,size_t N> class A
