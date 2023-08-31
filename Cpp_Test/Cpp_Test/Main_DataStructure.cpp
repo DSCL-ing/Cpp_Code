@@ -12,7 +12,8 @@ using std::cin;
 #include"28bitset.h"
 int main()
 {
-	test::test_bitset1();
+	//test::test_bitset1();
+	test2::test_twobitset1();
 	return 0;
 }
 
