@@ -111,6 +111,9 @@
     <ClInclude Include="28hashtable_container.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="bitset.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="1Date.cpp">

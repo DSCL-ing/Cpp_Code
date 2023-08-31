@@ -86,6 +86,7 @@
     <ClInclude Include="16my_Itetator.h" />
     <ClInclude Include="24AVLTree.h" />
     <ClInclude Include="25RBTree.h" />
+    <ClInclude Include="bitset.h" />
     <ClInclude Include="Test.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
