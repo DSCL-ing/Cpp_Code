@@ -9,6 +9,13 @@ using std::endl;
 using std::cin;
 
 
+#include"28bitset.h"
+int main()
+{
+	test::test_bitset1();
+	return 0;
+}
+
 //#include"27hashtable.h"
 //int main()
 //{

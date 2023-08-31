@@ -111,7 +111,7 @@
     <ClInclude Include="28hashtable_container.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="bitset.h">
+    <ClInclude Include="28bitset.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

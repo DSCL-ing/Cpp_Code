@@ -16,17 +16,17 @@ using std::cin;
 //	return 0;
 //}
 
-#include"26myMap.h"
-#include"26mySet.h"
-int main()
-{
-	//test::test_myMap1();
-	//test::test_mySet1();
-
-	//test::test_myMap2();
-	//test::test_myMap3();
-	return 0;
-}
+//#include"26myMap.h"
+//#include"26mySet.h"
+//int main()
+//{
+//	//test::test_myMap1();
+//	//test::test_mySet1();
+//
+//	//test::test_myMap2();
+//	//test::test_myMap3();
+//	return 0;
+//}
 
 
 
