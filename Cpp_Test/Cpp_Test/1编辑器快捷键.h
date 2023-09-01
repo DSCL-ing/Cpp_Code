@@ -13,7 +13,7 @@ shift+alt+] 将选定内容扩展到包含块
 Ctrl + U  选中代码全部转化为小写 /ctrl +shift + U 全部转成大写
 
 
-全部隐藏到定义ctrl + O, 全部展开 ctrl + P ,单独一个模块展开与切换 ctrl+M+M
+全部隐藏到定义ctrl +M+ O, 全部展开 ctrl +M+L ,单独一个模块展开与切换 ctrl+M+M
 
 同一个括号的左右定位 / 跳转 ctrl + }     //不需要ctrl+{
 

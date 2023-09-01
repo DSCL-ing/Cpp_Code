@@ -28,10 +28,12 @@
  * 解决:构建位图,调用bs.test(x)即可
  */
 
+#include<string>
 #include<vector>
 #include<iostream>
 using std::cout;
 using std::endl;
+using std::string;
 
 namespace test
 {
@@ -270,24 +272,147 @@ namespace test2
  *	 可以用来告诉你 “某样东西一定不存在或者可能存在”。相比于传统的 List、Set、Map 等数据结构，它更高效、占用空间更少，但是缺点是其返回的结果是概率性的，而不是确切的。
  * 
  * 显然，过小的布隆过滤器很快所有的 bit 位均为 1，那么查询任何值都会返回“可能存在”，起不到过滤的目的了。布隆过滤器的长度会直接影响误报率，布隆过滤器越长其误报率越小。
- * 哈希函数的个数也需要权衡，个数越多则布隆过滤器 bit 位置位 1 的速度越快，且布隆过滤器的效率越低；但是如果太少的话，那我们的误报率会变高。
+ * 哈希函数的个数也需要权衡，个数越多则布隆过滤器 bit 位置位 1 的速度越快，且布隆过滤器的效率越低,花费空间也会增多；但是如果太少的话，那我们的误报率会变高。
+ * 哈希函数个数代表一个值映射几个位
  * 
- * 布隆过滤器不方便删除,可以重建来达到修改目的
+ * 布隆过滤器不方便删除,可以重建来达到修改目的 -- 一种支持删除的方法:用多个bit位来计数,同理开销会增大,看情况使用
  * 
  * 查找时间复杂度O(1)
  * 
  */
 
-/** 布隆过滤器的使用场景
+/**布隆过滤器缺陷
+ * 1. 有误判率，即存在假阳性(False Position)，即不能准确判断元素是否在集合中(补救方法：再
+ * 	建立一个白名单，存储可能会误判的数据)
+ * 	2. 不能获取元素本身
+ * 	3. 一般情况下不能从布隆过滤器中删除元素
+ * 	4. 如果采用计数方式删除，可能会存在计数回绕问题
+ * 
+ * 
+ * .
+ */
+
+/** 布隆过滤器的使用场景  -- 非整型数据存不存在
  * 1.快速响应且容许误判的场景:注册昵称是否存在
  * 
  * 2.手机号注册:如果bloom判断不存在,则直接返回,响应很快.如果在,再去数据库中确认后再返回精确结果 ---  精确且效率高 -- 比纯布隆慢一点点
  *		布隆过滤器发挥作用,可以快速过滤掉大量数据,剩下极小部分数据可以方便使用其他数据结构解决
  * (很实用)
- * .
+ * 
+ * $如果能容忍误判就可以直接用了
+ * $如果不能容忍误判则当过滤器用 -- 最后一般都在数据库中查找--信息型数据
+ * 数据分为信息型,数据型,内容型,文件型.....(不准确)
+ * $ -1 * (ln2)^2 * m = n * lnp
+ * $ k * n = m * ln2;
+ * 
+ * 
  */
 
+//布隆过滤器变量控制
+/**
+ * k 为哈希函数个数，m 为布隆过滤器长度，n 为插入的元素个数，p 为误报率
+ * 
+ * 
+ */
 
+namespace BloomFilter
+{
+	struct BKDRHash
+	{
+		size_t operator()(const string& s)
+		{
+			size_t hash = 0;
+			for (auto ch : s)
+			{
+				hash += ch;
+				hash *= 31;
+			}
+			return hash;
+		}
+	};
+
+	struct APHash
+	{
+		size_t operator()(const string& s)
+		{
+			size_t hash = 0;
+			for (size_t i = 0; i<s.size(); i++)
+			{
+				size_t ch = s[i];
+				if ((i & 1) == 0) //偶数
+				{
+					hash ^= ((hash << 7) ^ ch ^ (hash >> 3)); // 
+				}
+				else //奇数
+				{
+					hash ^= (~((hash << 11) ^ ch ^ (hash >> 5)));
+				}
+			}
+			return hash;
+		}
+	};
+
+	struct DJBHash
+	{
+		size_t operator()(const string& s)
+		{
+			size_t hash = 5381;
+			for(auto ch:s)
+			{
+				hash += (hash << 5) + ch;
+			}
+			return hash;
+		}
+	};
+
+	template<size_t N, class K, class Hash1, class Hash2, class Hash3> //可以有多个hash
+	class bloomfilter
+	{
+	private:
+		test::bitset<N> _bs;
+		static const size_t n;
+
+	public:
+		void set(const K& key)
+		{
+			//Hash1 hash1;具体对象写法:hash1(key)
+			//			  匿名对象写法Hash1()(key);
+
+			//size_t len = N
+			size_t hash1 = Hash1()(key) % N;//匿名对象写法
+			_bs.set(hash1);
+			size_t hash2 = Hash2()(key) % N;
+			_bs.set(hash2);
+			size_t hash3 = Hash3()(key) % N;
+			_bs.set(hash3);
+		}
+
+		bool test(const K& key)
+		{
+			//只要有一个不是1就是不存在,所有都存在才可能存在
+			size_t hash1 = Hash1()(key) % N;
+			if (_bs.test(hash1) == false)
+			{
+				return false;
+			}
+			size_t hash2 = Hash2()(key) % N;
+			if (_bs.test(hash2) == false)
+			{
+				return false;
+			}
+			size_t hash3 = Hash3()(key) % N;
+			if (_bs.test(hash3) == false)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+
+	};
+
+}
 
 
 
