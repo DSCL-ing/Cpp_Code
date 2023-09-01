@@ -13,7 +13,9 @@ using std::cin;
 int main()
 {
 	//test::test_bitset1();
-	test2::test_twobitset1();
+	//test2::test_twobitset1();
+	//BloomFilter::test_BloomFilter1();
+	BloomFilter::test_BloomFilter2();
 	return 0;
 	//std::bitset<100> b;
 }

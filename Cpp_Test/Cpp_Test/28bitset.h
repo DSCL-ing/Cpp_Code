@@ -28,6 +28,7 @@
  * 解决:构建位图,调用bs.test(x)即可
  */
 
+#include<time.h>
 #include<string>
 #include<vector>
 #include<iostream>
@@ -281,12 +282,25 @@ namespace test2
  * 
  */
 
+/** 布隆过滤器优点
+ * 
+ * 1. 增加和查询元素的时间复杂度为:O(K), (K为哈希函数的个数，一般比较小)，与数据量大小无关
+ * 2. 哈希函数相互之间没有关系，方便硬件并行运算
+ * 3. 布隆过滤器不需要存储元素本身，在某些对保密要求比较严格的场合有很大优势
+ * 4. 在能够承受一定的误判时，布隆过滤器比其他数据结构有这很大的空间优势
+ * 5. 数据量很大时，布隆过滤器可以表示全集，其他数据结构不能
+ * 6. 使用同一组散列函数的布隆过滤器可以进行交、并、差运算
+ * 
+ */
+
 /**布隆过滤器缺陷
  * 1. 有误判率，即存在假阳性(False Position)，即不能准确判断元素是否在集合中(补救方法：再
  * 	建立一个白名单，存储可能会误判的数据)
  * 	2. 不能获取元素本身
+ * 
+ * 
  * 	3. 一般情况下不能从布隆过滤器中删除元素
- * 	4. 如果采用计数方式删除，可能会存在计数回绕问题
+ * 	4. 如果采用计数方式删除，可能会存在计数回绕问题,丧失低开销优势,还有可能有溢出问题
  * 
  * 
  * .
@@ -302,16 +316,18 @@ namespace test2
  * $如果能容忍误判就可以直接用了
  * $如果不能容忍误判则当过滤器用 -- 最后一般都在数据库中查找--信息型数据
  * 数据分为信息型,数据型,内容型,文件型.....(不准确)
- * $ -1 * (ln2)^2 * m = n * lnp
- * $ k * n = m * ln2;
  * 
+ * 最佳实践
+ * 常见的适用常见有，利用布隆过滤器减少磁盘 IO 或者网络请求，因为一旦一个值必定不存在的话，我们可以不用进行后续昂贵的查询请求。
  * 
  */
+
 
 //布隆过滤器变量控制
 /**
  * k 为哈希函数个数，m 为布隆过滤器长度，n 为插入的元素个数，p 为误报率
- * 
+ * $ -1 * (ln2)^2 * m = n * lnp
+ * $ k * n = m * ln2;
  * 
  */
 
@@ -365,12 +381,17 @@ namespace BloomFilter
 		}
 	};
 
-	template<size_t N, class K, class Hash1, class Hash2, class Hash3> //可以有多个hash
+	template<size_t N, class K = string, class Hash1 =BKDRHash , class Hash2 =APHash , class Hash3=DJBHash> //可以有多个hash
 	class bloomfilter
 	{
 	private:
-		test::bitset<N> _bs;
-		static const size_t n;
+		//开辟多少空间根据公式k * n = m * ln2;   m 为布隆过滤器长度，n 为插入的元素个数,k为哈希个数
+		/**
+		 * m = k/ln2 * N ;K=3,3/ln2 = 4.32...=4 ;
+		 * 
+		 */
+		static const size_t _X = 6;  //数字是相当于每个值使用多少位 //计算出来是4,但感觉4误判率高很多,使用6开销也大很多,得具体验证才知好坏
+		test::bitset<N * _X> _bs;   //_X越大消耗越多
 
 	public:
 		void set(const K& key)
@@ -378,29 +399,32 @@ namespace BloomFilter
 			//Hash1 hash1;具体对象写法:hash1(key)
 			//			  匿名对象写法Hash1()(key);
 
-			//size_t len = N
-			size_t hash1 = Hash1()(key) % N;//匿名对象写法
+			size_t len = N * _X;//长度
+			size_t hash1 = Hash1()(key) % len;//匿名对象写法
 			_bs.set(hash1);
-			size_t hash2 = Hash2()(key) % N;
+			size_t hash2 = Hash2()(key) % len;
 			_bs.set(hash2);
-			size_t hash3 = Hash3()(key) % N;
+			size_t hash3 = Hash3()(key) % len;
 			_bs.set(hash3);
+			//cout << hash1 << " " << hash2 << " " << hash3 << " " << endl; //观察哈希值的数据
 		}
 
 		bool test(const K& key)
 		{
+			size_t len = N * _X;//长度
+
 			//只要有一个不是1就是不存在,所有都存在才可能存在
-			size_t hash1 = Hash1()(key) % N;
+			size_t hash1 = Hash1()(key) % len;
 			if (_bs.test(hash1) == false)
 			{
 				return false;
 			}
-			size_t hash2 = Hash2()(key) % N;
+			size_t hash2 = Hash2()(key) % len;
 			if (_bs.test(hash2) == false)
 			{
 				return false;
 			}
-			size_t hash3 = Hash3()(key) % N;
+			size_t hash3 = Hash3()(key) % len;
 			if (_bs.test(hash3) == false)
 			{
 				return false;
@@ -411,6 +435,138 @@ namespace BloomFilter
 
 
 	};
+
+	void test_BloomFilter1()
+	{
+		BloomFilter::bloomfilter<100> bs;
+		bs.set("sort");
+		bs.set("bloom");
+		bs.set("hello world hello bit");
+		bs.set("test");
+		bs.set("etst");
+		bs.set("estt");
+
+		cout << bs.test("sort") << endl;
+		cout << bs.test("bloom") << endl;
+		cout << bs.test("hello world hello bit") << endl;
+		cout << bs.test("test") << endl;
+		cout << bs.test("etst") << endl;
+		cout << bs.test("estt") << endl;
+
+
+		cout << bs.test("ssort") << endl;
+		cout << bs.test("tors") << endl;
+		cout << bs.test("ttes") << endl;
+	}
+
+
+	void test_BloomFilter2()
+	{
+		srand((size_t)time(0));
+		const size_t N = 100000; //切换release,不然很慢
+		BloomFilter::bloomfilter<N> bf;
+
+
+
+		//基准,用于与下面两个比较
+		std::vector<std::string> v1;
+		std::string url = "https://www.cnblogs.com/-clq/archive/2012/05/31/2528153.html";
+
+		for (size_t i = 0; i < N; ++i)
+		{
+			v1.push_back(url + std::to_string(i));
+		}
+
+		for (auto& str : v1)
+		{
+			bf.set(str);
+		}
+		//-----------------------------------------------------------------------------
+
+		// v2跟v1是相似字符串集，但是不一样
+		std::vector<std::string> v2;
+		for (size_t i = 0; i < N; ++i)
+		{
+			std::string url = "https://www.cnblogs.com/-clq/archive/2012/05/31/2528153.html";
+			url += std::to_string(999999 + i);
+			v2.push_back(url);
+		}
+
+		size_t n2 = 0;
+		for (auto& str : v2)
+		{
+			if (bf.test(str))
+			{
+				++n2;
+			}
+		}
+		cout << "相似字符串误判率:" << (double)n2 / (double)N << endl;
+
+
+		// 不相似字符串集
+		std::vector<std::string> v3;
+		for (size_t i = 0; i < N; ++i)
+		{
+			string url = "zhihu.com";
+			//string url = "https://www.cctalk.com/m/statistics/live/16845432622875";
+			url += std::to_string(i + rand());
+			v3.push_back(url);
+		}
+
+		size_t n3 = 0;
+		for (auto& str : v3)
+		{
+			if (bf.test(str))
+			{
+				++n3;
+			}
+		}
+		cout << "不相似字符串误判率:" << (double)n3 / (double)N << endl;
+	}
+
+	/**海量数据题:哈希切分
+	 * 
+	 * 1. 给两个文件，分别有100亿个query，我们只有1G内存，如何找到两个文件交集？分别给出精确算法和近似算法() 
+	 * 	分析:query是查询语句,是字符串,一个query大概有50字节
+	 * 
+	 * 精确算法，一个query字符串大概算60字节，100亿大概600G，那么我们可以进行哈希切割。那么我们切分6000块把源文件，
+	 *  即对源文件中的query字符串进行哈希得到key值，然后用除留余数法进行哈希（ % 6000），把不同的query放到不同的文件中。
+	 *   切割完毕后，读取第二个文件时也是对其分割成6000份，对其每一个字符串进行哈希(MD5)，然后得到的key 用除留余数法 
+	 *    看落在那个被切割的子文件中，然后把子文件内容读取到unordered_map中, 然后进行find, 在不在就是不在。这个就是精确的算法。
+	 *     切割6000块，一块文件大概100M, 所以也符合题意。(此题解是复制的)
+	 * 
+	 * 哈希切分: HashFunc(query)%1000;(1000是分成多少个小文件) -- 大号哈希桶,桶内都是冲突的值 -- 两个哈希表的桶号都一样(特征相同),大大减小数据量,方便用set/map比对
+	 * 
+	 * 哈希切分存在的问题:切割不均匀,可能会出现极端大小不平衡,分两种情况
+	 * 1.这一块中有大量的重复值,这种情况下换哈希函数也不好使,难切分.分析:如果大量重复,则使用set/哈希set插入的话是足够的,因为重复的插入失败不占内存
+	 * 2.有很多不重复的值.                                          分析:直接插入set会插满内存,最后报bad_alloc异常
+	 * 处理方法:把这一块插入到set/哈希set中,如果插入成功 -- 说明重复值多,直接处理完毕.如果异常,说明重复值少,只能换哈希函数,重新分割,为什么?因为哈希值是需要同一个哈希函数映射才行
+	 * 
+	 * $ 哈希分割的文件都需要提前开好
+	 * 
+	 * 近似算法:开满空间,然后一次性放一个进布隆过滤器,用另一个判断在不在
+	 * 
+	 * 
+	 * 
+	 * 2.给一个超过100G大小的log file, log中存着IP地址, 设计算法找到出现次数最多的IP地址？
+	 * 解:哈希切分+map/set统计
+	 *  1.如果在统计过程中,出现抛异常,则说明单个小文件过大,冲突过多,需要换哈希函数重新分割
+	 *  2.如果没有抛异常,则正常统计,统计完一个小文件后记录下最大的,然后clear(),再统计下一个
+	 * 
+	 * 3.与上题条件相同，如何找到top K的IP？如何直接用Linux系统命令实现？
+	 * 解:在建立第一个文件后,将前K个出现次数最多的ip作为键值对,次数为码,插入到小堆中,然后在clear,之后就是比较到结束
+	 * 
+	 * 在第一个文件中，我们已经求出了每个IP地址出现的次数，将这些IP地址和出现次数封装为一个结构体(键值对)，
+	 *  给一个只能容纳K个键值对的小堆，在向堆中插入元素时，IP地址出现的次数作为关键码，先向堆中插入K个元素，
+	 *   以后再插入元素时，先于堆顶元素进行比较，如果小于堆顶元素，不做处理；如果大于，则将堆顶元素删除，
+	 *    将此元素重新插入堆中，当遍历完所有IP地址后，堆中保存的元素就是出现次数最多的K个。(搜索的题解)
+	 * 
+	 * 
+	 */
+
+
+
+
 
 }
 
