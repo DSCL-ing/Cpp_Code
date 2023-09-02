@@ -297,14 +297,14 @@ using std::cin;
 
 
 //#include<vector>
-#include"11myVector.h"
-int main()
-{
-	//test_vector4();
-	test::test_vector5();
-	//std::vector<int> v = {1,2,3,4,5,6,7,8 };//initializer_list初始化
-	return 0;
-}
+//#include"11myVector.h"
+//int main()
+//{
+//	//test_vector4();
+//	test::test_vector5();
+//	//std::vector<int> v = {1,2,3,4,5,6,7,8 };//initializer_list初始化
+//	return 0;
+//}
 
 
 

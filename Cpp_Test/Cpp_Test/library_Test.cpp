@@ -1,8 +1,13 @@
 ﻿
 #pragma once
 
-
-
+#include<vector>
+//#include"29C++11.h"
+int main()
+{
+	void test1();
+	return 0;
+}
 
 
 //#include<iostream>

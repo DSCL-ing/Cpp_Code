@@ -24,7 +24,8 @@
  */
 
 #include<vector>
-
+#include"1Date.h"
+#include <map>
 void test1()
 {
 	struct Point //结构体可以定义在函数体内部
@@ -41,7 +42,7 @@ void test1()
 	int array2[]{ 1,2,3,4,5 };//省略赋值符号
 	int array3[5] = { 0 }; //只初始化1个还是全部初始化了?
 	int array4[5]{ 0 };//省略赋值符号
-	Point p{ 1.2 };
+	Point p{ 1,2 };
 
 
 	// C++11中列表初始化也可以适用于new表达式中
@@ -52,6 +53,8 @@ void test1()
 	//如果不想自定义类型显式调用拷贝构造可以加explicit(意思:明确),即使自定义不能通过赋值符号初始化 -- 把构造干掉,也拷贝不了了
 	
 	//自定义类型初始化时可以把圆括号换成花括号
+	//花括号和圆括号的区别是,花括号可以用 = 号,或者省略等号(省略时和圆括号一样). 而圆括号只能跟/贴着对象或类型
+
 
 	//C++11 std::initializer_list<T> -- 接收常量数组 --该数组在常量区 -- 不允许修改
 	/**
@@ -63,10 +66,29 @@ void test1()
 	 * 
 	 * 支持:vector,list,map
 	 * 
+	 * std::initializer_list一般是作为构造函数的参数，C++11对STL中的不少容器就增加std::initializer_list作为参数的构造函数，
+	 * 这样初始化容器对象就更方便了。也可以作为operator=的参数，这样就可以用大括号赋值。
+	 * 
 	 */
 	auto il = { 1,2,3,4,5,6 };
 	std::initializer_list<int>::iterator it = il.begin();
 	//++(*it); -- 报错,不允许
+
+
+	Date d1(1, 1, 1);
+	Date d2(2, 2, 2);
+
+	//initializer_list<Date>
+	std::vector<Date> v1 = { d1,d2 };
+	std::vector<Date> v2 = {Date(1,1,1),Date(2,2,2)};
+	std::vector<Date> v3 = { {1,1,1},{2,2,2} };
+	 //typename std::vector<int>::iterator it = v2.begin(); // ------ 不知道为什么迭代器不对
+
+	//map 可以使用初始化器表
+	map<std::string, std::string> dict = { {"1","1"},{"2","2"} };
+
+	//pair支持花括号 -- 和圆括号一样
+	pair<int, int> kv = { 2,2};
 
 }
 
