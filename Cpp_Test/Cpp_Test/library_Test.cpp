@@ -5,7 +5,7 @@
 //#include"29C++11.h"
 int main()
 {
-	void test1();
+	//void test1();
 	return 0;
 }
 
