@@ -114,6 +114,9 @@
     <ClInclude Include="28bitset.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="29C++11.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="1Date.cpp">
