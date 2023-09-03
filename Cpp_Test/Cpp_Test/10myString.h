@@ -68,15 +68,14 @@ namespace test {
 		//} // ------------------------通过缺省值合并到带参构造函数
 		string(const char* s = "") //---支持const char* 隐式转化成string ,走构造+拷贝构造 => 构造
 			:_size(strlen(s))
-			,_capacity(_size)
 		{
 			//如果多个参数有关联,尽量不走初始化列表,防止因为声明位置导致初始化错误
 			//strlen计算不包含'\0'
 			//strcpy会拷贝'\0'
 			//所以需要多开1个空间用于存放'\0'
 
-			//_capacity = _size == 0 ? 3 : _size;
-			_str = new char[_capacity + 1]; //_capacity是0也没关系,因为至少会1个空间
+			_capacity = _size == 0 ? 3 : _size;//_capacity不能为0,为什么? 为0就寄,至少会有一个\0,capacity就不可能为0
+			_str = new char[_capacity + 1]; 
 			strcpy(_str, s);
 		}
 
@@ -99,8 +98,8 @@ namespace test {
 
 		string& operator=(const string& s)
 		{
-			if (this != &s)
-			{
+			//if (this != &s)
+			//{
 				//考虑极端复杂情况
 				//1._str本身很大,s很小,如果不缩容,则会浪费很多空间
 				//2._str本身很小,s很大,则必须扩容,需要扩容很多次
@@ -115,7 +114,7 @@ namespace test {
 				cout << "string& operator=(string s) -- 深拷贝" << endl;  //移动拷贝和深拷贝测试
 				string tmp(s);
 				swap(tmp);
-			}
+			//}
 			return *this;
 		}
 
@@ -132,7 +131,7 @@ namespace test {
 		~string()
 		{
 			delete[] _str;
-			_size = _capacity = 0;
+			_str = nullptr;
 		}
 
 
@@ -365,6 +364,30 @@ namespace test {
 	};
 
 	size_t test::string::npos = -1; //类型 (域::)变量名 = 值;
+
+
+	test::string to_string(int value)
+	{
+		bool flag = true;
+		if (value < 0)
+		{
+			flag = false;
+			value = 0 - value;
+		}
+		test::string str;
+		while (value > 0)
+		{
+			int x = value % 10;
+			value /= 10;
+			str += ('0' + x);
+		}
+		if (flag == false)
+		{
+			str += '-';
+		}
+		std::reverse(str.begin(), str.end());
+		return str;
+	}
 
 
 	//流插入 和 流提取 (不是必须是友元函数,不是友元也可以 -- 重修,流插入需要支持什么功能?)
