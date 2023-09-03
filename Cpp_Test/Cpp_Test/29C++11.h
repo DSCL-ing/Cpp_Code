@@ -148,6 +148,15 @@ void test1()
  * 
  */
 
+/**左值引用的短板：
+ * 但是当函数返回对象是一个局部变量，出了函数作用域就不存在了，就不能使用左值引用返回，
+ * 只能传值返回。例如：bit::string to_string(int value)函数中可以看到，这里只能使用传值返回，
+ * 传值返回会导致至少1次拷贝构造(如果是一些旧一点的编译器可能是两次拷贝构造)。.
+ */
+
+
+
+
 //右值引用
 /**
  *  左值引用和右值引用
@@ -205,9 +214,27 @@ const int& ref = x+y;
  * 
  * $ 右值引用可以给右值起别名
  * 注:右值引用一般不带const ,带const会发生什么暂时位置,等待测试
+ * : const && 引用的是 const右值对象  -- 结果是资源转移后依然不可修改  -- 很少使用
  * 
  * $ 右值引用可以给move以后的左值起别名  
  * move--资源转移
+ * 
+ * 注: 需要注意的是右值是不能取地址的，但是给右值取别名后，会导致右值被存储到特定位置，且可
+ * 以取到该位置的地址，也就是说例如：不能取字面量10的地址，但是rr1引用后，可以对rr1取地
+ * 址，也可以修改rr1。如果不想rr1被修改，可以用const int&& rr1 去引用，是不是感觉很神奇，
+ * 这个了解一下实际中右值引用的使用场景并不在于此，这个特性也不重要
+int main()
+{
+ double x = 1.1, y = 2.2;
+ int&& rr1 = 10;
+ const double&& rr2 = x + y;
+ rr1 = 20;   //资源转移后变左值了,可以修改
+ rr2 = 5.5;  // 报错
+ return 0;
+ }
+
+ * 
+ * 
  * 
  * 右值又分为
  * 1.纯右值 -- 一般是内置类型
@@ -231,12 +258,30 @@ const int& ref = x+y;
  * 右值引用是间接减少拷贝,识别出是左值还是右值,如果是右值就直接移动资源,不再拷贝,提高效率
  * 
  * 
+ */
+
+
+
+
+
+
+//move
+/**
+ * 按照语法，右值引用只能引用右值，但右值引用一定不能引用左值吗？因为：有些场景下，可能
+ * 真的需要用右值去引用左值实现移动语义。当需要用右值引用引用一个左值时，可以通过move
+ * 函数将左值转化为右值。C++11中，std::move()函数位于 头文件中，该函数名字具有迷惑性，
+ * 它并不搬移任何东西，唯一的功能就是将一个左值强制转化为右值引用，然后实现移动语义。
+ * 
+ * move是std中的一个函数
  * 
  */
 
 
-//完美转发/万能引用/引用折叠 -- 既可以引用左值,也可以引用右值
+//完美转发/万能引用/引用折叠 std::forward<T> -- 既可以引用左值,也可以引用右值
 /**
+ * perfect:完美的
+ * forward:单向,向前
+ * 
  * $ 模板中的&&不代表右值引用，而是万能引用，其既能接收左值又能接收右值。
  *   模板的万能引用只是提供了能够接收同时接收左值引用和右值引用的能力
  *   但是引用类型的唯一作用就是限制了接收的类型，后续使用中都退化成了左值，
@@ -251,17 +296,57 @@ const int& ref = x+y;
  * std::forward 完美转发在传参的过程中保留对象原生类型属性 -- 只保留一层,哪里需要加哪里,全部需要则都加上
  * string& s1 = string("hello"); //报错 -- 临时变量具有常性 引用不支持引用常量
  * string s1 = string("hello"); //正确 -- 编译器优化,资源转移到s1上,原临时变量丢失常性,可以正常修改
+ * 
+ * forward是std的一个模板类
+ * 
+ * 使用方法:保持右值引用得到的对象还是右值/保持常性  -- 
+ * 		void push_back(T&& x) //右值 -- 资源转移到这层栈帧
+		{
+			insert(end(), forward<T>(x)); --如果不使用forward,则下一层就是左值,
+		}
+ * 
  */
 
 
+ /*
+ void Fun(int &x){ cout << "左值引用" << endl; }
+ void Fun(const int &x){ cout << "const 左值引用" << endl; }
+ void Fun(int &&x){ cout << "右值引用" << endl; }
+ void Fun(const int &&x){ cout << "const 右值引用" << endl; }
+
+ // std::forward<T>(t)在传参的过程中保持了t的原生类型属性。
+
+   template<typename T>
+   void PerfectForward(T&& t) {
+   	   Fun(std::forward<T>(t));
+   }
+
+ int main()
+ {
+  PerfectForward(10);           // 右值
+  int a;
+  PerfectForward(a);            // 左值
+  PerfectForward(std::move(a)); // 右值
+  const int b = 8;
+  PerfectForward(b);      // const 左值
+  PerfectForward(std::move(b)); // const 右值
+  return 0;
+ }
+ */
+
 void test2()
 {
-	test::list<test::string> lt;    //建一个string链表
-	test::string s1("hello world"); //建一个string对象
-	lt.push_back(s1);               //深拷贝 - 测试;
-	lt.push_back(test::string("hello world")); //匿名对象 -- 移动构造
-	lt.push_back("hello world");
+	test::list<test::string> lt;    //建一个string链表       -- empty_init() -- 空结点也是将匿名对象移动构造
+	test::string s1("hello world"); //建一个string对象-- 带参构造
+	lt.push_back(s1);               //                       -- 深拷贝 - 测试;
+	lt.push_back(test::string("hello world")); //匿名对象    -- 移动构造
+	lt.push_back("hello world"); //                          -- 移动构造
 
+	//move测试 -- move需要支持一些内置函数才行,库的可以move,我写的不能move无效,虽然走的是移动构造,但s没有释放掉
+	test::list<std::string> lt1;
+	std::string s2("hello");
+	lt1.push_back(move(s2)); 
+	lt1.push_back(move(s2));
 }
 
 

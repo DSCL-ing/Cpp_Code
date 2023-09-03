@@ -46,9 +46,14 @@ namespace test
 			: _next(nullptr)
 			, _prev(nullptr)
 			, _data(x)
-		{
-			cout << "newnode" << endl;
-		}
+		{}
+
+		//移动构造
+		list_node(T&& x = T())//此处为方便不使用分配器,直接初始化个匿名对象
+			: _next(nullptr)
+			, _prev(nullptr)
+			, _data(forward<T>(x))
+		{}
 
 		//拷贝原理 
 		
@@ -361,7 +366,7 @@ namespace test
 		list(const list<T>& lt)
 		{
 			//深拷贝时,第一次拷贝构造是list<list<int>>,因为构造一个匿名对象,此时x是list<int> , 第二次是list<int>,拷贝构造给此时
-			cout << "list(const list<T>& lt)" << this << ")"<<endl;
+
 			empty_init();
 			list<T> tmp(lt.begin(), lt.end()); //深拷贝
 			swap(tmp);
@@ -381,13 +386,14 @@ namespace test
 		list(list&& lt)
 		{
 			empty_init();
-
+			list<T> tmp(lt.begin(), lt.end()); //深拷贝
+			swap(tmp);
 		}
 
 		void empty_init()
 		{
 			//cout << "empty_init()" << this << ")" << endl;
-			_head = new node;
+			_head = new node(T());
 			_head->_next = _head;
 			_head->_prev = _head;
 		}
@@ -431,6 +437,21 @@ namespace test
 			new_node->_next = cur;
 			cur->_prev = new_node;
 		}
+
+		//移动构造
+		void insert(iterator pos, T&& x) //insert没有迭代器失效问题,pos依然指向同一个结点
+		{
+			//cout << "insert" << *this << ")" << endl;
+			node* cur = pos._node;
+			node* prev = cur->_prev;
+			node* new_node = new node(forward<T>(x));  //new阿！！！！！！！！！！！！！！！！！new是开辟新结点，然后再把x赋值进去--直接实现了深拷贝6666
+
+			prev->_next = new_node;
+			new_node->_prev = prev;
+			new_node->_next = cur;
+			cur->_prev = new_node;
+		}
+
 		//删除
 		iterator erase(iterator pos) //迭代器失效(野指针),返回链表下一个位置的迭代器
 		{
@@ -458,7 +479,7 @@ namespace test
 		//右值引用版本
 		void push_back(T&& x)
 		{
-			insert(end(), x);
+			insert(end(), forward<T>(x));
 		}
 
 		//头插

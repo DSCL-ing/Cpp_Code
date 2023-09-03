@@ -5,8 +5,8 @@
 #include"29C++11.h"
 int main()
 {
-	//void test1();
-	void test2();
+	//test1();
+	test2();
 	return 0;
 }
 

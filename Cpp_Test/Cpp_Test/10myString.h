@@ -92,7 +92,7 @@ namespace test {
 		string(const string& s) //拷贝构造的参数是本对象类型的引用
 			:_str(nullptr)
 		{
-			cout << "string(string&& s) -- 移动拷贝" << endl;
+			cout << "string(const string& s) -- 深拷贝" << endl;
 			string tmp(s._str); //复用:走带参构造造一个临时string,然后交换信息,之后自动释放掉临时对象
 			swap(tmp);
 		}
