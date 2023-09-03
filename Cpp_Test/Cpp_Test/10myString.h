@@ -68,24 +68,64 @@ namespace test {
 		//} // ------------------------通过缺省值合并到带参构造函数
 		string(const char* s = "") //---支持const char* 隐式转化成string ,走构造+拷贝构造 => 构造
 			:_size(strlen(s))
-		{
-			_capacity = _size == 0 ? 3 : _size;
-			_str = new char[_capacity + 1];
-			strcpy(_str, s);
-		}
-
-		//copy constructor
-		string(const string& s) //拷贝构造的参数是本对象类型的引用
-			:_size(s._size)
-			, _capacity(s._capacity)
+			,_capacity(_size)
 		{
 			//如果多个参数有关联,尽量不走初始化列表,防止因为声明位置导致初始化错误
 			//strlen计算不包含'\0'
 			//strcpy会拷贝'\0'
 			//所以需要多开1个空间用于存放'\0'
-			_str = new char[_capacity + 1];
-			//深拷贝也是需要一个一个拷贝,只要是需要复制空间内容
-			strcpy(_str, s._str);
+
+			//_capacity = _size == 0 ? 3 : _size;
+			_str = new char[_capacity + 1]; //_capacity是0也没关系,因为至少会1个空间
+			strcpy(_str, s);
+		}
+
+
+		void swap(string& s)
+		{
+			std::swap(_str, s._str);
+			std::swap(_size, s._size);
+			std::swap(_capacity, s._capacity);
+		}
+
+		//copy constructor
+		string(const string& s) //拷贝构造的参数是本对象类型的引用
+			:_str(nullptr)
+		{
+			cout << "string(string&& s) -- 移动拷贝" << endl;
+			string tmp(s._str); //复用:走带参构造造一个临时string,然后交换信息,之后自动释放掉临时对象
+			swap(tmp);
+		}
+
+		string& operator=(const string& s)
+		{
+			if (this != &s)
+			{
+				//考虑极端复杂情况
+				//1._str本身很大,s很小,如果不缩容,则会浪费很多空间
+				//2._str本身很小,s很大,则必须扩容,需要扩容很多次
+				//干脆直接开新空间,拷贝过去
+				/*char* tmp = new char[s._size + 1];
+				strcpy(tmp, s._str);
+				delete[] _str;
+				_str = tmp;
+				_size = s._size;
+				_capacity = s._capacity;*/
+
+				cout << "string& operator=(string s) -- 深拷贝" << endl;  //移动拷贝和深拷贝测试
+				string tmp(s);
+				swap(tmp);
+			}
+			return *this;
+		}
+
+		//移动构造 -- c++只提供拷贝构造的移动构造
+		string(string&& s) ///------ &&
+			:_str{nullptr}
+		{
+			cout << "string(string&& s) -- 移动拷贝" << endl;
+			string tmp(s._str);
+			swap(tmp);
 		}
 
 		//destructor
@@ -96,23 +136,7 @@ namespace test {
 		}
 
 
-		string& operator=(const string& s)
-		{
-			if (this != &s)
-			{
-				//考虑极端复杂情况
-				//1._str本身很大,s很小,如果不缩容,则会浪费很多空间
-				//2._str本身很小,s很大,则必须扩容,需要扩容很多次
-				//干脆直接开新空间,拷贝过去
-				char* tmp = new char[s._size + 1];
-				strcpy(tmp, s._str);
-				delete[] _str;
-				_str = tmp;
-				_size = s._size;
-				_capacity = s._capacity;
-			}
-			return *this;
-		}
+
 
 
 	   //Capacity
@@ -165,6 +189,7 @@ namespace test {
 		//Element access
 		char& operator[](size_t pos)//必须返回真实数据地址
 		{
+			assert(pos < size()); //size_t无符号数不需要判断小于0
 			return _str[pos];
 		}
 		const char& operator[](size_t pos) const
@@ -209,6 +234,21 @@ namespace test {
 			append(s);
 			return *this;
 		}
+
+		string operator+(char ch)
+		{
+			string tmp(*this);
+			tmp += ch;
+			return tmp;
+		}
+
+		string operator+(const char* s)
+		{
+			string tmp(*this);
+			tmp += s;
+			return tmp;
+		}
+
 		string& insert(size_t pos, char ch)//插入字符
 		{
 			assert(pos <= _size); //pos在'\0'处也可以插入
@@ -256,12 +296,7 @@ namespace test {
 			}
 			return *this;
 		}
-		void swap(string& s)
-		{
-			std::swap(_str, s._str);
-			std::swap(_size, s._size);
-			std::swap(_capacity, s._capacity);
-		}
+
 		size_t find(char ch, size_t pos = 0)
 		{
 			assert(pos < _size);//加不加无所谓
@@ -332,7 +367,7 @@ namespace test {
 	size_t test::string::npos = -1; //类型 (域::)变量名 = 值;
 
 
-	//流插入 和 流提取 (不是必须是友元函数,不是友元也可以)
+	//流插入 和 流提取 (不是必须是友元函数,不是友元也可以 -- 重修,流插入需要支持什么功能?)
 	//Extract string from stream
 	std::ostream& operator<<(std::ostream& out, const string& s)
 	{

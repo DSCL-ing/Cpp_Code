@@ -2,10 +2,11 @@
 #pragma once
 
 #include<vector>
-//#include"29C++11.h"
+#include"29C++11.h"
 int main()
 {
 	//void test1();
+	void test2();
 	return 0;
 }
 

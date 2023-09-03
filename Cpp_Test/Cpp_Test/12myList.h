@@ -367,7 +367,7 @@ namespace test
 			swap(tmp);
 		}
 		
-		//此处不是深拷贝核心
+		//此处不是深拷贝核心 -- 赋值初始化时的深拷贝
 		list<T>& operator=(list<T> lt) //:传值传参->拷贝构造+迭代器构造,深拷贝
 		//赋值运算符重载：操作数是list<list<>>,在非初始化时走这里,lt1 = lt2
 		//使用到的场景，直接赋值给另一个对象：lt1 = lt2 :
@@ -375,6 +375,13 @@ namespace test
 			//cout << "operator="<<endl;
 			swap(lt);
 			return *this;
+		}
+
+//移动构造
+		list(list&& lt)
+		{
+			empty_init();
+
 		}
 
 		void empty_init()
@@ -447,6 +454,13 @@ namespace test
 			//_head->_prev = n;
 			insert(end(), x);
 		}
+
+		//右值引用版本
+		void push_back(T&& x)
+		{
+			insert(end(), x);
+		}
+
 		//头插
 		void push_front(const T& x)
 		{
