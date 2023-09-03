@@ -1,15 +1,24 @@
 ﻿
 #pragma once
-
-#include<vector>
-#include"29C++11.h"
+#include<iostream>
+using std::cout;
+using std::endl;
+using std::cin;
+#include"29.1C++11.h"
 int main()
 {
-	//test1();
-	//test2();
-	test3();
+	fun1();
 	return 0;
 }
+
+//#include"29.0C++11.h"
+//int main()
+//{
+//	//test1();
+//	//test2();
+//	test3();
+//	return 0;
+//}
 
 
 //#include<iostream>

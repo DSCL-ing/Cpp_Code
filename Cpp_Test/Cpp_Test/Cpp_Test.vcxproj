@@ -38,6 +38,7 @@
     <ClInclude Include="1OnlineJudge.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="29.1C++11.h" />
     <ClInclude Include="9STL.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>
@@ -71,7 +72,7 @@
     <ClInclude Include="28hashtable_container.h" />
     <ClInclude Include="28myMap_unordered.h" />
     <ClInclude Include="28mySet_unordered.h" />
-    <ClInclude Include="29C++11.h" />
+    <ClInclude Include="29.0C++11.h" />
     <ClInclude Include="2Note.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClInclude>

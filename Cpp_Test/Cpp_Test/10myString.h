@@ -96,6 +96,14 @@ namespace test {
 			swap(tmp);
 		}
 
+		//移动构造 -- 
+		string(string&& s) ///------ &&
+			:_str{ nullptr }
+		{
+			cout << "string(string&& s) -- 移动拷贝" << endl;
+			swap(s);
+		}
+
 		string& operator=(const string& s)
 		{
 			//if (this != &s)
@@ -111,21 +119,21 @@ namespace test {
 				_size = s._size;
 				_capacity = s._capacity;*/
 
-				cout << "string& operator=(string s) -- 深拷贝" << endl;  //移动拷贝和深拷贝测试
+				cout << "string& operator=(string s) -- 深拷贝赋值" << endl;  //移动拷贝和深拷贝测试
 				string tmp(s);
 				swap(tmp);
 			//}
 			return *this;
 		}
 
-		//移动构造 -- c++只提供拷贝构造的移动构造
-		string(string&& s) ///------ &&
-			:_str{nullptr}
+		string& operator=(string&& s)
 		{
-			cout << "string(string&& s) -- 移动拷贝" << endl;
-			string tmp(s._str);
-			swap(tmp);
+			cout << "string& operator=(string&& s) -- 移动赋值" << endl;  //移动拷贝和深拷贝测试
+			swap(s);
+			return *this;
 		}
+
+
 
 		//destructor
 		~string()
