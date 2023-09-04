@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-
+gsh
 
 //C2440<function-style-cast>
 /**
