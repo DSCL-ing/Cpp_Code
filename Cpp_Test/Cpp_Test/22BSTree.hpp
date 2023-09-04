@@ -317,7 +317,7 @@ namespace key
 						cur->_key = minRight->_key;//
 
 						//替代完成后,需要回收minrRight结点 -- 回收处理
-						if (pminRight->_right == minRight)//如果循环没有进去,即第一个minRight->_left为空,right可能不为空，即要删结点的右结点就是最小结点
+						if (pminRight->_right == minRight)//如果循环没有进去，即要删结点的右结点就是最小结点
 						{
 							//右子树的最小结点成为父结点的新右子树
 							pminRight->_right = minRight->_right;
