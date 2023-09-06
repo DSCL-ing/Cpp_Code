@@ -383,3 +383,47 @@ $ linux支持多行输入 ,只要在结尾输入反斜杠\回车即到下一行 
 
 # bc //linux中的计算器
 # echo "1+2*3/2" | bc //管道组合运算 -- 结果为4
+
+# uname  -a //查看所有信息 // Linux iZ7xv3f3wlfxwevnefn5drZ 3.10.0-957.21.3.el7.x86_64 #1 SMP Tue Jun 18 16:35:19 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+//linux版本 3.10.0;  发行版:el:centos 7;  架构:x64;  
+
+# uname -r //查看软硬件体系结构  //软件体系结构3.10.0-957.21.3.        硬件体系结构:  el7.x86_64
+
+# cat /etc/redhat-release  //查看linux的商业化发行版 -- centos是redhat公司的一款免费系统
+
+# exit //退出linux
+
+$ ctrl+d //退出//通常代表着：『键盘输入结束(End Of File, EOF 或 End OfInput)』的意思；另外，他也可以用来取代exit
+
+$ 在输入框按上或按下可以翻动历史命令
+
+$ ctrl+r  //搜索历史命令
+
+# history //显式最近1000条命令
+# history > 文件 //把命令保存到文件中
+
+# reboot //重启linux 
+# shutdown [命令选项] //关机  -- 云服务器不关机,关机要去后台重启
+
+// 命令输入的地方叫做:  命令行 /    CLI/命令行界面
+
+$ Shell的最简单定义：命令行解释器（command Interpreter）主要包含： -- shell的感性理解
+   .将使用者的命令翻译给核心（kernel）处理。同时，将核心的处理结果翻译给使用者
+   .保护操作系统 -- 防止用户执行非法指令
+   .执行命令会创建子进程进行执行
+//我们平常的命令主要是通过shell来和linux内核交互,shell帮我们解释命令给kernel -- shell命令
+//shell是一个程序/命令 :/usr/bin/bash ,即bash.  我们链接上服务器时会自动关联上shell程序
+//shell是linux的外壳程序,是软件层,命令行
+
+
+
+
+
+
+
+
+
+
+
+
+
