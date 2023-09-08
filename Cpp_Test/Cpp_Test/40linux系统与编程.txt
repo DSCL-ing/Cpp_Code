@@ -619,6 +619,6 @@ cp/mv/chmod/chown/chgrp/sort/uniq/gcc/su/sudo/top/stat/uname/alias/umask/adduser
 
 "重定向>,>> " ,  "管道|" ,    "  ~ , - " ,    "家目录"  , "文件类型" , "目录权限" ,"umask" ,"粘滞位" ,"权限" 
 
-
+//
 
 
