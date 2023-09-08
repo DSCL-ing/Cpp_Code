@@ -613,6 +613,8 @@ $ 增加粘滞位的目录内的文件只有文件拥有者和root可以删除/�
 
 $ 目录的w权限还有删除文件的功能
 
+$ 粘滞位一般都在rwx的基础上添加
+
 
 ls/cd/pwd/whoami/touch/mkdir/rm/rmdir/bc/cat/less/more/nano/date/wc/grep/head/tail/zip/unzip/tar/clear/cal/man/echo/tree/find/which/whereis/file/
 cp/mv/chmod/chown/chgrp/sort/uniq/gcc/su/sudo/top/stat/uname/alias/umask/adduser/passwd/userdel/history
@@ -669,3 +671,7 @@ $ //前面带"$"符号的单词表示这个单词是宏,会被替换掉
 2.# sudo yum install -y  
 
 //复习->
+
+
+//软件包和软件包管理器 -- 类似于App与应用商店
+//软件包是已经由源代码编译好的可执行程序,包管理器能方便得获取到软件包
