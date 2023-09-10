@@ -781,6 +781,14 @@ Ctrl + u 键 （u 的英文全拼为：up）
 //卡死可能的解决方案--ctrl+q
 }
 
+vim插入模式
+{
+
+$ #为注释
+
+
+
+}
 
 # yum install -y vim //安装vim
 
@@ -901,7 +909,7 @@ $ file命令和ldd命令搭配使用
 
 
 $ /usr/bin/ld: cannot find -lc错误
-//原因:在新版本的linux 系统下安装 glibc-devel、glibc和gcc-c++时，都不会安装libc.a. 只安装libc.so. 所以当使用-static时，libc.a不能使用。只能报找不到libc了。
+//原因:在新版本的linux 系统下安装 glibc-devel、glibc和gcc-c++时，都不会安装libc.a. 只安装libc.so. 所以当 使用-static时，libc.a不能使用。只能报找不到libc了。
 //解决:yum install glibc-static
 //C++:yum install glibc-static libstdc++-static -y
 
@@ -911,5 +919,56 @@ $ ELF是linux下的可执行程序 ,对应windows的exe
 
 
 
-// make和makefile
+// linux项目自动化构建工具make和makefile
 //make是个命令,makefile是个文件(m不区分大小写,Makefile也可以)
+
+$ makefile一般放在当前源码路径下
+
+$ makefile是一个围绕依赖关系和依赖方法构建的自动化编译的工具
+
+$ 创建makefile文件语法
+依赖关系 //语法中 目标文件:依赖文件列表 -- 目标文件依赖于依赖文件 -- 依赖文件可以有多个,用空格分隔
+    依赖方法 //语法块要求开头必须是制表符table
+依赖关系
+    依赖方法
+
+$ 依赖关系中,目标文件对应的依赖文件列表可以是空
+
+$ 多依赖关系/传递依赖关系使用栈结构(其他语法实现大多是栈结构),后进先出,--第一行依赖关系先入栈,后面依次入栈 -- 直到满足起始条件 
+// 入栈过程会带着各自的依赖方法进栈
+
+$ clean: //clean:是依赖关系,clean是目标文件,虽然他没有依赖文件.只要是依赖关系都可以有自己的依赖方法
+
+
+
+
+演示1:
+out_name:src_file  //out 依赖于src
+    gcc -o  out_name  src_file  //制表符开头
+.PHONY:clean
+clean:
+    rm -f out_name  //
+
+演示2: //传递依赖关系
+out:out.o    
+  gcc -o out out.o    
+out.o:out.s    
+  gcc -o out.o out.s -c    
+out.s:out.i    
+  gcc -o out.s out.i -S    
+out.i:2.c    
+  gcc -o out.i 2.c -E    
+.PHONY:clean    
+clean:                                                                              
+    rm -f out     
+    rm -f out.o    
+    rm -f out.s
+
+$ 使用make命令
+# make //默认只执行第一组依赖关系,执行完第一组就终止 -- 执行其他依赖关系需要make+其他命令选项 / 第一条也可以加上命令选项(只有第一条可以省略)
+# make clean //执行makefile中的clean语句块
+
+
+
+
+
