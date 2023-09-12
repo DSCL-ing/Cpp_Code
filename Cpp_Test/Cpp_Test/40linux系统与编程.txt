@@ -1073,6 +1073,7 @@ sudo yum install -y git
 
 
 
+
 # git config --globaluser.name "提交用户名" //给别人看的
 # git config --globaluser.email "提交邮箱"
 # git config --list //查看提交用户和邮箱
