@@ -1047,3 +1047,136 @@ clean:
 } 
 --C语言include""会先扫描当前文件夹再扫描其他文件夹 -- 目前都放在同一目录就可以,
 --头文件在预处理阶段会自动地拷贝到c文件中,所以不用带.h文件,只要.c文件即可
+
+
+
+//git 
+
+$ 查看git版本 -- 查看git是否安装
+# git --version
+
+sudo yum install -y git
+
+# git clone 克隆地址 
+//输入用户名:注册gitee/github的手机号或用户名
+//账号密码
+
+# git add . //把当前目录下所有文件提交到暂存区
+# git add [file1] [file2] ... //单独添加多个文件到暂存区 ,以空格分隔
+# git add [dir] // 添加目录
+
+# git commit -m "修改信息" //提交到本地仓库  -- 提交暂存区到仓库区
+# git commit [file1] [file2] ... -m [message]  //提交暂存区的指定文件到仓库区
+# git commit -a  //提交工作区自上次commit之后的变化，直接到仓库区
+# git commit -v //提交时显示所有diff信息
+# git commit --amend -m "message" //使用一次新的commit，替代上一次提交(重做上一次commit),如果代码没有任何新变化，则用来改写上一次commit的提交信息  
+
+
+
+# git config --globaluser.name "提交用户名" //给别人看的
+# git config --globaluser.email "提交邮箱"
+# git config --list //查看提交用户和邮箱
+# git config --global --list
+
+
+# git status //显示有变更的文件
+# git log //显示当前分支的版本历史, 查看提交日志 --按q退出历史记录列表
+# git log --stat //显示commit历史，以及每次commit发生变更的文件
+...
+
+# git branch 列出所有本地分支
+# git branch -r 列出所有远程分支
+# git branch -a 列出所有本地分支和远程分支
+# git branch [branch-name]  新建一个分支，但依然停留在当前分支
+# git checkout -b [branch] 新建一个分支，并切换到该分支
+# git checkout [branch-name]切换到指定分支，并更新工作区
+ ...
+
+ 远程同步
+# git fetch [remote]//下载远程仓库的所有变动
+# git remote -v //显示所有远程仓库
+# git remote -v //查看已添加的远程仓库
+# git pull //取回远程仓库的变化，并与本地分支合并
+# git push //上传本地指定分支到远程仓库
+
+git clean 
+...
+
+解决git每次提交和拉取代码需要输入用户名和密码问题
+输入以下命令行：
+# git config --global credential.helper store //之后等待下一次输入账户密码操作
+# git push https: url
+输入账号密码即可
+
+# git rm 文件 //
+# git rm [file1] [file2] ... //删除工作区文件，并且将这次删除放入暂存区
+# git rm --cached 文件 //文件从暂存区域移除，但工作区保留：
+
+
+$ git如果是push到别的平台则需要的是邮箱+密钥
+$ git如果是push到自己的平台,则只需密码
+
+
+
+
+
+//颜色.....
+
+一般系统默认的提示符形式是：[username@host 工作目录]$ 
+
+$ 默认命令提示符规则  # echo $PS1 //[\u@\h \W]\$
+@  : #就是普通字符
+\d ：#代表日期，格式为weekday month date，例如：“Mon Aug 1”
+\H ：#完整的主机名称
+\h ：#仅取主机的第一个名字 //主机名
+\t ：#显示时间为24小时格式，如：HH：MM：SS
+\T ：#显示时间为12小时格式
+\A ：#显示时间为24小时格式：HH：MM
+\u ：#当前用户的账号名称 //用户名
+\v ：#BASH的版本信息
+\w ：#完整的工作目录名称
+\W ：#利用basename取得工作目录名称，所以只会列出最后一个目录
+#：#下达的第几个命令
+$ ：#提示字符，如果是root时，提示符为：# ，普通用户则为：$
+-----------------------------------
+https://blog.51cto.com/u_11566825/2063370
+
+
+2.设置颜色
+在PS1中设置字符颜色的格式为：
+[\e[F;Bm]，其中“F“为字体颜色，编号为30-37，“B”为背景颜色，编号为40-47。颜色表如下：
+
+[\e[F;Bm]需要改变颜色的部分[\e[0m]
+开始颜色输入：[\e[F;Bm]
+结束颜色输入：[\e[0m]
+　　　　F　Bm
+　　　　30 40 黑色
+　　　　31 41 红色
+　　　　32 42 绿色
+　　　　33 43 黄色
+　　　　34 44 蓝色
+　　　　35 45 紫红色
+　　　　36 46 青蓝色
+　　　　37 47 白色
+　　　　
+设置特殊显示　
+　　　　 0 OFF，关闭颜色
+　　　　 1 高亮显示 //亮瞎狗眼
+　　　　 4 显示下划线
+　　　　 5 闪烁显示 //跑马灯 黑闪黑闪
+　　　　 7 反白显示 //背景与字体颜色反过来
+　　　　 8 颜色不可见
+-----------------------------------
+https://www.cnblogs.com/ggzhangxiaochao/p/13141437.html
+
+//修改主机名
+# sudo hostnamectl set-hostname 新名字(不能是中文)
+
+$ 我的设置: # PS1="\e[36m\][\u@\h \W\t]\\$\[\e[0m]" //复制到相应文件中
+
+$ 写入~/.bash_profile或~/.bashrc只对当前用户生效。
+$ 写入/etc/profile或/etc/bashrc对全部用户生效
+
+$ source 命令：常用于重新执行刚修改的初始化文件。如/etc/profile ， bash_profile， bashrc?通过 source命令 在不重启的情况下生效。//刷新
+
+PS1="[\e[37;1m]  [  [\e[31;1m]\u [\e[36;1m]@ [\e[33;1m]\h [\e[35;40m]\W[\e[37;1m]  ]   [\e[33;1m]\$[\e[0m]
