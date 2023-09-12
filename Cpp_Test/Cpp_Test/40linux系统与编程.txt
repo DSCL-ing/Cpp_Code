@@ -1191,3 +1191,17 @@ $ 写入/etc/profile或/etc/bashrc对全部用户生效
 $ source 命令：常用于重新执行刚修改的初始化文件。如/etc/profile ， bash_profile， bashrc?通过 source命令 在不重启的情况下生效。//刷新
 
 PS1="[\e[37;1m]  [  [\e[31;1m]\u [\e[36;1m]@ [\e[33;1m]\h [\e[35;40m]\W[\e[37;1m]  ]   [\e[33;1m]\$[\e[0m]
+
+
+
+
+//GDB gdb
+
+readelf -S 文件 //读elf格式的可执行程序的二进制文件
+
+# gdb 有debug信息的可执行文件
+# l 
+# l+n
+# b 行号
+# d 断点编号
+# r // run
