@@ -1052,14 +1052,20 @@ clean:
 
 //git 
 
+gitee和github区别:底层都是基于git的网站化git管理服务端
+
 $ 查看git版本 -- 查看git是否安装
 # git --version
 
 sudo yum install -y git
 
 # git clone 克隆地址 
-//输入用户名:注册gitee/github的手机号或用户名
+//输入用户名:注册gitee/github的手机号或用户名或完整邮箱 -- 注册的账号
 //账号密码
+
+删除git仓库 // .git就是仓库
+# rm .git -rf
+
 
 # git add . //把当前目录下所有文件提交到暂存区
 # git add [file1] [file2] ... //单独添加多个文件到暂存区 ,以空格分隔
@@ -1102,6 +1108,10 @@ sudo yum install -y git
 
 git clean 
 ...
+-----------------------------------
+Git常用命令大全：git命令基本用法
+https://blog.csdn.net/hejinde/article/details/131229840
+
 
 解决git每次提交和拉取代码需要输入用户名和密码问题
 输入以下命令行：
