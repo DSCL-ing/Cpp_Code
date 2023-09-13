@@ -1298,35 +1298,47 @@ PS1="[\e[37;1m]  [  [\e[31;1m]\u [\e[36;1m]@ [\e[33;1m]\h [\e[35;40m]\W[\e[37;1m
 
 readelf -S 文件 //读elf格式的可执行程序的二进制文件
 
-启动gdb # gdb 文件
-退出gdb # quit或q
+# gdb 文件  //backtrace
+# quit或q   //退出gdb 
 
 # gdb 有debug信息的可执行文件
 # l //list -- 显示部分代码
 # l+n //从哪一行开始显示
+# l file:行号/函数名 //
 # b 行号 //breakpoint -- 给哪行打断点
-# d 断点编号
+# d/delete 断点编号 //删除断点
+# d breakpoints // 删除所有断点
 # r // run//执行 -- 到断点处停下来
 # info b //查看所有打的断点 -- 断点有编号Num,依次递增,不会循环 ,直到退出gdb
 # disable Num //暂停断点
 # disable breakpoint Num// 全称
 # enable Num //启用断点 -- 使能
 # enable breakpoint Num// 全称
-# next/n //逐过程
-# step/s //逐语句 --步骤 - 可能会进到库的代码 -- 所以要注意用n跳出去
+# n/next //逐过程
+# s/step //逐语句 --步骤 - 可能会进到库的代码 -- 所以要注意用n跳出去
 # until 行号 //在函数内,指定位置跳转,执行完区间代码.直接运行到指定行 -
-//调用函数要压栈 --  # bt //查看调用栈
-#0  addToTop (top=100) at gdb.c:6             //压栈
-#1  0x00000000004005bc in main () at gdb.c:22 //栈底
+# finish // 运行完当前函数
+# c/continue   //运行到下一个断点
+# f/frame   //简写f, f 0 切换到栈0，即栈顶
 
+# set var：修改变量的值 -- 用的情况比较少,在循环里i,j什么的可能好用
+
+//命令中的文件是源文件,不是可执行程序 -- 可能有多个源文件,所以能带文件名 -- 
+
+//调用函数要压栈 --  
+# bt/backtrace //查看调用栈
+  #0  addToTop (top=100) at gdb.c:6             //压栈
+  #1  0x00000000004005bc in main () at gdb.c:22 //栈底
 
 # p 变量 //查看当前变量的值
 # display 变量 //长监视 -- 每次都会自动刷新 -- 会生成和断点一样的编号 (支持:内置类型,自定义类型,stl...)
 # undisplay 编号 // 需要编号才能删除
 # info display // 查看所有长监视的变量
+# info/i locals // 查看局部变量的值   
 
+---- 所有的info都可以简写成i , i+首字符可以提示语法
 
-//指定文件名打印: #b 文件名:关键字 //
+//指定(可带文件名)关键字打断点: #b (文件名:)关键字 //
 //遇到不能打断点的地方,断点对进到不能打的下下....一行,直到遇到能打断点的位置
 
 //breakpoint already hit 1 time //断点已经命中一次 
