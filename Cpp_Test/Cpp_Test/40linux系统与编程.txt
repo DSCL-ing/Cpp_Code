@@ -1309,13 +1309,31 @@ readelf -S 文件 //读elf格式的可执行程序的二进制文件
 # r // run//执行 -- 到断点处停下来
 # info b //查看所有打的断点 -- 断点有编号Num,依次递增,不会循环 ,直到退出gdb
 # disable Num //暂停断点
+# disable breakpoint Num// 全称
 # enable Num //启用断点 -- 使能
+# enable breakpoint Num// 全称
+# next/n //逐过程
+# step/s //逐语句 --步骤 - 可能会进到库的代码 -- 所以要注意用n跳出去
+# until 行号 //在函数内,指定位置跳转,执行完区间代码.直接运行到指定行 -
+//调用函数要压栈 --  # bt //查看调用栈
+#0  addToTop (top=100) at gdb.c:6             //压栈
+#1  0x00000000004005bc in main () at gdb.c:22 //栈底
+
+
+# p 变量 //查看当前变量的值
+# display 变量 //长监视 -- 每次都会自动刷新 -- 会生成和断点一样的编号 (支持:内置类型,自定义类型,stl...)
+# undisplay 编号 // 需要编号才能删除
+# info display // 查看所有长监视的变量
+
+
+//指定文件名打印: #b 文件名:关键字 //
+//遇到不能打断点的地方,断点对进到不能打的下下....一行,直到遇到能打断点的位置
 
 //breakpoint already hit 1 time //断点已经命中一次 
 //no breakpoint or watchpoint //没有断点或观察点
 //watchpoint //观察点 -- 没有被激活的
 
-//gdb会自动记忆最近一次的命令 -- 回车重复上次命令
+//gdb会自动记忆最近一次的命令 -- 回车重复上次命令 -- 如list后回车会将剩下的代码依次打印出来
 
 
 //测试人员一般只要release的可执行程序
@@ -1330,3 +1348,16 @@ readelf -S 文件 //读elf格式的可执行程序的二进制文件
 https://blog.csdn.net/m0_65379664/article/details/130382886
 
 # readelf -S elf文件 | grep -i debug // -i忽略大小写,过滤出所有带debug的信息 -- 没有说明不是debug文件
+
+
+
+
+
+
+
+
+
+
+
+
+
