@@ -864,15 +864,28 @@ $ 不适用table制表,使用空格最好,不同平台table占位不一样
 
 
 
+
+
+
+
+
+
+
 //7
 
 //linux编译器
-gcc编译C语言
+GCC编译C语言
 G++编译C++
 
 
 
-C语言/gcc
+C语言/GCC
+
+$ gcc默认是C89
+# gcc ... -std=c99  //修改GCC执行C99标准
+//gcc/g++默认生成的可执行程序是release版本
+# gcc ... -g        //修改为debug版本
+
 
 $$ 程序的翻译
 1.预处理(头文件展开(合并到成我们的代码),条件编译,宏替换,去注释)
@@ -915,6 +928,12 @@ $ 记忆: 命令选项为ESc键 ,生成的文件为.iso
 //ifndef 是如果宏没有定义 ,即ifdef的否定
 
 # ldd 可执行文件 //查看看可执行文件链接的库
+
+
+
+
+
+
 
 
 $ linux的C语言头文件库位于 /usr/include
@@ -966,6 +985,12 @@ $ /usr/bin/ld: cannot find -lc错误
 $ LSB:linux中lsb是指linux标准基础，是“Linux Standards Base”的缩写，LSB是Linux标准化领域中事实上的标准，制定了应用程序与运行环境之间的二进制接口，保证了LINUX发行版同LINUX应用程序之间的良好结合。
 
 $ ELF是linux下的可执行程序 ,对应windows的exe
+
+
+
+
+
+
 
 
 
@@ -1269,9 +1294,35 @@ PS1="[\e[37;1m]  [  [\e[31;1m]\u [\e[36;1m]@ [\e[33;1m]\h [\e[35;40m]\W[\e[37;1m
 
 readelf -S 文件 //读elf格式的可执行程序的二进制文件
 
+启动gdb # gdb 文件
+退出gdb # quit或q
+
 # gdb 有debug信息的可执行文件
-# l 
-# l+n
-# b 行号
+# l //list -- 显示部分代码
+# l+n //从哪一行开始显示
+# b 行号 //breakpoint -- 给哪行打断点
 # d 断点编号
-# r // run
+# r // run//执行 -- 到断点处停下来
+# info b //查看所有打的断点 -- 断点有编号Num,依次递增,不会循环 ,直到退出gdb
+# disable Num //暂停断点
+# enable Num //启用断点 -- 使能
+
+//breakpoint already hit 1 time //断点已经命中一次 
+//no breakpoint or watchpoint //没有断点或观察点
+//watchpoint //观察点 -- 没有被激活的
+
+//gdb会自动记忆最近一次的命令 -- 回车重复上次命令
+
+
+//测试人员一般只要release的可执行程序
+//gcc/g++默认生成的可执行程序是release版本\
+# gcc ... -g  //修改为生成debug版本
+
+# readelf -S 可执行文件 //
+在Linux下，readelf -S命令用于显示目标文件或共享目标文件的节表信息。
+它可以列出目标文件的所有节（section）的信息，包括每个节的名称、类型、大小、偏移量等。其中，节是目标文件中的一些逻辑段，用于存储程序的代码、数据和符号表等信息。
+通过readelf -S命令，用户可以快速查看目标文件中包含的各个节的信息，有助于了解程序的结构和调试信息。此外，readelf -S命令还可以用于分析和调试程序，例如确定程序的内存映像、调试符号表等
+————————————————
+https://blog.csdn.net/m0_65379664/article/details/130382886
+
+# readelf -S elf文件 | grep -i debug // -i忽略大小写,过滤出所有带debug的信息 -- 没有说明不是debug文件
