@@ -1445,3 +1445,21 @@ CPU只从内存读取数据,外设需要装入内存才能被CPU读取,运行; �
 # ps axj|head -1 && ps axj|grep myprocess |grep -v grep //过滤掉带grep这行 , ps axj|grep后会多一个无关项,过滤掉好看一点
 
 $ 测试执行程序是不是进程 - 执行同一个程序两次 -- 查看是否是同一个可执行程序的两个不同的进程
+[chj@expiration1102 1.2进程学习 16:52:10]$ ps axj|head -1 && ps axj|grep myprocess |grep -v grep
+ PPID   PID  PGID   SID TTY      TPGID STAT   UID   TIME COMMAND
+19970 20647 20647 19970 pts/3    20647 S+    1002   0:00 ./myprocess
+20716 20738 20738 20716 pts/4    20738 S+    1002   0:00 ./myprocess
+//PID是每个进程的编号
+
+# ls /proc   // 保存进程属性的目录 -- 内存级的文件系统(磁盘上不存在)
+
+/proc内以数字命名的目录是进程信息文件,其名字就是进程的PID
+
+进程文件内其中有两行数据 -- 目前能看懂的,可以证明是执行的程序的进程
+lrwxrwxrwx 1 chj chj 0 Sep 14 21:11 cwd -> /home/chj/git_repositories/linux_code/1.2进程学习
+lrwxrwxrwx 1 chj chj 0 Sep 14 21:11 exe -> /home/chj/git_repositories/linux_code/1.2进程学习/myprocess
+
+如果中断程序运行,则该进程文件会直接删除
+ls: cannot open directory .: No such process //正在访问的目录也会删除
+-bash: cd: ..: No such file or directory //cd .. 也执行不了
+
