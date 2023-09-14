@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+xshell快捷键:
+$ shift+Page Down/Up  //[终端]向上或向下翻页
 
 linux版本号
 
@@ -1463,3 +1465,40 @@ lrwxrwxrwx 1 chj chj 0 Sep 14 21:11 exe -> /home/chj/git_repositories/linux_code
 ls: cannot open directory .: No such process //正在访问的目录也会删除
 -bash: cd: ..: No such file or directory //cd .. 也执行不了
 
+
+///// 第一个系统调用
+pid_t getpid(void)  // 获取进程的PID  -- 谁调的getpid就返回谁的pid
+pid_t就是int
+头文件为#include<unistd.h> 和#include<sys/types.h>
+返回值为进程PID
+
+pid_t getppid(void) //获取父进程id  
+$ 在测试父进程与子进程过程中,发现每一次重新执行程序,子进程PID改变,但父进程PID不会改变. -- 父进程是谁?  -- bash
+在通过ps axj|head -1 && ps axj|grep 父进程PID |grep -v grep 查看后发现,父进程是bash
+1.bash命令行解释器,本质上也是一个进程
+2.命令行启动的所有程序,最终都会变成进程,而该进程对应的父进程都是bash -- (对应上之前学习的bash,bash执行的命令都交给子进程去执行)
+
+
+//杀进程命令
+# kill -9 PID  // 子进程,父进程,bash都能杀
+//杀掉bash后,所有命令都无法正常执行了,所以为了bash安全,bash通过创建子进程方式执行命令
+--- linux中没有母进程概念
+
+//如何创建子进程
+系统创建进程有windows打开可执行程序,linux:./可执行程序
+
+//创建子进程函数
+pid_t fork()         //叉子
+头文件 #include<unistd.h>
+返回值:
+On  success,  the  PID of the child process is returned in the parent, and 0 is
+returned in the child.  On failure, -1 is returned  in  the  parent,  no  child
+process is created, and errno is set appropriately.
+成功后，将在父进程中返回子进程的PID，0为
+孩子回来了。失败时，在父级中返回-1，没有子级
+将创建进程，并适当设置errno。
+
+
+//linux批量化处理命令 -- 块模式
+# ctrl+v+选择行+I,输入符号,esc // 批量化添加,即块添加,一般用于注释
+# ctrl+v+选择块+d  //块删除
