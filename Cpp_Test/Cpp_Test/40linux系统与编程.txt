@@ -790,6 +790,10 @@ U	将选中部分的字符全部改为大写
 >	将选中部分右移（缩进）一个 tab 键规定的长度（CentOS 6.x 中，一个tab键默认相当于 8 个空白字符的长度）
 <	将选中部分左移一个 tab 键规定的长度（CentOS 6.x 中，一个tab键默认相当于 8 个空白字符的长度）
 
+//linux批量化处理命令 -- 块模式
+# ctrl+v+选择行+I,输入符号,esc // 批量化添加,即块添加,一般用于注释
+# ctrl+v+选择块+d  //块删除
+
 // n+移动 :移动n行或n位
 
 //vim在退出前,可以撤销和undo.保存也可以
@@ -1466,7 +1470,7 @@ ls: cannot open directory .: No such process //正在访问的目录也会删除
 -bash: cd: ..: No such file or directory //cd .. 也执行不了
 
 
-///// 第一个系统调用
+$$$$  学习第一个系统调用
 pid_t getpid(void)  // 获取进程的PID  -- 谁调的getpid就返回谁的pid
 pid_t就是int
 头文件为#include<unistd.h> 和#include<sys/types.h>
@@ -1479,26 +1483,48 @@ $ 在测试父进程与子进程过程中,发现每一次重新执行程序,子�
 2.命令行启动的所有程序,最终都会变成进程,而该进程对应的父进程都是bash -- (对应上之前学习的bash,bash执行的命令都交给子进程去执行)
 
 
-//杀进程命令
+$ 杀进程命令
 # kill -9 PID  // 子进程,父进程,bash都能杀
 //杀掉bash后,所有命令都无法正常执行了,所以为了bash安全,bash通过创建子进程方式执行命令
 --- linux中没有母进程概念
 
-//如何创建子进程
+$$$$ 如何创建子进程 ?
+{
 系统创建进程有windows打开可执行程序,linux:./可执行程序
 
-//创建子进程函数
+$ 创建子进程函数
 pid_t fork()         //叉子
 头文件 #include<unistd.h>
 返回值:
-On  success,  the  PID of the child process is returned in the parent, and 0 is
-returned in the child.  On failure, -1 is returned  in  the  parent,  no  child
-process is created, and errno is set appropriately.
-成功后，将在父进程中返回子进程的PID，0为
-孩子回来了。失败时，在父级中返回-1，没有子级
-将创建进程，并适当设置errno。
+On  success,  the  PID of the child process is returned in the parent, and 0 is returned in the child. 
+On failure, -1 is returned  in  the  parent,  no  child process is created, and errno is set appropriately.
+成功后，在父进程中返回子进程的PID，在子进程中返回0。失败时，在父进程中返回-1，不创建子进程，并适当设置errno。
+
+程序:
+printf("AAAAAAAAAAAAAAAAAAAAAAA; pid:%d; ppid:%d; \n",getpid(),getppid());
+pid_t ret = fork();                                                                                                                   
+printf("BBBBBBBBBBBBBBBBBBBBBBB; pid:%d; ppid:%d; ret:%d; &ret:%p; \n",getpid(),getppid(),ret,&ret);
+结果:
+AAAAAAAAAAAAAAAAAAAAAAA; pid:23641; ppid:23234; 
+BBBBBBBBBBBBBBBBBBBBBBB; pid:23641; ppid:23234; ret:23642; &ret:0x7ffc3c8461fc;  //创建子进程成功,返回值是子进程PID
+BBBBBBBBBBBBBBBBBBBBBBB; pid:23642; ppid:1; ret:0; &ret:0x7ffc3c8461fc; //子进程的返回值是0
+发现:有两个值地址相同的不同值 -- 说明该地址不是物理地址(真实地址),而是间接地址 -- 写时拷贝的体现
 
 
-//linux批量化处理命令 -- 块模式
-# ctrl+v+选择行+I,输入符号,esc // 批量化添加,即块添加,一般用于注释
-# ctrl+v+选择块+d  //块删除
+$ 执行流 -- 多执行流 -- 宏观现象和单执行流很多差异,如if和else同时存在
+
+$ fork作用
+a.fork之后,执行流会变成两个执行流
+b.fork之后,谁先运行由调度器决定
+c.fork之后,fork之后的代码共享,通常我们通过if和elseif来进行执行流分流
+d.fork之后,return需要为两个执行流执行返回代码,即产生两个返回值
+
+$ fork原理: 
+1.-- 拷贝大部分父进程的PCB,其中指向和父进程同样的内存块 . 小部分属于子进程私有,如子进程自己的PID
+2.-- 代码共享 -- 代码只读,不可修改,不影响
+3.-- 写时拷贝,当有一个执行流尝试修改数据时,OS会自动给当前进程触发写时拷贝
+4.-- 进程具有独立性:1.销毁子进程不影响父进程;2.销毁没有父子关系的进程不会影响别的进程
+
+
+
+}
