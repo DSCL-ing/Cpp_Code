@@ -1858,3 +1858,29 @@ argc是表元素个数,有多少个子串,argc就为多少
 command line parameter
 argc: argument counter 
 argv: argument value 
+
+
+
+
+//优先级
+
+优先级和权限:能or不能
+优先级:已经能,但是谁先谁后的问题
+
+为什么会有优先级? 资源太少,资源不足 -- 计算机中CPU资源有限
+
+[chj@expiration1102 linux_code 22:45:04]$ ps -l
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+0 S  1002 10249 10248  0  80   0 - 28920 do_wai pts/1    00:00:00 bash
+0 T  1002 12326 10249  0  80   0 - 38008 do_sig pts/1    00:00:00 AppRun
+0 R  1002 13810 10249  0  80   0 - 38336 -      pts/1    00:00:00 ps
+
+//PRI:priority 优先级:即进程的优先级,就是程序被CPU执行的先后顺序,PRI越小进程的优先级越高.进程的PRI基本都是80,
+//NI:nice  nice值:代表当前进程所对应的优先级的修正数据,nice值取值范围是-20至19,[-20,19],一共40个级别.一般nice值都是0
+NICE:在LINUX系统中，Nice值的范围从-20到+19（不同系统的值范围是不一样的），正值表示低优先级，负值表示高优先级，值为零则表示不会调整该进程的优先级。具有最高优先级的程序，其nice值最低，所以在LINUX系统中，值-20使得一项任务变得非常重要；与之相反，如果任务的nice为+19，则表示它是一个高尚的、无私的任务，允许所有其他任务比自己享有宝贵的CPU时间的更大使用份额，这也就是nice的名称的来意。
+https://www.jianshu.com/p/3c078505fffa
+//UID(User Identify):user-ID,和用户名的标识,和用户名一对一对应,操作系统用UID标识用户
+
+PRI(new) = PRI(old) + nice ,NI[-20,19], PRI[60,99]
+
+$ 虽然可以手动调整PRI,但是调度器...对PRI调整的尺度不会太大,尽可能公平. 我们基本也不会去调整优先级
