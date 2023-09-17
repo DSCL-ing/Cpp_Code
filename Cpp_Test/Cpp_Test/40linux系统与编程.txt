@@ -1841,3 +1841,20 @@ Shell脚本在执行每个命令时，不一定会创建子进程。
 但是，当遇到特定的情况，例如后台运行、管道、分支或子shell等，脚本可能会创建子进程。
 
 //linux下一些奇怪的命令.如'.' , ']' , 
+
+$ 命令行中输入的命令就是一个字符串,以空格为分隔符分隔的就是一个一个的子串
+例结构: 可执行程序 -命令选项1 -命令选项2 -命令选项3 ...
+         0号子串     1号        2号        3号      ... 
+        
+int main(int argc,char* argv[]){return 0};
+argv[0] 就是 0号子串
+argv[1] 就是 1号子串
+argv[2] 就是 2号子串
+...
+argv是表结构,也是以NULL结尾.接收的就是命令行中的各个子串构成的表 -- 叫做命令行参数 -- 一般在linux才用得到,windows很少使用命令行
+argc是表元素个数,有多少个子串,argc就为多少
+
+
+command line parameter
+argc: argument counter 
+argv: argument value 
