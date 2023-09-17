@@ -419,7 +419,7 @@ $ Shell的最简单定义：命令行解释器（command Interpreter）主要包
    .保护操作系统 -- 防止用户执行非法指令
    .执行命令会创建子进程进行执行
 //我们平常的命令主要是通过shell来和linux内核交互,shell帮我们解释命令给kernel -- shell命令
-//shell是一个程序/命令 :/usr/bin/bash ,即bash.  我们链接上服务器时会自动关联上shell程序
+//shell是一个程序/命令 :/usr/bin/bash ,即bash.  我们链接上服务器时会自动关联上shell程序 -- bash也是一个可执行程序,C语言写的
 //shell是linux的外壳程序,是软件层,命令行
 
 // shell是适配程序,将内核适配后提供给用户合适的接口 -- 
@@ -1702,7 +1702,17 @@ $ 1号进程是操作系统, init进程(1号进程)
 
 
 
-$$$$环境变量:由系统开机之后,帮我们维护的一些系统运行时的一些动态参数
+$$$$环境变量environment variables:由系统开机之后,帮我们维护的一些系统运行时的一些动态参数
+
+环境变量一般是指在操作系统中用来指定操作系统运行环境的一些参数,
+如：我们在编写C/C++代码的时候，在链接的时候，从来不知道我们的所链接的动态静态库在哪里，但是照样可以链接成功，生成可执行程序，原因就是有相关环境变量帮助编译器进行查找。
+环境变量通常具有某些特殊用途，还有在系统当中通常具有全局特性
+
+常见环境变量
+PATH : 指定命令的搜索路径
+HOME : 指定用户的主工作目录(即用户登陆到Linux系统中时,默认的目录)
+SHELL : 当前Shell,它的值通常是/bin/bash。
+USER : 当前用户
 
 // echo PATH   //打印PATH
 // echo $PATH  //读取PATH的内容 //  /usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/chj/.local/bin:/home/chj/bin
@@ -1719,6 +1729,72 @@ $ 为什么系统命令不用带./也能运行,而我们写的程序却需要./�
 $ 在linux中,把可执行程序,拷贝到系统默认路径下,让我们可以直接访问的方式 == 相当于linux下的软件安装
 -- rm掉则就是卸载
 
-$ export PATH=$PATH:[newPATH]  -- 临时修改 PATH
+$ export PATH=$PATH:[newPATH]  -- 临时修改 PATH //重新登录后恢复
 $ 永久修改所有用户vim /etc/profile
 $ 永久修改某个用户vim ~/.bashrc
+
+
+[chj@expiration1102 ~ 14:47:50]$ env  //查看环境变量
+XDG_SESSION_ID=170
+HOSTNAME=expiration1102  //主机名
+TERM=xterm
+SHELL=/bin/bash   //shell程序
+HISTSIZE=1000     //历史命令存储上限
+SSH_CLIENT=210.38.241.42 14847 22  //登录的主机
+SSH_TTY=/dev/pts/4
+USER=chj    //当前登录的用户 -- 切换成root后不变
+
+
+LD_LIBRARY_PATH=:/home/chj/.VimForCpp/vim/bundle/YCM.so/el7.x86_64 //动静态库learn...
+
+//配色方案
+LS_COLORS=rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=01;05;37;41:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.axv=01;35:*.anx=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=01;36:*.au=01;36:*.flac=01;36:*.mid=01;36:*.midi=01;36:*.mka=01;36:*.mp3=01;36:*.mpc=01;36:*.ogg=01;36:*.ra=01;36:*.wav=01;36:*.axa=01;36:*.oga=01;36:*.spx=01;36:*.xspf=01;36:
+
+MAIL=/var/spool/mail/chj
+PATH=/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/chj/.local/bin:/home/chj/bin //可执行程序的搜索路径
+PWD=/home/chj  //当前用户所在路径
+LANG=en_US.UTF-8  //当前编码
+HISTCONTROL=ignoredups
+SHLVL=1
+HOME=/home/chj //当前所登录用户的家目录
+LOGNAME=chj //当前的登录用户 -- 切换成root后不变
+SSH_CONNECTION=210.38.241.42 14847 172.19.52.41 22
+LESSOPEN=||/usr/bin/lesspipe.sh %s
+XDG_RUNTIME_DIR=/run/user/1002
+_=/usr/bin/env
+
+
+$main函数最多可以带三个参数
+int main(int argc,char* argv[],char* envp[]){return 0};
+//char* envp[] //envp是环境变量表, 存放C风格字符串的指针数组  -- 编译器会自动生成并传参进去
+//envp的有效元素的下一位存放NULL(表结构).env是environment的缩写
+//表结构遍历表不需要额外加判断,到最后一个是null或0自动不满足条件
+//char* envp[] == char** envp
+
+$ 指针和指针变量有区别.
+指针是一个地址,凡是具有指向能力的数据都可以是指针.
+指针变量是一个变量,变量在内存中占有4/8字节,具有数据存储和被修改的能力.保存指针数据的变量叫做指针变量
+
+//通过一下代码可以验证envp是一张环境变量表
+#include<stdio.h>
+int main(int argc,char* argv[],char* envp[])
+{
+  for(int i = 0; envp[i];++i)
+  {
+    printf("envp[%d]->%s\n",i,envp[i]);       
+  }
+  return 0;
+}
+
+//同样可以通过以下代码获取环境变量
+#include<stdio.h>
+#include<unistd.h>
+int main()
+{
+  extern char** environ; //unistd内的指针变量:环境变量表,需要声明才可使用                                                 
+  for(int i = 0; environ[i];++i)
+  {
+    printf("envp[%d]->%s\n",i,environ[i]);
+  }
+    return 0;
+}
