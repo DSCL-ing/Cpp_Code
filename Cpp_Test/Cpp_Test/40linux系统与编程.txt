@@ -765,6 +765,7 @@ $ 命令模式下按shift+s / cc清空当前行进入插入模式
 $ 命令模式下按ZZ/shift+zz快速保存并退出
 $ 命令模式下按Ctrl+Z 生成swap临时文件并退出
 $ 命令模式下按.可重复上一次操作
+$ 命令模式下按shift+q可以进入低行模式(更近的键盘操作,Qq退出)
 
 $ 操作复制器:
 qa            #打开操作记录器，将后续动作放在记录器a中;（左下角会显示一个【记录中@a】提示符号）
@@ -2093,7 +2094,7 @@ b.奔溃了(进程异常)[操作系统信号 - 奔溃的原因: 进程因为某�
 
 
 什么是进程等待?
- 进程等待就是通过系统调用,获取 子进程退出码或退出信号 的方式,顺便释放内存问题
+ 进程等待就是通过系统调用,获取 子进程退出码或退出信号 的方式,顺便释放内存问题 -- 获取子进程信息,然后释放子进程
 
 进程等待的目的
 1.避免内存泄露
@@ -2113,8 +2114,62 @@ wait（）：成功时，返回被终止子进程的进程ID；出现错误时�
 
 waitpid:/
 pid_t waitpid(pid_t pid, int *status, int options);
-返回值:
+
+参数:
+1.pid
+如果pid>0,(是进程号) 则waitpid会一直等待该进程
+如果pid == -1 , 则等待任何一个进程,等价于wait
+
+2.status
+int* status:输出型参数
+32位位图结构 --
+0000 0000 0000 0000 | 0000 0000 0000 0000
+第16-31位不使用         
+第8-15位:退出状态码:退出码:return或exit的status
+第0-6位:终止信号 ,0为正常退出,即没有收到信号(只有信号为0时才看退出码,此时退出码为0的进程才是正确执行).如果退出码不为0,虽然正常执行,但是结果不对
+          如果退出码不为0,则
+第7位(core dump标志) ... 
+
+3.options
+WNOHANG:W(wait) NO(没有) HANG(夯住了:一般机器卡顿时,网络堵塞时我们称为夯住了) 
+
+返回值: -- 返回等待成功的子进程,>0  .失败返回-1 --  一般只有pid出错了才会失败
 waitpid():  on  success,  returns  the process ID of the child whose state has changed; if WNOHANG was specified and one or more child(ren) specified by pid exist, 
 but have not  yet changed state, then 0 is returned.  On error, -1 is returned.
-成功时，返回状态已更改的子进程的进程ID；如果指定了WNOHANG并且存在由pid指定的一个或多个子（ren），
+成功时，返回状态已更改的子进程的进程ID；如果指定了WNOHANG(非阻塞轮询)并且存在由pid指定的一个或多个子进程（ren），
 但尚未改变状态，则返回0。出现错误时，返回-1。
+
+
+学习使用信号1~31号信号 -- 这些信号都是宏 #define SIGHUP 1  //信号也是一个数字
+[chj@expiration1102 ~ 18:34:02]$ kill -l
+ 1) SIGHUP	 2) SIGINT	 3) SIGQUIT	 4) SIGILL	 5) SIGTRAP
+ 6) SIGABRT	 7) SIGBUS	 8) SIGFPE	 9) SIGKILL	10) SIGUSR1
+11) SIGSEGV	12) SIGUSR2	13) SIGPIPE	14) SIGALRM	15) SIGTERM
+16) SIGSTKFLT	17) SIGCHLD	18) SIGCONT	19) SIGSTOP	20) SIGTSTP
+21) SIGTTIN	22) SIGTTOU	23) SIGURG	24) SIGXCPU	25) SIGXFSZ
+26) SIGVTALRM	27) SIGPROF	28) SIGWINCH	29) SIGIO	30) SIGPWR
+31) SIGSYS	34) SIGRTMIN	35) SIGRTMIN+1	36) SIGRTMIN+2	37) SIGRTMIN+3
+38) SIGRTMIN+4	39) SIGRTMIN+5	40) SIGRTMIN+6	41) SIGRTMIN+7	42) SIGRTMIN+8
+43) SIGRTMIN+9	44) SIGRTMIN+10	45) SIGRTMIN+11	46) SIGRTMIN+12	47) SIGRTMIN+13
+48) SIGRTMIN+14	49) SIGRTMIN+15	50) SIGRTMAX-14	51) SIGRTMAX-13	52) SIGRTMAX-12
+53) SIGRTMAX-11	54) SIGRTMAX-10	55) SIGRTMAX-9	56) SIGRTMAX-8	57) SIGRTMAX-7
+58) SIGRTMAX-6	59) SIGRTMAX-5	60) SIGRTMAX-4	61) SIGRTMAX-3	62) SIGRTMAX-2
+63) SIGRTMAX-1	64) SIGRTMAX	
+
+没有0号信号
+SIGFPE 8 为除零
+SIGKILL 9 为主动杀死
+11) SIGSEGV 为空指针异常/野指针
+
+wait和waitpid如何拿到进程数据?   -- 父进程是如何拿到子进程的退出信息的
+1.进程PCB内部有两个属性:int exit_code和int exit_signal 
+其中main函数会把进程退出码写到exit_code中,操作系统会把信号/异常信息写到exit_signal中
+2.通过系统调用wait和waitpid访问内核中的task_struct(PCB)取得数据并设置到输出型参数status中 -- 系统调用有权限访问内核
+
+父进程在wait的时候,如果子进程没有退出,父进程在干什么? --- 只能一直调用wait/waitpid等待 -- 阻塞等待 -- 直到子进程完成后再唤醒父进程
+子进程PCB内有task_struct *parent; // 通过它可以找到父进程
+这过程父进程状态: R->S->R
+
+非阻塞轮询:即wait不会一直等待进程,而是多次检查 -- waitpid(pid,status,WNOHANG)
+
+
