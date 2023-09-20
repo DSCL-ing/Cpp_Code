@@ -138,6 +138,9 @@ $ 输入框为空时按一下table可以显式当前linux系统有多少条指�
 # man [号] xx  //搜索[几号]man手册并进入,没有号码则默认搜索全部
 # man man //打开man手册首页
 
+//man 2 一般是系统调用
+//man 3 一般是C库
+
 # sudo 命令  //命令提权
 
 //拷贝
@@ -1642,7 +1645,7 @@ Z(zombie)-僵尸进程:
 僵死状态（Zombies）是一个比较特殊的状态。当进程退出并且父进程（使用wait()系统调用,后面讲）没有读取到子进程退出的返回代码时就会产生僵死(尸)进程
 僵死进程会以终止状态保持在进程表中，并且会一直在等待父进程读取退出状态代码。
 所以，只要子进程退出，父进程还在运行，但父进程没有读取子进程状态，则子进程会进入Z状态
-
+僵尸进程是无法被杀死的 kill-9也不行,因为谁也没法杀死一个死去的东西(进程)
 
 僵尸进程危害
 .进程的退出状态必须被维持下去，因为他要告诉关心它的进程（父进程），你交给我的任务，我办的怎么样了。可父进程如果一直不读取，那子进程就一直处于Z状态？是的！
@@ -2046,5 +2049,72 @@ fork失败原因有
 
 # echo $?  //取得最近一次进程的退出码,取完就没了
 
+进程退出情况分类 
+a.正常退出(1.结果正确 2.结果不正确)  -- 提供进程退出码.供用户进行进程退出健康状态的判定 -- 可用可不用
+b.奔溃了(进程异常)[操作系统信号 - 奔溃的原因: 进程因为某些原因,导致进程收到了来自操作系统的信号,如kill -9 ]
+
+//打印c语言错误码表 char* strerror(int);
+ #include<stdio.h>
+ #include<string.h>
+ int main()
+ {
+   for(int i = 0; i<200 ; ++i) //不同平台码表不一样 --  一般不超过255个
+   {
+     printf("%d : %s\n",i,strerror(i));                         
+   }
+   return 0;
+ }
+
+ 也可以自己定义退出码
+ const char* err_string[]=
+ {
+    "success",
+    "error",
+    ...
+ }
+
+ 进程退出方式
+ 1.return -- main函数中return才是进程退出 ---    进程执行其实是main执行流执行
+ 2.exit函数退出
+ void exit(int status): <stdlib.h> -- exit可以在代码的任何地方结束进程 -- status是进程退出码,等价于main的return
+ exit内封装了_exit(系统调用) -- void _exit(int status):<unistd.h>  --- _exit很直接,从系统内直接关闭进程,不会刷新缓冲区什么的 -- main
+
+ exit和_exit区别:
+ 1.exit会先执行用户定义的清理函数,然后再冲刷缓冲,关闭流等,在向内核(kernel)申请关闭进程(_exit)
+ 2._exit是直接向内核申请关闭进程
+ 即exit的最后一步是调用_exit
+
+ 缓冲区不在操作系统内 -- 在用户层中(C/C++库)
+    如果在系统内的话_exit也会刷新缓冲区
 
 
+进程退出方式:信号+退出码方案 // 信号(异常)或退出码(正常退出结果对不对)
+
+
+
+什么是进程等待?
+ 进程等待就是通过系统调用,获取 子进程退出码或退出信号 的方式,顺便释放内存问题
+
+进程等待的目的
+1.避免内存泄露
+2.获取子进程执行的结果(如果必要) -- 根据进程退出方式
+
+如何进程等待?
+系统调用wait/waitpid
+
+ wait : wait for process to change state
+声明: pid_t wait(int *status);
+头文件 <sys/types.h> <sys/wait.h>
+功能:父进程一直在等待子进程,子进程不退出,父进程也不会退出  -- 子进程一挂就能回收了
+返回值:
+wait(): on success, returns the process ID of  the  terminated  child;  on  error,  -1  is returned.
+wait（）：成功时，返回被终止子进程的进程ID；出现错误时，返回-1。
+
+
+waitpid:/
+pid_t waitpid(pid_t pid, int *status, int options);
+返回值:
+waitpid():  on  success,  returns  the process ID of the child whose state has changed; if WNOHANG was specified and one or more child(ren) specified by pid exist, 
+but have not  yet changed state, then 0 is returned.  On error, -1 is returned.
+成功时，返回状态已更改的子进程的进程ID；如果指定了WNOHANG并且存在由pid指定的一个或多个子（ren），
+但尚未改变状态，则返回0。出现错误时，返回-1。

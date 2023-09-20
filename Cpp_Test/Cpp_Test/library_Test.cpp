@@ -1,15 +1,15 @@
 ﻿
-#pragma once
-#include<iostream>
-using std::cout;
-using std::endl;
-using std::cin;
-#include"29.1C++11.h"
-int main()
-{
-	fun1();
-	return 0;
-}
+//#pragma once
+//#include<iostream>
+//using std::cout;
+//using std::endl;
+//using std::cin;
+//#include"29.1C++11.h"
+//int main()
+//{
+//	fun1();
+//	return 0;
+//}
 
 //#include"29.0C++11.h"
 //int main()
