@@ -883,6 +883,12 @@ $ vim的配置文件名字为.vimrc
 
 $ vim的插件目录名字为.vim
 
+70 """"""""""""""""""""""" 按键映射和快捷键提示
+271 " 跳转到定义
+272 nnoremap <c-k> :YcmCompleter GoToDefinitionElseDeclaration<CR>
+273 " 返回到跳转前的位置
+274 nnoremap <c-l> <c-o>
+
 
 $ 自动化配置命令
 curl -sLf https://gitee.com/HGtz2222/VimForCpp/raw/master/install.sh -o ./install.sh && bash ./install.sh
@@ -2190,5 +2196,6 @@ wait和waitpid如何拿到进程数据?   -- 父进程是如何拿到子进程�
 这过程父进程状态: R->S->R
 
 非阻塞轮询:即wait不会一直等待进程,而是多次检查 -- waitpid(pid,status,WNOHANG)
+
 
 
