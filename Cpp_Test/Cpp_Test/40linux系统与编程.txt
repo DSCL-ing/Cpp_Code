@@ -653,6 +653,8 @@ $ ctrl+Z :终止程序 -- 有些程序ctrl+C终止不了
 # yum install 程序名(严格匹配) //安装程序 ,需要确认安装
 # yum install -y 程序  //直接安装到位,不需要确认
 
+yum -y install gcc+ gcc-c++ //g++安装
+
 //卸载
 # yum remove 程序名 //卸载程序,需要确认卸载
 # yum remove -y 程序名 //直接卸载
@@ -957,6 +959,9 @@ $ gcc默认是C89
 # gcc ... -std=c99  //修改GCC执行C99标准
 //gcc/g++默认生成的可执行程序是release版本
 # gcc ... -g        //修改为debug版本
+
+G++安装
+yum -y install gcc+ gcc-c++ //必须这样才可以
 
 
 $$ 程序的翻译
@@ -2234,6 +2239,7 @@ $ 创建子进程的目的是什么? --- 让子进程帮我执行特定的任务
 
 $$$$$ shell 里的进程替换(Process Substitution)  
 
+$ exec系列函数
 SYNOPSIS/synopsis :概要
        #include <unistd.h>
 
@@ -2242,22 +2248,48 @@ SYNOPSIS/synopsis :概要
 //加载器
        int execl(const char *path, const char *arg, ...);
        int execlp(const char *file, const char *arg, ...);
-       int execle(const char *path, const char *arg,
-                  ..., char * const envp[]);
+       int execle(const char *path, const char *arg, ..., char * const envp[]);
        int execv(const char *path, char *const argv[]);
        int execvp(const char *file, char *const argv[]);
-       int execvpe(const char *file, char *const argv[],
-                   char *const envp[]);
+       int execvpe(const char *file, char *const argv[], char *const envp[]);
+       
+       * int execve(const char *filename, char *const argv[], char *const envp[]);//系统调用
+
 //使用注意,命令行参数必须要以NULL结尾
 
 
-程序替换:老进程使用了全新的程序(没有创建新的进程) - 原来的代码被用新的代码替换掉了 --- 内存代码段中旧代码被新代码覆盖了,不再执行旧代码
+$ 命名理解
+这些函数原型看起来很容易混,但只要掌握了规律就很好记。
+l(list) : 表示参数采用列表
+v(vector) : 参数用数组
+p(path) : 有p自动搜索环境变量PATH
+e(env) : 表示自己维护环境变量 -- 不带e的就是使用系统环境变量
+
+//执行程序流程:1.找到该程序(路径) 2.如何执行该程序(命令选项)
+
+$ 只有execve是真正的系统调用,其它五个函数最终都调用 execve,所以execve在man手册 第2节,其它函数在man手册第3节。
+
+$ 接口解析
+1.execl
+参数path:是程序路径.绝对路径或相对路径都可以. arg是命令行参数,和main的命令行参数一样,按命令拆分成字符串的格式一样,一个一个传进去,最后以NULL结尾
+2.execv
+参数path和execl一样,只是arg换成了argv,即一个一个传的参数换成了传字符串数组,数组元素就是execl的arg序列,最后以NULL结束
+3.execlp
+参数arg和execl一样,一个一个传命令子串. 参数file是程序名称,而程序路径由系统自动从环境变量中查找
+4.execvp
+5.exele
+参数envp是自定义环境变量 -- 一般用于在子进程不想使用父进程的环境变量的时候
+
+$ exec能够做的
+1.能够调用C++程序
+
+$ 程序替换:老进程使用了全新的程序(没有创建新的进程) - 原来的代码被用新的代码替换掉了 --- 内存代码段中旧代码被新代码覆盖了,不再执行旧代码
 
 
-创建进程时,先创建PCB再把数据从磁盘加载到内存 -->创建子进程时,先创建PCB,再exec加载进内存...
+$ 创建进程时,先创建PCB再把数据从磁盘加载到内存 -->创建子进程时,先创建PCB,再exec加载进内存...
     即父进程先调用exec,再去调用了其他程序的main...
 
-程序替换只会影响当前调用的进程:谁调了exec就替换谁 --- 进程的独立性 --> 子进程则会发生写时拷贝(代码区),不影响父进程
+$ 程序替换只会影响当前调用的进程:谁调了exec就替换谁 --- 进程的独立性 --> 子进程则会发生写时拷贝(代码区),不影响父进程
        --- 在单进程时代码区一般不可修改 ,多进程时为了进程的独立性需要对代码区作修改
 
 
