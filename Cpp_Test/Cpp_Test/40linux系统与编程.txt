@@ -2226,3 +2226,50 @@ wait和waitpid如何拿到进程数据?   -- 父进程是如何拿到子进程�
 $ 创建子进程的目的是什么? --- 让子进程帮我执行特定的任务
 1.让子进程执行父进程的一部分代码 -- 但代码的归属权还是属于子进程
 2.如果想要子进程指向一个全新的程序代码呢? -- 进程的程序替换 /为什么要有进程的程序替换
+
+子进程
+功能1:在原来的代码的基础上进行
+功能2:执行不同的,全新的代码
+
+
+$$$$$ shell 里的进程替换(Process Substitution)  
+
+SYNOPSIS/synopsis :概要
+       #include <unistd.h>
+
+       extern char **environ; //系统环境变量表指针
+
+//加载器
+       int execl(const char *path, const char *arg, ...);
+       int execlp(const char *file, const char *arg, ...);
+       int execle(const char *path, const char *arg,
+                  ..., char * const envp[]);
+       int execv(const char *path, char *const argv[]);
+       int execvp(const char *file, char *const argv[]);
+       int execvpe(const char *file, char *const argv[],
+                   char *const envp[]);
+//使用注意,命令行参数必须要以NULL结尾
+
+
+程序替换:老进程使用了全新的程序(没有创建新的进程) - 原来的代码被用新的代码替换掉了 --- 内存代码段中旧代码被新代码覆盖了,不再执行旧代码
+
+
+创建进程时,先创建PCB再把数据从磁盘加载到内存 -->创建子进程时,先创建PCB,再exec加载进内存...
+    即父进程先调用exec,再去调用了其他程序的main...
+
+程序替换只会影响当前调用的进程:谁调了exec就替换谁 --- 进程的独立性 --> 子进程则会发生写时拷贝(代码区),不影响父进程
+       --- 在单进程时代码区一般不可修改 ,多进程时为了进程的独立性需要对代码区作修改
+
+
+exec的返回值:
+RETURN VALUE
+       The exec() functions return only if an error  has  occurred.   The return value is -1, and errno is set to indicate the error.
+       exec（）函数仅在发生错误时返回。返回值为-1，并设置errno以指示错误
+
+exec替换成功后不会有返回值,虽然声明带了返回值int,也没必要看了,因为查看返回值的代码都被替换掉了,有也看不到 -- 应该是有的,只是看不到了
+
+exec失败:返回-1,并会继续执行后面的代码
+
+子进程exec成功后,父进程可以通过退出码去检查exec后的代码执行的如何了
+
+C++源文件可以使用“.c++”，“.cc”，“.cxx”作为后缀名
