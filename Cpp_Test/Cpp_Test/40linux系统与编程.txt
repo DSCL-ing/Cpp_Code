@@ -2269,7 +2269,7 @@ e(env) : 表示自己维护环境变量 -- 不带e的就是使用系统环境变
 
 $ 只有execve是真正的系统调用,其它五个函数最终都调用 execve,所以execve在man手册 第2节,其它函数在man手册第3节。
 
-$ 接口解析
+$ 接口解析  -- 只要由arg就一定要传 "程序名" , ... ,NULL
 1.execl
 参数path:是程序路径.绝对路径或相对路径都可以. arg是命令行参数,和main的命令行参数一样,按命令拆分成字符串的格式一样,一个一个传进去,最后以NULL结尾
 2.execv
@@ -2277,11 +2277,29 @@ $ 接口解析
 3.execlp
 参数arg和execl一样,一个一个传命令子串. 参数file是程序名称,而程序路径由系统自动从环境变量中查找
 4.execvp
-5.exele
-参数envp是自定义环境变量 -- 一般用于在子进程不想使用父进程的环境变量的时候
+5.execle
+参数envp是自定义环境变量 -- 一般用于在子进程不想使用父进程的环境变量的时候 --
+自定义环境变量表 -- 自定义环境变量会覆盖式(清空原来的环境变量)写入
+# putenv 将自己的环境变量加到系统的环境变量中
+    头文件:#include<stdlib.h>
+DESCRIPTION
+       The  putenv()  function  adds  or changes the value of environment variables.The argument string is of the form name=value.
+       If  name  does  not  already exist  in  the environment, then string is added to the environment.  
+       If name does exist, then the value of name in the environment is  changed  to  value.
+       The  string pointed to by string becomes part of the environment, so alteringthe string changes the environment.
+说明
+        函数的作用是添加或更改环境变量的值。参数字符串的格式为name=value。
+        如果名称在环境中不存在，则字符串将添加到环境中。
+        如果name确实存在，则环境中name的值将更改为value。
+        字符串指向的字符串成为环境的一部分，因此更改字符串会更改环境。
+
+## 操作系统能通过带e的exec把环境变量传给子进程 -- 子进程就获得了自己的环境变量
+      bash中export一个变量,fork并execle得到孙子进程,验证孙子进程的环境变量已继承bash的环境变量 -- 任何一个子进程都是fork后再exec执行的
 
 $ exec能够做的
 1.能够调用C++程序
+
+
 
 $ 程序替换:老进程使用了全新的程序(没有创建新的进程) - 原来的代码被用新的代码替换掉了 --- 内存代码段中旧代码被新代码覆盖了,不再执行旧代码
 
