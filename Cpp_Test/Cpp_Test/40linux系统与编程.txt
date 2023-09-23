@@ -2253,7 +2253,8 @@ SYNOPSIS/synopsis :概要
        int execvp(const char *file, char *const argv[]);
        int execvpe(const char *file, char *const argv[], char *const envp[]);
        
-       * int execve(const char *filename, char *const argv[], char *const envp[]);//系统调用
+       * int execve(const char *filename, char *const argv[], char *const envp[]);//系统调用 -- 其他6个都是封装了execve
+       //没有execlpe
 
 //使用注意,命令行参数必须要以NULL结尾
 
@@ -2262,14 +2263,31 @@ $ 命名理解
 这些函数原型看起来很容易混,但只要掌握了规律就很好记。
 l(list) : 表示参数采用列表
 v(vector) : 参数用数组
-p(path) : 有p自动搜索环境变量PATH
+p(path) : 有p自动搜索自己的环境变量PATH
 e(env) : 表示自己维护环境变量 -- 不带e的就是使用系统环境变量
 
 //执行程序流程:1.找到该程序(路径) 2.如何执行该程序(命令选项)
 
 $ 只有execve是真正的系统调用,其它五个函数最终都调用 execve,所以execve在man手册 第2节,其它函数在man手册第3节。
 
-$ 接口解析  -- 只要由arg就一定要传 "程序名" , ... ,NULL
+
+
+exec的返回值:
+RETURN VALUE
+       The exec() functions return only if an error  has  occurred.   The return value is -1, and errno is set to indicate the error.
+       exec（）函数仅在发生错误时返回。返回值为-1，并设置errno以指示错误
+
+exec替换成功后不会有返回值,虽然声明带了返回值int,也没必要看了,因为查看返回值的代码都被替换掉了,有也看不到 -- 应该是有的,只是看不到了
+
+exec失败:返回-1,并会继续执行后面的代码
+
+子进程exec成功后,父进程可以通过退出码去检查exec后的代码执行的如何了
+
+
+$ 接口解析 
+# exec要么带v,要么带l 
+ -- 只要有arg就一定要传 "程序名" , ... ,NULL ,数组也一样,结尾要带NULL
+
 1.execl
 参数path:是程序路径.绝对路径或相对路径都可以. arg是命令行参数,和main的命令行参数一样,按命令拆分成字符串的格式一样,一个一个传进去,最后以NULL结尾
 2.execv
@@ -2294,14 +2312,10 @@ DESCRIPTION
         字符串指向的字符串成为环境的一部分，因此更改字符串会更改环境。
 
 ## 操作系统能通过带e的exec把环境变量传给子进程 -- 子进程就获得了自己的环境变量
-      bash中export一个变量,fork并execle得到孙子进程,验证孙子进程的环境变量已继承bash的环境变量 -- 任何一个子进程都是fork后再exec执行的
 
-$ exec能够做的
-1.能够调用C++程序
+任何一个子进程都是fork后再exece执行的    验证: bash中export一个变量,fork并execle得到孙子进程,验证孙子进程的环境变量已继承bash的环境变量 
 
-
-
-$ 程序替换:老进程使用了全新的程序(没有创建新的进程) - 原来的代码被用新的代码替换掉了 --- 内存代码段中旧代码被新代码覆盖了,不再执行旧代码
+$ exec是系统调用 -- 只要是进程都能调用.所有程序最后都是进程,所有任何语言都可以
 
 
 $ 创建进程时,先创建PCB再把数据从磁盘加载到内存 -->创建子进程时,先创建PCB,再exec加载进内存...
@@ -2311,15 +2325,14 @@ $ 程序替换只会影响当前调用的进程:谁调了exec就替换谁 --- �
        --- 在单进程时代码区一般不可修改 ,多进程时为了进程的独立性需要对代码区作修改
 
 
-exec的返回值:
-RETURN VALUE
-       The exec() functions return only if an error  has  occurred.   The return value is -1, and errno is set to indicate the error.
-       exec（）函数仅在发生错误时返回。返回值为-1，并设置errno以指示错误
-
-exec替换成功后不会有返回值,虽然声明带了返回值int,也没必要看了,因为查看返回值的代码都被替换掉了,有也看不到 -- 应该是有的,只是看不到了
-
-exec失败:返回-1,并会继续执行后面的代码
-
-子进程exec成功后,父进程可以通过退出码去检查exec后的代码执行的如何了
-
 C++源文件可以使用“.c++”，“.cc”，“.cxx”作为后缀名
+
+$ 程序替换:老进程使用了全新的程序(没有创建新的进程) - 原来的代码被用新的代码替换掉了 --- 内存代码段中旧代码被新代码覆盖了,不再执行旧代码
+
+
+
+
+
+
+
+$$$$ 简易shell
