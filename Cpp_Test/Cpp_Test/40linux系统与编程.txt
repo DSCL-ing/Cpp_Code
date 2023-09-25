@@ -2369,7 +2369,8 @@ $ c语言文件模式/权限
 linux文件系统调用
 
 
-open声明:
+打开文件open
+声明:
     int open(const char *pathname, int flags);
     int open(const char *pathname, int flags, mode_t mode);
 
@@ -2390,8 +2391,8 @@ flag：打开文件时的权限
 	O_RDWR		读写 ReaD WRite
 ​	O_CREAT		文件不存在时则创建 create
 ​	O_EXCL			配合创建使用，文件存在时出错 
-​	O_TRUNC		清空 truncate
-​	O_APPEND	追加 append
+​	O_TRUNC		清空 truncate //默认不清空
+​	O_APPEND	追加 append //追加和清空逻辑互斥,正常不会同时出现
 mode：创建文件时的权限	mmm	与chmod的权限设置方式一致
 返回值：
 	文件描述符
@@ -2407,14 +2408,16 @@ int flags; --> int有32个比特位,每一个比特位对应一个标记位,一�
 }
 
 
-close声明:
+linux关闭文件接口close
+声明:
     int close(int fd);
 头文件:
        #include <unistd.h>
 返回值:
 
        
-umask声明:
+自定义掩码umask
+声明:
     mode_t umask(mode_t mask);
 头文件:
        #include <sys/types.h>
@@ -2424,3 +2427,29 @@ RETURN VALUE
 返回值:此系统调用始终成功，并返回掩码的上一个值。    
 
 使用:用户设置的umask优先于系统默认的umask --- 就近原则
+
+
+linux写入接口write
+声明:
+    ssize_t write(int fd, const void *buf, size_t count);
+头文件:
+        #include <unistd.h>
+返回值:
+        返回实际写入字节数,0为没有写入任何字节,失败返回-1
+
+把缓冲区写入到字符串接口snprintf
+声明:
+        int sprintf(char *str, const char *format, ...);
+Return value
+    Upon  successful return, these functions return the number of characters printed (excluding the null byte used to end output to strings).
+返回值
+    成功返回后，这些函数将返回打印的字符数（不包括用于结束字符串输出的空字节）。
+
+
+linux从文件读入read接口
+声明:
+    ssize_t read(int fd, void *buf, size_t count);
+头文件:
+    #include<unistd.h>
+返回值:
+    返回实际读入的字节数
