@@ -821,25 +821,7 @@ U	将选中部分的字符全部改为大写
 
 
 
-
-
-
-
-
-
-
-
 // n+移动 :移动n行或n位
-
-
-
-
-
-
-    
-
-
-
 
 
 
@@ -2355,3 +2337,90 @@ $ 一般用户自定义的环境变量,在bash中要用户自己来维护,不要
 
 
 }
+
+
+
+$$$$$$$文件
+
+$ linux中,文件被打开,OS会对被打开的文件进行管理,即要创建对应的内核数据结构  ---   和进程类似  
+
+$ 文件可以被分成两大类  1.磁盘文件(文件系统)  2.被打开的文件(文件操作)
+
+# du -b/k/m 文件   //显示文件大小
+
+
+$ c语言文件模式/权限
+{
+ r      Open text file for reading.  The stream is positioned at the beginning of the file.
+
+ r+     Open  for reading and writing.  The stream is positioned at the beginning of the file. 
+ // r+和w+都是读写方式打开,区别是r+不创建文件
+
+ w      Truncate file to zero length or  create  text  file  for writing.   The  stream is positioned at the beginning of the file.
+
+ w+     Open for reading and writing.  The file is created if it does  not  exist, otherwise it is truncated.  The stream is positioned at the beginning of the file.
+
+ a      Open for appending (writing at end of file).   The  file is  created  if  it does not exist.  The stream is posi? tioned at the end of the file.
+
+ a+     Open for reading and appending (writing at end of file). The  file  is created if it does not exist. The initial file position for reading is at  the  beginning  of  the file,  but  output  is always appended to the end of the file.
+}
+
+
+linux文件系统调用
+
+
+open声明:
+    int open(const char *pathname, int flags);
+    int open(const char *pathname, int flags, mode_t mode);
+
+头文件:
+       #include <sys/types.h>
+       #include <sys/stat.h>
+       #include <fcntl.h>
+
+RETURN VALUE(fd:file descriptor)
+       open()  and creat() return the new file descriptor, or -1 if an error occurred (in which case, errno is set appropriately).
+
+int open(const char *pathname, int flags, mode_t mode);		
+功能：打开或创建文件
+pathname：文件路径
+flag：打开文件时的权限
+	O_RDONLY	只读 ReaD only
+​	O_WRONLY	只写 WRite only
+	O_RDWR		读写 ReaD WRite
+​	O_CREAT		文件不存在时则创建 create
+​	O_EXCL			配合创建使用，文件存在时出错 
+​	O_TRUNC		清空 truncate
+​	O_APPEND	追加 append
+mode：创建文件时的权限	mmm	与chmod的权限设置方式一致
+返回值：
+	文件描述符
+​	失败返回-1
+————————————————
+https://blog.csdn.net/weixin_51420051/article/details/110937524
+
+
+OS接口传递标记位的方式 -- 位图
+{
+int flags; --> int有32个比特位,每一个比特位对应一个标记位,一个int可以同时传32个比特位,足够使用
+
+}
+
+
+close声明:
+    int close(int fd);
+头文件:
+       #include <unistd.h>
+返回值:
+
+       
+umask声明:
+    mode_t umask(mode_t mask);
+头文件:
+       #include <sys/types.h>
+       #include <sys/stat.h>
+RETURN VALUE
+       This system call always succeeds and the previous value of the mask is returned.
+返回值:此系统调用始终成功，并返回掩码的上一个值。    
+
+使用:用户设置的umask优先于系统默认的umask --- 就近原则
