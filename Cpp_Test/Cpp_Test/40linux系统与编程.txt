@@ -2570,10 +2570,19 @@ $ 任何语言IO一定会使用write和read,而使用WR和RD一定要由fd,所�
  作业1:模拟输出,输入,追加重定向
  1.分别关闭stdin ,stdout,stderr
 
-
+ $ 输出重定向和追加重定向都是往1号文件输入
+   close(1);
+   int fd =  open(LOG,O_WRONLY|O_CREAT|O_APPEND,0666);    //追加重定向
+   int fd =  open(LOG,O_WRONLY|O_CREAT|O_TRUNC,0666);     //输出重定向
 
  作业2:观察1和2号fd,使用a.out > file
+
+ $ 标准输出和标准输入不一样.输出的文件不一样,out是1号文件,err是2号文件
+ //输出重定向只改1号重定向,不改2号重定向
+
  作业3:将输出到stdout的数据重定向到文件1,将输出到stderr的数据重定向到文件2
+
+ $ stdout和stderr作用不同,目的是将正常信息和错误信息分开 -- 方便错误调试,如果混在一起,看起来很麻烦
 
 
 
