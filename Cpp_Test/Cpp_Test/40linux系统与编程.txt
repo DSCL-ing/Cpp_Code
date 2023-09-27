@@ -2585,7 +2585,55 @@ $ 任何语言IO一定会使用write和read,而使用WR和RD一定要由fd,所�
  $ stdout和stderr作用不同,目的是将正常信息和错误信息分开 -- 方便错误调试,如果混在一起,看起来很麻烦
 
 
+ 总结:
+ 重定向的完整写法:
+ 输出重定向# command n>file  //n是下表,是fd.  1可以省略,默认不带数字就是1.    n>1后就不能省略
+ 输入重定向# command<n file   //n默认是0(stdin) ,默认省略.                    n>0后就不能省略
 
+ 特殊: 2>&1  //2重定向成1 -- 理解成文件名是地址,1不是地址,需要取地址 //把1中的内容写到2里
+
+ //代码角度 从右往左识别
+
+
+ #include <unistd.h>
+
+int dup2(int oldfd, int newfd);
+
+oldfd 是要复制的原文件描述符。
+newfd 是要将原文件描述符复制到的目标文件描述符。
+dup2() 的基本工作原理如下：
+
+1.如果 newfd 已经打开，则 dup2() 会先关闭 newfd。
+2.然后，dup2() 会将 oldfd 复制到 newfd，使得它们指向相同的文件描述符表项。这意味着它们将共享相同的文件状态信息，包括文件偏移和文件状态标志（例如，读写模式）。
+3.如果 newfd 和 oldfd 的值相同，dup2() 会直接返回 newfd，并且不会关闭它。
+
+
+官方原话:
+makes newfd be the copy of oldfd, closing newfd first if necessary, but note the following:
+
+*  If oldfd is not a valid file descriptor, then the call fails, and newfd  is not closed.
+*  If oldfd is a valid file descriptor, and newfd has the same value as oldfd,  then dup2() does nothing, and returns newfd.
+
+使newfd成为oldfd的副本，必要时先关闭newfd，但请注意以下内容：
+
+*如果oldfd不是有效的文件描述符，那么调用将失败，并且newfd不会关闭。
+*如果oldfd是一个有效的文件描述符，而newfd的值与oldfd相同，则dup2（）不执行任何操作，并返回newfd。
+
+
+
+$$$$ 缓冲区
+
+$ 三种缓冲策略
+1.无缓冲 //来一个刷新一个    -- 
+2.行缓冲 //遇到换行符再刷新  -- 输出的对象是显示器时刷新策略是行缓冲
+3.全缓冲 //写满缓冲区再刷新  -- 输出的对象是文件时刷新策略是全缓冲
+
+为什么要有缓冲区? 
+    因为系统调用需要时间,时间成本较高,使用缓冲区策略能节省调用者时间 --- 减少刷新次数,减少调用系统接口次数
+
+C库的缓冲区在FILE结构体中,每次打开文件都会生成 -- FILE结构很复杂
+
+系统调用write没有缓冲区,直接写给操作系统指定的输出对象了
 
 
 
