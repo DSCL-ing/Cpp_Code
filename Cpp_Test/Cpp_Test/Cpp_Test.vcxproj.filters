@@ -147,6 +147,9 @@
     <Text Include="0编辑器快捷键.h">
       <Filter>头文件</Filter>
     </Text>
+    <Text Include="0设计思想.txt">
+      <Filter>头文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="27unordered_hash.h">
