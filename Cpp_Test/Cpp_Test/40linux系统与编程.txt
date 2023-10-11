@@ -3170,7 +3170,10 @@ https://blog.csdn.net/zty857016148/article/details/132124383
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+rpm包主要用于redhat及分支如redhat，centos，Fedora等
+deb包主要用于debian及分支如debian，ubuntu等。
 
 
-
-
+~/.vscode-server/extensions/     目录下是vscode的插件位置
