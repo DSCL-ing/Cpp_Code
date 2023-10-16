@@ -2595,15 +2595,18 @@ RETURN VALUE
 使用:用户设置的umask优先于系统默认的umask --- 就近原则
 
 
-linux写入接口write
+$ write //linux写入接口
 声明:
     ssize_t write(int fd, const void *buf, size_t count);
 头文件:
         #include <unistd.h>
 返回值:
         返回实际写入字节数,0为没有写入任何字节,失败返回-1
+描述:
+    count是一次最多写入的字节数
 
-把缓冲区写入到字符串接口snprintf
+
+$ snprintf //把缓冲区写入到字符串接口
 声明:
         int sprintf(char *str, const char *format, ...);
 Return value
@@ -2612,13 +2615,16 @@ Return value
     成功返回后，这些函数将返回打印的字符数（不包括用于结束字符串输出的空字节）。
 
 
-linux从文件读入read接口
+$ read //linux从文件读入接口
 声明:
-    ssize_t read(int fd, void *buf, size_t count);
+    ssize_t read(int fd, void *buf, size_t count); 
 头文件:
     #include<unistd.h>
 返回值:
     返回实际读入的字节数
+描述:
+    count是一次最多读取的字节数,返回值是读到的字节数
+
 
 
 
