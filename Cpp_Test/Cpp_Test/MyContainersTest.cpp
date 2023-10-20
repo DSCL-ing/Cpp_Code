@@ -1,9 +1,9 @@
 ﻿
 #pragma once
-#include<iostream>
-using std::cout;
-using std::endl;
-using std::cin;
+//#include<iostream>
+//using std::cout;
+//using std::endl;
+//using std::cin;
 
 //#include"28myMap_unordered.h"
 //#include"28mySet_unordered.h"

@@ -8,15 +8,10 @@
 using std::cout;
 using std::endl;
 #include<string.h>
+#include<algorithm>
 int main()
 {
-	char str[3] = { 0 };
-	char buf[3] = { '\0' };
-
-	char ch = 0;
-	//char* c = '\0';
-	cout << sizeof(str[0]) << endl;
-	//cout << sizeof(c) << endl;
+	printf("hello");
 	return 0;
 }
 
