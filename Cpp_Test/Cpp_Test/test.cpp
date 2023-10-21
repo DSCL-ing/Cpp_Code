@@ -11,7 +11,10 @@ using std::endl;
 #include<algorithm>
 int main()
 {
+	int arr[10] = { 0 };
+	*(arr + 2);
 	printf("hello");
 	return 0;
 }
 
+ 

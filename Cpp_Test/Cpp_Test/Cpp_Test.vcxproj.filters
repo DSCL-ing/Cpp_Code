@@ -147,9 +147,6 @@
     <Text Include="0编辑器快捷键.h">
       <Filter>头文件</Filter>
     </Text>
-    <Text Include="0设计思想.txt">
-      <Filter>头文件</Filter>
-    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="27unordered_hash.h">
@@ -168,6 +165,9 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="40linux系统与编程.txt">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="41.linuxShell.txt">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>
