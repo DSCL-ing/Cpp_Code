@@ -18,9 +18,6 @@
     <ClInclude Include="1Note.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Test.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="1Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -165,6 +162,9 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="40linux系统与编程.txt">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="Test.h">
       <Filter>头文件</Filter>
     </None>
     <None Include="41.linuxShell.txt">
