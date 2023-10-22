@@ -13,3 +13,15 @@
 //求最大整型方法:1.size_t( -1) 2.0xFFFFFFFF -- 限32位--4字节整型
 
 //65535 = 2^16 = 2^10 * 2^6 = 1024 * 64
+
+/*
+mode_t; //就是unsigned int == uint32_t 
+uint32_t; // usigned int
+uint64_t; // usigned long int
+int64_t   //long int 或 long long int
+int32_t   //int
+int16_t   //short
+int8_t    //char
+size_t    // usigned long  int
+ssize_t   // signed long int
+*/

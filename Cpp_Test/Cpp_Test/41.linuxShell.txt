@@ -2,4 +2,10 @@
 
 
 
-while :; do ps axj| head -1 && ps axj|grep a.out | grep -v grep; sleep 1; done;
+while :; do ps axj| head -1 && ps axj|grep a.out | grep -v grep; sleep 1; done
+while :;do ps axj|head -1&&ps axj|grep a.out|grep -v grep;sleep 1;done
+
+while :; do echo "hello";sleep 1; done > fifo
+
+格式: 
+while :; do xxxxx;xxxx; done //中间命令以;隔开
