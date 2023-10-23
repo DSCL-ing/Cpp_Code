@@ -15,7 +15,48 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="1Note.h">
+    <ClCompile Include="library_Test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Main_DataStructure.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyContainersTest.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="1Date.cpp">
+      <Filter>头文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="0报错.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="0备忘录.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="0编辑器快捷键.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="0编译器设置与调试.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="0常识.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="0收藏.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="0算法总结.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="0应用题.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="1algorithm.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="1Date.h">
@@ -24,25 +65,28 @@
     <ClInclude Include="1GitNote.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="1Note.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="1OnlineJudge.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="9STL.h">
+    <ClInclude Include="2Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="10string.h">
+    <ClInclude Include="2Note.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="0算法总结.h">
+    <ClInclude Include="2STL.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="10myString.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="11myVector.h">
+    <ClInclude Include="10string.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="1algorithm.h">
+    <ClInclude Include="11myVector.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="12myList.h">
@@ -60,9 +104,6 @@
     <ClInclude Include="16my_Itetator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="2Note.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="20inheritance.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -78,16 +119,13 @@
     <ClInclude Include="24AVLTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="0编译器设置与调试.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="25RBTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="26mySet.h">
+    <ClInclude Include="26myMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="26myMap.h">
+    <ClInclude Include="26mySet.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="26RBT_container.h">
@@ -96,19 +134,19 @@
     <ClInclude Include="27hashtable.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="0收藏.h">
+    <ClInclude Include="27unordered_hash.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="28mySet_unordered.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="28myMap_unordered.h">
+    <ClInclude Include="28bitset.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="28hashtable_container.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="28bitset.h">
+    <ClInclude Include="28myMap_unordered.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="28mySet_unordered.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="29.0C++11.h">
@@ -117,58 +155,16 @@
     <ClInclude Include="29.1C++11.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Test.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="1Date.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="library_Test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MyContainersTest.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_DataStructure.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Cpp_Test.rc">
-      <Filter>资源文件</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="0编辑器快捷键.h">
+    <Text Include="40linux系统与编程.txt">
       <Filter>头文件</Filter>
     </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="27unordered_hash.h">
+    <Text Include="41.linuxShell.txt">
       <Filter>头文件</Filter>
-    </None>
-    <None Include="0备忘录.h">
-      <Filter>头文件</Filter>
-    </None>
-    <None Include="0报错.h">
-      <Filter>头文件</Filter>
-    </None>
-    <None Include="0常识.h">
-      <Filter>头文件</Filter>
-    </None>
-    <None Include="0应用题.h">
-      <Filter>头文件</Filter>
-    </None>
-    <None Include="40linux系统与编程.txt">
-      <Filter>头文件</Filter>
-    </None>
-    <None Include="Test.h">
-      <Filter>头文件</Filter>
-    </None>
-    <None Include="41.linuxShell.txt">
-      <Filter>头文件</Filter>
-    </None>
+    </Text>
   </ItemGroup>
 </Project>

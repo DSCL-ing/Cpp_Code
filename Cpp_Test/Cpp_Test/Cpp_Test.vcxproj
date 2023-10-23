@@ -19,111 +19,64 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="0应用题.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-    </None>
-    <None Include="0备忘录.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </None>
-    <None Include="0报错.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </None>
-    <None Include="0常识.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </None>
-    <ClInclude Include="1GitNote.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="1OnlineJudge.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="29.1C++11.h" />
-    <None Include="40linux系统与编程.txt">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </None>
-    <ClInclude Include="9STL.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="1algorithm.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="0编译器设置与调试.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="0收藏.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <Text Include="0编辑器快捷键.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-    </Text>
-    <ClInclude Include="21polymorphism.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClCompile Include="1Date.cpp" />
+    <ClCompile Include="library_Test.cpp" />
+    <ClCompile Include="Main_DataStructure.cpp" />
+    <ClCompile Include="MyContainersTest.cpp" />
+    <ClCompile Include="test.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="0备忘录.h" />
+    <ClInclude Include="0常识.h" />
+    <ClInclude Include="0应用题.h" />
+    <ClInclude Include="0报错.h" />
+    <ClInclude Include="0收藏.h" />
+    <ClInclude Include="0算法总结.h" />
+    <ClInclude Include="0编译器设置与调试.h" />
+    <ClInclude Include="0编辑器快捷键.h" />
+    <ClInclude Include="10myString.h" />
+    <ClInclude Include="10string.h" />
+    <ClInclude Include="11myVector.h" />
+    <ClInclude Include="12myList.h" />
+    <ClInclude Include="13myStack.h" />
+    <ClInclude Include="14myQueue.h" />
+    <ClInclude Include="15myPriority_Queue.h" />
+    <ClInclude Include="16my_Itetator.h" />
+    <ClInclude Include="1algorithm.h" />
+    <ClInclude Include="1Date.h" />
+    <ClInclude Include="1GitNote.h" />
+    <ClInclude Include="1Note.h" />
+    <ClInclude Include="1OnlineJudge.h" />
+    <ClInclude Include="20inheritance.h" />
+    <ClInclude Include="21polymorphism.h" />
     <ClInclude Include="22BSTree.hpp" />
-    <ClInclude Include="23map_set.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="23map_set.h" />
+    <ClInclude Include="24AVLTree.h" />
+    <ClInclude Include="25RBTree.h" />
     <ClInclude Include="26myMap.h" />
     <ClInclude Include="26mySet.h" />
     <ClInclude Include="26RBT_container.h" />
     <ClInclude Include="27hashtable.h" />
-    <None Include="27unordered_hash.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </None>
+    <ClInclude Include="27unordered_hash.h" />
+    <ClInclude Include="28bitset.h" />
     <ClInclude Include="28hashtable_container.h" />
     <ClInclude Include="28myMap_unordered.h" />
     <ClInclude Include="28mySet_unordered.h" />
     <ClInclude Include="29.0C++11.h" />
-    <ClInclude Include="2Note.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="12myList.h" />
-    <ClInclude Include="15myPriority_Queue.h" />
-    <ClInclude Include="14myQueue.h" />
-    <ClInclude Include="13myStack.h" />
-    <ClInclude Include="10myString.h" />
-    <ClInclude Include="10string.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="11myVector.h" />
-    <ClInclude Include="16my_Itetator.h" />
-    <ClInclude Include="24AVLTree.h" />
-    <ClInclude Include="25RBTree.h" />
-    <ClInclude Include="28bitset.h" />
-    <ClInclude Include="Test.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="1Date.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="1Note.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="0算法总结.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="20inheritance.h" />
+    <ClInclude Include="29.1C++11.h" />
+    <ClInclude Include="2Date.h" />
+    <ClInclude Include="2Note.h" />
+    <ClInclude Include="2STL.h" />
+    <ClInclude Include="Test.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="1Date.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="Main_DataStructure.cpp" />
-    <ClCompile Include="MyContainersTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="library_Test.cpp" />
-    <ClCompile Include="test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Cpp_Test.rc" />
+    <Text Include="40linux系统与编程.txt" />
+    <Text Include="41.linuxShell.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{9e4cc9f9-f4d9-49c2-8a79-d36af39ef207}</ProjectGuid>
+    <ProjectGuid>{cdfb4017-974d-4440-8b9a-3d4c2ab4a45e}</ProjectGuid>
     <RootNamespace>CppTest</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -187,11 +140,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <BufferSecurityCheck>true</BufferSecurityCheck>
-      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

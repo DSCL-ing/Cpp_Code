@@ -3504,7 +3504,7 @@ c.慢写入,快读取:
 d.写端关闭,读端一直读 :
 现象:一直读
 
-e 读端关闭,写端一直写:
+e 读端关闭,写端一直写:  //
 现象: OS主动杀死写端进程 --> OS不会维护无意义,浪费资源的资源 --- 13号信号sigpipe
 
 $ 关闭进程池的必要操作
@@ -3631,4 +3631,102 @@ $$$$ 命名管道 Named Pipes
 
  现象: 命名管道有一端未打开,进程会阻塞在open处 -- open的特性,可以关闭,带上某命令选项即可
 
+ $$ 必须先启动读端,读端控制进程是否正常,
+ 1.读端开启,会阻塞/非阻塞等待写端.
+ 2.读端关闭,则写端进程关闭.
+
+ }
+
+
+
+ system V 共享内存 //shared memory共享内存
+ {
+ 
+ 共享内存的生命周期不随进程,随OS
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ }
+
+ 三对命令:
+ 
+ 1. ipcs  //ipc
+ {
+ ipcs 是 "Inter-Process Communication (IPC) Status" 的缩写
+
+ ipcs 是一个Linux命令，用于查看进程间通信（Inter-Process Communication，IPC）的相关信息。它通常用于查看系统中的消息队列、信号量和共享内存等 IPC 对象的状态。以下是一些常用的 ipcs 命令选项和相关单词的解释：
+
+Message Queues（消息队列）:
+
+ipcs -q：查看消息队列的信息。
+msqid：消息队列的标识符。
+key：消息队列的键值。
+mode：访问权限和标志。
+cbytes：消息队列的当前字节数。
+qnum：消息队列中的消息数量。
+Semaphores（信号量）:
+
+ipcs -s：查看信号量的信息。
+semid：信号量的标识符。
+key：信号量的键值。
+mode：访问权限和标志。
+nsems：信号量集中的信号量数量。
+otime：上次操作时间。
+ctime：创建时间。
+semnum：信号量的编号。
+Shared Memory Segments（共享内存段）:
+
+ipcs -m：查看共享内存段的信息。
+shmid：共享内存段的标识符。
+key：共享内存段的键值。
+mode：访问权限和标志。
+owner：拥有者的用户ID。
+cpid：创建该共享内存段的进程ID。
+lpid：上次连接到该共享内存段的进程ID。
+IPC Control Commands（IPC 控制命令）:
+
+ipcrm：用于删除 IPC 对象（消息队列、信号量、共享内存）。
+-q, -s, -m：用于指定要删除的对象类型。
+-Q, -S, -M：用于指定对象的标识符
+
+--------------------------------------------------------------------------------
+centos下ipcs
+
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages    
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status      
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems 
+
+Message Queues (消息队列)：
+key：消息队列的键值，用于标识消息队列。
+msqid：消息队列的标识符，系统为每个消息队列分配一个唯一的标识符。
+owner：消息队列的拥有者，即创建该消息队列的用户。
+perms：消息队列的访问权限和权限位。
+used-bytes：消息队列当前使用的字节数。
+messages：消息队列中的消息数量。
+
+Shared Memory Segments (共享内存段)：
+key：共享内存段的键值，用于标识共享内存段。
+shmid：共享内存段的标识符，系统为每个共享内存段分配一个唯一的标识符。
+owner：共享内存段的拥有者，即创建该共享内存段的用户。
+perms：共享内存段的访问权限和权限位。
+bytes：共享内存段的字节数。
+nattch：连接到共享内存段的进程数量。
+status：共享内存段的状态信息。
+
+Semaphore Arrays (信号量数组)：
+key：信号量数组的键值，用于标识信号量数组。
+semid：信号量数组的标识符，系统为每个信号量数组分配一个唯一的标识符。
+owner：信号量数组的拥有者，即创建该信号量数组的用户。
+perms：信号量数组的访问权限和权限位。
+nsems：信号量数组中的信号量数量。
  }
