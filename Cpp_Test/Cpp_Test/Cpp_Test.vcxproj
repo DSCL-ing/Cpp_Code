@@ -28,7 +28,7 @@
   <ItemGroup>
     <ClInclude Include="0备忘录.h" />
     <ClInclude Include="0常识.h" />
-    <ClInclude Include="0应用题.h" />
+    <None Include="0应用场景.txt" />
     <ClInclude Include="0报错.h" />
     <ClInclude Include="0收藏.h" />
     <ClInclude Include="0算法总结.h" />

@@ -664,7 +664,7 @@ $ linux 权限分为
 $ 权限掩码/umask:在起始权限中,去掉umask中出现的权限,不能影响其他权限的码 -- 用于系统更好的控制文件权限
 // 掩码就是一串二进制数字,可以将源码与掩码经过按位运算或逻辑运算得出新的操作数
 
-$ linux掩码有4位(八进制),最左边一位目前用不到,现在只使用后三位 -- 默认为0002
+$ linux掩码有4位(八进制),最左边一位目前用不到,现在只使用后三位 -- 默认为0002   //最高位一般给系统标记位使用,1777,2664 3xxx ...
 # umask 0002 // 修改掩码为0002 -- 掩码可以修改
 
 最终权限 = 起始权限 & (~umask)
@@ -3705,9 +3705,55 @@ $ 确保提供一个已存在的文件路径，因为ftok会根据文件的inode
 1.错误返回-1,并设计errno...
 2.正确返回key值
 
+三.shmctl //SystemV版本的shm控制
+shmctl 是Linux/Unix系统中的一个系统调用，用于对共享内存段进行控制操作。它通常用于管理共享内存，包括创建、删除、获取信息和控制共享内存的属性等操作。
+声明int shmctl(int shmid, int cmd, struct shmid_ds *buf);
+参数:
+1.shmid：是共享内存段的标识符，通常是由 shmget 返回的标识符。
+2.cmd：是要执行的操作，可以是以下值之一：
+    IPC_STAT：获取共享内存段的信息，将其存储在 struct shmid_ds 结构体中，该结构体通过 buf 参数传递。
+    IPC_SET：设置共享内存段的属性，将 struct shmid_ds 结构体中的信息应用到共享内存段。
+    IPC_RMID：从系统中删除共享内存段。
+    其他特定于系统的命令，具体取决于系统和使用情况。
+3.buf：一个指向 struct shmid_ds 结构体的指针，用于存储或设置共享内存段的信息。通常，buf 参数在执行 IPC_STAT 和 IPC_SET 操作时被使用。
+返回值:
+    当执行 IPC_STAT 命令时，shmctl 返回 0 表示成功，并将共享内存段的信息存储在提供的 struct shmid_ds 结构体中。
+    The caller must have read permission on the shared  memory segment. //要有读权限
+    struct shmid_ds { //data structure
+               struct ipc_perm shm_perm;    /* Ownership and permissions */
+               size_t          shm_segsz;   /* Size of segment (bytes) */
+               time_t          shm_atime;   /* Last attach time */
+               time_t          shm_dtime;   /* Last detach time */
+               time_t          shm_ctime;   /* Last change time */
+               pid_t           shm_cpid;    /* PID of creator */
+               pid_t           shm_lpid;    /* PID of last shmat(2)/shmdt(2) */
+               shmatt_t        shm_nattch;  /* No. of current attaches */
+               ...
+           };
+    当执行 IPC_SET 命令时，shmctl 返回 0 表示成功，表示成功更新了共享内存段的属性。
+    struct ipc_perm {
+               key_t          __key;    /* Key supplied to shmget(2) */
+               uid_t          uid;      /* Effective UID of owner */
+               gid_t          gid;      /* Effective GID of owner */
+               uid_t          cuid;     /* Effective UID of creator */
+               gid_t          cgid;     /* Effective GID of creator */
+               unsigned short mode;     /* Permissions + SHM_DEST and SHM_LOCKED flags */
+               unsigned short __seq;    /* Sequence number */
+           };
+    当执行 IPC_RMID 命令时，shmctl 返回 0 表示成功，表示成功删除了共享内存段。
+    如果出现错误，shmctl 返回 -1，并设置 errno 变量来指示发生的错误。
+
+四.shmat //System V 版本 shm 操作
+
+声明:void *shmat(int shmid, const void *shmaddr, int shmflg);
+参数:
+shmid:要关联的shmid
+shmaddr:选择挂接的内存地址,用户不知道,所以设为null,让系统选择即可.
+shmflg:SHM_RDONLY(只读),0(读写)
+返回值:返回虚拟地址(数组),供用户使用
 
  
- }
+}
  
  
  
@@ -3721,16 +3767,15 @@ $ 确保提供一个已存在的文件路径，因为ftok会根据文件的inode
  ipcs 是一个Linux命令，用于查看进程间通信（Inter-Process Communication，IPC）的相关信息。它通常用于查看系统中的消息队列、信号量和共享内存等 IPC 对象的状态。以下是一些常用的 ipcs 命令选项和相关单词的解释：
 
 Message Queues（消息队列）:
-
-ipcs -q：查看消息队列的信息。
+ipcs -q：查看消息队列的信息。//queue
 msqid：消息队列的标识符。
 key：消息队列的键值。
 mode：访问权限和标志。
 cbytes：消息队列的当前字节数。
 qnum：消息队列中的消息数量。
-Semaphores（信号量）:
 
-ipcs -s：查看信号量的信息。
+Semaphores（信号量）:
+ipcs -s：查看信号量的信息。 //singal
 semid：信号量的标识符。
 key：信号量的键值。
 mode：访问权限和标志。
@@ -3738,9 +3783,9 @@ nsems：信号量集中的信号量数量。
 otime：上次操作时间。
 ctime：创建时间。
 semnum：信号量的编号。
-Shared Memory Segments（共享内存段）:
 
-ipcs -m：查看共享内存段的信息。
+Shared Memory Segments（共享内存段）:
+ipcs -m：查看共享内存段的信息。//memory
 shmid：共享内存段的标识符。
 key：共享内存段的键值。
 mode：访问权限和标志。
@@ -3752,10 +3797,12 @@ IPC Control Commands（IPC 控制命令）:
 ipcrm：用于删除 IPC 对象（消息队列、信号量、共享内存）。
 -q, -s, -m：用于指定要删除的对象类型。
 -Q, -S, -M：用于指定对象的标识符
+# ipcrm -m/s/q shmid/msqid/semid   //删除消息队列.信号量,共享内存
+
+$ ipc操作方法类似文件,fd==id ,key==inode. 在用户层也和文件一样使用,使用fd/id.  key和inode给操作系统使用
 
 --------------------------------------------------------------------------------
 centos下ipcs
-
 
 ------ Message Queues --------
 key        msqid      owner      perms      used-bytes   messages    
@@ -3765,6 +3812,8 @@ key        shmid      owner      perms      bytes      nattch     status
 
 ------ Semaphore Arrays --------
 key        semid      owner      perms      nsems 
+
+key(Hex)   id(Dec)
 
 Message Queues (消息队列)：
 key：消息队列的键值，用于标识消息队列。
@@ -3778,9 +3827,9 @@ Shared Memory Segments (共享内存段)：
 key：共享内存段的键值，用于标识共享内存段。
 shmid：共享内存段的标识符，系统为每个共享内存段分配一个唯一的标识符。
 owner：共享内存段的拥有者，即创建该共享内存段的用户。
-perms：共享内存段的访问权限和权限位。
+perms：共享内存段的访问权限和权限位。 //permission
 bytes：共享内存段的字节数。
-nattch：连接到共享内存段的进程数量。
+nattch：连接到共享内存段的进程数量。 //attached:所附的,附加的 -- 关联数
 status：共享内存段的状态信息。
 
 Semaphore Arrays (信号量数组)：

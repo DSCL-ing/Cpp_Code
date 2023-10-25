@@ -53,9 +53,6 @@
     <ClInclude Include="0算法总结.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="0应用题.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="1algorithm.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -166,5 +163,10 @@
     <Text Include="41.linuxShell.txt">
       <Filter>头文件</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="0应用场景.txt">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
