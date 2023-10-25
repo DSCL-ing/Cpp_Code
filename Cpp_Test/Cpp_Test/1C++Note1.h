@@ -1397,7 +1397,8 @@ private :
  * 
  * 
  */
-
+//静态与非静态对比
+//https://blog.csdn.net/iii_am_haomiaozi/article/details/128902224
 
 //匿名对象
 /**

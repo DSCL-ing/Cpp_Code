@@ -3744,13 +3744,18 @@ shmctl 是Linux/Unix系统中的一个系统调用，用于对共享内存段进
     如果出现错误，shmctl 返回 -1，并设置 errno 变量来指示发生的错误。
 
 四.shmat //System V 版本 shm 操作
-
-声明:void *shmat(int shmid, const void *shmaddr, int shmflg);
+类似malloc,返回一段虚拟内存
+声明:void *shmat(int shmid, const void *shmaddr, int shmflg); //attaches
 参数:
 shmid:要关联的shmid
 shmaddr:选择挂接的内存地址,用户不知道,所以设为null,让系统选择即可.
 shmflg:SHM_RDONLY(只读),0(读写)
 返回值:返回虚拟地址(数组),供用户使用
+
+五.shmdt  //detaches(拆卸) 
+类似free,不需要大小,可以通过维护数组的结构体知道大小
+声明:int shmdt(const void *shmaddr);
+
 
  
 }
