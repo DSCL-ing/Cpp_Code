@@ -3417,6 +3417,10 @@ $ 管理IPC:
 1.谁创建,谁负责 //服务端负责提供资源和回收资源
 
 
+IPC和文件系统类似,但却是不一样的两套独立机制,而linux一切皆文件,所以IPC会边缘化...
+
+
+
 1.管道
 {
 $ 什么是管道
@@ -3898,6 +3902,10 @@ struct msgbuf {
 
 
 
+
+
+$$$$ 信号量/信号灯 semaphore
+{
 //前言:
 所有进程都能看到的资源是公共资源/共享资源(如共享内存) -- 不安全
 
@@ -3909,8 +3917,6 @@ struct msgbuf {
 同步(暂):
 原子性  :要么不做,要么做完.只有两种确定状态
 
-信号量/信号灯 semaphore
-{
 
 任何技术都有自己的应用场景:不存在放之四海而皆准的技术
 
@@ -3969,9 +3975,55 @@ int semop(int semid, struct sembuf *sops, unsigned nsops);
 int semtimedop(int semid, struct sembuf *sops, unsigned nsops,
                       struct timespec *timeout);
 
-
-
-
 }
+
+}//semaphore_end;
+
+
+
+
+$$$$ IPC三种方式小结:
+{
+$ 内核中的所有IPC资源统一以数组方式管理
+原理简单模拟演示:  //原理:用于说明问题,不是真实情况
+数组:struct ipc_perm* ipc_id_arr[];
+三个IPC结构体:
+struct shmid_ds{
+    struct ipc_perm perm;
+    XXXX;
+};
+struct semid_ds{
+    struct ipc_perm perm;
+    YYYY;
+};
+struct msqid_ds{
+    struct ipc_perm perm;
+    ZZZZ;
+};
+而数组struct ipc_perm* ipc_id_arr[]:
+[0] --指向--->struct shmid_ds的struct ipc_perm perm  //因为必须类型一样才能存,或者是结构体强转成struct ipc_perm perm类型//演示用,非实际
+[1] --指向--->struct semid_ds的struct ipc_perm perm  //
+[2] --指向--->struct msqid_ds的struct ipc_perm perm  //
+
+而struct shmid_ds;的首地址和第一个成员struct ipc_perm perm;的首地址一样,在需要时,将数组对应元素强转就能得到整个结构体
+//必须是首元素才可以,因为类型是从当前地址开始,直到最大范围.如果是第二个元素,那强转后得不到第一个元素,并且越界.
+
+可以发现每个结构体除了第一个元素必须一样外,其他元素可以是不一样的 -------> C语言的多态
+
+//多态并不是某个语言的特点,而是经过大量代码工程检验后发现的一种现象,总结出来的特性...
+
+
+//这个数组下标是循环使用的.服务器重启或循环到起点时下标就可能出现0,1,2... . 使用长时间的话数字可能会很大,没有影响
+
+//ipc_perm三个IPC都是一样的,内核中叫kern_ipc_perm,大同小异,有区别,但区别不大
+    struct ipc_perm {
+               key_t          __key;    /* Key supplied to shmget(2) */
+               uid_t          uid;      /* Effective UID of owner */
+               gid_t          gid;      /* Effective GID of owner */
+               uid_t          cuid;     /* Effective UID of creator */
+               gid_t          cgid;     /* Effective GID of creator */
+               unsigned short mode;     /* Permissions + SHM_DEST and SHM_LOCKED flags */
+               unsigned short __seq;    /* Sequence number */
+           };
 
 }
