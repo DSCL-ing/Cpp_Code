@@ -62,7 +62,7 @@
     <ClInclude Include="1GitNote.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="1Note.h">
+    <ClInclude Include="1C++Note1.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="1OnlineJudge.h">
@@ -71,7 +71,7 @@
     <ClInclude Include="2Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="2Note.h">
+    <ClInclude Include="2C++Note2.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="2STL.h">

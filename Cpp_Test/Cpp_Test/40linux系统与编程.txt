@@ -4039,5 +4039,135 @@ $ 信号划分成两批:1-31和34-64
 其中34-64是实时信号,略
 1-31为普通信号,学...
 
+信号是进程之间事件异步通知的一种方式,属于软中断
+
+发送信号 ---- 时间窗口 ------ 接收信号
+
+//进程需要具有记录信号的能力
+
+$ 信号的产生对进程来讲是异步的,--- 互不干扰
+
+实时信号:
+//实时操作系统:要求有任务要立马处理
+//实时信号:要求进程立即处理
+//每个信号都是个结构体对象,用队列方式管理---分时操作系统中不考虑 
+
+
+$ 普通信号:只需要保存有无产生
+
+$ 管理普通信号的数据结构:位图
+1. 1-31个普通信号,一个整型刚好
+2. 只需要保存有无,0和1可以描述
+//信号位图位于PCB中: signals
+
+$ 所谓发送信号:本质是写入信号,是直接修改特定进程的信号位图
+
+$ 信号处理有三种:
+1.忽略此信号
+2.执行该信号的默认处理动作
+3.提供一个信号处理函数,要求内核在处理该信号时切换到用户态执行这个处理函数,这种方式称为捕捉(Catch)一个信号
+
+
+$$前台任务:linux只允许一个终端执行一个前台任务
+//键盘操作 -- 前台任务
+//ctrl+C:硬件中断,信号为2 --- 证明,用signal函数重写2号方法  //SIGINT
+
+$ 后台任务: 命令结尾带&的都是后台任务,后台任务不影响前台任务.但前台许多操作影响不到后台任务.
+            shell不必等待前台进程结束就可以接受新的命令,启动新的进程
+SIGINT 的默认处理动作是终止进程,SIGQUIT的默认动作是终止进程并且Core Dump
+
+
+信号接口:
+{
+signal
+声明:sighandler_t signal(int signum, sighandler_t handler);
+参数:
+1.signum 信号编号
+2.handler 要执行的函数 --- 函数指针
+
+
+
 
 }
+
+# man 7 signal//
+
+Signal     Value     Action   Comment
+       ──────────────────────────────────────────────────────────────────────
+       SIGHUP        1       Term    Hangup detected on controlling terminal  //terminal终止
+                                     or death of controlling process
+       SIGINT        2       Term    Interrupt from keyboard               //ctrl+C
+       SIGQUIT       3       Core    Quit from keyboard                    //ctrl+\
+       SIGILL        4       Core    Illegal Instruction
+       SIGABRT       6       Core    Abort signal from abort(3)
+       SIGFPE        8       Core    Floating point exception
+       SIGKILL       9       Term    Kill signal                     //不可被自定义 //管理员信号
+       SIGSEGV      11       Core    Invalid memory reference
+       SIGPIPE      13       Term    Broken pipe: write to pipe with no
+                                     readers
+       SIGALRM      14       Term    Timer signal from alarm(2)
+       SIGTERM      15       Term    Termination signal
+       SIGUSR1   30,10,16    Term    User-defined signal 1
+       SIGUSR2   31,12,17    Term    User-defined signal 2
+       SIGCHLD   20,17,18    Ign     Child stopped or terminated
+       SIGCONT   19,18,25    Cont    Continue if stopped
+       SIGSTOP   17,19,23    Stop    Stop process
+       SIGTSTP   18,20,24    Stop    Stop typed at terminal
+       SIGTTIN   21,21,26    Stop    Terminal input for background process
+       SIGTTOU   22,22,27    Stop    Terminal output for background process
+
+//每个信号都有一个编号和宏定义名称
+/* Signals.  */
+#define	SIGHUP		1	/* Hangup (POSIX).  */
+#define	SIGINT		2	/* Interrupt (ANSI).  */
+#define	SIGQUIT		3	/* Quit (POSIX).  */
+#define	SIGILL		4	/* Illegal instruction (ANSI).  */
+#define	SIGTRAP		5	/* Trace trap (POSIX).  */
+#define	SIGABRT		6	/* Abort (ANSI).  */
+#define	SIGIOT		6	/* IOT trap (4.2 BSD).  */
+#define	SIGBUS		7	/* BUS error (4.2 BSD).  */
+#define	SIGFPE		8	/* Floating-point exception (ANSI).  */
+#define	SIGKILL		9	/* Kill, unblockable (POSIX).  */
+#define	SIGUSR1		10	/* User-defined signal 1 (POSIX).  */
+#define	SIGSEGV		11	/* Segmentation violation (ANSI).  */
+#define	SIGUSR2		12	/* User-defined signal 2 (POSIX).  */
+#define	SIGPIPE		13	/* Broken pipe (POSIX).  */
+#define	SIGALRM		14	/* Alarm clock (POSIX).  */
+#define	SIGTERM		15	/* Termination (ANSI).  */
+#define	SIGSTKFLT	16	/* Stack fault.  */
+#define	SIGCLD		SIGCHLD	/* Same as SIGCHLD (System V).  */
+#define	SIGCHLD		17	/* Child status has changed (POSIX).  */
+#define	SIGCONT		18	/* Continue (POSIX).  */
+#define	SIGSTOP		19	/* Stop, unblockable (POSIX).  */
+#define	SIGTSTP		20	/* Keyboard stop (POSIX).  */
+#define	SIGTTIN		21	/* Background read from tty (POSIX).  */
+#define	SIGTTOU		22	/* Background write to tty (POSIX).  */
+#define	SIGURG		23	/* Urgent condition on socket (4.2 BSD).  */
+#define	SIGXCPU		24	/* CPU limit exceeded (4.2 BSD).  */
+#define	SIGXFSZ		25	/* File size limit exceeded (4.2 BSD).  */
+#define	SIGVTALRM	26	/* Virtual alarm clock (4.2 BSD).  */
+#define	SIGPROF		27	/* Profiling alarm clock (4.2 BSD).  */
+#define	SIGWINCH	28	/* Window size change (4.3 BSD, Sun).  */
+#define	SIGPOLL		SIGIO	/* Pollable event occurred (System V).  */
+#define	SIGIO		29	/* I/O now possible (4.2 BSD).  */
+#define	SIGPWR		30	/* Power failure restart (System V).  */
+#define SIGSYS		31	/* Bad system call.  */
+#define SIGUNUSED	31
+
+
+信号的产生:
+
+
+
+硬件中断原理:
+1.键盘是通过硬件中断的方式,通知系统向计算机输入了数据
+// ....<--------- cpu寄存器 <----写入中断号------ cpu针脚 <--------发送中断号------- 硬件处理单元 ---- 硬件操作...
+2.OS中维护了一张中断向量表,其中中断号就是中断向量表的下标.中断向量表中维护了各种方法
+// 中断信号被OS获取,识别和转换成信号,然后再到前台中找到进程执行  //即,信号最终还是由OS向目标进程发送的,
+
+软中断:OS内的信号操作是软中断
+
+}
+
+
+

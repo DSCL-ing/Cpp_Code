@@ -45,7 +45,7 @@
     <ClInclude Include="1algorithm.h" />
     <ClInclude Include="1Date.h" />
     <ClInclude Include="1GitNote.h" />
-    <ClInclude Include="1Note.h" />
+    <ClInclude Include="1C++Note1.h" />
     <ClInclude Include="1OnlineJudge.h" />
     <ClInclude Include="20inheritance.h" />
     <ClInclude Include="21polymorphism.h" />
@@ -65,7 +65,7 @@
     <ClInclude Include="29.0C++11.h" />
     <ClInclude Include="29.1C++11.h" />
     <ClInclude Include="2Date.h" />
-    <ClInclude Include="2Note.h" />
+    <ClInclude Include="2C++Note2.h" />
     <ClInclude Include="2STL.h" />
     <ClInclude Include="Test.h" />
   </ItemGroup>
