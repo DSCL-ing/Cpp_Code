@@ -4079,12 +4079,26 @@ SIGINT 的默认处理动作是终止进程,SIGQUIT的默认动作是终止进�
 
 信号接口:
 {
-signal
+一.signal
 声明:sighandler_t signal(int signum, sighandler_t handler);
 参数:
 1.signum 信号编号
 2.handler 要执行的函数 --- 函数指针
 
+二.kill
+声明:int kill(pid_t pid, int sig);
+参数:
+1.向pid对应的进程发送信号
+2.发送哪个信号
+
+三.raise
+send a signal to the caller . 给调用者发信号,
+声明:int raise(int sig);
+
+四.abort
+cause abnormal process termination.  导致异常进程终止
+特点:即便是捕捉,重写.只要执行了abort,则一定会退出(语义) ---- 原因:abort是c语言封装的接口 -- 
+声明:void abort(void);
 
 
 
