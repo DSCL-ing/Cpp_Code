@@ -4178,7 +4178,7 @@ cause abnormal process termination.  导致异常进程终止
 在seconds秒后给当前进程发送SIGALRM信号,默认动作是终止当前进程,返回值是0或上次设定闹钟还余下的秒数
 声明:unsigned int alarm(unsigned int seconds);
 由软件条件产生信号...
-
+//一个进程只能设一个,有pid标识闹钟是谁设置的
 $ OS中有很多闹钟,要管理,所以有
 struct alarm{
     int timestamp; //时间戳 --- 当前时间+设定时间 == 闹钟未来时间 == time()+设定的秒数
