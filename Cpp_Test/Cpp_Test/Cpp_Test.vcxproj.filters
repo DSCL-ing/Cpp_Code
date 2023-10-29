@@ -35,12 +35,6 @@
     <ClInclude Include="2algorithm.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="0GitNote.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="0OnlineJudge.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="2Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -132,40 +126,46 @@
     <None Include="0应用场景.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0C语言补充.h">
+    <None Include="0C语言补充.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0报错.h">
+    <None Include="0报错.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0备忘录.h">
+    <None Include="0备忘录.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0编译器设置与调试.h">
+    <None Include="0编译器设置与调试.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0编辑器快捷键.h">
+    <None Include="0编辑器快捷键.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0常识.h">
+    <None Include="0常识.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0收藏.h">
+    <None Include="0收藏.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0算法总结.h">
+    <None Include="0算法总结.txt">
       <Filter>头文件</Filter>
     </None>
     <None Include="41.linuxShell.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0C++Note1.h">
+    <None Include="0C++Note1.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0C++Note2.h">
+    <None Include="0C++Note2.txt">
       <Filter>头文件</Filter>
     </None>
     <None Include="10string.txt">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="0GitNote.txt">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="0OnlineJudge.txt">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>

@@ -28,31 +28,31 @@
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="0C语言补充.h">
+    <None Include="0C语言补充.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="0备忘录.h">
+    <None Include="0备忘录.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="0常识.h">
+    <None Include="0常识.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
     <None Include="0应用场景.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="0报错.h">
+    <None Include="0报错.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="0收藏.h">
+    <None Include="0收藏.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="0算法总结.h">
+    <None Include="0算法总结.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="0编译器设置与调试.h">
+    <None Include="0编译器设置与调试.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="0编辑器快捷键.h">
+    <None Include="0编辑器快捷键.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
     <ClInclude Include="10myString.h" />
@@ -66,11 +66,15 @@
     <ClInclude Include="15myPriority_Queue.h" />
     <ClInclude Include="16my_Itetator.h" />
     <ClInclude Include="2algorithm.h" />
-    <ClInclude Include="0GitNote.h" />
-    <None Include="0C++Note1.h">
+    <None Include="0GitNote.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <ClInclude Include="0OnlineJudge.h" />
+    <None Include="0C++Note1.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0OnlineJudge.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
     <ClInclude Include="20inheritance.h" />
     <ClInclude Include="21polymorphism.h" />
     <ClInclude Include="22BSTree.hpp" />
@@ -89,7 +93,7 @@
     <ClInclude Include="29.0C++11.h" />
     <ClInclude Include="29.1C++11.h" />
     <ClInclude Include="2Date.h" />
-    <None Include="0C++Note2.h">
+    <None Include="0C++Note2.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
     <ClInclude Include="2STL.h" />
