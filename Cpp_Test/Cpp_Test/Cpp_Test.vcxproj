@@ -19,34 +19,58 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="1Date.cpp" />
+    <ClCompile Include="1Date.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="library_Test.cpp" />
     <ClCompile Include="Main_DataStructure.cpp" />
     <ClCompile Include="MyContainersTest.cpp" />
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="0备忘录.h" />
-    <ClInclude Include="0常识.h" />
-    <None Include="0应用场景.txt" />
-    <ClInclude Include="0报错.h" />
-    <ClInclude Include="0收藏.h" />
-    <ClInclude Include="0算法总结.h" />
-    <ClInclude Include="0编译器设置与调试.h" />
-    <ClInclude Include="0编辑器快捷键.h" />
+    <None Include="0C语言补充.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0备忘录.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0常识.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0应用场景.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0报错.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0收藏.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0算法总结.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0编译器设置与调试.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="0编辑器快捷键.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
     <ClInclude Include="10myString.h" />
-    <ClInclude Include="10string.h" />
+    <None Include="10string.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
     <ClInclude Include="11myVector.h" />
     <ClInclude Include="12myList.h" />
     <ClInclude Include="13myStack.h" />
     <ClInclude Include="14myQueue.h" />
     <ClInclude Include="15myPriority_Queue.h" />
     <ClInclude Include="16my_Itetator.h" />
-    <ClInclude Include="1algorithm.h" />
-    <ClInclude Include="1Date.h" />
-    <ClInclude Include="1GitNote.h" />
-    <ClInclude Include="1C++Note1.h" />
-    <ClInclude Include="1OnlineJudge.h" />
+    <ClInclude Include="2algorithm.h" />
+    <ClInclude Include="0GitNote.h" />
+    <None Include="0C++Note1.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <ClInclude Include="0OnlineJudge.h" />
     <ClInclude Include="20inheritance.h" />
     <ClInclude Include="21polymorphism.h" />
     <ClInclude Include="22BSTree.hpp" />
@@ -65,13 +89,19 @@
     <ClInclude Include="29.0C++11.h" />
     <ClInclude Include="29.1C++11.h" />
     <ClInclude Include="2Date.h" />
-    <ClInclude Include="2C++Note2.h" />
+    <None Include="0C++Note2.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
     <ClInclude Include="2STL.h" />
     <ClInclude Include="Test.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="40linux系统与编程.txt" />
-    <Text Include="41.linuxShell.txt" />
+    <Text Include="40linux系统与编程.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </Text>
+    <None Include="41.linuxShell.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

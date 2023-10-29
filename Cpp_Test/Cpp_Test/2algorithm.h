@@ -9,7 +9,7 @@ template <class RandomAccessIterator>
 template <class RandomAccessIterator, class Compare>
   void sort (RandomAccessIterator first, RandomAccessIterator last, Compare comp);
  * 
- * 默认是升序，降序需要什么反函数
+ * 默认是升序，降序需要反函数
  * 内部是快排
  * 
  * 使用
