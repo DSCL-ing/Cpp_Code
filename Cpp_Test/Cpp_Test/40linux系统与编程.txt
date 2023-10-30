@@ -4549,6 +4549,7 @@ int sigdelset(sigset_t,int signo);          //从集合中删除一个信号
 int sigismember(const sigset_t *set,int signo); //判断是否在集合中
 注意,在使用sigset_ t类型的变量之前,一定要调 用sigemptyset或sigfillset做初始化,使信号集处于确定的状态。
 初始化sigset_t变量之后就可以在调用sigaddset和sigdelset在该信号集中添加或删除某种有效信号
+//这些接口一般用于改变自定义的signal set,然后再通过sigprocmask去改变系统的
 
 $ sigprocmask //sys_call
 调用函数sigprocmask可以读取或更改进程的信号屏蔽字(阻塞信号集)。//即可以读取/更改 block这张位图
@@ -4558,7 +4559,7 @@ int sigprocmask(int how, const sigset_t *set, sigset_t *oset);
     如果set是非空指针,则 更改进程的信号屏蔽字,参数how指示如何更改。
     如果oset和set都是非空指针,则先将原来的信号 屏蔽字备份到oset里,然后根据set和how参数更改信号屏蔽字。假设当前的信号屏蔽字为mask(block表)
 返回值:若成功则为0,若出错则为-1
-参数:
+参数://不需要就设置为nullptr
 1.how是怎么做,有三个参数
     SIG_BLOCK:向block中添加set有的,相当于mask=mask|set
     SIG_UNBLOCK:从block中移除set有的,    mask=mask&~set
@@ -4602,6 +4603,128 @@ int main()
   }   
 
 ]]]]]]]]]
+
+$ 不是所有信号都能被屏蔽,测试:1-31个信号全部添加进信号阻塞集/信号屏蔽字 set mask
+结果位图:1111 1111 0111 1111 1101 1111 1111 111 //9号和19号不能被屏蔽
+[[[[[[[[[[[[[[[[[[[[
+int main()    
+{    
+  sigset_t set,oset;    
+  sigemptyset(&set);    
+  sigemptyset(&oset);    
+    
+  for(int signo = 1 ; signo<=31;++signo)    
+  {    
+    sigaddset(&set,signo);    
+  }    
+  sigprocmask(SIG_SETMASK,&set,&oset);    
+  sigprocmask(SIG_SETMASK,&set,&oset);    //再获取一次
+    
+  while(true)    
+  {    
+    sigset_t pending;    
+    int n = sigemptyset(&pending);    
+    assert(n == 0);//一定会成功,就用assert                                   
+    (void)n;     
+    showBlock(oset) ;    
+    sleep(1);              
+  }  
+  return 0;
+}
+]]]]]]]]]]]]]]]]]]]]
+
+$ sigpending - examine pending signals //检查未决信号,看哪些信号处于未决状态
+// 只获取未决信号位图,并不提供设置功能
+#include <signal.h>
+int sigpending(sigset_t *set);
+description:读取当前进程的未决信号集,通过set参数传出。
+返回值调用成功则返回0,出错则返回-1。
+参数:set,输出型参数,返回pending信号集
+演示[[[[[[[[[[[[[
+
+void showPending(sigset_t& pending)    
+{    
+  std::cout<<"当前进程的pending位图:";    
+  int signo =1;    
+  for(;signo<=31;++signo) {    
+    if(sigismember(&pending,signo)==1) std::cout<<1;    
+    else std::cout<<0;    
+  }    
+  std::cout<<"\n";    
+}    
+    
+int main()    
+{    
+  sigset_t set,oset;    
+  sigemptyset(&set);    
+  sigemptyset(&oset);    
+  sigaddset(&set,2);    
+  sigprocmask(SIG_SETMASK,&set,&oset);    
+    
+  while(true)    
+  {    
+    sigset_t pending;    
+    int n = sigemptyset(&pending);    
+    assert(n == 0);//一定会成功,就用assert    
+    (void)n;     
+    sigpending(&pending);                                                    
+    showPending(pending);    
+    sleep(1);    
+  }  
+  return 0 ;  
+}
+
+]]]]]]]]]]]]]
+
+
+$ 屏蔽2号信号后解除屏蔽,并捕获2号信号动作,让其执行自定义动作(不终止) 
+[[[[[[[[[[[[[
+//观察未决表,0 -> 发送2号信号 -> 1 -> 10秒后解除,捕获2号信号,立刻递达 -> 0
+int main()
+{
+  sigset_t set,oset;
+  sigemptyset(&set);
+  sigemptyset(&oset);
+
+  for(int signo = 1 ; signo<=31;++signo)
+  {
+    sigaddset(&set,signo);
+  }
+  sigprocmask(SIG_SETMASK,&set,&oset);
+
+  signal(2,handler);
+
+  int cnt=0;
+  while(true)
+  {
+    sigset_t pending;
+    int n = sigemptyset(&pending);
+    assert(n == 0);//一定会成功,就用assert
+    (void)n; 
+    sigpending(&pending);//获取未决表
+    showPending(pending);//打印未决表
+    if(cnt++ == 10)
+    {
+      std::cout<<"解除对2号信号的屏蔽\n";
+      sigprocmask(SIG_SETMASK,&oset,nullptr);
+    }
+    
+    sleep(1);                                                                
+  }
+  return 0;
+}
+
+
+]]]]]]]]]]]]]
+
+
+
+
+
+
+
+
+
 
 
 
