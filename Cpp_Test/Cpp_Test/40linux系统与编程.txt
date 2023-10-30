@@ -4518,3 +4518,90 @@ $ 描述:description
     它基本上是Portable Operating System Interface（可移植操作系统接口）的缩写，而X则表明其对Unix API的传承。
 
 
+$ sigset_t
+1.每个信号只有一个bit的未决标志,非0即1,不记录该信号产生了多少次,阻塞标志也是这样表示的。
+2.因此,未决和阻塞标志可以用相同的数据类型sigset_t来存储,sigset_t称为信号集,这个类型可以表示每个信号的“有效”或“无效”状态,
+    阻塞信号集中“有效”和“无效”的含义是该信号是否被阻塞,
+    未决信号集中“有 效”和“无效”的含义是该信号是否处于未决状态。
+3.阻塞信号集也叫做当前进程的信号屏蔽字(Signal Mask),这里的“屏蔽”应该理解为阻塞而不是忽略。
+
+$ sigset_t是一个结构体
+typedef struct{
+    unsigned long int __val[_SIGSET_NWORDS]; //位图结构,一串long int(实际和int一样,现在长整型是longlong) 组成的数组/位图,一个整数32位一般是不够用的,所以用数组
+} __sigset_t;
+
+// #define _SIGSET_NWORDS (1024/(8*sizeof(unsigned long int))) //即 1024/(8*4) = 1024/32 = 数组大小为32 //其中8是比特数,一个字节8个比特位 //1024是需要的比特位
+
+//假设需要寻找127所在的下标和比特位
+//下标定位    : 127/(sizeof(unsigned long int)*8) = 3,即下标为3
+//第几个比特位: 127%(sizeof(unsigned long int)*8) = 31
+//赋值        : val[3] | (1 << 127%(sizeof(unsigned long int)*8))
+//赋值        : val[3] &~(1 << 127%(sizeof(unsigned long int)*8))
+
+$ 不建议自己使用位操作,建议使用系统提供的
+sigset_t类型对于每种信号用一个bit表示“有效”或“无效”状态,至于这个类型内部如何存储这些bit则依赖于系统实现,
+    从使用者的角度是不必关心的,使用者只能调用以下函数来操作sigset_ t变量,而不应该对它的内部数据做任何解释,比如用printf直接打印sigset_t变量是没有意义的
+#include<signal.h>
+int sigemptyset(sigset_t *set);  //全部清零
+int sigfillset(sigset_t *set);  //全部置1
+int sigaddset(sigset_t *set,int signo);   //向信号集中添加一个信号
+int sigdelset(sigset_t,int signo);          //从集合中删除一个信号
+int sigismember(const sigset_t *set,int signo); //判断是否在集合中
+注意,在使用sigset_ t类型的变量之前,一定要调 用sigemptyset或sigfillset做初始化,使信号集处于确定的状态。
+初始化sigset_t变量之后就可以在调用sigaddset和sigdelset在该信号集中添加或删除某种有效信号
+
+$ sigprocmask //sys_call
+调用函数sigprocmask可以读取或更改进程的信号屏蔽字(阻塞信号集)。//即可以读取/更改 block这张位图
+#include <signal.h>
+int sigprocmask(int how, const sigset_t *set, sigset_t *oset); 
+    如果oset是非空指针,则读取进程的当前信号屏蔽字通过oset参数传出。
+    如果set是非空指针,则 更改进程的信号屏蔽字,参数how指示如何更改。
+    如果oset和set都是非空指针,则先将原来的信号 屏蔽字备份到oset里,然后根据set和how参数更改信号屏蔽字。假设当前的信号屏蔽字为mask(block表)
+返回值:若成功则为0,若出错则为-1
+参数:
+1.how是怎么做,有三个参数
+    SIG_BLOCK:向block中添加set有的,相当于mask=mask|set
+    SIG_UNBLOCK:从block中移除set有的,    mask=mask&~set
+    SIG_SETMASK:用set覆盖block,          mask=set
+2.set:要设置的新block集合
+3.oset:old set 输出型参数,会返回老的参数,起到保存/备份效果
+演示:[[[[[[[[
+void showBlock(sigset_t* oset)    
+{    
+  int signo =1;    
+  for(;signo<=31;++signo)    
+  {    
+    if(sigismember(oset,signo)==1) std::cout<<1;    
+    else std::cout<<0;    
+  }    
+  std::cout<<"\n";    
+}    
+    
+int main()    
+{    
+  sigset_t set,oset;    
+  sigemptyset(&set);    
+  sigemptyset(&oset);    
+  sigaddset(&set,2);    
+  sigprocmask(SIG_SETMASK,&set,&oset);    
+    
+  int cnt = 0;                                                               
+  while(true)    
+  {    
+    showBlock(&oset) ;    
+    sleep(1);    
+    if(cnt == 10)    
+    {    
+      std::cout<<"recover block\n";    
+      sigprocmask(SIG_SETMASK,&oset,&set);     //如果在此之前输入2号信号,则恢复后会立即递达,即终止
+      showBlock(&set);    //没有打印
+    }    
+    cnt++;    
+
+    return 0;
+  }   
+
+]]]]]]]]]
+
+
+
