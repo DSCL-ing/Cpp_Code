@@ -1033,9 +1033,18 @@ curl -sLf https://gitee.com/HGtz2222/VimForCpp/raw/master/install.sh -o ./instal
 
 $ 不使用table制表,使用空格最好,不同平台table占位不一样 -- 或者把\t制表符改成空格占用
 
-
-
-
+vim寄存器
+# "3yy //复制当前行到3号寄存器 
+# "ap  //粘贴a寄存器的内容
+# "3p  //粘贴3号寄存器的内容
+//寄存器可以起名字,数字,字母 ...,
+//默认是无名寄存器,即直接yy,p这些操作
+# :register //查看寄存器
+# :reg      //查看寄存器缩写
+小写字母：引用有名寄存器，会覆盖该寄存器的原有内容
+大写字母：则会将新内容添加到该寄存器的原有内容之后
+//系统剪贴板 "+ 寄存器  //应该是能粘贴到其他文件 -- 目前不会用
+//差不多够用了,前面带"才是引用寄存器
 
 
 
@@ -4091,7 +4100,7 @@ int semtimedop(int semid, struct sembuf *sops, unsigned nsops,
 $$$$ IPC三种方式小结:
 {
 $ 内核中的所有IPC资源统一以数组方式管理
-原理简单模拟演示:  //原理:用于说明问题,不是真实情况
+原理模拟演示:  //原理:用于说明问题,不是真实情况
 数组:struct ipc_perm* ipc_id_arr[];
 三个IPC结构体:
 struct shmid_ds{
@@ -4133,6 +4142,18 @@ struct msqid_ds{
            };
 
 } sumup_end;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4818,11 +4839,11 @@ $ 什么时候从内核态切换回用户态?
                |                                        \  /                                           |    (回到信号处理)          
 内核态         |          (没信号了,直接回到正常执行流)  \/ (如果该信号是自定义动作,要切换到用户态)    |                                         
 Kernel Mode    |                                检查当前进程的三张表                                   |                                      
-               |                                      /\     /\                                        |                           
-              \/                                      ||     || (回到信号处理)                         |                                          
-           完成系统任务 ------------------------------┙     ┗---------------------------------------┙                                                                
-                                                                                                                            
- 
+               |                                      /\  |  /\                                        |                           
+              ⇩                                      ||  |  || (回到信号处理)                         |                                          
+           完成系统任务 ------------------------------┙  |  ┗---------------------------------------┙                                                                
+                                                          |                                                                 
+                                                          ┗---------->-- 陷入内核
 信号三张表,三张uint32_t位图
 1.block
 2.pending
@@ -4837,8 +4858,96 @@ $ 每次从内核态到用户态都会进行一次信号检测
 $ 执行自定义动作的过程
 // sighandler和main函数使用不同的堆栈空间,它们之间不存在调用和被调用的关系,是 两个独立的控制流程。 
 // sighandler函数返回后自动执行特殊的系统调用sigreturn再次进入内核态.
- 如果没有新的信号要递达,这次再返回用户态就是恢复main函数的上下文继续执行了。 --- 那如果还有其他信号,则会再执行sighandler
+ 如果没有新的信号要递达,这次再返回用户态就是恢复main函数的上下文继续执行了。 --- 那如果还有其他信号,则取决于OS策略,可能继续处理,可能是下次处理...
 
- $ 为什么要在用户态执行handler? 
- 1.防止用户在handler方法中做了非法操作,影响OS安全和稳定 --- 阻止或不轻易在内核态中执行用户代码
+$ 为什么要在不能在内核态执行handler? 
+1.防止用户在handler方法中做了非法操作,影响OS安全和稳定 --- 阻止或不轻易在内核态中执行用户代码
+2.进程用户态时会受到权限约束,影响有限
+3.溯源,linux中有用户操作痕迹
+
+$ 为什么执行完handler后必须回到内核态? 处于用户态时,用户不知道中断的位置等,因为这些工作是由操作系统做的
+
+$ 只有内核态才能检测信号,因为信号位于PCB中,PCB只有OS在维护
+
+$ 执行信号动作前,会先将pending表清零,再执行
+
+
+
+$$ sigaction  --- examine and change a signal action --- 能够处理实时信号,后续...
+声明:int sigaction(int signum, const struct sigaction *act, struct sigaction *oldact);
+参数:
+
+1.act:输入型参数,是一个和函数同名的结构体
+2.oldact:输出型参数
+
+ struct sigaction {
+     void     (*sa_handler)(int);    // 和signal的handler一样
+     void     (*sa_sigaction)(int, siginfo_t *, void *); //实时
+     sigset_t   sa_mask;    //信号集类型,位图
+     int        sa_flags;  //置0 -- 实时
+     void     (*sa_restorer)(void); // 实时
+ };
+ // 部分信号给实时信号用的,置0即可 -- 目前只需使用 handler和mask
+
+1. 当某个信号的处理函数被调用时,内核自动将当前信号加入进程的信号屏蔽字,当信号处理函数返回时自动恢复原来的信号屏蔽字,
+    这样就保证了在处理某个信号时,如果这种信号再次产生,那么 它会被阻塞到当前处理结束为止。 
+2.如果在调用信号处理函数时,除了当前信号被自动屏蔽之外,还希望自动屏蔽另外一些信号,则用sa_mask字段说明这些需要额外屏蔽的信号,当信号处理函数返回时自动恢复原来的信号屏蔽字。
+
+[[[[[[[[[[
+
+static void showPending(sigset_t& pending)    
+{    
+  std::cout<<"当前进程的pending位图:";    
+  int signo =1;    
+  for(;signo<=31;++signo) {    
+    if(sigismember(&pending,signo)==1) std::cout<<1;    
+    else std::cout<<0;    
+  }    
+  std::cout<<"\n";    
+}    
+    
+static void handler(int signu)    
+{    
+  std::cout<<"get a signal: " <<signu <<"pid: "<<getpid()<<std::endl;    
+  int cnt = 10;    
+  while(cnt)    
+  {    
+    cnt--;    
+    
+    sigset_t pending;    
+    sigemptyset(&pending);    
+    sigpending(&pending);    
+    showPending(pending);    //刚进去时,循环内第二次信号达到前,2号pending是0,说明是执行信号动作时,是先清零再执行
+                             //当在循环内第二次到达后,pending2号立刻变为1,说明2号信号此时被block,无法被立即处理.因为当前循环是正在处理2号的handler内
+                             //当handler循环结束后,会立刻捕捉 block且pending中 的2号,再次清零pending,然后执行handler,
+    sleep(1);    
+  }                                                                          
+}    
+
+int main()    
+{
+
+  struct sigaction act,oldact;
+  memset(&act,0,sizeof(act));
+  memset(&oldact,0,sizeof(oldact));
+  act.sa_handler = handler;
+  act.sa_flags = 0; 
+  //以上等价于signa
+  
+  sigemptyset(&act.sa_mask);
+  
+   //处理sigaction中的signo号的同时阻塞3,4,5号信号                            
+  sigaddset(&act.sa_mask,3);                               
+  sigaddset(&act.sa_mask,4);                               
+  sigaddset(&act.sa_mask,5);   
+
+  sigaction(2,&act,&oldact);
+
+  while(true) sleep(1);        //1.ctrl+C发送2号信号,转到handler
+
+  return 0 ;
+}
+
+
+]]]]]]]]]]]]]]]]]
 
