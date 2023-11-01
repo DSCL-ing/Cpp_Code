@@ -9,9 +9,15 @@
 
 
 
-可重入函数/不可重入函数: --- 不同的执行流中同一个函数被重复进入
+$ 可重入函数/不可重入函数: --- 不同的执行流中同一个函数被重复进入
 //重复进入
+{
+1.大部分函数是不可重入函数
+2.一般只有全部是局部变量的函数才是可重入函数
+3.如SLT里大部分是不可重入函数,很多是new或malloc出来的.
+4.使用了cout等的也是不可重入函数,因为文件本身就是共享资源
 
+示例描述:
 //	main函数调用insert函数向一个链表head中插入节点node1,插入操作分为两步,刚做完第一步的 时候,因
 为硬件中断使进程切换到内核,再次回用户态之前检查到有信号待处理,于是切换 到sighandler函 数,sighandler也调用insert函数向同一个链表head中插入节点node2,插入操作的 两步都做完之后从
 sighandler返回内核态,再次回到用户态就从main函数调用的insert函数中继续 往下执行,先前做第一步
@@ -26,12 +32,72 @@ $ 如果一个函数符合以下条件之一则是不可重入的:
 2.调用了标准I/O库函数。标准I/O库的很多实现都以不可重入的方式使用全局数据结构
 
 ----  main 和 信号 两套不同的执行流
+}
 
 
-# objdump -S 可执行程序 // 反汇编
 
+
+
+关键字 volatile [ˈvɒlətaɪl] 
+{
 关键字 volatile [ˈvɒlətaɪl] 
 作用:内存可见 --- 拒绝CPU将内存变量优化到寄存器
 	编译器将内存变量优化到寄存器后,对内存不可见 --- 多执行流问题,可重入/不可重入问题
 
 
+# objdump -S 可执行程序 // 反汇编
+
+[chj@hecs-282967 ~ 17:32:15]$ gcc --version
+gcc (GCC) 4.8.5 20150623 (Red Hat 4.8.5-44)
+Copyright (C) 2015 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+-O0 -O1  -O2  -O3 //gcc有四种优化等级 -- //第一个是字母O,不是零0
+
+$ 演示: 寄存器优化 gcc -O1或-O2或-O3(是欧不是零)
+[[[[[[[[[[[[[[[[[[[[[
+
+volatile int quit = 0;  //定义一个全局的quit
+
+static void handler(int signo)
+{
+  (void)signo;
+  printf("change quit from 0 to 1\n");
+  quit = 1;                                    //发送信号后,quit改为1
+  printf("quit %d\n",quit); //此处编译器没有优化,printf打印的是内存中的quit,所以是正确的
+}
+
+
+
+int main()
+{
+  signal(2,handler);
+                                                                         
+  while(!quit);//不加括号,高频访问,骗编译器优化 //给main发送信号,发现执行了handler,但是循环还在继续
+
+  printf("man quit 正常");
+
+  return 0 ;
+}
+
+]]]]]]]]]]]]]]]]]]]]]
+
+$ while不退出的原因是,
+1.while(!quit);这样的语句会一直运算,会消耗很多CPU资源.编译器发现quit是循环条件,且while语法体为空,就识别成了一个不易改变的量,所以就修改代码,
+	从汇编层次,将quitmov到寄存器,修改代码成每次判断quit改为只判断一次,之后就不再判断.
+2.因此执行信号执行流时,将quit从内存上修改了,但是while只判断寄存器的quit,所以不会退出
+
+$ 解决方法:
+1.使用volatile关键字,然变量不要加载到寄存器,保证变量的内存可见性
+2.不使用gcc优化
+
+程序执行原理:进程的数据加载到内存中,但是运算要加载到CPU中 --- 越靠近CPU越快
+
+优化原理:将频繁访问而不作修改的数据加载(拷贝)到寄存器,内存中的数据还在,只是屏蔽了.
+	CPU会优先读取寄存器中的数据,提高访问速率 ---- 就近原则
+
+编译器优化:实际是修改代码,在汇编层次上修改
+	---> 编译器优化不一定是好的,可能会导致意想不到的问题
+
+}
