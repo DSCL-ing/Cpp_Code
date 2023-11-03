@@ -5273,3 +5273,76 @@ linux下没有真正意义的线程,而是进程模拟的线程(LWP) -- 所以li
 为了给用户提供线程,linux提供了库,将linux接口封装,用于给对用户提供进行线程控制的接口 --- 用户级线程库 --- 用户级多线程
     //用户级线程库实现的线程称为用户级多线程
     //库名: pthread.h --- 任何系统都要自带 --- 这种必带的库称为 原生线程库
+
+$ 线程接口
+{
+一.创建进程
+int pthread_create(pthread_t *thread,  
+                   const pthread_attr_t *attr,   
+                   void *(*start_routine) (void *),     
+                   void *arg  );
+注意:Compile and link with -pthread . 编译和链接时带上pthread库
+参数:
+1.pthread_t:unsigned long int
+    thread:线程id,输出型参数,创建线程后会返回
+2.pthread_attr:
+    union pthread_attr_t
+    {
+      char __size[__SIZEOF_PTHREAD_ATTR_T];
+      long int __align;
+    };
+attr:线程的属性,一般设为NULL就可以了
+3.start_routine:返回值为void*,参数为void*的函数指针.用于执行我们分配给线程执行的方法,执行完pthread_create所有工作后,才回调routine
+4.arg:函数指针start_routine的参数,void可以接受任意类型
+返回值:
+    成功返回0,错误返回错误码
+
+}
+
+$ Linux线程调度和进程一样,运行谁由调度器决定
+
+---------------------------------------------------------------------- thread.cc
+//此时10个线程都在重入这个函数
+void* thread_run(void* args)//void可以接受任意类型
+{
+  char* name = (char*) args;
+  while(1){
+    printf("new  thread running,my thread name is: %s\n",name);
+    sleep(1);
+  }
+  delete[] name;
+  return nullptr;
+}
+
+int main()
+{
+  pthread_t tid[NUM];
+  for(int i = 0; i<NUM;++i){
+    char* tnmae = new char[64];    //解决方法1,开辟独立的堆空间 -- 相当于给每个线程都分配了独立的堆空间
+    //char tname[64];             //栈空间循环可能不会销毁,或者可能是会重复利用.因此栈内开辟的临时数组传参有被覆盖的可能
+    snprintf(tname, sizeof(tname),"thread-%d",i);
+    pthread_create(tid+i,nullptr,thread_run,tname);
+  }
+
+
+  //return 0;   //如果主线程退出,则所有线程也退出
+
+  while(1){
+    printf("main thread running\n");
+    sleep(1);
+
+  }
+
+  return 0;
+} 
+---------------------------------------------------------------------- execute_end
+
+
+$ 线程也有类似僵尸进程的问题,必须要主线程去等待新线程退出 --- 需要新线程全部退出后,主线程才能退出
+接口:pthread_join -- 等待线程
+int pthread_join(pthread_t thread, void **retval); //默认是阻塞等待
+返回值:成功返回0
+
+线程终止三种情况
+1.线程函数执行完毕
+    //exit是进程退出,不是进程退出,如果在线程内执行,则整个进程(包括所有线程)直接退出
