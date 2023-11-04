@@ -484,7 +484,7 @@ void main()
  * 在C++11标准的语法中，auto被定义为自动推断变量的类型。(gcc,g++4.6以上,VS2013)
  * 实际价值：简化代码，C++后面复杂代码用到 ，当类型很长时，可以考虑自动推导（也可以用typedef）
  * 
- * 注意：typedef+const时要小心，会编译成const+typedef
+ * 注意：typedef+const时要小心，会编译成const+typedef ???
  * 
  * 灵活使用1:
  * 	int* a = 0;

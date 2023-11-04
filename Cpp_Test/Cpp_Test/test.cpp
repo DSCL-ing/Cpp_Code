@@ -16,15 +16,15 @@ struct TreeNode
 	TreeNode* right;
 	int data;
 };
-
-int TreeSize(TreeNode* root )
+						
+int TreeSize(TreeNode* root )											
 {
 	if (root == nullptr) return 0;
 	if ((root->left == nullptr && root->right == nullptr)) return 1;
 	return (TreeSize(root->left) + TreeSize(root->right));
 	
 }
-
+				
 int main()
 {
 	TreeNode* root;

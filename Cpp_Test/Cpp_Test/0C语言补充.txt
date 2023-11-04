@@ -1,6 +1,23 @@
 ﻿#pragma once
 
 
+1.sizeof 变量 --- 证明sizeof不是函数,而是关键字
+2.sizeof(关键字)
+  sizeof(变量)
+
+
+/*
+mode_t; //就是unsigned int == uint32_t 
+uint32_t; // usigned int
+uint64_t; // usigned long int
+int64_t   //long int 或 long long int
+int32_t   //int
+int16_t   //short
+int8_t    //char
+size_t    // usigned long  int
+ssize_t   // signed long int
+time_t    //long int 
+*/
 
 堆栈 == 栈
 

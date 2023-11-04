@@ -933,13 +933,14 @@ U	将选中部分的字符全部改为大写
 //vim在退出前,可以撤销和undo.保存也可以
 //vim在退出后,之前的修改不能再撤销
 
+## 快速定位
 f<char> //f+字符==移动到该字符,shift是往前移动 -- 仅当前行
-
 //shift+g移动到文本尾行
 //gg 移动到文本首行
 //n+shift+g 移动到第n行
-//shift+$ 定位到行尾
-//shift+^ / 0  定位到行首
+//shift+$ 定位到句尾
+//shift+^  定位到句首
+//0       //移动到行首
 
 //w以单词/字符为单位向右移动
 //nw 移动n个单位
@@ -2407,7 +2408,7 @@ fork失败原因有
 3.异常退出,如ctrl+c
 
 
-# echo $?  //取得最近一次进程的退出码,取完就没了
+# echo $?  //取得最近一次进程的退出码,只能取一次,取完就刷新,下次取不到了
 
 进程退出情况分类 
 a.正常退出(1.结果正确 2.结果不正确)  -- 提供进程退出码.供用户进行进程退出健康状态的判定 -- 可用可不用
@@ -2436,8 +2437,10 @@ b.奔溃了(进程异常)[操作系统信号 - 奔溃的原因: 进程因为某�
  进程退出方式
  1.return -- main函数中return才是进程退出 ---    进程执行其实是main执行流执行
  2.exit函数退出
- void exit(int status): <stdlib.h> -- exit可以在代码的任何地方结束进程 -- status是进程退出码,等价于main的return
- exit内封装了_exit(系统调用) -- void _exit(int status):<unistd.h>  --- _exit很直接,从系统内直接关闭进程,不会刷新缓冲区什么的 -- main
+ void exit(int status): <stdlib.h> -- exit可以在代码的任何地方结束进程 
+ 参数: status是进程退出码,等价于main的return,0正常退出,非0异常退出
+
+ $ exit内封装了_exit(系统调用) -- void _exit(int status):<unistd.h>  --- _exit很直接,从系统内直接关闭进程,不会刷新缓冲区什么的 -- main
 
  exit和_exit区别:
  1.exit会先执行用户定义的清理函数,然后再冲刷缓冲,关闭流等,在向内核(kernel)申请关闭进程(_exit)
@@ -5301,7 +5304,7 @@ attr:线程的属性,一般设为NULL就可以了
 
 $ Linux线程调度和进程一样,运行谁由调度器决定
 
----------------------------------------------------------------------- thread.cc
+---------------------------------------------------------------------- 线程使用基本演示,创建线程
 //此时10个线程都在重入这个函数
 void* thread_run(void* args)//void可以接受任意类型
 {
@@ -5335,14 +5338,241 @@ int main()
 
   return 0;
 } 
----------------------------------------------------------------------- execute_end
+---------------------------------------------------------------------- 创建线程及基本演示___end
 
 
 $ 线程也有类似僵尸进程的问题,必须要主线程去等待新线程退出 --- 需要新线程全部退出后,主线程才能退出
+
 接口:pthread_join -- 等待线程
 int pthread_join(pthread_t thread, void **retval); //默认是阻塞等待
 返回值:成功返回0
 
+
+
 线程终止三种情况
 1.线程函数执行完毕
     //exit是进程退出,不是进程退出,如果在线程内执行,则整个进程(包括所有线程)直接退出
+
+2.调用函数pthread_exit
+
+
+pthread_exit -- terminate calling thread. 终止调用该函数的线程
+声明:void pthread_exit(void *retval);
+返回值:无
+参数:
+The  pthread_exit() function terminates the calling thread                        and returns a value via retval 
+that (if the thread is joinable) is  available  to  another thread in the same process that calls pthread_join(3).
+pthread_exit()函数终止调用它的线程，并通过retval返回一个值，
+如果线程是可被等待（joinable），那么这个值将在同一进程中的另一个线程调用pthread_join(3)时可用。
+
+
+$ 线程访问可重入函数时,共享所有非临时变量
+$ 线程访问不可重入函数时,所有线程独立
+
+$ 线程只有退出码,没有退出信号.
+    因为线程异常收到信号是直接发给进程,从进程层面处理进程.所以线程不考虑异常,只考虑正常
+
+
+---------------------------------------------------------------------- 线程:使用基本类型参数做返回值
+void* thread_run(void* args)//void可以接受任意类型
+{
+  char* name = (char*) args;
+  while(1){
+    printf("new  thread running,my thread name is: %s\n",name);
+    break;
+  }
+  delete[] name;
+  sleep(1);
+  pthread_exit((void*)1);
+  return nullptr;
+}
+
+int main()
+{
+  pthread_t tids[NUM];
+  for(int i = 0; i<NUM;++i){
+    char* tname = new char[64];
+    //char tname[64];
+    snprintf(tname, 64,"thread-%d",i+1);
+    pthread_create(tids+i,nullptr,thread_run,tname);
+  }
+
+  void* retval ;
+
+  for(int i = 0 ; i<NUM ; ++i){                                      
+   int n =  pthread_join(tids[i],&retval);
+   if(n!=0){
+     std::cout<<"phread_join error"<<std::endl;
+   }
+   std::cout<<"thread ret:"<<(uint64_t)retval <<"\n"; //
+   //云服务器centos64位,指针是8字节,int是4字节,如果直接int会发生精度截断而警告,为了不发生精度截断,所以uint64,
+
+  std::cout<<"all thread quit"<<std::endl;
+
+  return 0;
+}
+---------------------------------------------------------------------- 线程:使用基本类型参数做返回值___end
+
+---------------------------------------------------------------------- 线程:使用对象作返回值
+#define NUM 10
+
+enum
+{
+  OK = 0,
+  ERR
+};
+
+// 不只是可以传整型,还可以传类,传更多信息,让线程去完成
+class ThreadData
+{
+public:
+  ThreadData(const std::string &name, int id, time_t createTime, int top)
+      : _name(name), _id(id), _createTime((uint64_t)createTime), _status(OK), _top(top), _result(0)
+  {
+  }
+
+public:
+  std::string _name;
+  int _id;
+  uint64_t _createTime;
+
+  // 要返回的数据,方式1
+  int _status; // 退出码
+  int _top;    // 最大值
+  int _result;
+  // char arr[n] //如果需要线程排序,可以传数组...
+};
+
+// 也可以定义一个专门返回数据的类,方式二
+// class ResultData{};
+
+void *thread_run(void *args) // void* 可以接受任意类型,返回值和参数匹配,目的是使用同样的参数输入和输出
+{
+  ThreadData *td = static_cast<ThreadData *>(args);
+  for (int i = 1; i <= td->_top; i++)
+  {
+    td->_result += i;
+  }
+  std::cout << td->_name << " cal done!" << std::endl;
+
+  // sleep(1);
+  // pthread_exit(td); //return和texit(pthread)返回效果一样,都是输出型参数
+  return td;
+}
+
+int main()
+{
+  pthread_t tids[NUM];
+  for (int i = 0; i < NUM; ++i)
+  {
+    // char* tname = new char[64];//这时就不再new了,因为new了还要另外回收
+    char tname[64];
+    snprintf(tname, 64, "thread-%d", i + 1);
+    ThreadData *td = new ThreadData(tname, i + 1, time(nullptr), 100 + 5 * i); // 让线程做求和
+    pthread_create(tids + i, nullptr, thread_run, (void*)td);
+    sleep(1);
+  }
+
+  void *retval = nullptr; // 用于接收线程任务的"返回值"--- return和t_exit的
+
+  for (int i = 0; i < NUM; ++i)
+  {
+    int n = pthread_join(tids[i], &retval);
+    if (n != 0)
+    {
+      std::cout << "phread_join error" << std::endl;
+    }
+    ThreadData *td = static_cast<ThreadData *>(retval); //???
+    if (td->_status == OK)
+    {
+      std::cout << td->_name
+                << "计算结果是:" << td->_result << ", 它要计算的是[1," << td->_top << "]的和"
+                << "\n"; //
+    }
+  }
+
+  std::cout << "all thread quit" << std::endl;
+  return 0;
+}
+---------------------------------------------------------------------- 线程:使用对象作返回值___end
+
+
+$ 接口:pthread_cancel --- send a cancellation request to a thread 给线程发送取消请求
+{取消线程 -- 使用频率不高
+
+测试:
+// 自己能取消自己吗?
+// 次线程能取消主线程吗?
+
+退出码:PTHREAD_CANCELED   #define PTHREAD_CANCELED ((void *) -1)
+}
+
+$ 线程获取自己的id
+{接口:pthread_self -- obtain ID of the calling thread 获取调用线程的ID
+声明: pthread_t pthread_self(void);
+返回值：返回自己的ID 
+}
+---------------------------------------------------------------------- 线程退出,获取自己id演示
+void *threadRun(void* args)
+{
+    const char*name = static_cast<const char *>(args);
+
+    int cnt = 5;
+    while(cnt)
+    {
+        cout << name << " is running: " << cnt-- << " obtain self id: " << pthread_self() << endl;  ---- 获取自己ID
+        sleep(1);
+    }
+
+    pthread_exit((void*)11); 
+
+    // PTHREAD_CANCELED; #define PTHREAD_CANCELED ((void *) -1)
+}
+
+int main()
+{
+    pthread_t tid;
+    pthread_create(&tid, nullptr, threadRun, (void*)"thread 1");
+    // sleep(3);
+
+    // pthread_cancel(tid);  // --- 线程退出
+
+    void *ret = nullptr;
+    pthread_join(tid, &ret);
+    cout << " new thread exit : " << (int64_t)ret << "quit thread: " << tid << endl; ---- 打印线程id比对
+    return 0;
+}
+---------------------------------------------------------------------- 线程退出演示___end
+
+? 能否非阻塞等待线程,如何非阻塞等待线程?
+? 为什么线程ID这么大,用来干什么的
+
+什么是线程分离
+什么是用户级线程库
+什么叫做线程ID,线程ID和LWP的关系是什么
+线程的私有栈是什么,
+线程私有数据
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -14,14 +14,5 @@
 
 //65535 = 2^16 = 2^10 * 2^6 = 1024 * 64
 
-/*
-mode_t; //就是unsigned int == uint32_t 
-uint32_t; // usigned int
-uint64_t; // usigned long int
-int64_t   //long int 或 long long int
-int32_t   //int
-int16_t   //short
-int8_t    //char
-size_t    // usigned long  int
-ssize_t   // signed long int
-*/
+//返回值为void*或参数为void*时,说明可以传任意类型,不只是基本类型,还可以传一个类,对象 
+
