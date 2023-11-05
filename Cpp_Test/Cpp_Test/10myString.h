@@ -79,12 +79,13 @@ namespace test {
 			strcpy(_str, s);
 		}
 
-
-		void swap(string& s)
+		//自定义成员swap
+		void swap(string& tmp)
 		{
-			std::swap(_str, s._str);
-			std::swap(_size, s._size);
-			std::swap(_capacity, s._capacity);
+			std::swap(_str, tmp._str); //把_str和tmp._str的值交换
+			std::swap(_size, tmp._size);
+			std::swap(_capacity, tmp._capacity);
+			//函数结束后会自动释放
 		}
 
 		//copy constructor
@@ -92,8 +93,8 @@ namespace test {
 			:_str(nullptr)
 		{
 			cout << "string(const string& s) -- 深拷贝" << endl;
-			string tmp(s._str); //复用:走带参构造造一个临时string,然后交换信息,之后自动释放掉临时对象
-			swap(tmp);
+			string tmp(s._str); //复用:走带参构造造一个临时对象tmp,值是拷贝的
+			swap(tmp);//交换数据,拷贝完成
 		}
 
 		//移动构造 -- 

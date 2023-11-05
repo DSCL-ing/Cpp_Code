@@ -5152,6 +5152,9 @@ $ 实际上,signal(SIGCHLD,SIG_IGN)是需要我们手动设置的:
 
 $$$$$$$$$$$$$$$$$$$$$$$ $$ 多线程
 
+注意:单核机器和多核机器现象可能不同,多使用不同机器观察
+
+
 $$ 线程:
 //执行流
 
@@ -5649,7 +5652,7 @@ $ C++提供的<thread>库
 1.推荐使用语言的,因为语言支持的跨平台能力更好.除非是确定锁定某个平台开发
           
 
-? 线程的私有栈是什么? 
+? 线程的私有栈是什么?  --- 叫独立栈更准确
 线程的私有栈使用的是库提供的栈,位于共享区.
 主线程的栈使用的是系统的进程空间上的栈
 
@@ -5657,6 +5660,11 @@ $ C++提供的<thread>库
 ? 线程私有数据
 1.全局变量所有线程共享
 2.局部变量各线程独立 -- 实现方式:在自己的栈上定义(通过 切换ebp,esp寄存器,然后esp-4得到地址,这样的方式来得到独立的变量) --- :切换栈方式实现地址偏移/偏移量
+
+
+$ 就算是独立栈，独立数据，其他线程想看也是能够看得到。因为数据都在同一个进程空间.
+
+
 
 ---------------------------------------------------------------------- 线程局部存储演示:
 
@@ -5819,6 +5827,9 @@ Segmentation fault
 锁接口
 {
 一:创建,初始化,销毁
+
+pthread_mutex_t mutex; //定义一个锁,有多种定义方式
+
 int pthread_mutex_destroy(pthread_mutex_t *mutex);
 作用:对锁进行销毁
 
@@ -5829,8 +5840,10 @@ int pthread_mutex_init(pthread_mutex_t *restrict mutex,
 1.mutex:输出型参数,对该锁作初始化
 2.attr:(设为null)
 
+# pthread_mutex_t mutex; //局部锁,必须要init和destroy
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; //定义一个互斥锁 -- 必须是全局的 -- 
+# pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; //定义一个互斥锁 -- 必须是全局的 -- 使用PTHREA_MUTEX_INITIALIZER做全局初始化,并且可以销毁
+//不需要pthread_mutex_init和pthread_mutex_destroy; 因为全局锁本来就没必要销毁,等进程结束系统自动回收即可
 
 类型pthread_mutex_t:互斥锁
 
@@ -5843,13 +5856,62 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex);
 int pthread_mutex_unlock(pthread_mutex_t *mutex);
 作用:解锁
 
-
-
-
 }
 
-现象原因:某线程执行太快,加锁解锁特别频繁,其他线程阻塞状态不能立即获得资源 ---> 导致只有一个线程工作
-解决:让线程慢一点点..
+---------------------------------------------------------------------- 多线程,加锁,访问共享资源
+int tickets = 10000;
+pthread_mutex_t mutex;
+
+void *threadRoutine(void *name)
+{
+  string tname = static_cast<const char *>(name);
+
+  while (true)
+  {
+    // pthread_mutex_lock(&mutex);
+    if (tickets > 0)
+    {
+      usleep(2000); //抢票花费时间...
+      cout << tname << " get a ticket: " << tickets-- << endl;
+      // printf("%s get a ticket: %d\n",name,tickets--);
+      pthread_mutex_unlock(&mutex);
+    }
+    else
+    {
+      pthread_mutex_unlock(&mutex);
+      break;
+    }
+    //可能出现的现象:某线程执行太快,加锁解锁特别频繁,其他线程阻塞状态不能立即获得资源 ---> 导致只有一个线程工作 
+    //原因:单核,性能不足,多核性能不足等
+    //解决:让线程慢一点点..
+    //usleep(1000); //假设处理后续业务还要花费一点时间
+  }
+  return nullptr;
+}
+
+int main()
+{
+  pthread_mutex_init(&mutex,nullptr);
+  pthread_t t[4];
+  int n = sizeof(t) / sizeof(t[0]);
+
+  for (int i = 0; i < n; i++)
+  {
+    char *tname = new char[64]; // C语言接口,传C字符串
+    snprintf(tname, 64, "thread-%d", i + 1);
+    pthread_create(t + i, nullptr, threadRoutine, tname);
+  }
+
+  for (int i = 0; i < n; i++)
+  {
+    pthread_join(t[i], nullptr);
+  }
+  pthread_mutex_destroy(&mutex);
+
+  return 0;
+}
+---------------------------------------------------------------------- 多线程,加锁,访问共享资源___End
+
 
 
 锁本身就是个共享资源，锁要保护别人，也要保护自己，锁如何保护自己？
