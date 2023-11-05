@@ -10,12 +10,7 @@ using std::endl;
 #include<string.h>
 #include<algorithm>
 
-struct TreeNode
-{
-	TreeNode* left;
-	TreeNode* right;
-	int data;
-};
+
 						
 int TreeSize(TreeNode* root )											
 {
@@ -34,4 +29,9 @@ int main()
 	return 0;
 }
 
- 
+
+
+
+
+
+

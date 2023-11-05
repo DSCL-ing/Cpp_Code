@@ -8,6 +8,7 @@
  * 
  * 
  */
+ /*
 #include <ctime>
 #include <random>
 #include <iostream>
@@ -35,3 +36,27 @@ int main()
 	}
 	return 0;
 }
+*/
+
+/** 树节点
+
+
+struct TreeNode
+{
+	TreeNode* left;
+	TreeNode* right;
+	int data;
+};
+ */
+
+ /* 打印十六进制 */
+ /*
+#include<iostream>
+#include<string>
+std::string toHex(int num) 
+{
+	char buffer[64] ={0};
+	snprintf(buffer,64,"0x%x",num);
+	return buffer;
+ }
+ */
