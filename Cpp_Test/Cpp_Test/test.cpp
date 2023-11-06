@@ -12,19 +12,10 @@ using std::endl;
 
 
 						
-int TreeSize(TreeNode* root )											
-{
-	if (root == nullptr) return 0;
-	if ((root->left == nullptr && root->right == nullptr)) return 1;
-	return (TreeSize(root->left) + TreeSize(root->right));
-	
-}
+
 				
 int main()
 {
-	TreeNode* root;
-	TreeSize(root);
-
 
 	return 0;
 }
