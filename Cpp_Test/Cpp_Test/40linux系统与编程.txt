@@ -5429,7 +5429,7 @@ all thread quit
 2.调用函数pthread_exit
 
 
-pthread_exit -- terminate calling thread. 终止调用该函数的线程
+pthread_exit -- terminate calling thread. 终止调用该函数的线程 --- 线程自己退,几乎等价return
 声明:void pthread_exit(void *retval);
 返回值:无
 参数:
@@ -5570,7 +5570,7 @@ int main()
 ---------------------------------------------------------------------- 线程:使用对象作返回值___end
 
 
-$ 接口:pthread_cancel --- send a cancellation request to a thread 给线程发送取消请求
+$ 接口:pthread_cancel --- send a cancellation request to a thread 主线程给线程发送取消请求,主线程让新线程退
 {取消线程 -- 使用频率不高
 
 测试:
@@ -5580,7 +5580,7 @@ $ 接口:pthread_cancel --- send a cancellation request to a thread 给线程发
 退出码:PTHREAD_CANCELED   #define PTHREAD_CANCELED ((void *) -1)
 }
 
-$ 线程获取自己的id
+$ 接口 pthread_self -- 线程获取自己的id
 {接口:pthread_self -- obtain ID of the calling thread 获取调用线程的ID
 声明: pthread_t pthread_self(void);
 返回值：返回自己的ID 
@@ -5932,10 +5932,34 @@ int main()
 5.访问临界区过程中,线程有可能被切换,被调度.但被切换后,其他线程依旧无法访问临界区,依旧会阻塞在锁外 --- 安全,无影响
 6.linux中锁被称为互斥量.
 
-互斥量的原理和实现:
 
+互斥量的原理和实现:
+[[[[
 .为了实现互斥锁操作,大多数体系结构都提供了swap或exchange指令,该指令的作用是把寄存器和内存单元的数据相交换,
 由于只有一条指令,保证了原子性,即使是多处理器平台,访问内存的总线周期也有先后,一个处理器上的交换指令执行时另一个处理器的交换指令只能等待总线周期。 
+//大部分汇编都是原子的
+//汇编swap和exchange作用就如:原子实现两数据如int a,int b交换
+
+汇编伪代码:
+lock:
+    movb $0, %al //向寄存器al写入0   --- al寄存器是线程自己的上下文
+    xchgb %al, mutex //交换mutex和al寄存器的内容 --- 原子
+    if(al寄存器的内容>0) return 0; //返回,可以取得锁
+    else 挂起等待       //挂起
+    goto lock;
+
+unlock:
+    movb $1, mutex      //向mutex写入1 -- 直接改,不需要交换,因为只要mutex为1就相当于释放锁了. 因为阻塞的线程下次能够从mutex获得1
+    唤醒等待mutex的进程
+    return 0;
+
+$加锁实际就是把mutex和线程自己的私有上下文做交换,0和1换来换去,没有增1和减1,保持一个1在流转
+    访问临界区的线程都在尝试从mutex获得1,谁交换成功谁就能访问
+]]]]
+
+
+
+
 
 
 

@@ -116,6 +116,9 @@
     <ClInclude Include="Test.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="0收藏.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="40linux系统与编程.txt">
@@ -144,16 +147,10 @@
     <None Include="0常识.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0收藏.txt">
-      <Filter>头文件</Filter>
-    </None>
     <None Include="0算法总结.txt">
       <Filter>头文件</Filter>
     </None>
     <None Include="41.linuxShell.txt">
-      <Filter>头文件</Filter>
-    </None>
-    <None Include="0C++Note1.txt">
       <Filter>头文件</Filter>
     </None>
     <None Include="0C++Note2.txt">
@@ -166,6 +163,12 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="0OnlineJudge.txt">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="0C++补充.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="0C++Note1.h">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>
