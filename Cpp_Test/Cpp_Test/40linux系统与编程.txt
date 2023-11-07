@@ -5408,6 +5408,12 @@ attr:线程的属性,一般设为NULL就可以了
 返回值:
     成功返回0,错误返回错误码
 
+错误:
+    undefined reference to `pthread_create'
+原因:pthread 库不是 Linux 系统默认的库，连接时需要使用静态库 libpthread.so，所以在使用pthread_create()创建线程，需要链接该库。
+解决:#在编译中要加 -lpthread参数
+# gcc thread.c -o thread -lpthread
+
 }
 
 $ Linux线程调度和进程一样,运行谁由调度器决定
@@ -6053,9 +6059,12 @@ lock:
     goto lock;
 
 unlock:
-    movb $1, mutex      //向mutex写入1 -- 直接改,不需要交换,因为只要mutex为1就相当于释放锁了. 因为阻塞的线程下次能够从mutex获得1
+    movb $1, mutex      //向mutex写入1 -- 直接改,不需要交换,
     唤醒等待mutex的进程
     return 0;
+解锁:
+1.只要mutex为1就相当于释放锁了. 因为阻塞的线程下次能够从mutex获得1
+2.解锁并不需要归还锁 --> 别的线程也可以释放锁
 
 $加锁实际就是把mutex和线程自己的私有上下文做交换,0和1换来换去,没有增1和减1,保持一个1在流转
     访问临界区的线程都在尝试从mutex获得1,谁交换成功谁就能访问
@@ -6081,10 +6090,66 @@ $$$$ 线程安全
 //不可重入函数不是坏的,只要在使用时小心些,大部分函数都是不可重入函数
 
 
+$$$$ 死锁
+
+多线程代码 -> 并发访问临界资源 -> 加锁 -> "可能"导致死锁 -> 解决死锁问题
+
+$$ 产生死锁的必要条件
+1.互斥  --- 一次一人
+2.请求和保持 --- 申请资源阻塞
+3.环路等待  --- 成环
+4.不剥夺条件 -- 没有特权解锁:如一个线程可以解锁另一个线程的锁
+
+//必要条件:只要产生了死锁,则必须发生的条件 --- 可能还有其他条件,但必要条件必须发生
+
+$$ 如果避免死锁?
+核心思想:破坏死锁的4个必要条件的其中一个
+解决方法:
+1.不加锁 --- 不是所有都要加锁,能不加锁就不加锁
+2.主动释放锁
+>接口:trylock --- 连续申请锁,如果有不申请不成功的锁,则释放掉已经申请过的锁
+>声明:in t pthread_mutex_trylock(pthread_mutex_t *mutex);
+3.按顺序申请锁
+4.控制线程统一释放锁 --- 如果在一段时间里线程没有动作,则同意释放
 
 
 
+$$ 饥饿问题:没错但不合理的问题
+原因:一个线程长期高优先级占有锁,使用锁,释放锁,导致其他线程低频或不能使用临界资源
 
+解决:为了合理的解决饥饿问题,在安全的规则下,多线程访问资源具有 一定 的顺序性 
+    --- 线程同步 --- 让多线程进行协同工作
 
+$$ 条件变量:condition -- cond
+    条件变量是linux实现线程同步的一种方式,一个线程通过条件变量的方式通知另一个线程
 
+    
+###条件变量 衡量要访问的资源的状态
+.当一个线程互斥地访问某个变量时，它可能发现在其它线程改变状态之前，它什么也做不了。
+    //意思是,在临界资源内一定会有条件判断,如果条件没有改变时,如果条件不满足,就如抢票没票时,抢票工作为循环加锁后又释放锁,什么都没做.并且优先级高,一直抢占资源 -- 空转
+例如一个线程访问队列时，发现队列为空，它只能等待，只到其它线程将一个节点添加到队列中。这种情况就需要用到条件变量。
 
+如果条件变量不满足,这个线程释放锁后去休眠/阻塞.当条件满足时,再唤醒
+
+条件变量在phread库中是一个类型,维护了一个队列:当资源不满足时,让线程排队的队列
+
+类型-定义:pthread_cond_t cond 
+pthread_cont_t cond = PTHREAD_COND_INITIALIZER; //全局条件变量初始化
+
+接口:pthread_cond_init -- 初始化条件变量
+int pthread_cond_init(pthread_cond_t *restrict cond,const pthread_condattr_t *restrict attr); 
+参数：
+cond：要初始化的条件变量 
+attr：NULL
+
+接口:pthread_cond_destroy -- 销毁条件变量
+int pthread_cond_destroy(pthread_cond_t *cond)
+
+接口:pthread_cond_wait -- 把线程放入等待队列中
+int pthread_cond_wait(pthread_cond_t *restrict cond,pthread_mutex_t *restrict mutex); 
+参数：cond：要在这个条件变量上等待 
+mutex：互斥量 --- 需要配合锁使用
+
+唤醒等待 
+int pthread_cond_broadcast(pthread_cond_t *cond); -- 唤醒所有线程 -- 广播
+int pthread_cond_signal(pthread_cond_t *cond); --- 唤醒一个线程
