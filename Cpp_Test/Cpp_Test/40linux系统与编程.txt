@@ -3552,6 +3552,8 @@ $ 什么是管道
 管道是Unix中最古老的进程间通信的形式。 -- 所有IPC的爷爷
 我们把从一个进程连接到另一个进程的一个数据流称为一个“管道
 
+管道自带互斥属性
+
 # who | wc -l  //最基本的进程间通信
 
 验证管道|两边的进程是否是独立进程:
@@ -6131,7 +6133,11 @@ $$ 条件变量:condition -- cond
 
 如果条件变量不满足,这个线程释放锁后去休眠/阻塞.当条件满足时,再唤醒
 
-条件变量在phread库中是一个类型,维护了一个队列:当资源不满足时,让线程排队的队列
+
+
+
+
+$ 条件变量在phread库中是一个类型,维护了一个队列:当资源条件不满足时,让线程排队的队列
 
 类型-定义:pthread_cond_t cond 
 pthread_cont_t cond = PTHREAD_COND_INITIALIZER; //全局条件变量初始化
@@ -6148,8 +6154,114 @@ int pthread_cond_destroy(pthread_cond_t *cond)
 接口:pthread_cond_wait -- 把线程放入等待队列中
 int pthread_cond_wait(pthread_cond_t *restrict cond,pthread_mutex_t *restrict mutex); 
 参数：cond：要在这个条件变量上等待 
-mutex：互斥量 --- 需要配合锁使用
+mutex：互斥量 --- 需要配合锁使用 -- 会将该锁释放 --- 因为条件变量本身就是在临界资源内判断,必须先释放锁后才能去休眠,否则锁没机会被释放
 
 唤醒等待 
 int pthread_cond_broadcast(pthread_cond_t *cond); -- 唤醒所有线程 -- 广播
 int pthread_cond_signal(pthread_cond_t *cond); --- 唤醒一个线程
+
+
+---------------------------------------------------------------------- 条件变量初识
+const int num = 5;
+
+pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void* active(void*args)
+{
+  const std::string name = static_cast<const char*>(args);
+
+  while(true)
+  {
+    pthread_mutex_lock(&mutex);
+    pthread_cond_wait(&cond,&mutex);//直接进入休眠
+    std::cout<<name<<" 活动"<<std::endl;
+    pthread_mutex_unlock(&mutex);
+  }
+
+}
+
+int main()
+{
+  pthread_t tids[num];
+  for(int i = 0 ; i<num;i++)
+  {
+    char *name = new char[32];
+    snprintf(name,32,"thread-%d",i+1);
+    pthread_create(tids+i,nullptr,active,(void*)name);
+  }
+  sleep(1);
+  while(true)
+  {
+    std::cout<<"main wakeup thread ..." <<std::endl;
+    // pthread_cond_signal(&cond); //逐一唤醒
+    pthread_cond_broadcast(&cond); //全部唤醒
+    sleep(1);
+  }
+  
+  for(auto& tid: tids)
+  {
+    pthread_join(tid,nullptr);
+  }
+
+  return 0;
+}
+
+1.在主线程中使用cond_signal逐个唤醒进程
+观察发现,线程以一定顺序进行运行. 
+
+2.使用cond_broadcast一次全部唤醒
+线程也是按一定顺序排队运行
+
+---------------------------------------------------------------------- 条件变量初识___End
+
+条件变量,允许多线程在cond中队列式等待(队列式等待就是一种顺序)
+
+
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+$$$ 生产者 - 消费者 模型 --- 允许生产和消费的步调可以不一致 --->高效
+
+
+        消费者 <--------------------->    超市 <--------------------> 供货商
+                                        交易场所                       生产者       
+                                        
+        消费零散,                         缓存                         生产力高
+                                 允许生产和消费的步调可以不一致
+                                       效率高,忙闲不均
+
+OS中:    线程                         一种特定的缓冲区                  线程
+                                     可以是各种数据结构
+
+
+
+CP模型 producer-consumer 生产者-消费者模型
+"321"原则
+{
+   $ 3种关系 --- 通过锁和条件变量来维护
+   >1.生产者与生产者: 竞争 --- 竞争超市的空间 ----> 互斥
+   >2.生产者和消费者: 互斥或同步
+       a.同步/协调
+       b.竞争 --- 买和卖只能同时有1个 --- 互斥
+   >3.消费者与消费者:互斥 -- 争夺资源
+   
+   $ 两种角色:生产者,消费者 -- 两个线程
+   
+   $ 一个交易场所(公共资源) -- 缓冲区
+}
+
+$ 手写CP问题,本质就是用代码维护实现"321"原则
+
+
+
+
+
+
+基于BlockingQueue的生产者消费者模型(类似管道)
+
+情况
+1.队列为空时,消费者不能读 
+2.队列为满时,生产者不能写

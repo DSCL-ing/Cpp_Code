@@ -9,3 +9,5 @@
 //
 //格式: 
 //while :; do xxxxx;xxxx; done //中间命令以;隔开
+
+while :; do ps -aL|head -1;ps -aL|grep thread;sleep 1; done
