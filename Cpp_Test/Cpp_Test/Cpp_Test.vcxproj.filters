@@ -138,10 +138,10 @@
     <None Include="0备忘录.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0编译器设置与调试.hpp">
+    <None Include="0编译器技巧与调试.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0编辑器快捷键.hpp">
+    <None Include="0VS快捷键.hpp">
       <Filter>头文件</Filter>
     </None>
     <None Include="0常识.hpp">
