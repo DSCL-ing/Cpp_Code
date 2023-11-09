@@ -3858,7 +3858,7 @@ shmctl 是Linux/Unix系统中的一个系统调用，用于对共享内存段进
     IPC_SET：设置共享内存段的属性，将 struct shmid_ds 结构体中的信息应用到共享内存段。
     IPC_RMID：从系统中删除共享内存段。
     其他特定于系统的命令，具体取决于系统和使用情况。
-3.buf：一个指向 struct shmid_ds 结构体的指针，用于存储或设置共享内存段的信息。通常，buf 参数在执行 IPC_STAT 和 IPC_SET 操作时被使用。
+3.buf：输出型参数.一个指向 struct shmid_ds 结构体的指针，用于存储或设置共享内存段的信息。通常，buf 参数在执行 IPC_STAT 和 IPC_SET 操作时被使用。
 返回值:
     当执行 IPC_STAT 命令时，shmctl 返回 0 表示成功，并将共享内存段的信息存储在提供的 struct shmid_ds 结构体中。
     The caller must have read permission on the shared  memory segment. //要有读权限
@@ -3886,7 +3886,7 @@ shmctl 是Linux/Unix系统中的一个系统调用，用于对共享内存段进
     当执行 IPC_RMID 命令时，shmctl 返回 0 表示成功，表示成功删除了共享内存段。
     如果出现错误，shmctl 返回 -1，并设置 errno 变量来指示发生的错误。
 
-四.shmat //System V 版本 shm 操作
+四.shmat //System V 版本 shm 操作 -- 类似malloc在虚拟地址上申请空间,
 类似malloc,返回一段虚拟内存
 声明:void *shmat(int shmid, const void *shmaddr, int shmflg); //attaches
 参数:
