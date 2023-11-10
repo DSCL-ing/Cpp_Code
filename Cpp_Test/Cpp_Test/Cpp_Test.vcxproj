@@ -22,6 +22,7 @@
     <ClCompile Include="1Date.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="C++11.cpp" />
     <ClCompile Include="library_Test.cpp" />
     <ClCompile Include="Main_DataStructure.cpp" />
     <ClCompile Include="MyContainersTest.cpp" />
@@ -95,7 +96,10 @@
     <ClInclude Include="28hashtable_container.h" />
     <ClInclude Include="28myMap_unordered.h" />
     <ClInclude Include="28mySet_unordered.h" />
-    <ClInclude Include="29.0C++11.h" />
+    <ClInclude Include="29.0C++11.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
+    </ClInclude>
     <ClInclude Include="29.1C++11.h" />
     <ClInclude Include="2Date.h" />
     <None Include="0C++Note2.hpp">
