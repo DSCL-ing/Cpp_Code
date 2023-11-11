@@ -87,11 +87,12 @@ namespace test {
 			//函数结束后会自动释放
 		}
 
-		//copy constructor
+		//没写移动构造之前,既接收左值,也接收右值
+		//copy constructor 
 		string(const string& s) //拷贝构造的参数是本对象类型的引用
 			:_str(nullptr)
 		{
-			cout << "string(const string& s) -- 深拷贝" << endl;
+			cout << "string(const string& s) -- 左值,深拷贝" << endl;
 			string tmp(s._str); //复用:走带参构造造一个临时对象tmp,值是拷贝的
 			swap(tmp);//交换数据,拷贝完成
 		}

@@ -19,23 +19,23 @@ void 列表初始化()
     int x4(1); //圆括号初始化可以认为是int的构造
 }
 
+void func(const int& a)
+{
+   std::cout<<"左值引用"<<std::endl;
+}
 
-
+void func(int&& a)
+{
+    std::cout<<"右值引用"<<std::endl;
+}
 
 
 int main()
 {
-    std::vector<int> v1 = { 1,23,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }; //
-    std::list<int> l1 = { 1,1,1,1,1,1,1,11,1,1,1 };
-
-    auto i1 = { 1,1,1,1,1,1,1,1,1,1,1 };
-    //std::cout << typeid(i1).name() << std::endl; 
-    std::initializer_list<int>::iterator it = i1.begin();
-    std::cout<<it<<std::endl;
-    std::map<std::string, std::string> dict{ {"1","1"},{"2","2"} };
-
-    //pair支持花括号 -- 和圆括号一样
-    std::pair<int, int> kv = { 2,2 };
+    int a = 0;
+    int b = 1;
+    func(a);
+    func(a+b);
     return 0;
 }
 
