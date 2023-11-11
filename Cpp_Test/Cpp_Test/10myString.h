@@ -3,10 +3,9 @@
 
 #pragma once
 
+#include<iostream>
 #include<string.h> //写在main
 #include<assert.h>
-//#include<iostream> //写在main中
-#include<iostream>
 using std::cout;
 using std::endl;
 using std::cin;

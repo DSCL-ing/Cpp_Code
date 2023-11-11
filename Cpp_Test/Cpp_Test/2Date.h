@@ -2,11 +2,12 @@
 #define  _CRT_SECURE_NO_WARNINGS 1
 
 
+
 #include<iostream>
 #include<stdlib.h>
 #include<assert.h>
 
-using namespace std;
+//using namespace std;
 
 //类里面短小函数，适合做内联的函数，一般是直接在类里面定义
 //更符合我们习惯，小函数声明与定义分析用户实现麻烦。
@@ -23,7 +24,7 @@ public: //因为日期类的成员是需要经常访问,外界也需要获取,�
 	const int c = 1; //语法学习->const成员和初始化列表的必须操作 -- const成员必须要有缺省参数 -- 以防初始化列表没有给值 -- 常量必须有值
 
 public:
-	Date() //构造函数
+	 Date() //构造函数
 		:_year()
 		,_day()  //--day放这的意思是初始化列表的初始化顺序与初始化列表的顺序无关,只与声明的位置有关
 		,_month()
@@ -39,12 +40,14 @@ public:
 		_day = d._day;
 	}
 
+	//explicit 只允许显示调用,不允许隐式调用,转换,优化等...
+	//explicit Date(int year, int month, int day);
 	Date(int year, int month, int day);
 
 
 	//友元函数:只是修改权限,不是类成员
-	friend ostream& operator<<(ostream& out, const Date& d);
-	friend istream& operator>>(istream& in, Date& d);
+	friend std::ostream& operator<<(std::ostream& out, const Date& d);
+	friend std::istream& operator>>(std::istream& in, Date& d);
 
 	//运算符构造函数重载
 	Date& operator= (const Date& d);
@@ -107,13 +110,13 @@ public:
 
 };
 
-inline ostream& operator<<(ostream& out, const Date& d)
+inline std::ostream& operator<<(std::ostream& out, const Date& d)
 {
 	out << d._year << "/" << d._month << "/" << d._day;
 	return out;
 }
 
-inline istream& operator>>(istream& in, Date& d)
+inline std::istream& operator>>(std::istream& in, Date& d)
 {
 	in >> d._year >> d._month >> d._day;
 	return in;

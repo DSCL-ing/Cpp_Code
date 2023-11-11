@@ -204,13 +204,13 @@ Date& Date::Init(int year, int month, int day)
 	}
 	else
 	{
-		cout << "日期无效" << endl;
+		std::cout << "日期无效" << std::endl;
 		exit(-1);
 	}
 }
 
 
-
+//声明和定义如何分离
 Date::Date(int year, int month, int day)
 {
 	if (month > 0 && month < 13 && day>0 && day < getRegulationMonthDays(year, month))
@@ -221,14 +221,14 @@ Date::Date(int year, int month, int day)
 	}
 	else
 	{
-		cout << "日期无效" << endl;
+		std::cout << "日期无效" << std::endl;
 		exit(-1);
 	}
 }
 
 void Date::print()const
 {
-	cout << _year << "/" << _month << "/" << _day << endl;
+	std::cout << _year << "/" << _month << "/" << _day << std::endl;
 }
 
 //ostream& operator<<(ostream& out, const Date& d)
