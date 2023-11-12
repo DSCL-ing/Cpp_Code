@@ -52,7 +52,7 @@ namespace test
 		list_node(T&& x = T())//此处为方便不使用分配器,直接初始化个匿名对象
 			: _next(nullptr)
 			, _prev(nullptr)
-			, _data(forward<T>(x))
+			, _data(std::forward<T>(x))
 		{}
 
 		//拷贝原理 
@@ -444,7 +444,7 @@ namespace test
 			//cout << "insert" << *this << ")" << endl;
 			node* cur = pos._node;
 			node* prev = cur->_prev;
-			node* new_node = new node(forward<T>(x));  //new阿！！！！！！！！！！！！！！！！！new是开辟新结点，然后再把x赋值进去--直接实现了深拷贝6666
+			node* new_node = new node(std::forward<T>(x));  //new阿！！！！！！！！！！！！！！！！！new是开辟新结点，然后再把x赋值进去--直接实现了深拷贝6666
 
 			prev->_next = new_node;
 			new_node->_prev = prev;
@@ -479,7 +479,7 @@ namespace test
 		//右值引用版本
 		void push_back(T&& x)
 		{
-			insert(end(), forward<T>(x));
+			insert(end(), std::forward<T>(x));
 		}
 
 		//头插

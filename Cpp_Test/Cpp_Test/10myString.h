@@ -72,7 +72,7 @@ namespace test {
 			//strlen计算不包含'\0'
 			//strcpy会拷贝'\0'
 			//所以需要多开1个空间用于存放'\0'
-
+			cout << "string(const char* s) -- 左值,默认构造" << endl;
 			_capacity = _size == 0 ? 3 : _size;//_capacity不能为0,为什么? 为0就寄,至少会有一个\0,capacity就不可能为0
 			_str = new char[_capacity + 1]; 
 			strcpy(_str, s);
@@ -377,24 +377,27 @@ namespace test {
 
 	test::string to_string(int value)
 	{
-		bool flag = true;
+		bool flag = true; //干嘛用的,标记位,说明是正数还是负数,true是正数
 		if (value < 0)
 		{
 			flag = false;
-			value = 0 - value;
+			value = 0 - value; //为什么要0-value ,使负数变成正数.负负得正,计算机可以实现 
 		}
 		test::string str;
 		while (value > 0)
 		{
 			int x = value % 10;
 			value /= 10;
-			str += ('0' + x);
+			str += std::move('0' + x); //C++支持字符加整型可以合并拼接成字符串,也可以使用atoi 
+									//move是因为拼接后的值是将亡值,编译器也会自动加上
 		}
 		if (flag == false)
 		{
 			str += '-';
 		}
-		std::reverse(str.begin(), str.end());
+		std::reverse(str.begin(), str.end()); //显然,是倒过来拼接的,需要逆置
+		
+		//return std::move(str); //不需要上,编译器会自动加上
 		return str;
 	}
 
