@@ -8,53 +8,46 @@
 #include"11myVector.h"
 #include"12myList.h"
 
-void test3()
-{
-    test::list<test::string> lt;    //建一个string链表       -- empty_init() -- 空结点也是将匿名对象移动构造
-    test::string s1("hello world"); //建一个string对象-- 带参构造
-    lt.push_back(s1);               //                       -- 深拷贝 - 测试;
-    lt.push_back(test::string("hello world")); //匿名对象    -- 移动构造
-    lt.push_back("hello world"); //                          -- 移动构造
-
-
-    //move测试 -- move需要支持一些内置函数才行,库的可以move,我写的不能move无效,虽然走的是移动构造,但s没有释放掉
-    test::list<test::string> lt1;
-    test::string s2("hello");
-    lt1.push_back(std::move(s2));
-    lt1.push_back(std::move(s2));
-}
-
-void fun(int& x) { cout << "左值引用" << endl; }
-void fun(const int& x) { cout << "const 左值引用" << endl; }
-void fun(int&& x) { cout << "右值引用" << endl; }
-void fun(const int&& x) { cout << "const 右值引用" << endl; }
-
-template<typename T>
-void perfectforward2(T&& t)
-{
-    fun(t);
-}
-
-template<typename T>
-void perfectforward1(T&& t)
-{
-    fun(std::forward<T>(t));
-    // std::forward<T>(t)在传参的过程中保持了t的原生类型属性。
-}
-
 int main()
 {
-    perfectforward1(10);
-    int a = 1;
-    perfectforward1(a);
-    perfectforward1(std::move(a));
-    const int b = 8;
-    perfectforward1(b);
-    perfectforward1(std::move(b));
+    std::string s1("hello");
+    std::string s2("world");
+    s2 = std::move(s1); 
     return 0;
-     return 0;
-
 }
+
+         /* 完美转发, forward<T>(t);*/
+//void fun(int& x) { cout << "左值引用" << endl; }
+//void fun(const int& x) { cout << "const 左值引用" << endl; }
+//void fun(int&& x) { cout << "右值引用" << endl; }
+//void fun(const int&& x) { cout << "const 右值引用" << endl; }
+//
+//template<typename T>
+//void perfectforward2(T&& t)
+//{
+//    fun(t);
+//}
+//
+//template<typename T>
+//void perfectforward1(T&& t)
+//{
+//    fun(std::forward<T>(t));
+//    // std::forward<T>(t)在传参的过程中保持了t的原生类型属性。
+//}
+//
+//int main()
+//{
+//    perfectforward1(10);
+//    int a = 1;
+//    perfectforward1(a);
+//    perfectforward1(std::move(a));
+//    const int b = 8;
+//    perfectforward1(b);
+//    perfectforward1(std::move(b));
+//    return 0;
+//     return 0;
+//
+//}
 
 //void test1()//移动构造,初识
 //{
