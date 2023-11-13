@@ -152,10 +152,15 @@ private:
  * 1.支持sizeof ... (函数形参参数包)   
  * 2.不支持typeid().name().
  * 
- * 需要将可变参数解析出来才能使用可变参数 ---> 递归拆解... (待学.迷糊中)
+ * 需要将可变参数解析出来才能使用可变参数 ,有几种拆解方法
+ * 1.   ---> 递归拆解... ,套壳递归拆解等 
+ * 2.
  * 
+ * 
+ *   
  */
 
+/* 打印刻板参数包中 参数(类型) 个数 */
 template<typename ... Args> //三个点中间
 void showList(Args ... args)
 {
@@ -172,16 +177,16 @@ int man()
 	return 0;
 }
 
+// ---------------------------------------------------------------
 
-
- // 解析出可变参数包
+ /* 解析出可变参数包  */
  // 递归,将可变参数包拆解.分而治之
-void ShowList() //递归的终止条件,拆分到最后,会有一个无参的函数.定义一个无参的函数让递归停止.
+void showList() //递归的终止条件,拆分到最后,会有一个无参的函数.定义一个无参的函数让递归停止.
 {
 	std::cout << std::endl;
 }
 template <class T, class ...Args>
-void ShowList(const T& val, Args... args) //每次都将可变参数包的最左1个拆分出来,直到分解完毕.
+void showList(const T& val, Args... args) //每次都将可变参数包的最左1个拆分出来,直到分解完毕.
 {
 	//cout << __FUNCTION__ << "(" << sizeof...(args) << ")" << endl; //__FUNCTION__会替换成当前函数名的字符串
 
@@ -189,7 +194,66 @@ void ShowList(const T& val, Args... args) //每次都将可变参数包的最左
 	ShowList(args...);
 }
 
+ /* 解析出可变参数包 ,法二 */
+ template<typename T>
+ int PrintArg(T&& t)  //由于编译器会生成很多份函数.如果使用直接传参(拷贝),则开销会非常大.所以一般会使用引用,引用折叠等...
+ {
+	 cout<<t<<" ";
+	 return 0; //用于数组初始化为0
+ }
+ template<typename ... Args>
+ void ShowList(Args ... args)
+ {
+     int arr[] = { PrintArg(args) ... };//此处只写args,意义类似拆解,拆一个参数出来.剩下的就在 三个点 ... 中. --- 编译器自动解析
+										//函数可以是任意的.看需求使用
+	// 编译器实际生成类似于 int arr[] = { func(args1),func(args2),func(args3), ...);
+ }
 
+/* //逗号表达式写法,两种写法一样
+ template<typename T>
+ void PrintArg(T t) //直接传参.开销很大... 不推荐
+ {
+	 cout << t << " ";
+ }
+ template<typename ... Args>
+ void ShowList(Args ... args)
+ {
+    int arr[] = { (PrintArg(args),0) ... }; //如果函数不带返回值,可以用逗号表达式,取最后一个为返回值,也是用于初始化数组为0
+ }
+*/
 
+// emplace
+/** 
+ * C++11 给STL容器都增加了emplace操作
+ * 如果是push_back/push_front,则对应增加emplace_bask /emplace_front
+ * 如果是insert , 则对应增加emplace
+ * 
+ * emplace系列支持了可变参数包和引用折叠.如insert和push支持的emplace基本也支持
+ *   --> 可以同时使用inset/push和emplace. //插入相同对象时,功能基本没有区别
+ * 
+ * 区别点:
+ * 1.一定情况下,可以实现直接构造,直接使用参数在自己的对象内构造 -- 跳过如(先构造匿名对象,再移动构造)  --- 高效体现,深拷贝差不多,快一丢丢
+ * 2.浅拷贝的类效率高会明显 
+ */
+
+ /* 测试emplace区别 */
+ int man()
+ {
+	 std::list<test::string> lt;
+	 lt.push_back(std::move("3333"));
+	 lt.emplace_back(std::move("3333"));
+	 return 0;
+ }
+/*
+ 结果:
+ string(const char* s) --左值, 默认构造
+ string(string&& s) --移动拷贝
+
+ string(const char* s) --左值, 默认构造 --- emplace直接构造
+ //深拷贝只快一点点,因为构造+移动构造 和直接构造差不多
+ //原因分析: 
+ 1.push_back是隐式类型转换,模板推导出来类型是string,所以由char*构造成string再push.
+ 2.emplace_back是由可变参数包直接推导成char*,然后直接构造 -- 直接拿参数包去构造参数 -- emplace是传什么就是什么,直接干,直接定位new显示调用节点的构造函数...
+*/
 
 
