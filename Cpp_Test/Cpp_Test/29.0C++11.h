@@ -452,7 +452,12 @@ $$. 编译器在处理返回值时,在可以优化的情况下,会在返回值�
         
 
  move以后的对象的状态是无法确定的,不能再对原始对象进行操作,无论发生什么现象
-        
+       
+  补充:
+  1.如果是swap,则可能资源交换
+  2.一定情况下,可以重新赋值,就可以再使用.
+
+       
     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx 
   */
 

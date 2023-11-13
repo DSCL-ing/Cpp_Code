@@ -8,13 +8,43 @@
 #include"11myVector.h"
 #include"12myList.h"
 
+
+
+void showList() //递归的终止条件,拆分到最后,会有一个无参的函数.定义一个无参的函数让递归停止.
+{
+	std::cout << std::endl;
+}
+template <class T, class ...Args>
+void showList(const T& val, Args... args) //每次都将可变参数包的最左1个拆分出来,直到分解完毕.
+{
+	//cout << __FUNCTION__ << "(" << sizeof...(args) << ")" << endl; //__FUNCTION__会替换成当前函数名的字符串
+    cout << typeid(val).name() << " " <<val << " ";
+	showList(args...);
+}
+
+
+
+//template<typename ... Args>
+//void showList(Args ... args)
+//{
+//    std::cout<<sizeof ... (args)<<std::endl;
+//    for (int i = 0; i < sizeof ... (args); i++)
+//    {
+//    }
+//}
+//
 int main()
 {
-    std::string s1("hello");
-    std::string s2("world");
-    s2 = std::move(s1); 
+    showList();
+    showList('x','y');
+    showList('x',1);
+    showList(1);
+
     return 0;
 }
+
+
+
 
          /* 完美转发, forward<T>(t);*/
 //void fun(int& x) { cout << "左值引用" << endl; }
