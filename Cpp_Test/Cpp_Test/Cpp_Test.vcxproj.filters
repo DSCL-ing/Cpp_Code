@@ -122,6 +122,9 @@
     <ClInclude Include="0收藏.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="0汇编.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="40linux系统与编程.txt">

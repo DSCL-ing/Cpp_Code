@@ -8,13 +8,13 @@
 #include"11myVector.h"
 #include"12myList.h"
 
-int main()
-{
-    std::list<test::string> lt;
-    lt.push_back(std::move("3333"));
-    lt.emplace_back(std::move("3333"));
-    return 0;
-}
+//int main()
+//{
+//    std::list<test::string> lt;
+//    lt.push_back(std::move("3333"));
+//    lt.emplace_back(std::move("3333"));
+//    return 0;
+//}
 
 
 //void showList() //递归的终止条件,拆分到最后,会有一个无参的函数.定义一个无参的函数让递归停止.
