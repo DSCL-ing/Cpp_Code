@@ -1,5 +1,4 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS 1
-#include<iostream>
 #include"9Date.h"
 #include<vector>
 #include<list>
@@ -7,7 +6,51 @@
 #include"10myString.h"
 #include"11myVector.h"
 #include"12myList.h"
+#include<string>
+#include<iostream>
 
+
+
+/* lambda表达式 */
+
+struct Goods
+{
+    Goods(const char* str, double price, int evaluate)
+        :_name(str)
+        , _price(price)
+        , _evaluate(evaluate)
+    {}
+
+    std::string _name; //名字
+    double _price; // 价格
+    int _evaluate; // 评价
+};
+
+int main()
+{
+   int x = 1;
+   int y = 2;
+
+   auto obj = [&x,&y]()mutable
+   {
+       int tmp = y;
+       y = x;
+       x = tmp;
+   };
+   
+   obj();
+
+   cout<<y<<endl;
+
+    return 0;
+}
+
+
+
+
+
+
+    /* emplace */
 //int main()
 //{
 //    std::list<test::string> lt;

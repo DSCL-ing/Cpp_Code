@@ -60,6 +60,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
     </None>
+    <ClInclude Include="1.操作系统补充.h" />
     <ClInclude Include="1汇编.h" />
     <ClInclude Include="10myString.h" />
     <None Include="10string.txt">

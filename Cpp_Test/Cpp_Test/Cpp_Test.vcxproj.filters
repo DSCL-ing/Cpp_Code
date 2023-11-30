@@ -125,6 +125,9 @@
     <ClInclude Include="1汇编.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="1.操作系统补充.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="3.linux系统与编程.txt">
