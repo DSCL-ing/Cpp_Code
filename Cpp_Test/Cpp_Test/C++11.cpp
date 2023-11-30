@@ -8,42 +8,86 @@
 #include"12myList.h"
 #include<string>
 #include<iostream>
+#include<thread>
+#include<Windows.h>
+
+
+ /* C++11线程库 thread */
+
+void func(int num)
+{
+    while (1)
+    {
+        std::cout<<"我是子线程"<< num <<std::endl;
+        Sleep(1000);
+    }
+ }
+
+int main()
+{
+    //std::thread t1(func,1);
+    //std::thread t2(func,2);
+
+    std::thread t1([](int num)
+        {
+            while (1)
+            {
+                std::cout << "我是子线程" << num << std::endl;
+                Sleep(1000);
+            }
+        },1);
+    std::thread t2([](int num)
+        {
+            while (1)
+            {
+                std::cout << "我是子线程" << num << std::endl;
+                Sleep(1000);
+            }
+        }, 2);
+
+
+    t1.join();
+    t2.join();
+
+    return 0;
+}
+
 
 
 
 /* lambda表达式 */
 
-struct Goods
-{
-    Goods(const char* str, double price, int evaluate)
-        :_name(str)
-        , _price(price)
-        , _evaluate(evaluate)
-    {}
-
-    std::string _name; //名字
-    double _price; // 价格
-    int _evaluate; // 评价
-};
-
-int main()
-{
-   int x = 1;
-   int y = 2;
-
-   auto obj = [&x,&y]()mutable
-   {
-       int tmp = y;
-       y = x;
-       x = tmp;
-   };
-   
-   obj();
-
-   cout<<y<<endl;
-
-    return 0;
-}
+//struct Goods
+//{
+//    Goods(const char* str, double price, int evaluate)
+//        :_name(str)
+//        , _price(price)
+//        , _evaluate(evaluate)
+//    {}
+//
+//    std::string _name; //名字
+//    double _price; // 价格
+//    int _evaluate; // 评价
+//};
+//
+//int main()
+//{
+//   int x = 1;
+//   int y = 2;
+//
+//   auto obj = [&x,&y]()mutable
+//   {
+//       int tmp = y;
+//       y = x;
+//       x = tmp;
+//   };
+//   
+//   obj();
+//
+//   cout<<y<<endl;
+//
+//    return 0;
+//}
 
 
 

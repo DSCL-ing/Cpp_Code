@@ -387,6 +387,28 @@ lambda表达式能够快速定义一个具有函数功能的对象,很方便
 
 
 
+/* C++11 线程库 */
+/*
+1. linux中pthread是POSIX标准(可移植线程库). windows是winAPI...
+2. 如果一份代码想同时在linux和windows下运行,C++11以前的处理方法是"条件编译"
+#ifdef _WIN32
+	CreateThread();
+#else
+	phread_create();
+#endif
+
+3. C++封装了一个linux和window下都可以支持的多线程库 --- thread库
+	-- 只要支持C++11都必须要支持thread库
+	-- 内部实现也是条件编译,由库去替我们维护条件编译.提高开发效率
+	-- 这个库封装成类 --- 面向对象
+
+构造函数:
+template <class Fn, class... Args>
+explicit thread (Fn&& fn, Args&&... args);
+
+
+*/
+
 
 
 
