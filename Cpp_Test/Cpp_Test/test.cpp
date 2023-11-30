@@ -13,28 +13,9 @@ using std::endl;
 #include<string>
 #include<map>
 
-class A
-{
-public:
-    std::map<std::string, int> _m;
-
-    class B
-    {
-        //A* a;
-        public:
-        void fun()
-        {
-            a->_m[""];
-        }
-    };
-
-};
 
 int main()
 {
-    A a;
-    A::B b;
-       b.fun();
 	return 0;
 
 }

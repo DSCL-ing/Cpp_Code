@@ -35,13 +35,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="2algorithm.h">
+    <ClInclude Include="1algorithm.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="2Date.h">
+    <ClInclude Include="9Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="2STL.h">
+    <ClInclude Include="1STL.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="10myString.h">
@@ -110,10 +110,10 @@
     <ClInclude Include="28mySet_unordered.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="29.0C++11.h">
+    <ClInclude Include="1.2.0C++11.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="29.1C++11.h">
+    <ClInclude Include="1.2.1C++11.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Test.h">
@@ -122,12 +122,12 @@
     <ClInclude Include="0收藏.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="0汇编.h">
+    <ClInclude Include="1汇编.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="40linux系统与编程.txt">
+    <Text Include="3.linux系统与编程.txt">
       <Filter>头文件</Filter>
     </Text>
   </ItemGroup>
@@ -135,7 +135,7 @@
     <None Include="0应用场景.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0C语言补充.hpp">
+    <None Include="1C语言补充.hpp">
       <Filter>头文件</Filter>
     </None>
     <None Include="0报错.hpp">
@@ -156,10 +156,10 @@
     <None Include="0算法总结.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="41.linuxShell.txt">
+    <None Include="3.linuxShell.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0C++Note2.hpp">
+    <None Include="1C++Note2.hpp">
       <Filter>头文件</Filter>
     </None>
     <None Include="10string.txt">
@@ -171,10 +171,10 @@
     <None Include="0OnlineJudge.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0C++补充.hpp">
+    <None Include="1C++补充.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0C++Note1.hpp">
+    <None Include="1C++Note1.hpp">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>

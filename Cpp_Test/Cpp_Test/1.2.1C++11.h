@@ -6,7 +6,7 @@
 #include"10myString.h"
 #include"11myVector.h"
 #include"12myList.h"
-#include"2Date.h"
+#include"9Date.h"
 #include <map>
 
 /** C++11
@@ -195,6 +195,9 @@ void showList(const T& val, Args... args) //每次都将可变参数包的最左
 }
 
  /* 解析出可变参数包 ,法二 */
+ /**
+  * 解析参数包法是常用的方法,通过多层调用可以依次将参数分离出来
+  */
  template<typename T>
  int PrintArg(T&& t)  //由于编译器会生成很多份函数.如果使用直接传参(拷贝),则开销会非常大.所以一般会使用引用,引用折叠等...
  {
@@ -221,6 +224,9 @@ void showList(const T& val, Args... args) //每次都将可变参数包的最左
     int arr[] = { (PrintArg(args),0) ... }; //如果函数不带返回值,可以用逗号表达式,取最后一个为返回值,也是用于初始化数组为0
  }
 */
+
+
+
 
 // emplace
 /** 
@@ -253,7 +259,44 @@ void showList(const T& val, Args... args) //每次都将可变参数包的最左
  //深拷贝只快一点点,因为构造+移动构造 和直接构造差不多
  //原因分析: 
  1.push_back是隐式类型转换,模板推导出来类型是string,所以由char*构造成string再push.
- 2.emplace_back是由可变参数包直接推导成char*,然后直接构造 -- 直接拿参数包去构造参数 -- emplace是传什么就是什么,直接干,直接定位new显示调用节点的构造函数...
+ 2.emplace_back是由可变参数包直接推导成char*,然后直接构造 -- 直接拿参数包去构造参数 -- emplace是传什么就是什么,直接干,
+	通过拆分法依次拆分,直至解析,最后通过定位new调用对象的构造函数::new((void*)_Ptr) _Objty(forword((_Args)...) 实现构造
+
+* emplace从实例化的参数类型(模板类型),能直接接收参数在emplace内构造.
+ //浅拷贝,直接传参数给emplace能够少一次构造
+	
 */
+
+
+
+
+
+
+// lambda表达式
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
