@@ -488,9 +488,11 @@ std::this_thread::yield(); // 主动让出时间片
 /*
 结构举例:
 int old,i;
-while (__sync_bool_compare_and_swap(&i, &old, old + 1))
+//while (__sync_bool_compare_and_swap(type *ptr, type oldval type newval)) //要修改的值,旧值,改成多少 
+	--- 原理:要修改的值和旧值进行比较,如果相等就可以修改(说明没有被别的线程修改).如果不等就不能修改,返回false
+while (__sync_bool_compare_and_swap(&i, old, old + 1))
 {
-
+	old = i; //更新旧值 --- 如果不相等,就不能修改,说明值已经改变了.然后更新旧值,进入下一轮循环去判断
 }
 
   常见有1.资源数量,使用原子操作 2.队列,先判断tail->next为不为空,再新增.保证原子插入...j

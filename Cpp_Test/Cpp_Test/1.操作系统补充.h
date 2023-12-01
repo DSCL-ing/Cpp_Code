@@ -18,26 +18,6 @@
 
 
 
-//操作系统CAS ... 
-//https://coolshell.cn/articles/8239.html //无锁队列的实现
-
-/*
-结构举例:
-int old,i;
-while (__sync_bool_compare_and_swap(&i, &old, old + 1))
-{
-
-}
-*/
-
-
-//--- 无锁编程 ,因为加锁效率太低,而搞出来的无锁编程思想
-/**
- * 常见有1.资源数量,使用原子操作 2.队列,先判断tail->next为不为空,再新增.保证原子插入...j
- * 
- * 
- */
-
 
 
 

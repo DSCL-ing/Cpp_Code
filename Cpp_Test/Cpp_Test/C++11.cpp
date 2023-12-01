@@ -11,12 +11,50 @@
 #include<thread>
 #include<Windows.h>
 #include<vector>
+#include<mutex>
+#include<time.h>
 
  /* C++11线程库 thread */
 
+std::mutex mtx;
+int x = 0;
+void func()
+{
+//串行 快很多
+    //mtx.lock();
+    //for (int i = 0; i < 1000000; i++)
+    //{
+    //    ++x;
+    //}
+    //mtx.unlock();
+
+
+//并发/并发 -- 比串行慢很多
+    for (int i = 0; i < 1000000; i++)
+    {
+        mtx.lock();
+        ++x;
+        mtx.unlock();
+    }
+
+//说明:
+
+}
+
 int main()
 {
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    size_t begin = clock();
+    std::thread t1(func);
+    std::thread t2(func);
+
+    t1.join();
+    t2.join();
+    
+    size_t end = clock();
+
+    std::cout<<end-begin<<std::endl;
+    std::cout<<x<<std::endl;
+    return 0;
 }
 
 /* lambda表达式 */
