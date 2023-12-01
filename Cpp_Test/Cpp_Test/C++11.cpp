@@ -10,50 +10,14 @@
 #include<iostream>
 #include<thread>
 #include<Windows.h>
-
+#include<vector>
 
  /* C++11线程库 thread */
 
-void func(int num)
-{
-    while (1)
-    {
-        std::cout<<"我是子线程"<< num <<std::endl;
-        Sleep(1000);
-    }
- }
-
 int main()
 {
-    //std::thread t1(func,1);
-    //std::thread t2(func,2);
-
-    std::thread t1([](int num)
-        {
-            while (1)
-            {
-                std::cout << "我是子线程" << num << std::endl;
-                Sleep(1000);
-            }
-        },1);
-    std::thread t2([](int num)
-        {
-            while (1)
-            {
-                std::cout << "我是子线程" << num << std::endl;
-                Sleep(1000);
-            }
-        }, 2);
-
-
-    t1.join();
-    t2.join();
-
-    return 0;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 }
-
-
-
 
 /* lambda表达式 */
 

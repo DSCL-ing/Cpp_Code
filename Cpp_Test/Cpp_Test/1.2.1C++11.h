@@ -346,6 +346,9 @@ a. [capture-list] : 捕捉列表，该列表总是出现在lambda函数的开始
 	auto objj = [=,&]();
 	// 原因, 前后矛盾,编译器无法识别 --- 不允许有矛盾的语法存在
 
+\语法7 -- [this]：表示值传递方式捕捉当前的this指针
+
+
 b. (parameters)：参数列表。与普通函数的参数列表一致，如果不需要参数传递，则可以连同()一起省略
 
 c. mutable：默认情况下，lambda函数总是一个const函数，mutable可以取消其常量性。使用该修饰符时，参数列表不可省略(即使参数为空)。
@@ -382,6 +385,42 @@ e. {statement}：函数体。在该函数体内，除了可以使用其参数外
 认识lambda;
 lambda表达式能够快速定义一个具有函数功能的对象,很方便
 
+lambda的原理:
+lambda是一个没有成员,只有函数的空类 ---> sizeof(lambda对象):1 //lambda大小为1 ---> 没有成员的空类大小就是1
+
+底层原理:运行以下代码 -- 反汇编调试观察函数对象部分和lambda调用部分,可以发现几乎一样 ---- 说明lambda底层实现和函数对象,一样,
+class Rate
+{
+public:
+	Rate(double rate) : _rate(rate)
+	{}
+	double operator()(double money, int year)
+	{
+		return money * _rate * year;
+	}
+private:
+	double _rate;
+};
+
+
+int main()
+{
+	Rate r1(0.1);
+	r1(10000,1);
+
+	auto AAAA = [](int money,double rate,int year)
+	{
+		return money * rate * year;
+	};
+	AAAA(10000,0.1,1);
+
+
+	return 0 ;
+}
+
+lambda之间不能相互赋值,就算是完全相同的代码生成的lanbda对象也不行;
+原因:大致是每次生成的lambda对象都是唯一的,属于不同的类...,具体需要研究编译器  ----  UUID: <lambda_8ce8db8d48129b9a466073125411eb2b>
+
 
  */
 
@@ -403,18 +442,158 @@ lambda表达式能够快速定义一个具有函数功能的对象,很方便
 	-- 这个库封装成类 --- 面向对象
 
 构造函数:
+1. thread() noexcept;
+无参构造,用于创建多线程,如容器创建多个对象,默认会调用无参的构造函数
+
+2.常规创建
 template <class Fn, class... Args>
 explicit thread (Fn&& fn, Args&&... args);
+注:Fn是可调用对象,不限于仿函数对象,函数指针,lambda
 
+3.不允许拷贝构造 -- 没意义,不如重新构造一个新的
+thread (const thread&) = delete;
+
+4.移动构造 -- 允许资源转移
+thread (thread&& x) noexcept;
+
+赋值重载:
+1.允许移动赋值 -- 资源转移
+thread& operator= (thread&& rhs) noexcept;
+
+2.禁止拷贝赋值
+thread& operator= (const thread&) = delete;
+
+thread为了跨平台,把一些成员对象如id给封装成类,其他和POXIS用法差不多,多练习熟练
+// thd.get_id(); //thread == thd
+
+C++将线程封装成类后,使用线程前必须要构造出线程类. 
+--- 但是如果在构造过程中需要使用线程的方法,如thread([](){get_id();}; ,直接使用会报错
+原因: 此时类还在构造中,提供不了get_id()方法
+解决: C++另外提供了一个类this_thread,它位于命名空间std中,这个类提供了get_id()方法.
+	通过调用std::this_thread.get_id();即可
+
+
+#include <chrono>
+std::this_thread::sleep_for (std::chrono::seconds(1));// chronometer 精密计时器
+
+Yield;让步
+std::this_thread::yield(); // 主动让出时间片
+应用场景: 无锁编程(尽可能少使用锁) ---- 无锁编程 ,因为加锁效率太低,而搞出来的无锁编程思想
+
+
+扩展知识: --- 不是特别系统学习,比较混乱 
+//操作系统CAS ... --- 原子操作的本质
+//https://coolshell.cn/articles/8239.html //无锁队列的实现
+//https://coolshell.cn/articles/9703.html //无锁hashMap
+/*
+结构举例:
+int old,i;
+while (__sync_bool_compare_and_swap(&i, &old, old + 1))
+{
+
+}
+
+  常见有1.资源数量,使用原子操作 2.队列,先判断tail->next为不为空,再新增.保证原子插入...j
+
+而当某一线程长时间做想做某事而无法成功时,就需要主动让出CPU资源,不浪费资源,此时就需要使用到yield
+举例:如一个线程刚好在对hash表扩容,而另一个线程刚好在这个hash值处插入而插不进去.此时执行插入操作的线程就应该让出CPU资源而不是一直循环尝试
+		--- 预测到有这种行为时,就可以使用yield接口
 
 */
 
+ 
+ 
+ 
 
 
 
 
+/**
+ * 1.thread提供的模板参数能接收函数
+ * 2.thread提供的模板参数能接收lambda表达式
+ */
+ //void func(int num)
+ //{
+ //    while (1)
+ //    {
+ //        std::cout<<"我是子线程"<< num <<std::endl;
+ //        Sleep(1000);
+ //    }
+ // }
+ //
+ //int main()
+ //{
+ //    //std::thread t1(func,1);
+ //    //std::thread t2(func,2);
+ //
+ //    std::thread t1([](int num)
+ //        {
+ //            while (1)
+ //            {
+ //                std::cout << "我是子线程" << num << std::endl;
+ //                Sleep(1000);
+ //            }
+ //        },1);
+ //    std::thread t2([](int num)
+ //        {
+ //            while (1)
+ //            {
+ //                std::cout << "我是子线程" << num << std::endl;
+ //                Sleep(1000);
+ //            }
+ //        }, 2);
+ //
+ //
+ //    t1.join();
+ //    t2.join();
+ //
+ //    return 0;
+ //}
 
+/**
+ *---------------------------------------------------------------- 1.使用容器管理线程,并配合使用lambda表达式
+int main()
+{
+    size_t m; //定义管理线程的vector的大小.
+    cin >> m;
+    std::vector<std::thread> vthds(m);  // vector threads
 
+    for (size_t i = 0; i < m; ++i)
+    {
+        size_t n; //每个线程执行的次数
+        cin >> n;
+        vthds[i] = std::thread([i,n]() {
+            for (size_t j = 0; j < n; j++)
+            {
+                cout<<"thread: "<<i << "," << j << std::endl;
+            }
+            cout<<endl;
+            });
+    }
+
+    for (auto& v : vthds)
+    {
+        v.join();
+    }
+    
+    return 0;
+}
+ ---------------------------------------------------------------- 1.使用容器管理线程, 并配合使用lambda表达式 */
+
+// C++11 <mutex>
+/**
+ * C++11 也提供锁,也封装成了类 mutex
+ * 成员函数:
+ * 1.构造
+ * 
+ * 2.lock
+ * 
+ * 3.unlock
+ * 
+ * 4.tryLock
+ * ...
+ * 
+ */
 
 
 
