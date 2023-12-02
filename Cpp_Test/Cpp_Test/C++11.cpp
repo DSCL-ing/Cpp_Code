@@ -13,9 +13,39 @@
 #include<vector>
 #include<mutex>
 #include<time.h>
+#include<atomic>
 
- /* C++11线程库 thread */
+/* C++11线程库 thread */
 
+std::mutex mtx;
+//int x = 0;
+//std::atomic<int> x = 0;
+//std::atomic<int> x(0);
+std::atomic<int> x{0};
+
+void func(int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+            x++;
+    }
+}
+
+int main()
+{
+    std::thread t1(func, 10000);
+    std::thread t2(func, 10000);
+
+    t1.join();
+    t2.join();
+
+    std::cout << x << std::endl;
+
+    //return 0;
+}
+
+
+/*
 std::mutex mtx;
 int x = 0;
 void func()
@@ -49,13 +79,16 @@ int main()
 
     t1.join();
     t2.join();
-    
+
     size_t end = clock();
 
     std::cout<<end-begin<<std::endl;
     std::cout<<x<<std::endl;
     return 0;
 }
+*/
+
+
 
 /* lambda表达式 */
 

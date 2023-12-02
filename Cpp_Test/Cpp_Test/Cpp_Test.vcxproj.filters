@@ -41,7 +41,7 @@
     <ClInclude Include="9Date.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="1STL.h">
+    <ClInclude Include="1.1STL.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="10myString.h">
@@ -122,7 +122,7 @@
     <ClInclude Include="0收藏.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="1汇编.h">
+    <ClInclude Include="1.1汇编.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="1.操作系统补充.h">
@@ -138,7 +138,7 @@
     <None Include="0应用场景.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="1C语言补充.hpp">
+    <None Include="1.1C语言补充.hpp">
       <Filter>头文件</Filter>
     </None>
     <None Include="0报错.hpp">
@@ -162,7 +162,7 @@
     <None Include="3.linuxShell.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="1C++Note2.hpp">
+    <None Include="1.1C++Note2.hpp">
       <Filter>头文件</Filter>
     </None>
     <None Include="10string.txt">
@@ -174,10 +174,10 @@
     <None Include="0OnlineJudge.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="1C++补充.hpp">
+    <None Include="1.1C++补充.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="1C++Note1.hpp">
+    <None Include="1.1C++Note1.hpp">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>

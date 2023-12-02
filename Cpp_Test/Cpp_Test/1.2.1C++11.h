@@ -582,26 +582,224 @@ int main()
 }
  ---------------------------------------------------------------- 1.使用容器管理线程, 并配合使用lambda表达式 */
 
-// C++11 <mutex>
+
+
+
+
+ //C++11 <mutex>
 /**
+
+C++11提供了4种锁
+ Mutexes Classes
+1. mutex                   Mutex class (class ) //常规锁
+2. recursive_mutex 	    Recursive mutex class (class ) //递归锁
+	递归锁用于在递归的下一个栈帧时,能够判断出是当前线程加的锁,允许当前进程越过锁继续访问临界资源
+场景:
+void func(int n)
+{
+	if (n == 0)
+	{
+		return ;
+	}
+	mtx.lock();
+	x++;
+	mtx.unlock();
+	func(n-1);
+}
+
+3. timed_mutex             Timed mutex class (class )
+// !提供加锁一定时间后自动解锁的功能
+// $lock		     Lock timed mutex (public member function )
+// $try_lock         Lock timed mutex if not locked (public member function )
+// $try_lock_for     Try to lock for time span (public member function ) //%经过一段时间
+// $try_lock_until   Try to lock until time point (public member function ) //%定时到某一时刻
+
+4. recursive_timed_mutex   Recursive timed mutex (class )
+
+
  * C++11 也提供锁,也封装成了类 mutex
  * 成员函数:
  * 1.构造
- * 
- * 2.lock
- * 
- * 3.unlock
- * 
- * 4.tryLock
- * ...
- * 
+  
+  2.lock
+  
+  3.unlock
+  
+  4.tryLock
+   ...
+
+// !C++提供的所有锁没有移动构造和拷贝构造   1.不允许赋值,因为拷贝后都不是同一把锁了,没有意义. 2.不允许移动,因为移动后,类销毁锁就没了,没有意义
+default (1)            constexpr mutex() noexcept;
+copy [deleted] (2)     mutex (const mutex&) = delete;
+
+ 
+  
+ * * 注意1:并行/并发 不一定 比串行快. 要看消耗和产出比. 
+ 
+验证:
+--------------------------------------------------------------------- 验证串行比加锁并行快的场景
+std::mutex mtx;
+int x = 0;
+void func()
+{
+//串行 快很多
+	//mtx.lock();
+	//for (int i = 0; i < 1000000; i++)
+	//{
+	//    ++x;
+	//}
+	//mtx.unlock();
+
+
+//并发/并发 -- 比串行慢很多  \\原因: ++x执行太快,切换太频繁 
+	//for (int i = 0; i < 1000000; i++)
+	//{
+	//	mtx.lock();
+	//	++x;
+	//	mtx.unlock();
+	//}
+
+//说明:
+加锁解锁和上下文切换 很占用资源.
+
+
+}
+
+int main()
+{
+	size_t begin = clock();
+	std::thread t1(func);
+	std::thread t2(func);
+
+	t1.join();
+	t2.join();
+
+	size_t end = clock();
+
+	std::cout<<end-begin<<std::endl;
+	std::cout<<x<<std::endl;
+	return 0;
+}
+
+--------------------------------------------------------------------- 验证串行比加锁并行快的场景____End
+
+
+
+//!守护锁
+
+C++11提供了守护锁类
+lock_guard        //class templace
+unique_lock       //class templace
+//区别,lock_guard只有自动上锁解锁; unique_lock不只有自动上锁解锁,还提供了手动上锁和解锁 ---- 有些场景需要...
+
+
+场景1 : 如果使用了一般的加锁解锁方式,在封锁的区域内发生了异常,则会跳到catch中,没有经过unlock,导致下次访问临界区就会死锁
+解决方法之一就是使用守护锁.
+--------------------------------------------------------------- 模拟实现守护锁
+std::mutex mtx;
+int x = 0;
+template<typename Lock>
+class LockGuard
+{
+public:
+    LockGuard(Lock& lk) :_lk(lk)
+    {
+        _lk.lock();
+    }
+    ~LockGuard()
+    {
+        _lk.unlock();
+    }
+private:
+    Lock& _lk;
+};
+
+void func(int n)
+{
+    for (int i = 0; i < n; i++)
+    {
+        try {
+            //LockGuard<std::mutex> lockGuard(mtx); //!RAII风格的锁
+            mtx.lock();
+            x++;
+            if (rand() % 3 == 0)
+            {
+                throw std::exception("抛异常");
+            }
+            mtx.unlock();
+        }
+        catch (const std::exception& e)
+        {
+            std::cout<<e.what()<<std::endl;
+        }
+    }
+}
+--------------------------------------------------------------- 模拟实现守护锁__End;
+
+
+  
+
+ *  
  */
 
 
 
+//C++11 还提供了 atomic 原子操作 ...(了解,目前主要使用常用部分)
+/*
+
+底层都是CAS
+
+atomic      // Atomic (class template ) ---  常用
+//https://legacy.cplusplus.com/reference/atomic/atomic/
+
+----------------------------------------------------------------  atomic用法
+std::mutex mtx;
+//int x = 0;
+//std::atomic<int> x = 0;
+//std::atomic<int> x(0);
+std::atomic<int> x{0};     //无需加锁,operater操作都重载了原子
+
+void func(int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+			x++;
+	}
+}
+
+int main()
+{
+	std::thread t1(func, 10000);
+	std::thread t2(func, 10000);
+
+	t1.join();
+	t2.join();
+
+	std::cout << x << std::endl;
+
+	//return 0;
+}
+----------------------------------------------------------------  atomic用法__End
+
+成员方法:
+1.load()
+	用于加载出原类型. // std::atomic<int> x{0};  printf("%d",x.load());
+2.store();
+	原子替换原来的值...
+...
+
+*/
 
 
 
+//C++11 condition_variable
+/*
+
+wait在休眠前会解锁 
+
+
+
+*/
 
 
 
