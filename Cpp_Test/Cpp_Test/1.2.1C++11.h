@@ -795,7 +795,11 @@ int main()
 //C++11 condition_variable
 /*
 
-wait在休眠前会解锁 
+wait(unique_lock lock) :休眠自己,且休眠前解锁(unique提供的解锁操作) 
+
+notify_one() :随机唤醒一个休眠的线程,如果没有休眠的线程,那什么都不做
+
+notify_all :唤醒所有
 
 
 

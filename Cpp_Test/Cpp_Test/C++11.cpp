@@ -17,24 +17,45 @@
 
 /* C++11线程库 thread */
 
+// 两个线程,一个打印奇数,一个打印偶数,按顺序依次打印,到n结束
+// 目的: 使用条件变量控制线程分别执行任务.  单纯这道题,也可以使用if+while等待搞定.
+int x = 1;
 std::mutex mtx;
-//int x = 0;
-//std::atomic<int> x = 0;
-//std::atomic<int> x(0);
-std::atomic<int> x{0};
-
-void func(int n)
-{
-    for (int i = 0; i < n; i++)
-    {
-            x++;
-    }
-}
+std::condition_variable cv;
 
 int main()
 {
-    std::thread t1(func, 10000);
-    std::thread t2(func, 10000);
+
+    std::thread t1([](int n) {
+        while(x<n)
+        {
+            std::unique_lock<std::mutex> lock(mtx); //
+            if (x % 2 != 1) //1.拦住奇数
+            {
+                cv.wait(lock); // 让自己休眠,在休眠前释放锁.
+            }
+            std::cout << std::this_thread::get_id() << ":" << x++ << std::endl;
+            cv.notify_one(); //2.如果自己成功执行到了任务,则唤醒别的线程.下次自己必定会休眠.出了作用域后会释放锁,
+            //a.如果是自己先运行,说明另一线程必定在等待锁释放.因此唤醒功能没用.解锁才有用(让另一线程跑起来)
+            //b.如果是线程2先运行,说明线程2一定是休眠状态 : 线程2先运行,先加锁,判断是奇数后,释放锁,并进入休眠状态,
+            //  此时线程1唤醒功能就其效果了,唤醒线程2,执行完任务,直到进入休眠
+        }
+        }, 1000);
+
+    std::thread t2([](int n) {
+        for (int i = 0; i < n; ++i)
+        {
+            {
+                std::unique_lock<std::mutex> lock(mtx);
+                if (x % 2 != 0)
+                {
+                    cv.wait(lock);
+                }
+                std::cout << std::this_thread::get_id() << ":" << x++ << std::endl;
+            } //加不加都无所谓的代码块.因为是临界资源使用结束后再进行别的操作. --- 主要是保护临界资源
+                cv.notify_one();
+        }
+        }, 1000);
 
     t1.join();
     t2.join();
