@@ -14,55 +14,42 @@
 #include<mutex>
 #include<time.h>
 #include<atomic>
-
+#include<functional>
 /* C++11线程库 thread */
 
-// 两个线程,一个打印奇数,一个打印偶数,按顺序依次打印,到n结束
-// 目的: 使用条件变量控制线程分别执行任务.  单纯这道题,也可以使用if+while等待搞定.
-int x = 1;
-std::mutex mtx;
-std::condition_variable cv;
+class Plus
+{
+public:
+    static int plusi(int a, int b)
+    {
+        return a + b;
+    }
+    double plusd(double a, double b)
+    {
+        return a + b;
+    }
+};
 
 int main()
 {
+// 静态成员函数 --- 访问类域去调用,和普通全局函数只是域不同,需要明确指出
+    std::function<int(int a ,int b)> f1 = Plus::plusi; 
+    
+  //非静态成员函数,感觉意义不大了. --- 底层是调用对象来调用 
+   std::function<double(Plus,double a, double b)> f2 = &Plus::plusd; //非静态成员函数必须要加&, 原理暂时未知
+    f1(1,1);
+    f2(Plus(),1,1); // 匿名对象
+    Plus p;
+    f2( p,1,1); //有名对象
+   
+    std::function<double(Plus p,double a, double b)> f3 = &Plus::plusd; // 有参数名
+    f3(p,1,1);
+    
+    std::function<double( Plus* ,double a, double b)> f4 = &Plus::plusd; // 也可以是指针
+    Plus p2;
+    f4(&p2,1,1); //不能用匿名对象,因为匿名对象是右值,不能取地址
 
-    std::thread t1([](int n) {
-        while(x<n)
-        {
-            std::unique_lock<std::mutex> lock(mtx); //
-            if (x % 2 != 1) //1.拦住奇数
-            {
-                cv.wait(lock); // 让自己休眠,在休眠前释放锁.
-            }
-            std::cout << std::this_thread::get_id() << ":" << x++ << std::endl;
-            cv.notify_one(); //2.如果自己成功执行到了任务,则唤醒别的线程.下次自己必定会休眠.出了作用域后会释放锁,
-            //a.如果是自己先运行,说明另一线程必定在等待锁释放.因此唤醒功能没用.解锁才有用(让另一线程跑起来)
-            //b.如果是线程2先运行,说明线程2一定是休眠状态 : 线程2先运行,先加锁,判断是奇数后,释放锁,并进入休眠状态,
-            //  此时线程1唤醒功能就其效果了,唤醒线程2,执行完任务,直到进入休眠
-        }
-        }, 1000);
-
-    std::thread t2([](int n) {
-        for (int i = 0; i < n; ++i)
-        {
-            {
-                std::unique_lock<std::mutex> lock(mtx);
-                if (x % 2 != 0)
-                {
-                    cv.wait(lock);
-                }
-                std::cout << std::this_thread::get_id() << ":" << x++ << std::endl;
-            } //加不加都无所谓的代码块.因为是临界资源使用结束后再进行别的操作. --- 主要是保护临界资源
-                cv.notify_one();
-        }
-        }, 1000);
-
-    t1.join();
-    t2.join();
-
-    std::cout << x << std::endl;
-
-    //return 0;
+    return 0;
 }
 
 
