@@ -1012,7 +1012,73 @@ int main()
 */
 
 
+//bind
+/*
+<functional>
+绑定bind 
 
+//将某个参数绑定,固定,不能再修改 ---> 可以隐藏 ---> 减少参数个数.
+
+
+// 原型auto opFunc = std::bind(Fn,需要固定的参数1,固定参数2,..., 需要传参的参数1, 传参的参数2);
+// 实例auto opFunc = std::bind(Fn,Paramet1,Paramet2, ... ,placeholders::_1,placeholders::_2 ...)
+
+//如果需要替换参数位置,则
+// 实例auto opFunc = std::bind(Fn,Paramet1,Paramet2, ... ,placeholders::_2,placeholders::_1 ...)
+
+// 从Fn之后开始,每个参数都会对应Fn需要的参数.非placeholders的,代表固定的参数(需要绑定的,隐藏的参数)
+//placeholders::_1代表传入的第一个参数._2代表传入的第二个参数,... ,依次往后
+//placeholders的位置代表传入的参数放在Fn的相同对应位置
+
+
+bind
+std::bind函数定义在头文件中，是一个函数模板，它就像一个函数包装器(适配器)，接受一个可
+调用对象（callable object），生成一个新的可调用对象来“适应”原对象的参数列表。一般而
+言，我们用它可以把一个原本接收N个参数的函数fn，通过绑定一些参数，返回一个接收M个（M
+可以大于N，但这么做没什么意义）参数的新函数。同时，使用std::bind函数还可以实现参数顺
+序调整等操作。
+
+可以将bind函数看作是一个通用的函数适配器，它接受一个可调用对象，生成一个新的可调用对
+象来“适应”原对象的参数列表。
+
+调用bind的一般形式：auto newCallable = bind(callable,arg_list);
+其中，newCallable本身是一个可调用对象，arg_list是一个逗号分隔的参数列表，对应给定的
+callable的参数。当我们调用newCallable时，newCallable会调用callable,并传给它arg_list中
+的参数。
+
+arg_list中的参数可能包含形如_n的名字，其中n是一个整数，这些参数是“占位符”，表示
+newCallable的参数，它们占据了传递给newCallable的参数的“位置”。数值n表示生成的可调用对
+象中参数的位置：_1为newCallable的第一个参数，_2为第二个参数，以此类推。
+
+//占位符位于std中的placeholders命名空间
+
+//功能1:实现参数顺序调整
+void Print(int x, int y)
+{
+    std::cout<< x << " ";
+    std::cout<< y <<std::endl;
+}
+
+int main()
+{
+    Print(10,20);
+    auto RPrint = std::bind(Print,std::placeholders::_2,std::placeholders::_1);
+    RPrint(10,20);
+
+	//还能这么写,因为返回的就是函数对象,包装器底层生成的函数对象的类型是匹配的
+    std::function<void(int,int)> RPrint1 = std::bind(Print,std::placeholders::_2,std::placeholders::_1);
+    RPrint1(10,20);
+    return 0;
+}
+
+// bind底层也是仿函数,通过套一层编译器生成的仿函数,把参数顺序调了,再传给需要调用的仿函数....
+
+
+功能2:把多参数调整成少参数,以符合某些传参需求... 比较有用,某些时候可以把一些固定的参数隐藏起来.就如成员函数的隐藏参数this
+
+
+
+*/
 
 
 

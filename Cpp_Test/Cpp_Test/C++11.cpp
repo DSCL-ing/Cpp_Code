@@ -15,44 +15,28 @@
 #include<time.h>
 #include<atomic>
 #include<functional>
-/* C++11线程库 thread */
 
-class Plus
+
+void Print(int x, int y)
 {
-public:
-    static int plusi(int a, int b)
-    {
-        return a + b;
-    }
-    double plusd(double a, double b)
-    {
-        return a + b;
-    }
-};
+    std::cout<< x << " ";
+    std::cout<< y <<std::endl;
+}
 
 int main()
 {
-// 静态成员函数 --- 访问类域去调用,和普通全局函数只是域不同,需要明确指出
-    std::function<int(int a ,int b)> f1 = Plus::plusi; 
-    
-  //非静态成员函数,感觉意义不大了. --- 底层是调用对象来调用 
-   std::function<double(Plus,double a, double b)> f2 = &Plus::plusd; //非静态成员函数必须要加&, 原理暂时未知
-    f1(1,1);
-    f2(Plus(),1,1); // 匿名对象
-    Plus p;
-    f2( p,1,1); //有名对象
-   
-    std::function<double(Plus p,double a, double b)> f3 = &Plus::plusd; // 有参数名
-    f3(p,1,1);
-    
-    std::function<double( Plus* ,double a, double b)> f4 = &Plus::plusd; // 也可以是指针
-    Plus p2;
-    f4(&p2,1,1); //不能用匿名对象,因为匿名对象是右值,不能取地址
-
+    Print(10,20);
+    auto RPrint = std::bind(Print,std::placeholders::_2,std::placeholders::_1);
+    std::function<void(int,int)> RPrint1 = std::bind(Print,std::placeholders::_2,std::placeholders::_1);
+    RPrint(10,20);
+    RPrint1(10,20);
     return 0;
 }
 
 
+
+
+/* C++11线程库 thread */
 /*
 std::mutex mtx;
 int x = 0;
