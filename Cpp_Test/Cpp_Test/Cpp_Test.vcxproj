@@ -22,7 +22,9 @@
     <ClCompile Include="2Date.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="C++11.cpp" />
+    <ClCompile Include="C++11.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="library_Test.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
@@ -66,6 +68,10 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
     </None>
+    <None Include="1.3异常.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
+    </None>
     <ClInclude Include="1.操作系统补充.h" />
     <ClInclude Include="1.1汇编.h" />
     <ClInclude Include="10myString.h" />
@@ -104,11 +110,14 @@
     <ClInclude Include="28hashtable_container.h" />
     <ClInclude Include="28myMap_unordered.h" />
     <ClInclude Include="28mySet_unordered.h" />
-    <ClInclude Include="1.2.0C++11.h">
+    <None Include="1.2.0C++11.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
-    </ClInclude>
-    <ClInclude Include="1.2.1C++11.h" />
+    </None>
+    <None Include="1.2.1C++11.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
+    </None>
     <ClInclude Include="9Date.h" />
     <None Include="1.1C++Note2.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>

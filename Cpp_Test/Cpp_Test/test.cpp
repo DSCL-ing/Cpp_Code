@@ -4,8 +4,6 @@
 #include <ctime>
 #include <random>
 #include <iostream>
-using std::cout;
-using std::endl;
 #include<string.h>
 #include<algorithm>
 
@@ -13,13 +11,17 @@ using std::endl;
 #include<map>
 
 
-int main()
-{
-	return 0;
 
+void fun() noexcept
+{
+    throw "hello";
 }
 
-
+int main()
+{
+   fun();
+    return 0;
+}
 
 
 

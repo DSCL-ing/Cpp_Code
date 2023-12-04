@@ -1212,6 +1212,15 @@ int main()
  * 
  */
 
+
+ //const类
+ /*
+	const class A; //类本身是const的. 因为this就是自己的指针,则this也是const的. 即 const this
+	所以,const A 的成员函数,要对外提供,都应有对应的const版本, 即func()const. //修饰this,成为const this
+ 
+ */
+
+
 //取地址运算符重载和const修饰的取地址运算符重载
 /**
  * 两个都是天选之子,而且一般也没有重写的必要,自带的也够了

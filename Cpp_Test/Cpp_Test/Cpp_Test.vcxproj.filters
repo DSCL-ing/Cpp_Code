@@ -110,12 +110,6 @@
     <ClInclude Include="28mySet_unordered.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="1.2.0C++11.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="1.2.1C++11.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Test.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -178,6 +172,15 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="1.1C++Note1.hpp">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.3异常.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.2.1C++11.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.2.0C++11.h">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>
