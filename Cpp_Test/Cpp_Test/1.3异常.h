@@ -487,7 +487,7 @@ void fun()
         std::cout << "delete[]" << std::endl;
         delete[] array;
         //业务...
-        throw; //捕获到什么,就抛什么,由编译器识别 --- 实际中常用的方法,因为异常很多
+        throw; //捕获到什么,就抛什么,由编译器识别 --- 实际中异常比较少时常用的方法,如果有很多异常要抛且要释放资源,要写很多次,繁琐,需要智能指针
     }
     std::cout<<"delete[]"<<std::endl;
     delete[] array;
