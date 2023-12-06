@@ -31,7 +31,7 @@
 
 #include<deque> //测试用
 #include<vector>//测试用
-#include"1Date.h"//测试用
+#include"9Date.h"//测试用
 #include<iostream>
 using std::cout;
 using std::endl;
@@ -263,7 +263,7 @@ void test_priority_queue2()
 	//pq1.push(Date(2001, 1, 3));
 	//cout << pq1.top() << endl;
 	cout << "=================" << endl;
-	priority_queue<Date*,vector<Date*>,PDateLess> pq2; //显式指定才会调用PDateLess,不然会调用模板的用于比较地址
+	priority_queue<Date*,std::vector<Date*>,PDateLess> pq2; //显式指定才会调用PDateLess,不然会调用模板的用于比较地址
 	pq2.push(new Date(2001, 1, 1));
 	pq2.push(new Date(2001, 1, 2));
 	pq2.push(new Date(2001, 1, 3));

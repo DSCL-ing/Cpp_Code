@@ -5,6 +5,11 @@ Smart pointer
 
 智能指针;灵巧指针
 
+智能指针三大件
+//1.RAII
+//2.像指针一样使用
+//3.拷贝问题 ,指针指针需要的是浅拷贝,并且需要处理资源释放问题 ---> 引用计数
+
 
 RAII
 Resource Acquisition Is Initialization 资源获取即初始化
