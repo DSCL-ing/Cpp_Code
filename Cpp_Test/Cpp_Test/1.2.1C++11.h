@@ -481,7 +481,7 @@ std::this_thread::yield(); // 主动让出时间片
 应用场景: 无锁编程(尽可能少使用锁) ---- 无锁编程 ,因为加锁效率太低,而搞出来的无锁编程思想
 
 
-扩展知识: --- 不是特别系统学习,比较混乱 
+扩展知识: --- 没有系统学习,比较混乱 
 //操作系统CAS ... --- 原子操作的本质
 //https://coolshell.cn/articles/8239.html //无锁队列的实现
 //https://coolshell.cn/articles/9703.html //无锁hashMap
