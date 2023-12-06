@@ -123,9 +123,6 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
     </None>
     <ClInclude Include="9Date.h" />
-    <None Include="1.1C++Note2.hpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </None>
     <ClInclude Include="1.1STL.h" />
     <ClInclude Include="Test.h" />
   </ItemGroup>

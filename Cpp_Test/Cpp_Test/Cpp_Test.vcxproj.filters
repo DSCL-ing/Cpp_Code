@@ -156,9 +156,6 @@
     <None Include="3.linuxShell.txt">
       <Filter>头文件</Filter>
     </None>
-    <None Include="1.1C++Note2.hpp">
-      <Filter>头文件</Filter>
-    </None>
     <None Include="10string.txt">
       <Filter>头文件</Filter>
     </None>

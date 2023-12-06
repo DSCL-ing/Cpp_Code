@@ -11,7 +11,7 @@
 #include<mutex>
 #include<thread>
 
-
+//shared_ptr简易模拟实现和使用测试
 template<class T>
 class shared_ptr
 {
@@ -37,16 +37,16 @@ public:
             delete _ptr;
             delete _pcount;
             //锁也要释放
-            
+
             //{ //解决方案一
             //_pmtx->unlock();
             //delelte _pmtx;
             //return;
             //}
-            
+
             //解决方案二 : 使用标志位
             deleteFlag = true;
-       
+
         }
         _pmtx->unlock(); //释放锁后,不能有解锁操作
 
@@ -106,11 +106,17 @@ struct Date
 };
 void SharePtrFunc(shared_ptr<Date>& sp, size_t n, std::mutex& mtx) {
     std::cout << sp.get() << std::endl;
-    for (size_t i = 0; i < n; ++i)  //循环拷贝和释放外界的智能指针,使外界智能指针的引用计数发生改变,借此验证资源是否安全
+    for (size_t i = 0; i < n; ++i)
     {
+        //验证1:验证智能指针本身是否安全,
         shared_ptr<Date> copy(sp);
+        
         {
-            std::unique_lock<std::mutex> lk(mtx);
+            std::unique_lock<std::mutex> lk(mtx);//守护锁
+            copy->_year++;
+            copy->_month++;
+            copy->_day++;
+        //验证二: 智能指针 管理的资源不一定是线程安全的,两个线程++了2n 次是最终结果，正常情况下加了2n次,通过加锁和不加锁来验证
         }
     }
 }
@@ -127,6 +133,9 @@ int main()
     t1.join();
     t2.join();
     std::cout << p.use_count() << std::endl; //如果结果是1,说明线程安全. 否则说明不安全
+    std::cout<<p->_year<<std::endl;
+    std::cout<<p->_month<<std::endl;
+    std::cout<<p->_day<<std::endl;
     return 0;
 }
 
