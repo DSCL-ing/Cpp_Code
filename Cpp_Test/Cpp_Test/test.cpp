@@ -11,11 +11,13 @@
 #include<mutex>
 #include<thread>
 
+
+//template <class U> explicit shared_ptr(U* p);
 template<class T>
 class shared_ptr
 {
 public:
-    shared_ptr(T* ptr = nullptr) :_ptr(ptr), _pcount(new int(1)), _pmtx(new std::mutex()) //第一次定义
+    explicit shared_ptr(T* ptr = nullptr) :_ptr(ptr), _pcount(new int(1)), _pmtx(new std::mutex()) //第一次定义
     {}
     shared_ptr(const shared_ptr<T>& sp) :_ptr(sp._ptr), _pcount(sp._pcount), _pmtx(sp._pmtx) //拷贝
     {
@@ -98,9 +100,36 @@ private:
     std::mutex* _pmtx; //多线程时,保障临界资源的安全
 };
 
+//weak_ptr 简易实现,仅仅能符合简单场景,用于理解weak_ptr ---- 非常简易,库中实现很困难
+template<class T>
+class weak_ptr
+{
+public:
+    weak_ptr()
+        :_ptr(nullptr) //默认生成的不管理资源
+    {}
+    weak_ptr(const shared_ptr<T>& sp)
+        :_ptr(sp.get()) //帮助shared_ptr管理资源
+    {}
+    T& operator*()
+    {
+        return *_ptr;
+    }
+    T* operator->()
+    {
+        return _ptr; //返回地址
+    }
+    T* get() const //getPtr
+    {
+        return _ptr;
+    }
+private:
+    T* _ptr;
+};
+
 struct ListNode
 {
-    /*
+    /* 1.有智能指针类型不匹配问题
     //ListNode* prev;
     //ListNode* next;
     n1->next = n2; //没有异常的正常情况下,是没有问题的
@@ -108,8 +137,13 @@ struct ListNode
     //需要重新封装next和prev,使用shared_ptr封装next和prev
     */
 
-    shared_ptr<ListNode> _prev; //智能指针封装的list
-    shared_ptr<ListNode> _next;
+    /* 2.有循环引用问题
+    //shared_ptr<ListNode> _prev; //智能指针封装的list
+    //shared_ptr<ListNode> _next;
+    */
+
+    weak_ptr<ListNode> _next;
+    weak_ptr<ListNode> _prev;
 
     int _val;
     ~ListNode()
@@ -133,14 +167,41 @@ void test_shared_cycle() //测试共享指针的循环问题
 
     {//二:
         shared_ptr<ListNode> n1(new ListNode);
-        shared_ptr<ListNode> n2 = new ListNode; //隐式类型转换方式构造,调用了默认构造
-        //shared_ptr<ListNode> n3{ new ListNode }; //花括号初始化,编译器提供的支持,等价于=
-       
+        //shared_ptr<ListNode> n2 = new ListNode; //隐式类型转换方式构造,调用了默认构造,使用explicit后不支持
+        shared_ptr<ListNode> n2{ new ListNode }; // 花括号初始化,等价于直接调用默认构造 ,注意,并不是=使用explicit后用=会报错
+        //shared_ptr<ListNode> n3{ new ListNode }; //花括号初始化,编译器提供的支持,
+
         //现象1,只有n1->_obj = n2或 n2->obj = n1;时,可以正常析构
-        //现象2,当n1,n2循环引用时,无法正常析构了
-       n1->_next = n2;
+        //现象2,当n1,n2循环引用时,无法正常析构了 --- shared_ptr的缺陷
+        n1->_next = n2;
         n2->_prev = n1;
+
+        //对现象2的分析;
+        /*
+        核心原因,两个对象相互引用:属于同一个对象的的内部资源,引用了第二个对象.而另外一个对象的内部资源,也反向引用第一个对象,
+              两对象互相引用,在析构时两边都在等待对方先析构,形成闭环,导致类似死锁的现象
+             两个对象相互引用后,引用计数都为2,析构时两个对象都为1,无法减到0.导致无法真正析构资源. --- 属于shared_ptr的缺陷
+        */
+
         //对现象2的解决方案:
+        /*
+        使用C++提供的weak_ptr(弱指针),用于解决shared_ptr循环引用的问题.
+        weak_prt是专门用于解决shared_ptr的循环引用问题的类,特殊的智能指针,不符合RAII
+        weak_ptr的三个构造函数:
+ //1.无参构造
+constexpr weak_ptr() noexcept;
+//2.拷贝构造
+1.weak_ptr (const weak_ptr& x) noexcept;
+2.template <class U> weak_ptr (const weak_ptr<U>& x) noexcept;
+//3.根据shared_ptr构造
+template <class U> weak_ptr (const shared_ptr<U>& x) noexcept;
+        //从三个拷贝构造来看,weak_ptr没有支持使用资源来构造,说明weak_ptr不是RAII指针,不是常规的智能指针
+//特点
+//1.他不是常规的智能指针,不支持RAII
+//2.一样像指针一样(是特殊的智能指针)
+//3.专门设计出来,辅助解决shared_ptr的循环引用问题
+
+      */
     }
 
 }
