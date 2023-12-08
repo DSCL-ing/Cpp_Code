@@ -35,13 +35,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="1algorithm.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="9Date.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="1.1STL.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="10myString.h">
@@ -116,12 +110,6 @@
     <ClInclude Include="0收藏.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="1.1汇编.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="1.操作系统补充.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="3.linux系统与编程.txt">
@@ -181,6 +169,21 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="1.4智能指针.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.1汇编.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.1STL.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.5特殊类设计.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.操作系统补充.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1algorithm.h">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>
