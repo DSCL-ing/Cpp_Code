@@ -92,3 +92,83 @@ int main()
 
 
 
+// 设计只能在栈上定义类(不能完全做到,最多只能禁止堆,不能禁止static区)
+/*
+class StackOnly
+{
+public:
+    static StackOnly createObj(int x = 0) 
+    {
+        return StackOnly(x);  //传值返回
+    }
+    static StackOnly create_move_Obj(int x = 0)
+    {
+        return std::move(StackOnly(x)); //画蛇添足
+    }
+    StackOnly(const StackOnly& ho):_x(ho._x)
+    {}
+    StackOnly(StackOnly&& ho):_x(ho._x)
+    {}
+
+private:
+    StackOnly(int x = 0):_x(0)
+    {}
+    int _x;
+};
+
+int main()
+{
+    StackOnly ho =  StackOnly::createObj(0);  //传值返回 -- 需要拷贝构造
+    static StackOnly sho = ho; // 有拷贝构造就能创建static对象
+
+    StackOnly ho1 =  StackOnly::create_move_Obj(1);  //如果禁止掉拷贝构造而使用移动构造
+    static StackOnly sho1 = std::move(ho1); // 有移动构造也能创建static对象
+    return 0;
+}
+*/
+
+
+//设计一个不能被继承的类
+/*
+C++98:构造函数私有化
+ // 原因: 派生类在初始化时必须要显式调用父类构造函数帮助父类私有化, 父类构造函数私有后,子类就无法完成初始化了
+
+C++11:使用final关键字,final修饰类,表示该类不能被继承
+
+class A  final //最终
+{
+    // ....
+};
+*/
+
+//设计模式
+/*
+
+设计模式：
+设计模式（Design Pattern）是一套被反复使用、多数人知晓的、经过分类的、代码设计经验的
+总结。为什么会产生设计模式这样的东西呢？就像人类历史发展会产生兵法。最开始部落之间打
+仗时都是人拼人的对砍。后来春秋战国时期，七国之间经常打仗，就发现打仗也是有套路的，后
+来孙子就总结出了《孙子兵法》。孙子兵法也是类似。
+使用设计模式的目的：为了代码可重用性、让代码更容易被他人理解、保证代码可靠性。 设计模
+式使代码编写真正工程化；设计模式是软件工程的基石脉络，如同大厦的结构一样。
+
+//C++不太关注设计模式,Java比较关注
+
+C++常见设计模式:
+适配器
+迭代器
+单例 (最广泛)
+工厂
+观察者
+
+
+
+*/
+
+//单例模式
+/*
+
+
+
+
+*/
