@@ -1,6 +1,11 @@
 ﻿#pragma once
 
 
+
+
+//srand()只对当前线程有效 多线程要注意,可能不生效,默认都是srand(1)
+
+
 //1.sizeof 变量 --- 证明sizeof不是函数,而是关键字
 //2.sizeof(关键字)
 //  sizeof(变量)
