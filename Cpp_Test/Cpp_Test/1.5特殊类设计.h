@@ -168,14 +168,23 @@ C++常见设计模式:
 
 //单例模式 singleton pattern
 /*
-一个类只能创建一个对象,即单例模式,该模式可以保证系统中该类只有一个实例，并提供一个访问它的全局访问点(getInstance),该实例被所有程序模块共享。
+在一个进程中,一个类只能创建一个对象,即单例模式,该模式可以保证系统中该类只有一个实例，并提供一个访问它的全局访问点(getInstance),该实例被所有程序模块共享。
    比如在某个服务器程序中，该服务器的配置信息存放在一个文件中，这些配置数据由一个单例对象统一读取，
    然后服务进程中的其他对象再通过这个单例对象获取这些配置信息，这种方式简化了在复杂环境下的配置管理
  
+ 
+
+
+
 单例模式有两种实现模式： 1.饿汉模式 2. 懒汉模式
 
 使用场景：只要某个类的对象在全局只有一份,就可以使用单例模式
 
+
+单例模式的实现:
+1.把这些数据放进一个类里面,把这个类设计成单例类
+2.把这个类设计成只允许在堆上实例的类
+3.选择饿汉或懒汉模式
 
 */
 
@@ -216,8 +225,11 @@ public:
 private:
     Singleton()
     {}
-    std::vector<std::string> _v; // 不用给大小,对象实例化后会自动定义一个空的,后面push_back即可
-    static Singleton* _ins;
+    Singleton(const Singleton& ins) = delete;          //如果没有加锁,则有防拷贝作用
+    //禁止拷贝构造后,operator可以不防止(调不到拷贝构造了),不防止有没有其他问题还不清楚,最好还是写
+
+   std::vector<std::string> _v; // 不用给大小,对象实例化后会自动定义一个空的,后面push_back即可
+    static Singleton* _ins;  //另一个饿汉特有的定义方式： 可以定义成对象，结束时会自动析构, 更简单
     std::mutex _mtx;
 };
 Singleton* Singleton::_ins = new Singleton; //在堆上实例化
@@ -267,10 +279,13 @@ int main()
 
 //懒汉模式：
 /*
-    如果单例对象构造十分耗时或者占用很多资源，比如加载插件，初始化网络连接欸，读取文件等等，而且有可能该对象在程序运行时不会用到,
- 如果在程序一开始就进行初识化，就会导致程序启动时非常缓慢。这种情况使用懒汉模式（延迟加载）更好. 
+ 如果单例对象一开始就进行初识化,构造十分耗时或者占用很多资源，还伴随一些IO行为如 加载插件，初始化网络连接，读取文件等等，
+   而且有可能该对象在程序运行时不会用到,就会导致程序启动时非常缓慢。这种情况使用懒汉模式（延迟加载）更好. 
 
- 优点：只在初次使用实例对象时，创建对象。进程启动无负载。多个单例实例启动顺序能够自由控制.
+懒汉模式在启动后能够使用多线程,一个线程IO,另一个线程执行业务等.一个线程不会影响另一个线程,能够缓解慢、卡顿等问题(多核的好处)
+    多核，并发能让不关联的业务分别独立执行,提高效率
+
+ 优点：只在初次使用实例对象时，创建对象。进程启动无负载。多个单例实例启动顺序能够自由控制. 能够解决饿汉的所有缺点
  缺点：复杂
 
 
@@ -345,11 +360,14 @@ public:
 private:
     Singleton()
     {}
+    Singleton(const Singleton& ins) = delete;          //如果没有加锁,则有防拷贝作用
+    //禁止拷贝构造后,operator可以不防止(调不到拷贝构造了),不防止有没有其他问题还不清楚,最好还是写
+
     std::vector<std::string> _v;                      // 不用给大小,对象实例化后会自动定义一个空的,后面push_back即可
     std::mutex _vmtx;
 
     static Singleton* _ins;
-    static std::mutex _imtx;                        //目前不太清楚为什么用的是静态锁
+    static std::mutex _imtx;                        //// 静态锁不属于对象,在静态区,锁的是静态区的对象
 };
 Singleton* Singleton::_ins = new Singleton; //在堆上实例化
 std::mutex Singleton::_imtx;
@@ -387,6 +405,74 @@ int main()
     //Singleton::delInstance();  //手动释放,
     return 0;
     //程序结束才会释放静态,因为静态不受对象控制,只随生命周期(整个程序运行期间)
+}
+
+
+//懒汉模式方式2
+class Singleton
+{
+public:
+    static Singleton* GetInstance()
+    {
+        // C++11之前，这里不能保证初始化静态对象的线程安全问题
+        // C++11之后，这里可以保证初始化静态对象的线程安全问题 --- 很复杂,有机会再研究
+        static Singleton inst; //局部静态对象只会在第一调用时初始化
+
+        return &inst;
+    }
+
+    void Add(const string& str)
+    {
+        _vmtx.lock();
+
+        _v.push_back(str);
+
+        _vmtx.unlock();
+    }
+
+    void Print()
+    {
+        _vmtx.lock();
+
+        for (auto& e : _v)
+        {
+            cout << e << endl;
+        }
+        cout << endl;
+
+        _vmtx.unlock();
+    }
+
+    ~Singleton()
+    {
+        // 持久化
+        // 比如要求程序结束时，将数据写到文件，单例对象析构时持久化就比较好
+    }
+
+private:
+    // 限制类外面随意创建对象
+    Singleton()
+    {
+        cout << "Singleton()" << endl;
+    }
+
+    // 防拷贝
+    Singleton(const Singleton& s) = delete;
+    Singleton& operator=(const Singleton& s) = delete;
+
+private:
+    mutex _vmtx;
+    vector<string> _v;
+};
+
+
+int main()
+{
+	Singleton::GetInstance();
+	Singleton::GetInstance();
+
+
+	return 0;
 }
 
 

@@ -51,7 +51,8 @@ public:
     ~SmartPtr()
     {
         if (_ptr)
-            delete _ptr;
+            delete _ptr; //同一个对象,delete一次后可以置空,之后delete 多次没关系.
+                         // 但不同对象指向同一个资源,_ptr都是指向资源的地址,同一个非空地址delete两次就会出问题
     }
     T& operator*()
     {
