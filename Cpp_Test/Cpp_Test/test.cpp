@@ -16,7 +16,13 @@
 
 
 
-
+int main()
+{
+    double d = 12.34;
+    int a = static_cast<int>(d);
+    std::cout << a << std::endl;
+    return 0;
+}
 
 
 

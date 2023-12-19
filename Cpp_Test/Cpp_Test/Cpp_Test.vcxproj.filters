@@ -186,5 +186,8 @@
     <None Include="1algorithm.h">
       <Filter>头文件</Filter>
     </None>
+    <None Include="1.6类型转换.h">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
