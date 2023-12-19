@@ -40,7 +40,48 @@ static_cast、reinterpret_cast、const_cast、dynamic_cast
 1.static_cast
     static_cast 对应 C语言的隐式类型转换(能当C语言的隐式类型转换使用)
  用于非多态类型的转换(静态转换).编译器隐式执行的任何类型都可用. 但是不能用于两个不相关的类型进行转换
+int main()
+{
+    double d = 12.34;
+    int a = static_cast<int>(d); // 意义相似,可以静态转换 ,仅丢失精度
+    std::cout << a << std::endl;
+    return 0;
+}
+
+2.reinterpret_cast -- 重新解释的转换 , 对应C语言的显式强制类型转换
+    reinterpret_cast 是重新解释的意思,进行一些不相关类型的转换
+ 通常为操作数的位模式提供较低层次的重新解释,用于将一种类型转换为另一种不同的类型.
+ 相关或相近类型不能使用reinterpret_cast.(会报错)
+int main()
+{
+    double d = 12.34;
+    int a = static_cast<int>(d);
+    std::cout << a << std::endl;
+    // 这里使用static_cast会报错，应该使用reinterpret_cast
+    //int *p = static_cast<int*>(a);
+    int* p = reinterpret_cast<int*>(a);  //如C语言的强制类型转换,把int转化成int*
+    return 0;
+}
+
+3.const_cast --- 去掉const的转换
+    const_cast最常用的用途就是删除变量的const属性,方便赋值. 
+    通常要搭配volatile使用,因为编译器可能会把const变量当作宏来直接替换 或当作不再修改的变量放到寄存器.
+
 
 
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -18,12 +18,13 @@
 
 int main()
 {
-    double d = 12.34;
-    int a = static_cast<int>(d);
+    volatile const  int a = 2;
+    int* p = const_cast<int*>(&a);
+    *p = 3;
     std::cout << a << std::endl;
-    return 0;
+    std::cout << *p << std::endl;
+    return 0 ;
 }
-
 
 
 
