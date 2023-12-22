@@ -180,13 +180,19 @@
     <None Include="1.5特殊类设计.h">
       <Filter>头文件</Filter>
     </None>
-    <None Include="1.操作系统补充.h">
+    <None Include="1.0操作系统补充.h">
       <Filter>头文件</Filter>
     </None>
-    <None Include="1algorithm.h">
+    <None Include="2.0algorithm.h">
       <Filter>头文件</Filter>
     </None>
     <None Include="1.6类型转换.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.7IO流.h">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="1.8空间配置器.h">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>
