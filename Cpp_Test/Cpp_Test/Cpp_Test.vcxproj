@@ -154,9 +154,10 @@
     <ClInclude Include="Test.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="3.linux系统与编程.txt">
+    <None Include="3.0linux系统与编程.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </Text>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
+    </None>
     <None Include="3.linuxShell.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
