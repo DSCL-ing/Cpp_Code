@@ -6266,13 +6266,13 @@ int main()
 汇编伪代码:
 lock:
     movb $0, %al //向寄存器al写入0   --- al寄存器是线程自己的上下文
-    xchgb %al, mutex //交换mutex和al寄存器的内容 --- 原子
+    xchgb %al, mutex //交换mutex和al寄存器的内容 --- 原子  //把mutex内的数据拿走就是加锁过程,拿到的是1就是解锁
     if(al寄存器的内容>0) return 0; //返回,可以取得锁
     else 挂起等待       //挂起
     goto lock;
 
 unlock:
-    movb $1, mutex      //向mutex写入1 -- 直接改,不需要交换,
+    movb $1, mutex      //向mutex写入1 -- 直接改,不需要交换, // 向mutex写1就是加锁
     唤醒等待mutex的进程
     return 0;
 解锁:
