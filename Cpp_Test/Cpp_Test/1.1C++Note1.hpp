@@ -723,16 +723,42 @@ void Stack1::Push(int x)
  * 定义成员变量时,一般习惯在名字前加上'_'.类似java的this,用于区分形参和成员变量 -- C++不建议使用this，一般加_区分
  * 不一定是用'_',其他方式也可以的，主要看公司要求。一般都是加个前缀或者后缀标识区分就行。
  * 用'm_'还有'mName'小驼峰等...(m为menber成员的缩写)
- * 
+ 
+ 
  * 面试题:C++中struct和class的区别是什么？
- * 解答：C++需要兼容C语言，所以C++中struct可以当成结构体使用。另外C++中struct还可以用来
- * 定义类。和class定义类是一样的，区别是struct定义的类默认访问权限是public，class定义的类
- * 默认访问权限是private。注意：在继承和模板参数列表位置，struct和class也有区别，后续学习
- * 补充：一般来说成员全部开放的时候用的是struct，封装的时候使用class
- * 如
- * 1.stl_list使用的是struct,
- * 2.struct默认权限是public,class是private
- * 
+  解答：C++需要兼容C语言，所以C++中struct可以当成结构体使用。另外C++中struct还可以用来
+  定义类。和class定义类是一样的，区别是struct定义的类默认访问权限是public，class定义的类
+  默认访问权限是private。注意：在继承和模板参数列表位置，struct和class也有区别，后续学习
+  补充：一般来说成员全部开放的时候用的是struct，封装的时候使用class
+  如
+  1.stl_list使用的是struct,
+  2.struct默认权限是public,class是private
+ 
+ C++中struct和class的区别
+相同点：
+
+两者都可以用来定义用户自定义数据类型（UDT）。 两者都可以包含成员变量和成员函数。
+
+不同点：
+
+在默认情况下，C++中的class成员默认为私有（private），而struct成员默认为公有（public）。
+
+C++中的class可以实现封装和数据隐藏，可以使用访问修饰符指定成员的访问权限（公有、私有或保护），而struct默认公开其成员。
+
+C++中的class支持继承和多态性，而struct不支持。
+
+在C语言中，struct只能包含变量，不能包含函数，而在C++中，struct可以包含成员函数。 引申：
+
+在C++中，struct可以被视为class的一种特例，除了默认访问权限和继承方式不同之外，它们几乎具有相同的特性和语法。
+
+C++中的struct可以实现与class相同的功能，但在设计上用于表示更简单的数据结构。 在C语言中，struct主要用于定义数据结构，没有封装和继承的概念，仅仅是一个简单的数据集合。
+
+在C++中，struct被扩展为支持更多的特性，使其能够拥有成员函数、封装性和继承等特性，更加类似于class。
+
+
+
+
+ 
  * 类的实例化:即开辟空间
  * Class className;   //实例化
  * 
