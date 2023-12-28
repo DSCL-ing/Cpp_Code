@@ -6739,10 +6739,29 @@ WEB服务器完成网页请求这样的任务，使用线程池技 术是非常�
 * 线程池示例： 
 * 1. 创建固定数量线程池，循环从任务队列中获取任务对象， 
 * 2. 获取到任务对象后，执行任务对象中的任务接口
-
-
-
 */
 
 
 
+
+
+$$$ 单例模式
+//饿汉模式
+
+$ 懒汉模式 
+
+思想:延迟加载
+   运用了延迟加载思想或类似延迟思想的还有: 写时拷贝,动态库,缓存/局部性原理
+
+
+
+
+悲观锁:先加锁,后访问数据
+乐观锁:
+CAS操作:C++少,JAVA多
+自旋锁:
+       int pthread_spin_destroy(pthread_spinlock_t *lock);
+       int pthread_spin_init(pthread_spinlock_t *lock, int pshared);
+       int pthread_spin_lock(pthread_spinlock_t *lock);
+       int pthread_spin_unlock(pthread_spinlock_t *lock);
+使用:由程序员控制,根据临界区的时间,决定使用自旋还是阻塞. 使用方式基本和mutex类似
