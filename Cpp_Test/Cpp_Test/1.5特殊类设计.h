@@ -229,7 +229,7 @@ private:
     //禁止拷贝构造后,operator可以不防止(调不到拷贝构造了),不防止有没有其他问题还不清楚,最好还是写
 
    std::vector<std::string> _v; // 不用给大小,对象实例化后会自动定义一个空的,后面push_back即可
-    static Singleton* _ins;  //另一个饿汉特有的定义方式： 可以定义成对象，结束时会自动析构, 更简单
+    static Singleton* _ins;  
     std::mutex _mtx;
 };
 Singleton* Singleton::_ins = new Singleton; //在堆上实例化
@@ -481,3 +481,4 @@ int main()
 
 
 
+//还可以给_instance加volatile关键字 防止过度优化,但后续可能有很多细节要处理.可加可不加

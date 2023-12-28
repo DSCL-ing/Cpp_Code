@@ -6721,7 +6721,6 @@ $$$ 线程池
     对应模型:生产者-消费者模型
     消费者线程 - 生产者线程
 
-
 /*threadpool.h*/ 
 /* 线程池: 
 * 一种线程使用模式。线程过多会带来调度开销，进而影响缓存局部性和整体性能。
@@ -6751,10 +6750,39 @@ $$$ 单例模式
 $ 懒汉模式 
 
 思想:延迟加载
-   运用了延迟加载思想或类似延迟思想的还有: 写时拷贝,动态库,缓存/局部性原理
+   运用了延迟加载思想或类似延迟思想的还有: 写时拷贝,动态库,缓存/局部性原理,虚拟地址空间
 
 
 
+
+
+
+
+$ 其他线程安全
+STL中的容器是否是线程安全的?   不是.
+原因是, STL 的设计初衷是将性能挖掘到极致, 而一旦涉及到加锁保证线程安全, 会对性能造成巨大的影响.
+ 而且对于不同的容器, 加锁方式的不同, 性能可能也不同(例如hash表的锁表和锁桶).
+  因此 STL 默认不是线程安全. 如果需要在多线程环境下使用, 往往需要调用者自行保证线程安全.
+
+智能指针是否是线程安全的?
+ 1.对于 unique_ptr, 由于只是在当前代码块范围内生效, 因此不涉及线程安全问题.
+ 2.对于 shared_ptr, 多个对象需要共用一个引用计数变量, 所以会存在线程安全问题. 但是标准库实现的时候考虑到了这个问题,
+  基于原子操作(CAS)的方式保证 shared_ptr 能够高效, 原子的操作引用计数.
+
+
+
+
+
+
+
+$ 常见的各种锁
+悲观锁：在每次取数据时，总是担心数据会被其他线程修改，所以会在取数据前先加锁（读锁，写锁，行
+锁等），当其他线程想要访问数据时，被阻塞挂起。
+乐观锁：每次取数据时候，总是乐观的认为数据不会被其他线程修改，因此不上锁。但是在更新数据前，
+会判断其他数据在更新前有没有对数据进行修改。主要采用两种方式：版本号机制和CAS操作。
+CAS操作：当需要更新数据时，判断当前内存值和之前取得的值是否相等。如果相等则用新值更新。若不
+等则失败，失败则重试，一般是一个自旋的过程，即不断重试。
+自旋锁，公平锁，非公平锁？
 
 悲观锁:先加锁,后访问数据
 乐观锁:
@@ -6765,3 +6793,76 @@ CAS操作:C++少,JAVA多
        int pthread_spin_lock(pthread_spinlock_t *lock);
        int pthread_spin_unlock(pthread_spinlock_t *lock);
 使用:由程序员控制,根据临界区的时间,决定使用自旋还是阻塞. 使用方式基本和mutex类似
+
+
+
+
+
+
+
+
+$$ 读者-写者问题
+    
+    一样有"321"原则: 
+ 3种关系:
+  1.读读(没关系,随便读)  
+    因为数据是可以重复利用的,仅仅读数据(拷贝),不会消耗数据; 而cp问题中,消费者会把数据拿走
+  2.写写(互斥),
+  3.读写(互斥,同步) 
+    同步: 写满不能再写,必须要读.空了不能读,要等写
+ 2种角色:
+  读者-写着
+ 1个场所:
+
+
+接口:
+/*
+
+读写锁:pthread_rwlock_t rwlock
+
+int pthread_rwlock_destroy( pthread_rwlock_t *rwlock   );
+int pthread_rwlock_init   ( pthread_rwlock_t *restrict rwlock,  const pthread_rwlockattr_t *restrict attr);
+                          (                   &rwlock ,          nullptr                                 )l;
+
+//读者的加锁方式
+int pthread_rwlock_rdlock   ( pthread_rwlock_t *rwlock ); //rdlock = read lock; 
+int pthread_rwlock_tryrdlock( pthread_rwlock_t *rwlock );
+
+//写者的加锁方式
+int pthread_rwlock_trywrlock ( pthread_rwlock_t *rwlock ); 
+int pthread_rwlock_wrlock    ( pthread_rwlock_t *rwlock ); //wr = write
+
+//读者写者统一的释放方式
+int pthread_rwlock_unlock(pthread_rwlock_t *rwlock);
+
+
+//设置读写优先
+int pthread_rwlockattr_setkind_np(pthread_rwlockattr_t *attr, int pref); 
+
+/*pref 共有 3 种选择 
+PTHREAD_RWLOCK_PREFER_READER_NP (默认设置) 读者优先，可能会导致写者饥饿情况 
+PTHREAD_RWLOCK_PREFER_WRITER_NP 写者优先，目前有 BUG， 导致表现行为和 PTHREAD_RWLOCK_PREFER_READER_NP 一致 
+PTHREAD_RWLOCK_PREFER_WRITER_NONRECURSIVE_NP 写者优先，但写者不能递归加锁 */
+
+*/
+
+
+伪代码:
+/*
+
+*/
+
+实际应用举例:
+如:博客发表出去后,基本都是让别人读,很少修改(读者优先)
+/*
+
+*/
+
+读写锁两种策略:
+1.读者优先策略(常规,默认,写者可能饥饿),写者饥饿是客观存在的,可以被允许的
+2.写者优先策略
+    控制读者进入,不影响正在读的读者,阻塞后面将要读的读者
+
+
+
+
