@@ -885,8 +885,6 @@ $ 命令模式下按shift+:进入低行模式
 //:sp为上下行方式分开多个文件
 //ctrl+w+q  或:close  为关闭当前窗口.. 
 
-ctrl+w+w循环切换
-ctrl+w+方向,一次切换,不能循环
 
 
 Linux vim 文本替换 %s/原文/替换文本/g
@@ -1070,6 +1068,52 @@ vim buffer
 :bdelete test4  //bd
 
 }}}
+
+vim行号/相对行号
+{
+:set nu  //显示行号
+:set nonu //取消行号
+:set rnu  //显示相对行号
+:set nornu //取消显示相对行号
+}
+
+vim 窗口控制
+{
+
+//同时显示多个文件
+:sp //水平切分窗口 
+:vsp //垂直切分窗口 
+
+ctrl+6 //打开的文件循环切换
+
+:bn //下一个文件
+:bp //上一个文件
+:ls //列出打开的文件，带编号
+:b1~n //切换至第n个文件 对于用(v)split在多个窗格中打开的文件，这种方法只会在当前窗格中切换不同的文件
+
+ctrl+w+w    //循环切换
+ctrl+w+hjk    //光标到目标方向的窗口
+
+ctrl+w+HJKL //移动所在窗口位置
+
+ctrl+r/R/x  //位置对称对换
+
+//上下窗口
+ctrl+w+[num]+ -    //窗口大小减小num行,默认为1
+ctrl+w+[num]+ +(带shirt)  //窗口大小增加num行
+ctrl+w+ =(不带shift)  //窗口大小恢复相等
+
+//左右窗口
+<
+>
+
+
+ctrl+w+shift+_ //上下窗口最大化
+ctrl+w+shift+| //左右窗口最大化
+
+
+}
+
 
 # yum install -y vim //安装vim
 
