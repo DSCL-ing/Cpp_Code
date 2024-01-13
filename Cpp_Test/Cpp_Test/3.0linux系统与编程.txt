@@ -1111,7 +1111,9 @@ ctrl+w+ =(不带shift)  //窗口大小恢复相等
 ctrl+w+shift+_ //上下窗口最大化
 ctrl+w+shift+| //左右窗口最大化
 
-
+ctrl+W c 关闭当前窗口
+:only 仅保留当前分屏
+:hide 关闭当前分屏
 }
 
 

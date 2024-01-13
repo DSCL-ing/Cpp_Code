@@ -217,7 +217,7 @@ Linux 上有不少工具命令可以查看系统当前接入的网卡以及每�
 fasion@u2004 [ ~ ]  ➜ ifconfig
 enp0s3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
         inet 10.0.2.15  netmask 255.255.255.0  broadcast 10.0.2.255 
-           //inet就是ip网络,就是ip地址,这里是内网的ip地址,公网的看不到
+           //inet就是ip网络,就是ip地址,这里是内网的ip地址,公网的看不到 //Internet
         inet6 fe80::a00:27ff:fe49:50dd  prefixlen 64  scopeid 0x20<link>
         ether 08:00:27:49:50:dd  txqueuelen 1000  (Ethernet)   
            //ether 以太,表示基于以太网表示的mac地址, 48位,每个字节用冒号:分隔,以十六进制表示
@@ -487,6 +487,26 @@ TCP/IP协议规定,网络数据流应采用大端字节序,即低地址高字节
   //只有小端才会转,大端不做变换
 }
 
+不同风格的ip转换接口
+{
+//man inet
+
+       int inet_aton(const char *cp, struct in_addr *inp);
+
+       in_addr_t inet_addr(const char *cp);
+
+       in_addr_t inet_network(const char *cp);
+
+       char *inet_ntoa(struct in_addr in);
+
+       struct in_addr inet_makeaddr(int net, int host);
+
+       in_addr_t inet_lnaof(struct in_addr in);
+
+       in_addr_t inet_netof(struct in_addr in);
+
+
+}
 
 
 socket常见API
@@ -511,6 +531,10 @@ int connet(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 $ sockaddr结构 // addr通用的结构设计思想
 {
+
+socket API 是一层抽象的网络编程接口,适用于各种底层网络协议,如IPv4,IPv6,以及UNIX Domain Socket.
+    但各种网络协议的地址格式并不相同
+
 sockaddr,          sockaddr_in,   sockaddr_un
 |-------------|  |-------------|      |-------------|
 |16位地址类型 |  |16位地址类型 |      |16位地址类型 |  //结构体相同的头部类型,用于区别不同sock类型
@@ -524,8 +548,6 @@ sockaddr,          sockaddr_in,   sockaddr_un
 ---------------  ---------------      ---------------
 
 1.sockaddr
-头文件:
-   #include <sys/socket.h>
 结构:
    struct sockaddr {
 	  sa_family_t sin_family;//地址族
@@ -534,20 +556,123 @@ sockaddr,          sockaddr_in,   sockaddr_un
 注解:用于统一的父结构体(父类)
 
 
+2.sockaddr_in
+头文件:
+
+C结构:
+struct sockaddr_in
+  {
+//16位的地址类型
+    __SOCKADDR_COMMON (sin_); // sa_family_t sin_family :协议家族
+用途: 和socket()的domain一样,用于指定通信域
+    /*
+     #define __SOCKADDR_COMMON(sa_prefix) \                     
+        sa_family_t sa_prefix##family                       
+    //该宏用于声明用于套接字地址的数据类型的初始公共成员，`struct sockaddr'、sockaddr_in、sockaddr_un'等。  
+
+    typedef unsigned short int sa_family_t; //无符号短整型
+
+    
+    */
+
+//服务器要绑定的端口号 
+ in_port_t sin_port;   // s:socket in:inet:Internet port:端口号 
+    /*
+        in_port_t : uint16_t;
+    */
+
+//ip地址
+  struct in_addr sin_addr;  
+     /*  // struct in_addr 的结构
+      typedef uint32_t in_addr_t;                                                                                 
+      struct in_addr      //直接放uint32不行吗?为什么要用结构体
+        {                                                                                                         
+          in_addr_t s_addr;                                                                                       
+        };  
+     */
+
+ 
+ //填充字段 -- 结构体很大,用不完,全部清零,填充满占位符
+    /* Pad to size of `struct sockaddr'.填充到结构体sockaddr的大小  */
+    unsigned char sin_zero[sizeof (struct sockaddr) -
+         __SOCKADDR_COMMON_SIZE -
+         sizeof (in_port_t) -
+         sizeof (struct in_addr)];
+};
+
+
 }
 
-1. socket API 是一层抽象的网络编程接口,适用于各种底层网络协议,如IPv4,IPv6,以及UNIX Domain Socket.
-    但各种网络协议的地址格式并不相同
 
-socket构建那时,C还没支持void*(不用强转,可以接收任意类型).所以代码比较丑陋,必须先强转才能传参
+//socket构建那时,C还没支持void*(不用强转,可以接收任意类型).所以代码比较丑陋,必须先强转才能传参
 
 
 struct sockaddr_in //i:internet
 
 
 
+$ int socket(int domain, int type, int protocol)
+{
+
+头文件:
+   #include <sys/socket.h>
+
+socket() creates an endpoint for communication and returns a descriptor.
+socket（）创建一个通信端点并返回一个描述符。
+
+RETURN VALUE
+       On  success,  a  file descriptor for the new socket is returned.  On error, -1 is
+       returned, and errno is set appropriately.
+        成功将返回文件描述符
+
+domain:
+The  domain  argument specifies a communication domain;
+域参数指定通信域；
+       Name                Purpose                          Man page
+       AF_UNIX, AF_LOCAL   Local communication              unix(7)  //本地通信,域间通信
+       AF_INET             IPv4 Internet protocols          ip(7)    //IPv4网络通信
+       AF_INET6            IPv6 Internet protocols          ipv6(7)
+
+       AF_IPX              IPX - Novell protocols
+       AF_NETLINK          Kernel user interface device     netlink(7)
+       AF_X25              ITU-T X.25 / ISO-8208 protocol   x25(7)
+       AF_AX25             Amateur radio AX.25 protocol
+       AF_ATMPVC           Access to raw ATM PVCs
+       AF_APPLETALK        Appletalk                        ddp(7)
+       AF_PACKET           Low level packet interface       packet(7)
+//AF: address familiers  地址家族
+//PF: protocol familiers 协议家族
+//两种写法都可以 如 AF_INET 或 PF_INET相同
+
+type:
+SOCK_STREAM  : 字节流,TCP用
+                Provides  seq  uenced,  reliable,  two-way,  connection-based  byte streams. 
+                    An out-of-band data transmission mechanism may be sup‐ ported.  
+
+SOCK_DGRAM   : datagrams的简写    
+                Supports datagrams  
+                    (connectionless,  unreliable  messages  of  a fixed maximum length).  
+
+protocol:
+        默认为0,根据传输数据类型自动识别传输协议
+
+}
+
+
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+{
+头文件:
+    #include<sys/types.h>
+    #include<sys/socket.h>
+
+sockfd: 套接字文件描述符
+
+addr:
+
+addrlen:
 
 
 
 
+}
 
