@@ -385,7 +385,7 @@ $ 目的mac:根据路径选择的结果,来选择下一跳的主机.
 
 
 
-网络通信其实是进程间通信.
+网络通信其实是进程间通信.属于进程间通信的范畴
 1.先将数据通过OS发送到目标主机,手段:TCP/IP协议完成.IP可以表示在互联网上唯一一台主机.
 2.主机收到的数据,要推送给自己上层的指定进程.  ---> 如何标识自己主机上网络进程?
 
@@ -487,10 +487,62 @@ TCP/IP协议规定,网络数据流应采用大端字节序,即低地址高字节
   //只有小端才会转,大端不做变换
 }
 
-socket构建那时,C还没支持void*
 
 
+socket常见API
+{
+//创建socket文件描述符 (TCP/UDP, 客户端+服务器)
+int socket(int domain, int type, int protocol);
 
+//绑定端口号 (TCP/UDP, 服务器)
+int bind (int socket, const struct sockaddr *address, socklen_t address_len );
+
+//开始监听socket (TCP, 服务器)
+int listen(int socket, int backlog);
+
+//接收请求 (TCP,服务器)
+int accept(int socket,struct sockaddr* address, socklen_t address_len);
+
+
+//建立链接 (TCP, 客户端)
+int connet(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+
+}
+
+$ sockaddr结构 // addr通用的结构设计思想
+{
+sockaddr,          sockaddr_in,   sockaddr_un
+|-------------|  |-------------|      |-------------|
+|16位地址类型 |  |16位地址类型 |      |16位地址类型 |  //结构体相同的头部类型,用于区别不同sock类型
+|             |  |  AF_INET    |      |  AF_UNIX    |  //是一个宏,整数
+|-------------|  |-------------|      |-------------|
+|             |  | 16位端口号  |      |             |
+|             |  |-------------|      |             |
+|14位地址数据 |  | 32位IP地址  |      |108字节路径名|
+|             |  |-------------|      |             |
+|             |  |  8字节填充  |      |14位地址数据 |
+---------------  ---------------      ---------------
+
+1.sockaddr
+头文件:
+   #include <sys/socket.h>
+结构:
+   struct sockaddr {
+	  sa_family_t sin_family;//地址族
+	  char sa_data[14]; //14字节，包含套接字中的目标地址和端口信息               
+　 };
+注解:用于统一的父结构体(父类)
+
+
+}
+
+1. socket API 是一层抽象的网络编程接口,适用于各种底层网络协议,如IPv4,IPv6,以及UNIX Domain Socket.
+    但各种网络协议的地址格式并不相同
+
+socket构建那时,C还没支持void*(不用强转,可以接收任意类型).所以代码比较丑陋,必须先强转才能传参
+
+
+struct sockaddr_in //i:internet
 
 
 
