@@ -493,7 +493,7 @@ TCP/IP协议规定,网络数据流应采用大端字节序,即低地址高字节
 
        int inet_aton(const char *cp, struct in_addr *inp);
 
-       in_addr_t inet_addr(const char *cp);
+       in_addr_t inet_addr(const char *cp);    //将点分十进制的IP地址转换成4字节地址,并由主机地址转成网络字节序的地址
 
        in_addr_t inet_network(const char *cp);
 
@@ -529,7 +529,7 @@ int connet(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 }
 
-$ sockaddr结构 // addr通用的结构设计思想
+$ sockaddr结构 // add r通用的结构设计思想
 {
 
 socket API 是一层抽象的网络编程接口,适用于各种底层网络协议,如IPv4,IPv6,以及UNIX Domain Socket.
@@ -545,7 +545,9 @@ sockaddr,          sockaddr_in,   sockaddr_un
 |14位地址数据 |  | 32位IP地址  |      |108字节路径名|
 |             |  |-------------|      |             |
 |             |  |  8字节填充  |      |14位地址数据 |
----------------  ---------------      ---------------
+---------------  |   ...       |      |             |
+                  -------------       |    ...      |
+                                       -------------
 
 1.sockaddr
 结构:
@@ -556,7 +558,7 @@ sockaddr,          sockaddr_in,   sockaddr_un
 注解:用于统一的父结构体(父类)
 
 
-2.sockaddr_in
+2.struct sockaddr_in
 头文件:
 
 C结构:
@@ -584,10 +586,10 @@ struct sockaddr_in
 //ip地址
   struct in_addr sin_addr;  
      /*  // struct in_addr 的结构
-      typedef uint32_t in_addr_t;                                                                                 
+      typedef uint32_t in_addr_t;                                                                                
       struct in_addr      //直接放uint32不行吗?为什么要用结构体
         {                                                                                                         
-          in_addr_t s_addr;                                                                                       
+          in_addr_t s_addr;    //网络字节序的地址类型
         };  
      */
 
@@ -667,12 +669,62 @@ int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 sockfd: 套接字文件描述符
 
-addr:
+struct sockaddr *addr:
 
-addrlen:
+addrlen: 解决sock_addr,sockaddr_in,sockaddr_un等类型大小不一致的问题,得到地址后再根据长度来获得完整的类型
 
+ 
+ 
+ 
+}
 
+$ 问题1: 云服务器不允许用户直接绑定IP地址
+{
+ 报错:  bind socker error : Cannot assign requested address
+     
+ 原因:  云服务器,不需要bind IP地址,需要让服务器自己指定IP地址,
+       因为云服务器,或服务器,一般会有多张网卡 , 但bind只能绑定一个,即只传数据给一张网卡,就会导致接收的数据量变少.
+       而我们期望只要是发送到这台机器上的数据,都要接收.所以,不允许使用IP来甄别数据,而是使用端口,只要是这个端口的,我都接收.
+       因此: 服务器或云服务器不允许使用明确的IP.
+   注:自己本地装的虚拟机,或者物理机器是允许的.
+ 
+ 如何让服务器自己指定IP地址?
+ 解决:  使用宏INADDR_ANY 来让我们的server在启动时,bind本主机上的任意IP/自 动分配IP
+ //用例: local.sin_addr.s_addr = INADDR_ANY;
+ //#define	INADDR_ANY		((in_addr_t) 0x00000000)
 
 
 }
+
+
+数据接收 --  receive
+{
+//man 2 recv
+
+接口:recvfrom
+声明:ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,struct sockaddr *src_addr, socklen_t *addrlen);
+参数:
+   sockfd:套接字
+   buf:  用户定义的缓冲区
+   len:  缓冲区大小
+   flags: 读取方式,默认读取方式为阻塞读取,目前只需要设置为0;
+   sockaddr*: 输出型参数,存放着发送方的IP和Port.
+   socklen_t: sockaddr的实际长度
+返回值:  ssize_t , 实际读到的字节数
+注意: 缓冲区内的数据是什么类型是未知的,需要由程序员制定协议来规定. 目前先设为C风格字符串
+//peer 对方 ,相同(地位/年龄)的人
+
+
+}
+
+netstat -ntlp
+
+
+
+
+
+
+
+
+
 

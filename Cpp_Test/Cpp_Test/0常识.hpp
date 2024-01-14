@@ -18,7 +18,7 @@
 
 //C语言称变量,C++称对象,操作系统称资源 !
 
-
+//atoi的a是ascii码的意思.即ascii码转int
 
 /*
 UUID 是 通用唯一识别码（Universally Unique Identifier）的缩写，是一种软件建构的标准，
