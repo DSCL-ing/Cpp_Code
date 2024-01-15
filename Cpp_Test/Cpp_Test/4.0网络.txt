@@ -471,14 +471,18 @@ TCP/IP协议规定,网络数据流应采用大端字节序,即低地址高字节
 不管这台主机是大端机还是小端机, 都会按照这个TCP/IP规定的网络字节序来发送/接收数据;
 如果当前发送主机是小端, 就需要先将数据转成大端; 否则就忽略, 直接发送即可;
 
+//用户数据字节序无所谓,由用户协议定制
+
 为使网络程序具有可移植性,使同样的C代码在大端和小端机器上编译后能够正常运行,
    可以调用以下库函数做网络字节序和主机字节序的转换.(方便和提高可读性)
 {
+常用:整数,端口号
+
 #include <arpa/inet.h>
   //主机转网络
   uint32_t htonl(uint32_t hostlong);  //h:host(本主机) to n:network(网络) l:long(32位长整数主机)
   uint16_t htons(uint16_t hostshort); //h:host(本主机) to n:network(网络) s:short(16位短整数主机)
-  //描述:: htonl表示:将32位的长整数从主机字节序转换成网络字节序,例如将IP地址转换后准备发送
+  //描述:: htonl表示:将32位的长整数从主机字节序转换成网络字节序,例如将端口号转换后准备发送
 
   //网路转主机
   uint32_t ntohl(uint32_t netlong);  
@@ -490,14 +494,16 @@ TCP/IP协议规定,网络数据流应采用大端字节序,即低地址高字节
 不同风格的ip转换接口
 {
 //man inet
-
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
        int inet_aton(const char *cp, struct in_addr *inp);
 
        in_addr_t inet_addr(const char *cp);    //将点分十进制的IP地址转换成4字节地址,并由主机地址转成网络字节序的地址
 
        in_addr_t inet_network(const char *cp);
 
-       char *inet_ntoa(struct in_addr in);
+       char *inet_ntoa(struct in_addr in);   //将IP转成点分十进制(字符串)
 
        struct in_addr inet_makeaddr(int net, int host);
 
@@ -529,8 +535,9 @@ int connet(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 
 }
 
-$ sockaddr结构 // add r通用的结构设计思想
+$ sockaddr结构 // addr通用的结构设计思想
 {
+sockaddr:套接字地址 / 通用地址结构
 
 socket API 是一层抽象的网络编程接口,适用于各种底层网络协议,如IPv4,IPv6,以及UNIX Domain Socket.
     但各种网络协议的地址格式并不相同
@@ -559,7 +566,7 @@ sockaddr,          sockaddr_in,   sockaddr_un
 
 
 2.struct sockaddr_in
-头文件:
+头文件:<arpa/inet.h>
 
 C结构:
 struct sockaddr_in
@@ -712,19 +719,115 @@ $ 问题1: 云服务器不允许用户直接绑定IP地址
    socklen_t: sockaddr的实际长度
 返回值:  ssize_t , 实际读到的字节数
 注意: 缓冲区内的数据是什么类型是未知的,需要由程序员制定协议来规定. 目前先设为C风格字符串
-//peer 对方 ,相同(地位/年龄)的人
+//peer 对等,对方 ,相同(地位/年龄)的人
+
+}
+
+数据接收 - sendto
+{
+声明:ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
+参数:和recvfrom差不多
+
+}
+
+
+
+netstat 
+{
+   netstat 命令用于显示各种网络相关信息，如网络连接，路由表，接口状态 (Interface Statistics)，
+  masquerade 连接，多播成员 (Multicast Memberships,即一对多通信) 等等。
+
+  选项:
+-a (all)显示所有选项，默认不显示LISTEN相关
+-t (tcp)仅显示tcp相关选项
+-u (udp)仅显示udp相关选项
+-n 拒绝显示别名，能显示数字的全部转化成数字。
+-l 仅列出有在 Listen (监听) 的服务状态
+-p 显示建立相关链接的程序名,(进程process)
+-r 显示路由信息，路由表 (router)
+-e 显示扩展信息，例如uid等 (extend)
+-s 按各个协议进行统计   (stat)
+-c 每隔一个固定时间，执行该netstat命令。 (cycle)
+
+#以下不常用
+-I    # 显示iFace接口表
+-i    # 显示接口表
+-g    # 显示多播组成员
+-s    # 显示网络统计数据（如SNMP）
+-M    # 显示伪装连接
+-v    # 显示详细verbose
+-W    # 不要截断IP地址
+-N    # 解析硬件名称
+-e    # 显示其他/更多信息
+-o    # 显示计时器
+
+
+例:
+[chj@kk ~ 14:34:33]$ netstat -nupa
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+Active Internet connections (servers and established)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+udp        0      0 0.0.0.0:716             0.0.0.0:*                           -
+udp        0      0 0.0.0.0:8080            0.0.0.0:*                           7600/./server    //0.0.0.0表示任意IP/随机绑定IP.
+udp        0      0 0.0.0.0:68              0.0.0.0:*                           -
+udp        0      0 0.0.0.0:111             0.0.0.0:*                           -
+udp        0      0 127.0.0.1:323           0.0.0.0:*                           -
+udp6       0      0 127.0.0.1:60880         127.0.0.1:38457         ESTABLISHED -
+udp6       0      0 :::716                  :::*                                -
+udp6       0      0 :::111                  :::*                                -
+udp6       0      0 ::1:323                 :::*                                -
+
+
 
 
 }
 
-netstat -ntlp
+$$ 0.0.0.0和127.0.0.1
+{
+$ 0.0.0.0
+IPV4中，0.0.0.0地址被用于表示一个无效的，未知的或者不可用的目标。
+
+在服务器中，0.0.0.0指的是本机上的所有IPV4地址，如果一个主机有两个IP地址，192.168.1.1 和 10.1.2.1，并且该主机上的一个服务监听的地址是0.0.0.0,那么通过两个ip地址都能够访问该服务。
+在路由中，0.0.0.0表示的是默认路由，即当路由表中没有找到完全匹配的路由的时候所对应的路由。
+用途总结
+当一台主机还没有被分配一个IP地址的时候，用于表示主机本身。（DHCP分配IP地址的时候）
+用作默认路由，表示”任意IPV4主机”。
+用来表示目标机器不可用。
+
+用作服务端，表示本机上的任意IPV4地址。
 
 
 
 
+$ 127.0.0.1
+127.0.0.1属于{127,}集合中的一个，而所有网络号为127的地址都被称之为回环地址，所以回环地址！=127.0.0.1,它们是包含关系，即回环地址包含127.0.0.1。
+//本地环回,就表示当前主机,通常用来进行本地通信或者测试. --- 走一遍网络协议栈后发回来给自己
+回环地址：所有发往该类地址的数据包都应该被loop back(发回来)。
 
 
 
+$ localhost
+相比127.0.0.1，localhost具有更多的意义。localhost是个域名，而不是一个ip地址。
+之所以我们经常把localhost与127.0.0.1认为是同一个是因为我们使用的大多数电脑上都讲localhost指向了127.0.0.1这个地址。
 
+用途
+回环测试,通过使用ping 127.0.0.1 测试某台机器上的网络设备，操作系统或者TCP/IP实现是否工作正常。
+DDos攻击防御：网站收到DDos攻击之后，将域名A记录到127.0.0.1，即让攻击者自己攻击自己。
+大部分Web容器测试的时候绑定的本机地址。
+
+}
+
+
+client and server
+{
+一.客户端不需要自己绑定端口号,由系统自动绑定
+    因为客户端中有很多进程,假设客户端端口号是固定的,如果出现相同进程同时使用同一个端口号,就会导致冲突,必定有一个进程无法运行.
+  所以客户端的端口号不能是一个固定的端口号.交由操作系统自动为客户端选择端口号.
+  
+
+二.服务端的端口号必须是众所周知且不能随意改变的,和110等公共电话一样
+   //不同服务器的端口号可以一样
+}
 
 
