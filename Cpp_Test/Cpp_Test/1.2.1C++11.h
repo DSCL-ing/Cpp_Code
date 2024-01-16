@@ -111,7 +111,8 @@ private:
 
 
 
-
+//C++ 11是如何封装Thread库的？ - 知乎
+//https ://www.zhihu.com/question/30553807
 
 
 
