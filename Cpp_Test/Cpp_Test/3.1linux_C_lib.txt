@@ -73,7 +73,7 @@ C99，4.3BSD。C89规定了所有这些函数，除了isascii()和isblank()。is
     
    
   
- TOUPPER(3)      
+ TOUPPER(3)      //man 3 toupper
 {
 SYNOPSIS
        #include <ctype.h>
@@ -83,4 +83,15 @@ SYNOPSIS
 
 }
 
- 
+
+POPEN  //man popen
+{
+ popen:创建管道,创建子进程,分割命令行,喂给子进程,程序替换,最后由子进>    程将结果的字符串带回给主进程
+ 参数1:命令行字符串(自动分割)
+ 参数2:对结果"w","r","a",...
+返回值:将结果写到文件中,返回文件指针
+
+pclose(FILE*fp)
+
+//和fopen差不多的使用方法
+}
