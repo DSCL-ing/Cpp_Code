@@ -831,3 +831,11 @@ client and server
 }
 
 
+测试
+{
+首先端口分 tcp、udp 之分，所以同一个端口号还有tcp 协议和 udp 协议之分。 
+我们一般最常见的工具是 telnet， telnet 使用的是 tcp 协议
+
+
+
+}

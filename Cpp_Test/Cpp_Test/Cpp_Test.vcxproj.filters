@@ -196,9 +196,15 @@
     <None Include="4.0网络.txt">
       <Filter>头文件</Filter>
     </None>
+    <None Include="3.1linux_C_lib.txt">
+      <Filter>头文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="0.随手记.txt">
+      <Filter>头文件</Filter>
+    </Text>
+    <Text Include="0.术语_词汇.txt">
       <Filter>头文件</Filter>
     </Text>
   </ItemGroup>
