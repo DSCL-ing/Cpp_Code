@@ -70,4 +70,17 @@ C99,  4.3BSD.  C89 specifies all of these functions except isascii() and isblank
 C99，4.3BSD。C89规定了所有这些函数，除了isascii()和isblank()。isascii()是一个BSD扩展，也是SVr4扩展。isblank()符合POSIX.1-2001和C99 7.4.1.3标准。POSIX.1-2008将isascii()标记为过时，指出在本地化应用程序中无法以可移植的方式使用它。
 
 }
-     
+    
+   
+  
+ TOUPPER(3)      
+{
+SYNOPSIS
+       #include <ctype.h>
+
+       int toupper(int c);
+       int tolower(int c);
+
+}
+
+ 
