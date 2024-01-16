@@ -34,6 +34,7 @@ int main()
     fun(&a); //不安全
     fun(&b); //安全
     return 0;
+    
 }
 
 
