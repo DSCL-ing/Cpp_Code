@@ -458,14 +458,18 @@ thread (const thread&) = delete;
 thread (thread&& x) noexcept;
 
 赋值重载:
-1.允许移动赋值 -- 资源转移
+a.允许移动赋值 -- 资源转移
 thread& operator= (thread&& rhs) noexcept;
-
-2.禁止拷贝赋值
+b.禁止拷贝赋值
 thread& operator= (const thread&) = delete;
 
-thread为了跨平台,把一些成员对象如id给封装成类,其他和POXIS用法差不多,多练习熟练
+//!定义成员线程的方法
+a.使用指针在堆上定义,
+b.使用数据结构定义多个空线程,需要时再移动构造
+
+// !thread为了跨平台,把一些成员对象如id给封装成类,其他和POXIS用法差不多,多练习熟练
 // thd.get_id(); //thread == thd
+
 
 C++将线程封装成类后,使用线程前必须要构造出线程类. 
 --- 但是如果在构造过程中需要使用线程的方法,如thread([](){get_id();}; ,直接使用会报错
@@ -593,11 +597,6 @@ int main()
 
 //bug
 /*
-1.error: no type named ‘type’ in ‘class std::result_of< //...>  
-原因:传的参数类型不匹配,C++的thread封装了,难懂
-解决:如果函数对象的参数是指针,传参也要传指针,
-
-
 
 */
 
@@ -1009,10 +1008,10 @@ public:
 
 int main()
 {
-// 静态成员函数 --- 访问类域去调用,和普通全局函数只是域不同,需要明确指出
+// !静态成员函数 --- 访问类域去调用,和普通全局函数只是域不同,需要明确指出
     std::function<int(int a ,int b)> f1 = Plus::plusi; 
     
-  //非静态成员函数,感觉意义不大了. --- 底层是调用对象来调用 
+  //!非静态成员函数 --- 底层是调用对象来调用 
    std::function<double(Plus,double a, double b)> f2 = &Plus::plusd; //非静态成员函数必须要加&, 原理暂时未知
     f1(1,1);
     f2(Plus(),1,1); // 匿名对象
@@ -1040,18 +1039,34 @@ int main()
 <functional>
 绑定bind 
 
-//将某个参数绑定,固定,不能再修改 ---> 可以隐藏 ---> 减少参数个数.
+//将某个参数绑定,固定, ---> 可以隐藏 和 减少参数个数.
+
+
+1.
+template <class Fn, class... Args> 
+   bind(Fn&& fn, Args&&... args);
+2.	
+template <class Ret, class Fn, class... Args> 
+   bind <Ret> (Fn && fn, Args&&... args);
 
 
 // 原型auto opFunc = std::bind(Fn,需要固定的参数1,固定参数2,..., 需要传参的参数1, 传参的参数2);
 // 实例auto opFunc = std::bind(Fn,Paramet1,Paramet2, ... ,placeholders::_1,placeholders::_2 ...)
+// auto opFunc = std::bind<int>(Fn,Raramet...) //指定返回值类型
+
+
+//返回值:std::function<T1(T2)> func = std::bind(fun_name,parameter...)
+//!返回值由调用对象决定
+
+//!如果Fn是成员函数,则和function一样.需要加&
+例:std::bind(&Class::func,this,parameter...);
 
 //如果需要替换参数位置,则
-// 实例auto opFunc = std::bind(Fn,Paramet1,Paramet2, ... ,placeholders::_2,placeholders::_1 ...)
+   实例auto opFunc = std::bind(Fn,Paramet1,Paramet2, ... ,placeholders::_2,placeholders::_1 ...)
 
 // 从Fn之后开始,每个参数都会对应Fn需要的参数.非placeholders的,代表固定的参数(需要绑定的,隐藏的参数)
-//placeholders::_1代表传入的第一个参数._2代表传入的第二个参数,... ,依次往后
-//placeholders的位置代表传入的参数放在Fn的相同对应位置
+   placeholders::_1代表传入的第一个参数._2代表传入的第二个参数,... ,依次往后
+   placeholders的位置代表传入的参数放在Fn的相同对应位置
 
 
 bind
