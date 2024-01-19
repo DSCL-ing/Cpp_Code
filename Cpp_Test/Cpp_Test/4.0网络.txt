@@ -779,7 +779,11 @@ udp6       0      0 :::111                  :::*                                
 udp6       0      0 ::1:323                 :::*                                -
 
 
+查看端口号占用情况
+netstat -ano
 
+查看活动连接数
+netstat -antpu |grep 8888
 
 }
 
@@ -845,14 +849,38 @@ server和service的区别主要体现在以下三个方面：
 
 测试
 {
-首先端口分 tcp、udp 之分，所以同一个端口号还有tcp 协议和 udp 协议之分。 
-我们一般最常见的工具是 telnet， telnet 使用的是 tcp 协议
+端口分 tcp、udp
+
+测试TCP,使用telnet:
+1. telnet 使用的是 tcp 协议
+2. telnet 公网IP 端口号
+    能连接成功说明可以访问
+
+测试UDP,使用netcat
+1.服务端使用 nc -uvlp 端口号
+2.客户端使用 nc -u 公网IP 端口号
+客户端发送消息后服务端能回显说明可以访问
+
+检查linux防火墙
+systemctl status firewalld
+iptables -nL
+
+查看IP
+https://www.ip138.com/
+
+查看端口号占用情况
+netstat -ano
+
+查看活动连接数
+netstat -antpu |grep 8888
+
+
+
 }
 
 
 
 
-}
 
 
 

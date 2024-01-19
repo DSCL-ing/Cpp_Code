@@ -27,6 +27,53 @@
     */
 
 
+//命名空间
+/*
+
+1.内联命名空间
+   .内联命名空间以父命名空间的直接成员的形式公开
+   .对库作者提供方便的版本控制
+namespace Parent{
+    namespace v_10{...} //保留老版本代码
+    namespace v_20{...}
+    inline namespace v_30{...} //展开Parent就可以直接访问到v_30
+}
+
+2.嵌套命名空间
+传统:
+namespace A {
+    namespace B {
+        namespace C {  
+           int foo(){ return 1;}
+        }
+    }
+}
+C++11:
+namespace A::B::C {
+            int foo(){ return 1;}
+        }
+    
+3.命名空间别名
+namespace a_very_long_namespace_name { class Foo {}; }
+namespace AVLNN = a_very_long_namespace_name;
+void Bar(AVLNN::Foo foo){ }
+
+4.匿名命名空间
+.在翻译单元内部(头文件,及引用该头文件的源文件)可见,外部不可见。
+//编译程序时，每个 .cpp 文件都会独立编译为一个编译单元。
+.在一个tu（translation unit）中可以出现多个匿名namespace，并且相同层次的匿名namespace实际上被合成为同一个
+.类似C语言的static,仅限于tu内,不希望被别的tu看见.
+.C++更推荐使用匿名命名空间,而不是static//https://tool.4xseo.com/a/56248.html
+namespace
+{
+    int MyFunc(){}
+}
+
+
+
+
+*/
+
 
     //｛｝初始化 -- 花括号初始化 -- 列表初始化 -- 
     /**
