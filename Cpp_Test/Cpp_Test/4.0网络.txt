@@ -473,10 +473,14 @@ TCP/IP协议规定,网络数据流应采用大端字节序,即低地址高字节
 
 //用户数据字节序无所谓,由用户协议定制
 
+
+
 为使网络程序具有可移植性,使同样的C代码在大端和小端机器上编译后能够正常运行,
    可以调用以下库函数做网络字节序和主机字节序的转换.(方便和提高可读性)
 {
 常用:整数,端口号
+
+注:recvfrom,sendto函数等,以及TCP的读写方法,会自动进行大小端转换,只有服务器启动,bind等阶段,才需要用户手动进行大小端转换
 
 #include <arpa/inet.h>
   //主机转网络
@@ -668,8 +672,10 @@ protocol:
 }
 
 
-int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+
+$ 绑定
 {
+声明:int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
 头文件:
     #include<sys/types.h>
     #include<sys/socket.h>
@@ -679,6 +685,8 @@ sockfd: 套接字文件描述符
 struct sockaddr *addr:
 
 addrlen: 解决sock_addr,sockaddr_in,sockaddr_un等类型大小不一致的问题,得到地址后再根据长度来获得完整的类型
+
+注:只有在绑定阶段,才需要用户手动字节序转换
 
  
  
@@ -697,7 +705,7 @@ $ 问题1: 云服务器不允许用户直接绑定IP地址
  
  如何让服务器自己指定IP地址?
  解决:  使用宏INADDR_ANY 来让我们的server在启动时,bind本主机上的任意IP/自 动分配IP
- //用例: local.sin_addr.s_addr = INADDR_ANY;
+ //用例: local.sin_addr.s_addr = INADDR_ANY; //如果置零sockaddr_in了,不写也行
  //#define	INADDR_ANY		((in_addr_t) 0x00000000)
 
 
@@ -721,12 +729,17 @@ $ 问题1: 云服务器不允许用户直接绑定IP地址
 注意: 缓冲区内的数据是什么类型是未知的,需要由程序员制定协议来规定. 目前先设为C风格字符串
 //peer 对等,对方 ,相同(地位/年龄)的人
 
+//自动进行大小端转换
+
 }
 
 数据接收 - sendto
 {
 声明:ssize_t sendto(int sockfd, const void *buf, size_t len, int flags, const struct sockaddr *dest_addr, socklen_t addrlen);
 参数:和recvfrom差不多
+
+
+//自动进行大小端转换
 
 }
 
@@ -881,14 +894,60 @@ netstat -antpu |grep 8888
 
 
 
-
-
-
+$ 网络多服务器多线程
+{
 
 网络编程中， 经常要使用到回调函数。 当底层的网络框架有数据过来时，往往通过回调函数来通知业务层。 这样可以使网络层只专注于 数据的收发， 而不必关心业务
-
 在c语言中， 回调函数的实现往往通过函数指针来实现。 但是在c++中 ， 如果回调函数是一个类的成员函数。这时想把成员函数设置给一个回调函数指针往往是不行的
-
 因为类的成员函数，多了一个隐含的参数this。 所以直接赋值给函数指针肯定会引起编译报错
-
 c++11 为我们带来了bind， 可以很好的解决这个问题
+//用于线程执行类成员方法
+}
+
+
+$ TCP相关函数
+{
+
+//在TCP中,socket创建的套接字叫监听套接字,用于获取通信连接
+
+1.listen
+    man : man 2 listen 
+    声明:int listen(int sockfd, int backlog);
+    头文件:
+       #include <sys/types.h>
+       #include <sys/socket.h>
+    参数:
+        a. sockfd:监听套接字
+        b. backlog
+    返回值:
+        成功返回0,错误返回-1,并设置错误码
+
+
+2.accpet
+    man : man 2 accpet
+    声明:int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen);
+    头文件:
+        #include<sys/types.h>
+        #include<sys/socket.h>
+    参数:
+        a. sockfd:监听套接字,socket函数的返回值,
+        b/c. 输出型参数,返回客户端的套接字地址 
+    返回值:
+        返回tcp服务的文件描述符
+
+3.connect
+    man 2 connect
+    声明:int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+    参数:和accpet相同,用于连接服务端,向目标地址发起连接
+    返回值:连接(或绑定)成功,返回0,否则返回-1,并设置错误码
+
+
+}
+
+TCP客户端/服务器
+{
+服务器:监听
+
+服务器:不需要监听
+
+}
