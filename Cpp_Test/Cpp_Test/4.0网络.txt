@@ -501,13 +501,16 @@ TCP/IP协议规定,网络数据流应采用大端字节序,即低地址高字节
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-       int inet_aton(const char *cp, struct in_addr *inp);
+       int inet_aton(const char *cp, struct in_addr *inp); 
+       //和inet_addr差不多,二选一.inet_aton(serverip.c_str(),&server.sin_addr); 
 
-       in_addr_t inet_addr(const char *cp);    //将点分十进制的IP地址转换成4字节地址,并由主机地址转成网络字节序的地址
+       in_addr_t inet_addr(const char *cp);    
+       //将点分十进制的IP地址转换成4字节地址,并由主机地址转成网络字节序的地址
 
        in_addr_t inet_network(const char *cp);
 
-       char *inet_ntoa(struct in_addr in);   //将IP转成点分十进制(字符串)
+       char *inet_ntoa(struct in_addr in);   
+       //将IP转成点分十进制(字符串)
 
        struct in_addr inet_makeaddr(int net, int host);
 
@@ -940,14 +943,26 @@ $ TCP相关函数
     声明:int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
     参数:和accpet相同,用于连接服务端,向目标地址发起连接
     返回值:连接(或绑定)成功,返回0,否则返回-1,并设置错误码
+    //建立连接成功后会自动bind
 
 
 }
 
 TCP客户端/服务器
 {
-服务器:监听
+服务器:监听,TCP需要监听是否有需要与服务器建立连接的客户端
 
-服务器:不需要监听
+服务器:
+1.不需要监听(listen).客户端只需要向服务器发起连接请求
+2.connect成功后,会自动bind
+
+
+
+}
+
+TCP中信息传递手段
+{
+1.read/write
+
 
 }
