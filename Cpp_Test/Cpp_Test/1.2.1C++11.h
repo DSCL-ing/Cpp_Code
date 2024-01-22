@@ -1039,7 +1039,9 @@ int main()
 <functional>
 绑定bind 
 
-//将某个参数绑定,固定, ---> 可以隐藏 和 减少参数个数.
+//将某个参数绑定,固定,可以隐藏 和 减少参数个数.
+//用法1. 调整参数位置
+//用法2. 固定1个或多个参数,返回一个参数更少的包装器(函数)对象.
 
 
 1.
@@ -1050,8 +1052,15 @@ template <class Ret, class Fn, class... Args>
    bind <Ret> (Fn && fn, Args&&... args);
 
 
-// 原型auto opFunc = std::bind(Fn,需要固定的参数1,固定参数2,..., 需要传参的参数1, 传参的参数2);
-// 实例auto opFunc = std::bind(Fn,Paramet1,Paramet2, ... ,placeholders::_1,placeholders::_2 ...)
+// 原型auto opFunc = std::bind(Fn,需要固定的参数1,需要固定参数2,..., 固定后剩余参数1号, 固定后剩余参数2号);
+//     auto opFunc = std::bind(Fn,Paramet1,Paramet2, ... ,placeholders::_1,placeholders::_2 ...)
+// 注: 固定后剩余参数1号 == std::placeholders::_1 .
+
+// 剩余参数所在的位置就是剩余参数传递的位置
+// 如: void fun(int a, string b,char c);
+// auto rfun = std::bind(fun,1,std::placeholders::_2,std::placeholders::_1)
+// rfun('c',"b"); 
+
 // auto opFunc = std::bind<int>(Fn,Raramet...) //指定返回值类型
 
 
