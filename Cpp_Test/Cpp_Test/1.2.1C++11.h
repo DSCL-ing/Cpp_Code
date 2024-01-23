@@ -1043,6 +1043,8 @@ int main()
 //用法1. 调整参数位置
 //用法2. 固定1个或多个参数,返回一个参数更少的包装器(函数)对象.
 
+//使用:如果要将某个函数作为参数,并且需要把该函数的所有参数传递进去,使用bind会非常方便
+// Task t(sock,clientip,clientport,std::bind(&TCPServer::service,this,std::placeholders::_1,std::placeholders::_2,std::placeholders::_3));
 
 1.
 template <class Fn, class... Args> 
