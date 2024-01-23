@@ -511,6 +511,48 @@ TCP/IP协议规定,网络数据流应采用大端字节序,即低地址高字节
 
        char *inet_ntoa(struct in_addr in);   
        //将IP转成点分十进制(字符串)
+    注意:这个函数不一定是线程安全的(看平台实现).因为他创建的字符串常量,放在常量区,多次调用这个函数,可能会出现覆盖上一次的结果
+        所以最好用inet_ntop / inet_pton
+多线程调用inet_ntoa测试代码,在需要测试的平台上测试
+{
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <pthread.h>
+    void* Func1(void* p) {
+     struct sockaddr_in* addr = (struct sockaddr_in*)p;
+     while (1) {
+     char* ptr = inet_ntoa(addr->sin_addr);
+     printf("addr1: %s\n", ptr);
+     }
+     return NULL;
+    }
+    void* Func2(void* p) {
+     struct sockaddr_in* addr = (struct sockaddr_in*)p;
+     while (1) {
+     char* ptr = inet_ntoa(addr->sin_addr);
+     printf("addr2: %s\n", ptr);
+     }
+     return NULL;
+    }
+    int main() {
+     pthread_t tid1 = 0;
+     struct sockaddr_in addr1;
+     struct sockaddr_in addr2;
+     addr1.sin_addr.s_addr = 0;
+     addr2.sin_addr.s_addr = 0xffffffff;
+     pthread_create(&tid1, NULL, Func1, &addr1);
+     pthread_t tid2 = 0;
+     pthread_create(&tid2, NULL, Func2, &addr2);
+     pthread_join(tid1, NULL);
+     pthread_join(tid2, NULL);
+     return 0;
+    }
+
+} //测试代码__End;
+Advanced Programming in the UNIX Environment(APUE) Unix环境高级编程 -- 教材
 
        struct in_addr inet_makeaddr(int net, int host);
 
@@ -1081,5 +1123,189 @@ void logMessage(int level, char *format, ...)
   //或者保存到文件中,以后只需要在logMessage中修改定义就可以实现日志信息的流向
 
 
+}
+
+
+
+
+$ linux ps axj/efj 补充
+{
+[chj@47 ~ 17:47:27]$ ps axj
+ PPID   PID    PGID        SID      TTY      TPGID STAT   UID   TIME COMMAND
+             进程组Id    会话ID     终端
+
+# PID.PPID.PGID.SID
+.Process ID(PID)
+    Linux中标识进程的一个数字，它的值是不确定的，是由系统分配的（但是有一个例外，启动阶段,kernel运行的第一个进程是init，
+    它的PID是1，是所有进程的最原始的父进程），每个进程都有唯一PID，当进程退出运行之后，PID就会回收，可能之后创建的进程会分配这个PID
+.Parent Process ID(PPID)
+    字面意思，父进程的PID
+.Process Group ID(PGID)
+    PGID就是进程所属的Group的Leader的PID，如果PGID=PID，那么该进程是Group Leader
+.Session ID(SID)
+    和PGID非常相似，SID就是进程所属的Session Leader的PID，如果SID==PID，那么该进程是session leader
+.Session和Group都是管理多个进程的方式，同一个Group的进程属于同一个Session，一个Session里可以包含多个Group
+意义
+group和session虽然都是进程的集合，但是他们的意义不同。fork出的子进程，会继承group和session（PGID和SID与父进程相同）
+session与终端相关（Control terminal），同一个终端启动的进程默认会在一个session里。例如图形界面的终端（比如GNOME按ctrl+atl+T呼出的命令行界面），都是虚拟终端（Virtual terminal），他们实质上只有一个终端在真正起作用，输入w命令，可以看到所有的control terminal。
+group则是方便管理，比如发送信号，kill可以一次向一个group的进程发送同一个信号，ctrl+z进入后台、bg、fg都可以对一个group的进程起作用。比如ctrl+z可以将一个group的进程stop暂停运行，fg可以让一个group继续运行
+
+# TTY:终端:终端文件
+    ?号表示 与终端没有关系
+    pts/25  终端文件,一般在/dev/pts/下 --- pts/4说明这个进程终端关联了4号终端
+    //就是显示命令行的地方
+    如 echjo "hello world" > /dev/pts/5 //这样就是直接把hello world输出到终端5
+    //一般把和终端有关的进程,一般与会话有关系
+
+
+[chj@47 ~ 18:10:56]$ sleep 4000|sleep 5000 |sleep 6000 &
+//...
+[chj@47 ~ 18:08:17]$ sleep 10000|sleep 20000|sleep 30000
+[chj@47 ~ 18:15:55]$ ps -axj|head -1 && ps axj|grep sleep
+ PPID   PID  PGID   SID TTY      TPGID STAT   UID   TIME COMMAND
+ 3664  3717  3717  3664 pts/4     3717 S+    1000   0:00 sleep 10000
+ 3664  3718  3717  3664 pts/4     3717 S+    1000   0:00 sleep 20000
+ 3664  3719  3717  3664 pts/4     3717 S+    1000   0:00 sleep 30000
+  636  3839   628   628 ?           -1 S        0   0:00 sleep 60
+ 3723  3840  3840  3723 pts/4     3845 S     1000   0:00 sleep 4000
+ 3723  3841  3840  3723 pts/4     3845 S     1000   0:00 sleep 5000
+ 3723  3842  3840  3723 pts/4     3845 S     1000   0:00 sleep 6000
+
+ // 同时打开的,建立了管道通信的3个进程,属于同一个进程组,并且在同一个会话中(管道)
+ // 属于同一个进程组时,组PID是以第一个进程的PID命名的
+ //不是同时打开的两个进程,都属于同一个会话
+ //同一个终端打开的所有进程,都是同一个会话 pts/N
+
+[chj@47 ~ 18:19:07]$ ps -axj|head -1 && ps axj|grep 3723
+ PPID   PID  PGID   SID TTY      TPGID STAT   UID   TIME COMMAND
+ 3722  3723  3723  3723 pts/4     3871 Ss    1000   0:00 -bash
+ //说明 会话进程就是bash
+
+
+ 小结:
+    会话>=进程组>=进程
+    一个会话可以包含多个进程组,一个进程组可以包含多个进程
+linux: 当用户登录linux时,linux会给用户创建一个会话,会话中至少有一个自成进程组的bash进程(命令行解释器)
+   ( .进程组:用来组合式完成某种任务的几个进程.在用户视角,可以把进程组当作一个任务,这些进程组共同完成一个任务.
+        进程组还分为 前台进程组,和后台进程组  //前台的意思就是让谁(哪一个进程组)去用这个终端
+        //一个会话中任何时刻都只能有一个前台进程组在运行 --- 其他程序就无法从终端启动了
+        //把前台任务ctrl+C干掉后,bash会自动成为前台任务.
+  )
+$ .打开一个终端(用户在别的终端登录,或者其他用户登录) === 创建新的会话 ---> 新的SID
+$ .退出会话(退出登录)时,会销毁会话 --- > 可能会影响会话内部的所有任务/进程组(可能存在,可能会全部干掉,但不能保证不受影响)
+$ .因此在linux中(不同OS不同做法),一般的网络服务器,为了不受到用户的登录注销的影响, 会以守护进程的方式进行运行
 
 }
+
+
+$$$ linux -- shell中控制进程组的命令
+{
+# jobs :查看当前会话的后台任务(看不到别的终端的) ,并且显示后台任务的任务号( [1]方括号括起来的那个编号就是)
+[chj@47 ~ 18:37:59]$ jobs
+[1]+  Running                 sleep 4000 | sleep 5000 | sleep 6000 &
+
+# jobs -l //能看到PID
+[chj@47 ~ 18:39:06]$ jobs -l
+[1]+  3840 Running                 sleep 4000
+      3841                       | sleep 5000
+      3842                       | sleep 6000 &
+
+# fg 任务号 //将后台任务调到前台
+[chj@47 ~ 18:39:07]$ fg 1
+sleep 4000 | sleep 5000 | sleep 6000
+(恢复成前台卡住状态)
+
+# ctrl+z  //将前台任务暂停,并自动转入后台
+
+# bg 任务号  //将暂停的后台任务恢复运行
+
+}
+
+
+守护进程:
+{ 
+
+.即独立在会话外,与用户登录的生成的会话成并列关系的进程组
+.本质是孤儿进程的一种
+
+关闭守护进程:kill -9 或killall
+
+1.setsid 接口
+man 2 setsid
+头文件: #include <unistd.h>
+声明: pid_t setsid(void);
+$ 作用:谁调setsid(),就把谁设成一个新的独立会话
+返回值:成功,返回调用进程的新的会话id,失败返回-1并设置错误码
+$ 条件: 
+1.调用的进程不能是组长
+2.守护进程要忽略异常信号
+3.文件描述符0,1,2(标准输入输出,和标准错误)要做特殊处理
+4.进程的工作路径可能要更改,可能想要改成根目录,不想在某个用户的目录下
+
+# /proc/[pid]  //pid对应的进程所在的工作目录/  
+$  /proc：内存文件系统，里面放的是当前系统实时的 进程信息。
+[chj@47 ~ 19:59:45]$ ll /proc/4843
+total 0
+dr-xr-xr-x 2 chj chj 0 Jan 23 20:00 attr
+-rw-r--r-- 1 chj chj 0 Jan 23 20:00 autogroup
+-r-------- 1 chj chj 0 Jan 23 20:00 auxv
+-r--r--r-- 1 chj chj 0 Jan 23 19:59 cgroup
+--w------- 1 chj chj 0 Jan 23 20:00 clear_refs
+-r--r--r-- 1 chj chj 0 Jan 23 20:00 cmdline
+-rw-r--r-- 1 chj chj 0 Jan 23 19:59 comm
+-rw-r--r-- 1 chj chj 0 Jan 23 20:00 coredump_filter
+-r--r--r-- 1 chj chj 0 Jan 23 20:00 cpuset
+lrwxrwxrwx 1 chj chj 0 Jan 23 19:59 cwd -> /home/chj/git_repositorier/linux_code/22.socket_service/3.TCP_Version
+                                    // 进程当前的工作目录/路径,默认是启动时所在的目录
+-r-------- 1 chj chj 0 Jan 23 20:00 environ
+lrwxrwxrwx 1 chj chj 0 Jan 23 19:59 exe -> /home/chj/git_repositorier/linux_code/22.socket_service/3.TCP_Version/server
+                                    //可执行程序文件所在的路径
+dr-x------ 2 chj chj 0 Jan 23 20:00 fd
+dr-x------ 2 chj chj 0 Jan 23 20:00 fdinfo
+-rw-r--r-- 1 chj chj 0 Jan 23 20:00 gid_map
+-r-------- 1 chj chj 0 Jan 23 20:00 io
+-r--r--r-- 1 chj chj 0 Jan 23 20:00 limits
+/... 略
+
+
+2.daemon  // 运行到后台 -- Linux提供的守护进程接口
+头文件: #include <unistd.h>
+声明:   int daemon(int nochdir, int noclose);
+参数:
+a. nochdir==no change dir :是否更改工作目录,默认是不修改.   1为真,即不修改. 0就是false,修改成根目录\
+b. noclose :要不要关闭0,1,2.默认是1,不关闭.  如果为0,false,daemon将重定向标准输出,输入,错误到 /dev/null(黑洞,丢失了).否则不修改
+//程序员喜欢自己写.daemon
+
+# /dev目录:字符型设备目录,
+/dev/null: 所有linux都存在,信息黑洞,任何向这个文件内写的,都会被丢弃,从这里读, 什么都读不到,会立刻返回/结束
+功能: 用于实现类似close(fd)的效果,比close温柔.不会影响到cout输入输出流等
+.
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
