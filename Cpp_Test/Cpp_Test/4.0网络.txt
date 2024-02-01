@@ -1322,7 +1322,9 @@ telnet工具
 
 
 
-
+防火墙关闭:
+1.sudo systemctl stop firewalld
+2.sudo systemctl disable firewalld
 
 
 
