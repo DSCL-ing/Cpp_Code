@@ -5,6 +5,12 @@
 
 //using ios = ios_base ...
 
+//文件创建
+/*
+ofstream(filename); //创建名为filename的文件
+
+*/
+
 //文件读写
 /*
 1.头文件简介
@@ -30,7 +36,7 @@ ios::binary
 //缺省值是 ios::in|ios::out  ,即可读可写
 
 2.2判断文件打开是否成功
-    1.流对象bool运算符重载  if(!fstream) ? 打开失败 : 打开成功
+    1.流对象!运算符和bool运算符重载  if(!fstream) ? 打开失败 : 打开成功
     2.流对象fs.is_open()  true成功,false失败
 3.关闭文件
     流对象.close()
@@ -65,5 +71,18 @@ begin(枚举类):
     ios::end 结束位置
     ios::cur 当前位置
 
+6.其他
+std::noskipws //no skip word space 不跳过间隔(符)
+fs>>std::noskipws>>(char*)buffer;  //即先读到noskipws,并且把空格\换行也读了进来,然后传给buffer.这样就能保持读的数据一致
+//string需要测试,有特性
+
+
 //指针和数组下标一样,从0开始,pos是下标
+*/
+
+
+//stringstream
+/*
+有自动类型转换特性...
+
 */

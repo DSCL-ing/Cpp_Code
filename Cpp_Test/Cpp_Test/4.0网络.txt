@@ -1327,7 +1327,7 @@ telnet工具
 2.sudo systemctl disable firewalld
 
 
-
+md5sum:linux计算md5工具
 
 
 
