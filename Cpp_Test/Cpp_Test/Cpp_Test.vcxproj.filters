@@ -110,6 +110,9 @@
     <ClInclude Include="0收藏.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="云备份.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="0应用场景.hpp">
