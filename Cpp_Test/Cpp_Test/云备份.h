@@ -239,13 +239,23 @@ Server &Options(const std::string &pattern, Handler handler);
 bool listen(const char *host, int port, int socket_flags = 0);
 
  };
-    class Client {
-        Client(const std::string &host, int port);
- Result Get(const char *path, const Headers &headers);
-        Result Post(const char *path, const char *body, size_t content_length,
-              const char *content_type);
-        Result Post(const char *path, const MultipartFormDataItems &items);
-   }
+
+
+class Client 
+{
+Client(const std::string &host, int port); //构造函数,接收ip和端口
+Result Get(const char *path, const Headers &headers);
+    向服务器发送GET请求
+        path是资源路径
+        headers是头部字段
+Result Post(const char *path, const char *body, size_t content_length, const char *content_type);
+    向服务器发送post请求
+        body是正文数据
+        len是正文长度
+        content_type是正文类型
+Result Post(const char *path, const MultipartFormDataItems &items);
+    向服务器以POST方法请求提交一个到多个文件(多区域数据)
+}
 }
 
 
