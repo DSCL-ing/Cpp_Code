@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 
-
+$$$$$$ shell命令语言
 //while :; do ps axj| head -1 && ps axj|grep a.out | grep -v grep; sleep 1; done
 //while :;do ps axj|head -1&&ps axj|grep a.out|grep -v grep;sleep 1;done
 //
@@ -11,3 +11,52 @@
 //while :; do xxxxx;xxxx; done //中间命令以;隔开
 
 while :; do ps -aL|head -1;ps -aL|grep thread;sleep 1; done
+
+
+
+
+
+
+
+
+
+
+$$$$ 通配符
+被shell解释器解释的符号就是通配符，通配符是用来匹配文件名，不能用来匹配字符串（通配符只能用来匹配现有文件的，不能用来生成文件）
+https://www.cnblogs.com/heyongshen/p/16365816.html
+
+通配符一般用的就是以下三个：
+
+1、星号：*
+作用：表示任意个字符（不包括隐藏文件）
+
+2、问号：?
+作用：单个任意字符（中文也算一个字符）
+
+3、中括号：[ ]
+作用：表示匹配一范围或者其中一个
+
+中括号三种使用方法：
+
+（1）表示范围
+
+[asdfg]： 表示匹配这几个字符中的其中一个
+[0-9]：表示0-9之间的任意一个数字
+（2）表示其中之一
+
+[a-z] ：不但包括了小写字母 还包含了大写字母）（次序：小大小大...）
+（3）表示不包含
+
+[^fdsfs] ：匹配列表中的所有字符以外的字符
+[^a-z]：匹配列表中的所有字符以外的字符
+基本上大多数命令都是直接或间接支持通配符。
+例如：ls、cp、grep、rm、mv、find、tar、du（仅用于指定目录路径或特定文件）、cat、chmod、chown等。
+
+linux预定义的字符类：
+[[:lower:]]：表示任意小写字母,表示 a-z
+
+[[:upper:]]: 表示任意大写字母,表示 A-Z
+
+[[:digit:]]：表示任意数字，相当于0-9
+
+[:alpha:]: 表示任意大小写字母

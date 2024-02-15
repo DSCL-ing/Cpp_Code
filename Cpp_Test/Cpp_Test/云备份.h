@@ -258,5 +258,32 @@ Result Post(const char *path, const MultipartFormDataItems &items);
 }
 }
 
+演示代码
+#include "httplib.h"
+int main(void) {
+    using namespace httplib;
+    Server svr;  //定义Server类
+    //注册GET方式的"/hi"方法
+    svr.Get("/hi", [](const Request& req, Response& res) { 
+       res.set_content("Hello World!", "text/plain");
+     });
+    //注册GET"/numbers/任意数字"方法
+    svr.Get(R"(/numbers/(\d+))", [&](const Request& req, Response& res) {
+       auto numbers = req.matches[1];
+       res.set_content(numbers, "text/plain");
+     });
+     //注册POST的"upload"上传文件的方法方法
+    svr.Post("/upload", [&](const auto& req, auto& res) {
+        auto size = req.files.size();
+        auto ret = req.has_file("file1");
+        const auto& file = req.get_file_value("file1");
+        std::cout << file.filename << std::endl;
+        std::cout <<  file.content_type << std::endl;
+        std::cout <<  file.content << std::endl;
+   });
+ //启动服务器
+ svr.listen("0.0.0.0", 9090);
+ return 0;
+}
 
 */
