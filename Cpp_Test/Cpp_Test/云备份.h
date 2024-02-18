@@ -148,6 +148,7 @@ namespace httplib{
         std::string content_type; //文件类型
    };
     using MultipartFormDataItems = std::vector<MultipartFormData>;
+//multipart不一定是上传文件,但通常用来上传文件
 
 Request结构体的作用:
 1.用户将请求数据放入Request结构体中,httplib组织成http请求的格式发送给个服务器
@@ -269,17 +270,16 @@ int main(void) {
      });
     //注册GET"/numbers/任意数字"方法
     svr.Get(R"(/numbers/(\d+))", [&](const Request& req, Response& res) {
-       auto numbers = req.matches[1];
+       auto numbers = req.matches[1]; //matches[0]保存整个path,往后保存的是正则捕捉的字符
        res.set_content(numbers, "text/plain");
      });
      //注册POST的"upload"上传文件的方法方法
     svr.Post("/upload", [&](const auto& req, auto& res) {
         auto size = req.files.size();
-        auto ret = req.has_file("file1");
-        const auto& file = req.get_file_value("file1");
-        std::cout << file.filename << std::endl;
+        auto ret = req.has_file("file1");  //这个file1是key来的,和客户端同步.不是真正的文件名
         std::cout <<  file.content_type << std::endl;
         std::cout <<  file.content << std::endl;
+        const auto& file = req.get_file_value("file");//这个file就是multipartformdata
    });
  //启动服务器
  svr.listen("0.0.0.0", 9090);
