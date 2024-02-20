@@ -1037,7 +1037,7 @@ int main()
 //bind
 /*
 <functional>
-绑定bind 
+绑定bind    //容易出现ambiguous,建议用别的替代
 
 //将某个参数绑定,固定,可以隐藏 和 减少参数个数.
 //用法1. 调整参数位置

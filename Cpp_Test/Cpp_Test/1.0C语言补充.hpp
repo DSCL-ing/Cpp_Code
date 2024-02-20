@@ -1,12 +1,13 @@
 ﻿#pragma once
 
 
+// 时间接口
 /*
-$ 时间接口
 1.time
 2.gettimeofday
-3.localtime
 
+
+3.localtime
 static std::string getTime()
 {
 //struct tm
@@ -27,6 +28,13 @@ char buffer[128];
 snprintf(buffer, sizeof(buffer), "%d-%d-%d %d:%d:%d", tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday, tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
 return buffer;
 }
+
+4.ctime
+头:<ctime.h>
+声明:char* ctime (const time_t * timer);
+    The returned string has the following format:
+    Www Mmm dd hh:mm:ss yyyy
+    Wed Feb 13 16:06:10 2013
 
 
 */
