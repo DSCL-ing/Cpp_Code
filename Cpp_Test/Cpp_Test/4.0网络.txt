@@ -1327,9 +1327,10 @@ telnet工具
 2.sudo systemctl disable firewalld
 
 
-md5sum:linux计算md5工具
-
-
+md5sum:linux计算md5工具 ---- 在git bash中,叫做md5sum.exe
+    CLI:md5sum 文件1 文件2 ...
+certutil:windows计算md5工具(CLI:command line interface)
+    CLI:certutil -hashfile 文件 md5 
 
 
 

@@ -156,7 +156,7 @@ Request结构体的作用:
 
     struct Request {
         std::string method; //请求方法
-        std::string path;   //资源路径
+        std::string path;   //资源路径 -- ip:port/后面的一串j
         Headers headers;    //map,保存头部字段
         std::string body;   //正文
         // for server
@@ -288,6 +288,8 @@ int main(void) {
 
 
 $$$$ http头部字段
+{
+
 ETag: 存储了一个资源的唯一标识
             客户端第一次下载文件时,会收到这个响应信息.
         第二次下载时,就会将这个信息发送给服务器,想要让服务器根据这个唯一标识判断这个资源有没有被修改过.
@@ -296,8 +298,16 @@ ETag: 存储了一个资源的唯一标识
         e.g.1:ETags:"inode-size-mtime"  //只适合纯linux
         e.g.2:ETags:"filename-fsize-mtime" //当前项目使用方案
     .其他用途:
-        1.断点续传
+        1.断点续传(判断)
 
 Accept-Ranges:bytes:告诉客户端支持断点续传,以字节byte为单位,即字节流.(Ranges:范围,允许按区间访问,即区间请求,断点续传,)
 
+Content-Length:文本长度,一般不需要设置,会自动计算(body.size())
+
+Content-Type(重要):决定了浏览器如何处理响应正文
+    "text/html":展示到浏览器的html页面(网页)
+    "application/octet-stream":二进制流数据
+        <application/octet-stream里的octet是什么意思 http://t.csdnimg.cn/Iptly >八位组
+    
+}
 */
