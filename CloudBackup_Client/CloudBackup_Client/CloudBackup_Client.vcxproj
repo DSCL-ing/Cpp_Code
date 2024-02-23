@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cloud.hpp" />
     <ClInclude Include="data.hpp" />
     <ClInclude Include="util.hpp" />
   </ItemGroup>

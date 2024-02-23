@@ -13,7 +13,9 @@ namespace ns_cloud_backup
         {
             public:
                 DataManager(const std::string backup_file):_backup_file(backup_file)
-                {}
+                {
+                    InitLoad();
+                }
                 
                 bool Storage()//持久化存储
                 {
@@ -90,44 +92,35 @@ namespace ns_cloud_backup
                         }
                         _table[tmp[0]] = tmp[1]; //_table[key] = val;
                     }
-                    //std::string tmp;
-                    //std::string key;
-                    //std::string val;
-                    //for (int i = 0; i < body.size(); i++)
-                    //{
-                    //    char c = body[i];
-                    //    if (c == ' ')
-                    //    {
-                    //        key = tmp;
-                    //        tmp.clear();
-                    //    }
-                    //    else if (c == '\n')
-                    //    {
-                    //        val = tmp;
-                    //        _table[key] = val;
-                    //        tmp.clear();
-                    //    }
-                    //    else
-                    //    {
-                    //        tmp += c;
-                    //    }
-                    //}
                     return true;
                 }
 
                 bool Insert(const std::string& key, const std::string& val)
                 {
-
+                    //客户端使用的单线程,无线程安全问题,所以没有使用锁
+                    _table[key] = val;
+                    Storage();
+                    return true;
                 }
 
                 bool Update(const std::string& key, const std::string& val)
                 {
-
+                    _table[key] = val;
+                    Storage();
+                    return true;
                 }
 
                 bool GetOneByKey(const std::string& key, std::string* val)
                 {
-
+                //map.find
+                    auto it = _table.find(key);
+                    if (it == _table.end())
+                    {
+                        *val = nullptr;
+                        return false;
+                    }
+                    *val =  it->second;
+                    return true;
                 }
 
         private:
