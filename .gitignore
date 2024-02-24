@@ -1,6 +1,7 @@
 Cpp_Test/.vs/
-Cpp_Test/Cpp_Test/Debug
-Cpp_Test/Debug
-CloudBackup_Client\.vs
-CloudBackup_Client\CloudBackup_Client\Debug
-CloudBackup_Client\Debug
+Cpp_Test/Cpp_Test/Debug/
+Cpp_Test/Debug/
+CloudBackup_Client/.vs/
+CloudBackup_Client/CloudBackup_Client/Debug/
+CloudBackup_Client/Debug/
+
