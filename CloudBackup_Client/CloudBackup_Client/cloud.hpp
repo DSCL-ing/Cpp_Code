@@ -33,9 +33,9 @@ namespace ns_cloud_backup
                         {
                             continue;
                         }
-                        //3.上传文件,并更新数据
-                        if (Upload(a) == true)
+                        else if (Upload(a) == true)
                         {
+                            //3.上传文件,并更新数据
                             _dm->Insert(a, GetFileIdentifier(a));
                             std::cout << a << " upload success!" << std::endl;
                         }
@@ -63,18 +63,18 @@ namespace ns_cloud_backup
                 httplib::Client client(SERVER_ADDR, SERVER_PORT);
                 httplib::MultipartFormData item;
                 item.name = "file";
-                item.filename = filename;
+                item.filename = fu.FileName();
                 item.content = body;
                 item.content_type = "application/octet-stream";
                 httplib::MultipartFormDataItems items;
                 items.push_back(item);
                 auto res = client.Post("/upload", items);
-                //return (!res || res->status != 200) ? false : true;
-                if (!res || res->status != 200)
-                {
-                    return false;
-                }
-                return true;
+                return (!res) ? false : true;
+                //if (!res || res->status != 200)
+                //{
+                //    return false;
+                //}
+                //return true;
             }
 
             bool IsNeedUpload(const std::string& filename)
@@ -83,10 +83,10 @@ namespace ns_cloud_backup
                 //1.有无上传记录
                 //2.若有,原标记和新标记是否相等
                 std::string id;
-                //if (_dm->GetOneByKey(filename, &id) == true)
-                if (_dm->GetOneByKey(filename, &id) != false)
+                if (_dm->GetOneByKey(filename, &id) == true)
+                //if (_dm->GetOneByKey(filename, &id) != false)
                 {
-                    std::string new_id = GetFileIdentifier(fu.FileName());
+                    std::string new_id = GetFileIdentifier(filename);
                     if (new_id == id)
                     {
                         return false;
