@@ -1668,8 +1668,11 @@ https://blog.csdn.net/hejinde/article/details/131229840
 
 # git rm 文件 //
 # git rm [file1] [file2] ... //删除工作区文件，并且将这次删除放入暂存区
-# git rm --cached 文件 //文件从暂存区域移除，但工作区保留：
+# git rm --cached 文件 //文件从暂存区域移除，但工作区保留：(工作区就是物理文件,暂存区是add后的区域.本地仓库是commit后的)
+# git rm -r --cached 文件名 //遍历目录
 
+$ 提交退回
+# git reset 
 
 $ git如果是push到别的平台则需要的是邮箱+密钥
 $ git如果是push到自己的平台,则只需密码
