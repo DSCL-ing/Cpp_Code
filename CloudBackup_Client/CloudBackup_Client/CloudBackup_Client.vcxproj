@@ -142,6 +142,7 @@
   <ItemGroup>
     <ClInclude Include="cloud.hpp" />
     <ClInclude Include="data.hpp" />
+    <ClInclude Include="httplib.h" />
     <ClInclude Include="util.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,3 @@
-.\client.cpp fajlkjgldkajlkfjadlk
-.\CloudBackup_Client.vcxproj fajlkjgldkajlkfjadlk
-.\data.hpp fajlkjgldkajlkfjadlk
-.\CloudBackup_Client.vcxproj.user fajlkjgldkajlkfjadlk
-.\CloudBackup_Client.vcxproj.filters fajlkjgldkajlkfjadlk
-.\util.hpp fajlkjgldkajlkfjadlk
+.\backup\cloud.hpp cloud.hpp-1423-1708693871
+.\backup\CloudBackup_Client.vcxproj CloudBackup_Client.vcxproj-7400-1708669153
+.\backup\CloudBackup_Client.vcxproj.filters CloudBackup_Client.vcxproj.filters-1264-1708669153

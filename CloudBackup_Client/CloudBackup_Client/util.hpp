@@ -29,7 +29,10 @@ namespace ns_cloud_backup
         private:
             std::string _filename;//文件名称
         public:
-            FileUtil(const std::string& filename) :_filename(filename) {}
+            FileUtil(const std::string& filename) :_filename(filename) 
+            {
+                CreateDirectory();
+            }
 
             //返回文件大小,类型int64,能防止文件过大,并且能使用-1等作为错误码
             size_t FileSize()
@@ -73,13 +76,13 @@ namespace ns_cloud_backup
             {
                 //1. 路径格式为./dir/file.txt  .从最后一个'/'开始就是文件名
                 //size_t pos = _filename.rfind('/');
-                size_t pos = _filename.find_last_of('/'); //最后一个'/'
+                size_t pos = _filename.find_last_of('\\'); //在windows中路径分隔符是反斜杠'\'
                 if (pos == std::string::npos) //没找到说明直接就是文件名(当前目录)
                 {
                     return _filename;
                 }
                 return _filename.substr(pos + 1);
-
+                //return fs::path(_filename).filename().string();
             }
 
             //获取从pos开始,len长度的文件内容
@@ -172,7 +175,7 @@ namespace ns_cloud_backup
             //创建文件,连带目录
             bool CreateDirectory()
             {
-                if (this->Exists() == false) //判断文件是否存在,不存在则创建之
+                if (this->Exists() == true) return true; //判断文件是否存在,不存在则创建之
                     return fs::create_directories(_filename);
             }
 
