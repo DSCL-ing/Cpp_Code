@@ -37,6 +37,9 @@
     <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="3.3MySQL.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="云备份.h" />
     <None Include="1.4智能指针.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
@@ -166,7 +169,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
     </None>
-    <None Include="3.linuxShell.txt">
+    <None Include="3.2linuxShell.txt">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>

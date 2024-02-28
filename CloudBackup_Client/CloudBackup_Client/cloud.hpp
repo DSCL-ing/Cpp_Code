@@ -1,19 +1,19 @@
-#ifndef __MY_CLOUD__
+ï»¿#ifndef __MY_CLOUD__
 #define __MY_CLOUD__
 
 #include"data.hpp"
-#include"httplib.h" //ÀúÊ·ÒÅÁôÎÊÌâ,httplibÄÚµÄwinsock2.h»áºÍwindows.h³åÍ»,ĞèÒªµ÷»»Ò»ÏÂÎ»ÖÃ
+#include"httplib.h" //å†å²é—ç•™é—®é¢˜,httplibå†…çš„winsock2.hä¼šå’Œwindows.hå†²çª,éœ€è¦è°ƒæ¢ä¸€ä¸‹ä½ç½®
 #include<windows.h> 
 namespace ns_cloud_backup
 {
     inline namespace v1
     {
-#define SERVER_ADDR "8.134.236.217" //¿ÉÒÔĞ´ËÀ,Êµ¼ÊÊ¹ÓÃ·şÎñÆ÷»ù±¾²»»á¸Ä±ä
+#define SERVER_ADDR "8.134.236.217" //å¯ä»¥å†™æ­»,å®é™…ä½¿ç”¨æœåŠ¡å™¨åŸºæœ¬ä¸ä¼šæ”¹å˜
 #define SERVER_PORT 8888
         class Backup
         {
         public:
-            Backup(const std::string& backup_dir, const std::string& filename/*ÊµÀı»¯DataManagerĞèÒª*/)
+            Backup(const std::string& backup_dir, const std::string& filename/*å®ä¾‹åŒ–DataManageréœ€è¦*/)
                 :_backup_dir(backup_dir)
             {
                 _dm = new DataManager(filename);
@@ -22,11 +22,11 @@ namespace ns_cloud_backup
             {
                 while (true)
                 {
-                    //1.É¨Ãè»ñÈ¡Ö¸¶¨Ä¿Â¼ÖĞµÄËùÓĞÎÄ¼ş
+                    //1.æ‰«æè·å–æŒ‡å®šç›®å½•ä¸­çš„æ‰€æœ‰æ–‡ä»¶
                     FileUtil fu(_backup_dir);
                     std::vector<std::string> arry;
                     fu.ScanDirectory(arry);
-                    //2.Öğ¸öÅĞ¶ÏÎÄ¼şÊÇ·ñĞèÒªÉÏ´«
+                    //2.é€ä¸ªåˆ¤æ–­æ–‡ä»¶æ˜¯å¦éœ€è¦ä¸Šä¼ 
                     for (auto& a : arry)
                     {
                         if (IsNeedUpload(a) == false)
@@ -35,11 +35,11 @@ namespace ns_cloud_backup
                         }
                         else if (Upload(a) == true)
                         {
-                            //3.ÉÏ´«ÎÄ¼ş,²¢¸üĞÂÊı¾İ
+                            //3.ä¸Šä¼ æ–‡ä»¶,å¹¶æ›´æ–°æ•°æ®
                             _dm->Insert(a, GetFileIdentifier(a));
                             std::cout << a << " upload success!" << std::endl;
                         }
-                        //ÉÏ´«Ê§°ÜÎŞ¸ºµ£,ÏÂ´ÎÑ­»·»áÖØĞÂÉÏ´«
+                        //ä¸Šä¼ å¤±è´¥æ— è´Ÿæ‹…,ä¸‹æ¬¡å¾ªç¯ä¼šé‡æ–°ä¸Šä¼ 
                     }
                     Sleep(1);
                 }
@@ -55,11 +55,11 @@ namespace ns_cloud_backup
             }
             bool Upload(const std::string& filename)
             {
-                //1.»ñÈ¡ÎÄ¼şÊı¾İ 
+                //1.è·å–æ–‡ä»¶æ•°æ® 
                 FileUtil fu(filename);
                 std::string body;
                 fu.GetContent(&body);
-                //2.¹¹½¨http¿Í»§¶Ë¶ÔÏó,Ìî³äÎÄ¼şĞÅÏ¢
+                //2.æ„å»ºhttpå®¢æˆ·ç«¯å¯¹è±¡,å¡«å……æ–‡ä»¶ä¿¡æ¯
                 httplib::Client client(SERVER_ADDR, SERVER_PORT);
                 httplib::MultipartFormData item;
                 item.name = "file";
@@ -79,9 +79,9 @@ namespace ns_cloud_backup
 
             bool IsNeedUpload(const std::string& filename)
             {
-                //ÅĞ¶ÏÊÇ·ñĞèÒªÉÏ´«µÄÌõ¼ş:
-                //1.ÓĞÎŞÉÏ´«¼ÇÂ¼
-                //2.ÈôÓĞ,Ô­±ê¼ÇºÍĞÂ±ê¼ÇÊÇ·ñÏàµÈ
+                //åˆ¤æ–­æ˜¯å¦éœ€è¦ä¸Šä¼ çš„æ¡ä»¶:
+                //1.æœ‰æ— ä¸Šä¼ è®°å½•
+                //2.è‹¥æœ‰,åŸæ ‡è®°å’Œæ–°æ ‡è®°æ˜¯å¦ç›¸ç­‰
                 std::string id;
                 if (_dm->GetOneByKey(filename, &id) == true)
                 //if (_dm->GetOneByKey(filename, &id) != false)
@@ -93,13 +93,13 @@ namespace ns_cloud_backup
                     }
 
                 }
-                //Èç¹ûÒ»¸öÎÄ¼ş±È½Ï´ó,ÕıÔÚĞìĞìµØ¿½±´µ½Õâ¸öÄ¿Â¼ÏÂ,¼´¿½±´ĞèÒªÒ»¸ö¹ı³Ì.
-                //Èç¹ûÃ¿´Î±éÀú¶¼ĞèÒªÉÏ´«Õâ¸öÎÄ¼ş,Ôò´«Ò»¸ö´óÎÄ¼ş,¼¸Ê®¸öGµÄÎÄ¼ş»ØÉÏ´«ÉÏ°Ù´Î
-                //Òò´Ë,ĞèÒªÒ»Ğ©ÏŞÖÆÊÖ¶Î
-                //1.½ÏÎªÕÛÖĞ:Ò»¶ÎÊ±¼äÄÚÃ»ÓĞ±»ĞŞ¸Ä¹ıµÄÎÄ¼ş²ÅÄÜÉÏ´«
-                //2.ÅĞ¶ÏÎÄ¼şÊÇ·ñ±»Ä³¸ö½ø³ÌÕıÔÚÕ¼ÓÃ
+                //å¦‚æœä¸€ä¸ªæ–‡ä»¶æ¯”è¾ƒå¤§,æ­£åœ¨å¾å¾åœ°æ‹·è´åˆ°è¿™ä¸ªç›®å½•ä¸‹,å³æ‹·è´éœ€è¦ä¸€ä¸ªè¿‡ç¨‹.
+                //å¦‚æœæ¯æ¬¡éå†éƒ½éœ€è¦ä¸Šä¼ è¿™ä¸ªæ–‡ä»¶,åˆ™ä¼ ä¸€ä¸ªå¤§æ–‡ä»¶,å‡ åä¸ªGçš„æ–‡ä»¶å›ä¸Šä¼ ä¸Šç™¾æ¬¡
+                //å› æ­¤,éœ€è¦ä¸€äº›é™åˆ¶æ‰‹æ®µ
+                //1.è¾ƒä¸ºæŠ˜ä¸­:ä¸€æ®µæ—¶é—´å†…æ²¡æœ‰è¢«ä¿®æ”¹è¿‡çš„æ–‡ä»¶æ‰èƒ½ä¸Šä¼ 
+                //2.åˆ¤æ–­æ–‡ä»¶æ˜¯å¦è¢«æŸä¸ªè¿›ç¨‹æ­£åœ¨å ç”¨
                 FileUtil fu(filename);
-                if (time(nullptr) - fu.LastMTime() < 3)// Ê¹ÓÃ·½°¸1: 3ÃëÖÓÖ®ÄÚÃ»ÓĞ±»ĞŞ¸Ä¹ı²ÅÔÊĞíÉÏ´«
+                if (time(nullptr) - fu.LastMTime() < 3)// ä½¿ç”¨æ–¹æ¡ˆ1: 3ç§’é’Ÿä¹‹å†…æ²¡æœ‰è¢«ä¿®æ”¹è¿‡æ‰å…è®¸ä¸Šä¼ 
                 {
                     return false;
                 }
@@ -108,8 +108,8 @@ namespace ns_cloud_backup
             }
 
         private:
-            std::string _backup_dir;//±¸·İÄ¿Â¼
-            DataManager* _dm;       //Êı¾İ¹ÜÀí
+            std::string _backup_dir;//å¤‡ä»½ç›®å½•
+            DataManager* _dm;       //æ•°æ®ç®¡ç†
 
         };
     }
