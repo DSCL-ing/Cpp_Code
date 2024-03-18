@@ -1969,3 +1969,15 @@ A.同步IO
     4.多路复用/多路转接IO  
 B.异步IO
 //异步和同步IO的主要区别是有没有参与IO的过程
+
+
+$ 非阻塞IO
+1.函数fcntl
+https://www.cnblogs.com/xuyh/p/3273082.html //fcntl详解
+    功能:通过文件描述符来操作文件
+    头文件:
+        <unistd.h> <fcntl.h>
+    fcntl的返回值：  与命令有关。如果出错，所有命令都返回－1，如果成功则返回某个其他值。
+        F_GETFD 第二个返回文件标志位图
+          
+//end file   linux: ctrl+d , windows:ctrl+Z
