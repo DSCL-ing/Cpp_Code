@@ -1981,3 +1981,71 @@ https://www.cnblogs.com/xuyh/p/3273082.html //fcntl详解
         F_GETFD 第二个返回文件标志位图
           
 //end file   linux: ctrl+d , windows:ctrl+Z
+
+EAGAIN || EWOULDBLOCK
+{
+    linux errno == 11,WOULDBLOCK不知道什么意思
+    信号意义是底层没数据,非出错.再来一次
+}
+
+EINTR信号 interrupted(中断)
+{
+因信号中断,没有成功,造成的一种错误返回值
+write
+    表示：由于信号中断，没写成功任何数据。
+read
+    表示：由于信号中断，没读到任何数据。
+sem_wait
+    函数调用被信号处理函数中断
+recv
+    由于信号中断返回，没有任何数据可用。 
+}
+
+
+$ 多路转接
+前面阻塞非阻塞都是只能等待一个文件描述符
+
+多路转接能够一次等待多个文件描述符(仅等待,没有拷贝)
+
+select
+       /* According to POSIX.1-2001 */
+       #include <sys/select.h>
+       int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout);
+nfds:要等待的fd中的最大的下标值+1 //大概是用来开辟空间的
+fd_set:
+readfds:
+
+           struct timeval {
+               long    tv_sec;         /* seconds */
+               long    tv_usec;        /* microseconds */
+           };
+
+timeout:
+
+       void FD_CLR(int fd, fd_set *set); //把指定的fd从指定的位图中清除
+       int  FD_ISSET(int fd, fd_set *set); //fd是否在特定位图中
+       void FD_SET(int fd, fd_set *set); //设置进位图中
+       void FD_ZERO(fd_set *set); //全部清零
+fd_set就是需要处理的fd位图.1为需要处理,0为不关心
+
+
+select能够等待多个fd的原理:struct file内还维护了一条等待队列,那个进程等待就把自己的PCB挂进去.
+//文件只会被打开一次,引用计数,由OS维护
+    如果是一个进程等待多个fd,则每个fd对应的结构体的等待队列都把这个进程的PCB挂进去
+
+//fd就绪就是说,文件可以使用了
+
+select 3种等待方式
+1.阻塞 timeout 设为 nullprt;
+2.非阻塞 timeout设为(0,0)
+    即不等待,直接检查,如果没有一个fd就绪,则立刻出错返回 
+3.{n,m} n秒m微秒内阻塞等待,否则timeout一次 .  //即阻塞{n,m}秒后返回一次结果,timeout也就是等待方式2
+    如果在阻塞等待的时间内有fd就绪,则返回的就是剩下的阻塞等待时间 //剩余时间通过timeout返回
+
+select返回值:
+1.n>0 : 有n个fd是就绪的
+2.n==0 : timeout
+3.n<0 : 等待失败:如等待的fd不存在
+
+
+OS中连接就绪被当作读事件就绪

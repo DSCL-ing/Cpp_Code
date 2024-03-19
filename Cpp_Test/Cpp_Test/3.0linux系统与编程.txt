@@ -3096,6 +3096,7 @@ $ 内存中文件描述与组织
 2.一个进程可以打开多个文件,每一个进程与文件都是是1:n的关系,所有文件的struct都在OS所管理的文件内核数据结构中.
 
 $ 进程管理自己打开的文件的方式
+//文件描述符表
 3.OS为进程定义了一个struct file_struct结构体结点. 能够维护进程与由该进程打开的文件的映射关系,快速为进程找到自己打开的文件, 
 4.该结构体内定义了一个数组,类型为struct file *fd_array[],内存放了进程自己打开的文件的struct file.通过遍历数组就能找到对应的文件.
 默认前3个存放了标准文件,即下标0,1,2分别存放标准输入,标准输出,标准错误stdin,stdout,stderr
@@ -3121,7 +3122,7 @@ $$$$ 理解linux下一切皆文件
 而进程只能看到文件,所以一切皆文件
 
 
-                     task_struct  -> (*files) ->  files_struct                                                       
+                     task_struct  -> struct files_struct *files -> (*files)[i] ->  files_struct                                                       
                                                                            
                      files_struct  -->  _____                                                      
                                        | ....                                                      
