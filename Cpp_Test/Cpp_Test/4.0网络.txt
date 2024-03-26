@@ -985,7 +985,7 @@ $ TCP相关函数
     声明:int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
     参数:和accpet相同,用于连接服务端,向目标地址发起连接
     返回值:连接(或绑定)成功,返回0,否则返回-1,并设置错误码
-    //建立连接成功后会自动bind
+    使用:给客户端连接服务器使用,建立连接成功后会自动bind
 
 
 }
@@ -994,7 +994,7 @@ TCP客户端/服务器
 {
 服务器:监听,TCP需要监听是否有需要与服务器建立连接的客户端
 
-服务器:
+客户端:
 1.不需要监听(listen).客户端只需要向服务器发起连接请求
 2.connect成功后,会自动bind
 
@@ -1012,6 +1012,10 @@ TCP中信息传递手段
 TCP错误问题
 {
 ./server: socket bind error :Address already in use
+解决:
+        // 设置地址是复用的
+        int opt = 1;
+        setsockopt(_sock, SOL_SOCKET, SO_REUSEADDR|SO_REUSEPORT, &opt, sizeof(opt));
 
 }
 
@@ -2067,6 +2071,9 @@ epoll有三个函数
     epoll_ctl:    用户告诉内核需要关心哪些文件描述符的哪些事件
     epoll_wait    内核告诉用户哪些文件描述符的哪些事件已经触发
 
+epoll_create(int size);
+    size:表示监听的套接字最大数量,在linux 2.6.8后,size只要大于0即可
+
 epoll模型
 1.红黑树
     维护了用户让操作系统关心的文件描述符信息
@@ -2099,9 +2106,5 @@ $ 总结:epoll三大机制 -- 称为epoll模型
     是一个和文件结构体一样的struct file结构体,和普通文件共用文件描述符表
     epoll_create返回的fd就是指向这个文件结构体的fd
 >运行逻辑为:用户调进程去调用epoll,通过进程PCB找到自己的文件描述符表,找到epoll模型,进而去控制epoll模型
-
-
-
-
 
 }

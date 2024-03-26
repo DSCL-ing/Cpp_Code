@@ -1050,15 +1050,17 @@ Ctrl + b 键 （b 的英文全拼为：backward)
 Ctrl + d 键 （d 的英文全拼为：down）
 Ctrl + u 键 （u 的英文全拼为：up）
 
+## 代码跳转定义
+> gD 跳转局部定义
+> gd 跳转全局定义
 
-//卡死可能的解决方案--ctrl+q
 }
 
 vim插入模式
 {
-
-$ #为注释
-
+## 代码提示的上下移动
+    ctrl+n //向下移动
+    ctrl+p //向上移动
 }
 
 vim buffer
