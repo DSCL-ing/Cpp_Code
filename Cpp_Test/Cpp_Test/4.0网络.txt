@@ -2098,8 +2098,8 @@ $ 总结:epoll三大机制 -- 称为epoll模型
 
 为什么高效? 
     1.红黑树增删改效率高,近似平衡的搜索二叉树
-    2.不需要再线性遍历
-    3.就绪队列:OS自动检测,不需要向select/poll那样遍历检查
+    2.回调机制让检测不再需要再线性遍历
+    3.就绪队列:OS自动检测,以O(n)的复杂度来获取就绪节点.以O(1)的复杂度来检测有没有就绪(判断头是不是null即可)
 
 
 //epoll模型在OS中是一个对象/结构体,内包含红黑树,就绪队列等信息.
@@ -2107,4 +2107,53 @@ $ 总结:epoll三大机制 -- 称为epoll模型
     epoll_create返回的fd就是指向这个文件结构体的fd
 >运行逻辑为:用户调进程去调用epoll,通过进程PCB找到自己的文件描述符表,找到epoll模型,进而去控制epoll模型
 
+}
+
+epoll_ctl(int epfd, int op, int fd, struct epoll_event *event):
+{
+参数;
+ 1.int op:
+    EPOLL_CTL_ADD //注册,添加要关心的fd和事件
+    EPOLL_CTL_MOD //修改fd的事件
+    EPOLL_CTL_DEL //删除不再关心的fd;事件忽略,置空
+
+ 2.struct epoll_event:
+   struct epoll_event {
+       uint32_t     events;      /* Epoll events */
+       epoll_data_t data;        /* User data variable */ //--- 标记用,返回时能根据标记知道是谁.
+   };
+
+   //共用体:根据协议自由选择其中一个属性
+   typedef union epoll_data { 
+       void        *ptr;
+       int          fd;
+       uint32_t     u32;
+       uint64_t     u64;
+   } epoll_data_t;
+ 3.uint32_t events:
+    位图,常用是EPOLLIN,EPOLLOUT
+}
+
+epoll_wait(int epfd, struct epoll_event *event, int maxevents, int timeout);
+{
+int maxevents:等待的最大事件数
+
+EPOLLIN: 读事件就绪
+    a.新连接事件 --- 建立连接完成,可以accept取走连接
+    b.IO事件中的I事件 --- 有数据来了,可以读
+timeout:
+    a.大于0,定时非阻塞等待
+    b.等于0,非阻塞等待
+    c.小于0,阻塞等待
+
+}
+
+$ 用户使用
+{
+  1.在获取就绪节点时,用户必须要有自己的缓冲区,交由OS从就绪队列中获取节点. --- OS规范,用户操作可能不安全
+  2.拷贝的过程是从左向右连续拷贝到数组中,且不用做筛选,一定是有效的 --- 就绪队列
+  3.epoll_wait的返回值就是就绪的个数,记作n,以后遍历只需要遍历到n就能完成,不需要全部遍历
+  4.就绪队列到用户缓冲区必须是拷贝的,而不是映射的
+  5.在epoll节点中,包含了data和事件.data是用户需要关系的数据,包含了fd等.因此只要获取到就绪节点,其他信息都能获取
+        epoll底层不对data做任何修改,就是为了给未来就绪返回的,用来标识的.
 }
