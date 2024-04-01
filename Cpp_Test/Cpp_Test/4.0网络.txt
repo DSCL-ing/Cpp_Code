@@ -1975,7 +1975,38 @@ B.异步IO
 //异步和同步IO的主要区别是有没有参与IO的过程
 
 
-$ 非阻塞IO
+$ 非阻塞IO(一个文件描述符, 默认都是阻塞IO.)
+
+函数原型如下.
+#include <unistd.h>
+#include <fcntl.h>
+int fcntl(int fd, int cmd, ... /* arg */ );
+//传入的cmd的值不同, 后面追加的参数也不相同.
+fcntl函数有5种功能:
+    复制一个现有的描述符（cmd=F_DUPFD）.
+    获得/设置文件描述符标记(cmd=F_GETFD或F_SETFD).
+    获得/设置文件状态标记(cmd=F_GETFL或F_SETFL). //设置非阻塞,f_getfl返回的是一张位图
+    获得/设置异步I/O所有权(cmd=F_GETOWN或F_SETOWN).
+    获得/设置记录锁(cmd=F_GETLK,F_SETLK或F_SETLKW).
+
+
+基于fcntl, 我们实现一个SetNoBlock函数, 将文件描述符设置为非阻塞.
+void SetNoBlock(int fd) {
+ int fl = fcntl(fd, F_GETFL);
+ if (fl < 0) {
+ perror("fcntl");
+ return;
+ }
+ fcntl(fd, F_SETFL, fl | O_NONBLOCK);  //以 老的fd表或上新标志位 的方式修改文件描述符表
+ 
+ /* 
+ open接口中有O_NONBLOCK等flag标记位可以选择,O_NONBLOCK可以用于fctl中,都属于同一套fd管理位图
+ 可以在open时设置成非阻塞,但这方法不具有普适性,只能在打开时设置非阻塞
+ */
+}
+//使用F_GETFL将当前的文件描述符的属性取出来(这是一个位图).
+//然后再使用F_SETFL将文件描述符设置回去. 设置回去的同时, 加上一个O_NONBLOCK参数.
+
 1.函数fcntl
 https://www.cnblogs.com/xuyh/p/3273082.html //fcntl详解
     功能:通过文件描述符来操作文件
@@ -1988,13 +2019,19 @@ https://www.cnblogs.com/xuyh/p/3273082.html //fcntl详解
 
 EAGAIN || EWOULDBLOCK
 {
-    linux errno == 11,WOULDBLOCK不知道什么意思
-    信号意义是底层没数据,非出错.再来一次
+    linux下的EAGAIN和EWOULDBLOCK放在一块,和WOULDBLOCK的errno都为11,
+    EAGEIN在网络IO中信号意义是底层没数据,要再次读取的意思,而非真的出错了,只是以错误的方式返回,因为能返回的方式就那几个
+    errstring:Resource temporarily unavailable //资源 暂时 不可用
+
+    EWOULDBLOCK是会阻塞,要阻塞的意思,和EAGAIN的错误码相同.看情况使用
 }
 
+//read出错的情况: 打开了错误的文件描述符.errno为9,errstring:bad file descriptor
+
+$ 还有可能的导致错误IO的情况:
 EINTR信号 interrupted(中断)
 {
-因信号中断,没有成功,造成的一种错误返回值
+IO时因信号中断,没有成功,造成的一种错误返回值
 write
     表示：由于信号中断，没写成功任何数据。
 read
@@ -2178,7 +2215,41 @@ ET是高速工作方式，只支持no-block socket。边缘触发模式（Edg
 EPOLL事件分发系统可以运转在两种模式下：Edge Triggered (ET)、Level Triggered (LT)。
 LT是缺省的工作方式，ET是高速工作方式。这两种模式的性能差距还是非常大的。
 100个连接的压力测试，其他环境都相同，LT模式CPU消耗99%、ET模式15%。
+
+LT,水平触发,类似示波器,持续高电平,一直触发
+ET,边缘触发,类似示波器,高电平一次,只触发一次,电平不变不会再触发; -- 在由少变多,变化时才会再触发
+ET通知效率高:因为他不需要重复通知等待,通知的fd也多.
+ET的IO效率也高:因为他只通知一次,倒逼上层尽快取走数据,且需要一次全部读完,否则下次数据可能会丢失/覆盖
+
+
+判断读取读完方式
+1.循环取,直到取到的量小于期望值
+2.循环取,直到取到的为0
+
+怎么保证读取完毕?
+    循环读取,调用recv/read, 但 recv/read默认是阻塞的,循环读取可能会阻塞(恰好读完,下次就会阻塞),因此需要非阻塞读取
+ET模式下,必须保证所有的读取和写入是非阻塞
+    因为ET只通知一次,所以需要上层一次读完,一次读完就需要循环读,而循环读可能会阻塞,因此必须保证全部非阻塞.
+    (这里的一次是只通知一次后,读取完这次通知的数据)
+ET也可以非阻塞,也可以一次取完,ET能做的LT也能做,为什么要有ET呢? 
+    还有一个人为原因:因为无法保证所有的程序员都是按ET的方式搞LT,使用ET就能逼迫程序员必须一次取完. -- 规范
+因此IO效率: ET>=LT 更为合适
+
+ET高效的根本原因:
+1.一次通知就是一次系统调用返回,一次返回必定是对应一次系统调用 --- ET有效减少系统调用次数.
+2.ET倒逼程序员尽快取走所有数据,本质是:让TCP底层更新出更大的接受窗口,从而在较大概率上,提高对方的滑动窗口大小,提高发送效率
+
+LT的应用场景:
+    如果数据量很大的情况下,如果用ET一次读取完需要花很多时间,而使用LT则能够读取一部分,能尽快让应用层知道并处理.
+    像redis,是需要尽快做处理,边处理边交付
+
+
+设置ET的工作模式
+1.EPOLLET,只要在epoll_ctl中加入EPOLLET就可以了,一般在初始化时设置
+2.设置成非阻塞
 }
+
+
 
 $ read与recv区别
 {

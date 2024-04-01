@@ -18,11 +18,17 @@
 // 时间接口
 /*
 1.time
-2.gettimeofday
+2.gettimeofday(&tv,nullptr)
+#include<sys/time.h>
+struct timeval {
+    time_t      tv_sec;     // seconds      秒
+    suseconds_t tv_usec;   //  microseconds 微秒
+};
 
 
-3.localtime
-static std::string getTime()
+
+3.localtime() //把时间戳转格式
+ std::string getTime()
 {
 //struct tm
 //  int tm_sec;			 Seconds.	[0-60] (1 leap second)
@@ -34,7 +40,6 @@ static std::string getTime()
 //  int tm_wday;		 Day of week.	[0-6]
 //  int tm_yday;		 Days in year.[0-365]
 //  int tm_isdst;		 DST.		[-1/0/1]
-
 
 time_t curr = time(nullptr);
 struct tm* tmp = localtime(&curr); //参数事time_t类型的时间戳
