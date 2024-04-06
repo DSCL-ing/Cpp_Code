@@ -139,7 +139,7 @@
     <None Include="0常识.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0算法总结.hpp">
+    <None Include="0.1算法总结.hpp">
       <Filter>头文件</Filter>
     </None>
     <None Include="3.2linuxShell.txt">
@@ -151,7 +151,7 @@
     <None Include="0GitNote.hpp">
       <Filter>头文件</Filter>
     </None>
-    <None Include="0OnlineJudge.hpp">
+    <None Include="0.1OnlineJudge.hpp">
       <Filter>头文件</Filter>
     </None>
     <None Include="1.1C++补充.hpp">
@@ -203,6 +203,9 @@
       <Filter>头文件</Filter>
     </None>
     <None Include="3.1linux_C_lib.txt">
+      <Filter>头文件</Filter>
+    </None>
+    <None Include="0.1算法.h">
       <Filter>头文件</Filter>
     </None>
   </ItemGroup>
