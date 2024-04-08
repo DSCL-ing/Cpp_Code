@@ -208,9 +208,6 @@
     <None Include="0.1算法.h">
       <Filter>头文件</Filter>
     </None>
-    <None Include="helloWorld.md">
-      <Filter>源文件</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="0.随手记.txt">
@@ -219,5 +216,10 @@
     <Text Include="0.术语_词汇.txt">
       <Filter>头文件</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="helloWorld.md">
+      <Filter>源文件</Filter>
+    </Xml>
   </ItemGroup>
 </Project>
