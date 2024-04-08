@@ -166,6 +166,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
     </None>
     <ClInclude Include="Test.h" />
+    <None Include="helloWorld.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="3.0linux系统与编程.txt">
