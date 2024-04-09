@@ -13,13 +13,13 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Acwing">
-      <UniqueIdentifier>{83a2a754-5c4c-4429-a433-ce1dc443dded}</UniqueIdentifier>
+    <Filter Include="源文件\Acwing">
+      <UniqueIdentifier>{c5abfe0a-bbad-4cb5-9778-e2ba7a0128db}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="1.92指数型枚举.h">
-      <Filter>Acwing</Filter>
-    </ClInclude>
+    <ClCompile Include="1.92指数型枚举.cpp">
+      <Filter>源文件\Acwing</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

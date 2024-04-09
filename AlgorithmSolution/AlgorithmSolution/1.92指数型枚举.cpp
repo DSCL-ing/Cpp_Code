@@ -12,6 +12,7 @@ const int N = 16; //这是数组的空间数,比15大一位满足下标从1开�
 
 int n;
 int st[N];  //记录状态: 0表示还没考虑,1表示选了,2表示不选
+int ways[1<<15][16],cnt; //记录结果
 
 void dfs(int u)
 {
@@ -37,6 +38,7 @@ void dfs(int u)
 
 int main()
 {
+    std::cout<<"1"<<std::endl;
     scanf("%d", &n);
     dfs(1);
 
