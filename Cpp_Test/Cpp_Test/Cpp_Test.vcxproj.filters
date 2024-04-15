@@ -181,7 +181,7 @@
     <None Include="1.5特殊类设计.h">
       <Filter>头文件</Filter>
     </None>
-    <None Include="1.0操作系统补充.h">
+    <None Include="1.0.操作系统和C与C++.h">
       <Filter>头文件</Filter>
     </None>
     <None Include="2.0algorithm.h">
