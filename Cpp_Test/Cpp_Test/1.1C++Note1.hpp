@@ -1690,36 +1690,28 @@ class A
 //非类型模板参数
 /**
  * 模板参数分为类型形参和非类型形参
- * $类型模板参数用于解决typedef type reType_name; -- 自定义类型
+ * $类型模板参数用于解决typedef type reType_name; -- 根据传入的模板类型自动生成相应类型的代码,不需要再写多份不同类型的代码,有效代码复用,减小开发成本
  *
+ * 非类型模板参数的意思是,它不是类型,他是常量,是整型常量
  * $非类型模板参数用于解决宏常量,#define N 10 ;
- * 演示:template<class T ,size_t N> class A
- *		--- class_A<int,10>;
+ 
+ * 举例:
+ template<class T = int,size_t N = 10> 
+ class Array
+ {
+	T _a[N];
+ }
+
+ Array<> a1;  //大小为10
+ Array<int,20> a2;  //大小为20
+
  * 特点:
  * 1.只能是整型常量,有符号无符号long,char,bool(true为1,false为0)等都可以,double,float等不行
- *
+ * 2.非类型模板参数也可以有缺省值
  *
  * .
  */
 
-//类<array>
-/**
- * C++11,老编译器可能不支持
- *
- * 和静态数组一样,没有初始化
- *
- * 优势是越界检查更加严格:
- * 传统数组是抽查越界写,只查一小部分,有些地方越界可能不会报错
- * Array数组是读写全面检查
- *
- * 使用:
- * array<int,10> a1;
- *
- * 差别:
- * 但实际上用处不够强,vector更强,一般也更喜欢用vector,vector还能直接初始化:vector<int> v(10,0);
- * 主要差别是array是在栈上,vector是在堆里
- *
- */
 
 //模板特化 ---某些类型进行特殊化处理 --范围限定
  /**
@@ -1731,13 +1723,13 @@ class A
  * 使用:
  * template<class T>
  * bool Less(T left , T right){
- *		return left<right;
+ *		return left<right;   //直接使用对象进行比较时,类内重载了比较方法,因此可以得到想要的结果
  * }
  *
  * 然后才能有特化模板 -- 全特化
  * template<>
  * bool Less<Date*>(Date* left,Date* right){
- *      return *left < * right;
+ *      return *left < * right;  //如果使用对象的指针, 默认情况比较的是指针,与对象性质是无关的.因此,如果某些类型比较特殊,就需要模板特化来对该类型进行特殊处理,以调整到合适的结果
  * }
  *
  * 优点:
@@ -1766,6 +1758,42 @@ class A
  * 类型:自定义,指针,引用都可以,引用的话注意要初始化(缺省参数),引用比较少 -- const迭代器有使用引用
  *
  */
+
+ //函数模板和相同的函数能同时存在
+/*
+
+template<typename T>
+void func(T t)
+{
+    std::cout<<"template"<<std::endl;
+}
+
+void func(int t)
+{
+    std::cout<<"function"<<std::endl;
+}
+
+int main()
+{
+    func<int>(1); //明显区别,使用方式都不一样.
+    func(1);
+    return 0;
+}
+//虽然生成的函数功能相同,但编译对模板生成的函数的函数名和普通函数的函数名的命名规则不一样,使它们能共存
+实际预编译后特化生成的代码:
+template<>
+void func<int>(int t)
+{
+  std::operator<<(std::cout, "template").operator<<(std::endl);
+}
+
+void func(int t)
+{
+  std::operator<<(std::cout, "function").operator<<(std::endl);
+}
+
+*/
+
 
 
 //模板的分离编译
