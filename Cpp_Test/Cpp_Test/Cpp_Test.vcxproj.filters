@@ -38,9 +38,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="9Date.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="10myString.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -118,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="3.3MySQL.txt">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="9Date.h">
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
