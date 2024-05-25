@@ -3,20 +3,29 @@
 #include<iostream>
 #include<algorithm>
 
-template<typename T>
-void func(T t)
+template<class T>
+void func(T* t)
 {
-    std::cout<<"template"<<std::endl;
+    std::cout<<"Function template"<<std::endl;
+    std::cout<<t<<std::endl;
 }
 
-void func(int t)
-{
-    std::cout<<"function"<<std::endl;
-}
+//template<class T>
+//void func<T*>(T* t)
+//{
+//    std::cout<<"Function Template Specialization "<<std::endl;
+//}
+
+//template<>
+//void func<int*>(int*p)
+//{
+//
+//    std::cout<<"Function"<<std::endl;
+//}
 
 int main()
 {
-    func<int>(1);
-    func(1);
+    func<int>(nullptr);
+    //func(1);
     return 0;
 }
