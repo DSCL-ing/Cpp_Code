@@ -2,41 +2,50 @@
 #include<cstring>
 #include<iostream>
 #include<algorithm>
-#include"9Date.h"
 
-template<class T>
-struct Less {
-    bool operator()(const T& left, const T& right) {
-        return left < right;
+class Person
+{
+public:
+    Person(std::string name,int age):_name(name),_age(age)
+    {};
+    void Print()
+    {
+        std::cout << "name:" << _name << " ";
+        std::cout << "age:" << _age << " ";
+        std::cout << std::endl;
     }
+private:
+    std::string _name;
+    int _age;
 };
 
-////全特化
-//template<>
-//struct Less<Date*> {
-//    bool operator()(Date* left, Date* right) {
-//        std::cout<<"full specialization"<<std::endl;
-//        return *left < *right;
-//    }
-//};
-
-//偏特化
-template<class T>
-struct Less<T*> {
-    bool operator()(T* left, T* right) {
-        std::cout<<"partial specialization"<<std::endl;
-        return *left < *right;
+class Student : private Person
+{
+public:
+    Student():Person("stu",18){};
+    void Print1()
+    {
+        Print();
     }
+private:
+    int _stuid;
+}
+;
+
+class Teacher : public Person
+{
+public:
+    Teacher():Person("tea",28){};
+private:
+    int _teaid;
 };
-
-
 
 int main()
 {
-    Date d1(1111,11,11); 
-    Date d2(2222,12,12);
-        
-    Less<Date*>()(&d1,&d2);
-
+    Student stu;
+    stu.Print1();
+    Teacher tea;
+    tea.Print();
+    
     return 0;
 }

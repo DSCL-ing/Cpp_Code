@@ -164,6 +164,7 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DeploymentContent>
     </None>
     <ClInclude Include="Test.h" />
+    <None Include="封装、继承、多态.md" />
     <None Include="模板.md" />
     <Xml Include="markdown语法.md">
       <FileType>Document</FileType>

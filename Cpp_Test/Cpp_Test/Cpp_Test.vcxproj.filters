@@ -214,6 +214,9 @@
     <None Include="模板.md">
       <Filter>博客</Filter>
     </None>
+    <None Include="封装、继承、多态.md">
+      <Filter>博客</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="0.随手记.txt">
