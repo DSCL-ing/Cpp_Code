@@ -6,7 +6,7 @@
 class Person
 {
 public:
-    Person(std::string name,int age):_name(name),_age(age)
+    Person(std::string name, int age) :_name(name), _age(age)
     {};
     void Print()
     {
@@ -22,7 +22,7 @@ private:
 class Student : private Person
 {
 public:
-    Student():Person("stu",18){};
+    Student() :Person("stu", 18) {};
     void Print1()
     {
         Print();
@@ -35,9 +35,15 @@ private:
 class Teacher : public Person
 {
 public:
-    Teacher():Person("tea",28){};
+    Teacher() :Person("tea", 28) {};
 private:
     int _teaid;
+};
+
+class A :protected Person
+{
+public:
+    A():Person("A",65){};
 };
 
 int main()
@@ -46,6 +52,13 @@ int main()
     stu.Print1();
     Teacher tea;
     tea.Print();
-    
+
+    Person per("per", 99);
+    //per = stu;
+    per = tea;
+
+    //A a;
+    //per = a;
+
     return 0;
 }
