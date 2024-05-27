@@ -48,17 +48,14 @@ public:
 
 int main()
 {
-    Student stu;
-    stu.Print1();
+    //Student stu;
+    //Person per("per", 99);
+    //per = tea;
+
     Teacher tea;
+    //下面两种行为是一样的
+    tea.Person::Print();
     tea.Print();
-
-    Person per("per", 99);
-    //per = stu;
-    per = tea;
-
-    //A a;
-    //per = a;
 
     return 0;
 }
