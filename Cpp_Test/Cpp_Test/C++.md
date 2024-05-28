@@ -155,6 +155,243 @@ C++总计63个关键字，C语言32个关键字
 
 [C/C++ 函数调用约定-CSDN博客](https://blog.csdn.net/lioncolumn/article/details/10376891)
 
+> 函数调用约定
+>
+>  常见的函数调用约定[5]：cdecl,stdcall,fastcall,thiscall,naked call
+>
+>  MFC调用约定(VS6:Project Settings->C/C++ <Category:Code Generation> Calling convention:)
+>
+>  
+>
+> 1, __cdecl（C调用约定.The C default calling convention）C/C++ 缺省调用方式
+>
+>  1)压栈顺序:函数参数从右到左
+>
+>  2)参数栈维护:由调用函数把参数弹出栈, 传送参数的内存栈由调用函数来维护
+>
+>  （正因为如此，实现可变参数vararg的函数(如printf)只能使用该调用约定）
+>
+>  3)函数修饰名约定:VC将函数编译后会在函数名前面加上下划线前缀
+>
+>  4)每一个调用它的函数都包含清空堆栈的代码，所以产生的可执行文件大小会比调用_stdcall函数的大
+>
+>  
+>
+> 2, __stdcall (Pascal方式清理C方式压栈，通常用于Win32 Api中)
+>
+>  1)压栈顺序:函数参数从右到左的压栈顺序
+>
+>  2)参数栈维护:被调用函数把参数弹出栈(在退出时清空堆栈)
+>
+> 　3)函数修饰名约定:VC将函数编译后会在函数名前面加上下划线前缀，在函数名后加上"@"和参数的字节数
+>
+>   ex. VC: int f(void *p) (编译后)-> _f@4(在外部汇编语言里可以用这个名字引用这个函数)
+>
+>  
+>
+> 3, __fastcall (快速调用约定,通过寄存器来传送参数)
+>
+>  1)压栈顺序:用ECX和EDX传送前两个双字（DWORD）或更小的参数，剩下的参数仍旧自右向左压栈传送
+>
+>  2)参数栈维护:被调用函数在返回前清理传送参数的内存栈
+>
+>  3)函数修饰名约定:VC将函数编译后会在函数名前面加上"@"前缀，在函数名后加上"@"和参数的字节数
+>
+>  
+>
+> 4, thiscall (本身调用,仅用于“C++”成员函数)
+>
+>  1)压栈顺序:this指针存放于CX/ECX寄存器中，参数从右到左的压栈顺序
+>
+>  2)thiscall不是关键词，因此不能被程序员指定
+>
+>  
+>
+> 5, naked call (裸调)
+>
+>  1)当采用1-4的调用约定时，如果必要的话，进入函数时编译器会产生代码来
+>
+>   保存ESI，EDI，EBX，EBP寄存器, 退出函数时则产生代码恢复这些寄存器的内容
+>
+>   (这些代码称作 prolog and epilog code,一般，ebp,esp的保存是必须的)
+>
+>  2)naked call不产生这样的代码。naked call不是类型修饰符，故必须和_declspec共同使用
+>
+>  
+>
+> ・关键字 __stdcall、__cdecl和__fastcall(1-3)可以直接加在要输出的函数前。
+>
+>  它们对应的命令行参数分别为/Gz、/Gd和/Gr。缺省状态为/Gd，即__cdecl
+>
+> ・要完全模仿PASCAL调用约定首先必须使用__stdcall调用约定，函数名修饰约定可通过其它方法模仿
+>
+> ・WINAPI宏，Windows.h支持该宏，它可以将出函数翻译成适当的调用约定，
+>
+>  在WIN32中，它被定义为__stdcall。使用WINAPI宏可以创建自己的APIs
+>
+>  
+>
+> 引用:
+>
+>  很多API函数就是象这样声明的:
+>  int WINAPI MessageBoxA(HWND,LPCSTR,LPSTR,UINT);
+>  而WINAPI实际上就是__stdcall.
+>  大多数API都采用__stdcall调用规范,这是因为几乎所有的语言都支持__stdcall调用.
+>
+>  相比之下,__cdecl只有在C语言中才能用. 但__cdecl调用有一个特点,就是能够实现可变参数的函数调用, 
+>
+>  比如printf,这用__stdcall调用是不可能的.
+>  __fastcall这种调用规范比较少见,但是在Borland C++ Builder中比较多的采用了这种调用方式.
+>  如果有共享代码的需要,比如写DLL,推荐的方法是用__stdcall调用,因为这样适用范围最广.
+>
+>  如果是C++语言写的代码供Delphi这样的语言调用就必须声明为__stdcall,
+>
+>  因为Pascal不支持cdecl调用(或许Delphi的最新版本能够支持也说不定,这个不太清楚).
+>
+>  在其他一些地方,比如写COM组件,几乎都用的是stdcall调用.
+>
+>  在VC或Delphi或C++Builder里面都可以从项目设置中更改默认的函数调用规范,
+>
+>  当然也可在函数声明时加入__stdcall,__cdecl,__fastcall关键字来明确的指示本函数用哪种调用约定.
+>  __declspec一般都是用来声明DLL中的导出函数.这个关键字也有一些其他的用法,不过非常罕见.
+>
+>  __declspec主要是用于说明DLL的引出函数的,在某些情况下用__declspec(dllexport)在DLL中声明引出函数,
+>
+>  比用传统的DEF文件方便.在普通程序中也可用__declspec(dllimport)说明函数是位于另一个DLL中的导出函数.
+>
+>  以下是在dev-c++里建立自已的dll时的dll.h里面的代码,这里面有一个:_declspec(dllexport)
+>
+>   \#ifndef _DLL_H_
+>   \#define _DLL_H_//防重复定义
+>
+>   \#if BUILDING_DLL
+>   \# define DLLIMPORT __declspec (dllexport)
+>   \#else
+>   \# define DLLIMPORT __declspec (dllimport)
+>   \#endif
+>   DLLIMPORT void HelloWorld (void);
+>   \#endif
+>  上面代码里面的_delcspce(dllexport)被定义为宏,这样可以提高程序的可读性.
+>
+>  这个的作用是将函数定义为导出函数,也就是说这个函数要被包含这个函数的程序之外的程序调用.
+>
+>  本语句中就是:void Helloword(void):
+>
+>  摘自msdn:在 32 位编译器版本中，可以使用 __declspec(dllexport) 关键字从 DLL 导出数据、
+>
+>  函数、类或类成员函数。__declspec(dllexport) 将导出指令添加到对象文件
+>
+>  若要导出函数，__declspec(dllexport) 关键字必须出现在调用约定关键字的左边（如果指定了关键字）
+>
+>  例如：
+>
+>  __declspec(dllexport) void __cdecl Function1(void);
+>
+>  若要导出类中的所有公共数据成员和成员函数，关键字必须出现在类名的左边，如下所示：
+>
+>  class __declspec(dllexport) CExampleExport : public CObject
+>   { ... class definition ... };
+>
+>  生成 DLL 时，通常创建一个包含正在导出的函数原型和/或类的头文件，并将 __declspec(dllexport)
+>
+>  添加到头文件中的声明。若要提高代码的可读性，请为 __declspec(dllexport) 定义一个宏并对正在导出的
+>
+>  每个符号使用该宏：#define DllExport __declspec( dllexport )
+>
+>  __declspec(dllexport) 将函数名存储在 DLL 的导出表中。如果希望优化表的大小
+>
+> 附录>
+>
+>  1, 修饰名(Decoration name)
+>
+> 　　“C”或者“C++”函数在内部（编译和链接）通过修饰名识别。修饰名是编译器在编译函数定义或者原
+>
+> 　　型时生成的字符串。有些情况下使用函数的修饰名是必要的，如在[模块定义文件](http://baike.baidu.com/view/2779203.htm)里头指定输出“C++”
+>
+> 　　重载函数、构造函数、析构函数，又如在汇编代码里调用“C””或“C++”函数等。
+>
+> 　　修饰名由函数名、类名、调用约定、返回类型、参数等共同决定。
+>
+> 　　2、名字修饰约定随调用约定和编译种类(C或C++)的不同而变化。
+>
+> 　　函数名修饰约定随编译种类和调用约定的不同而不同，下面分别说明。
+>
+> 　　a、C编译时函数名修饰约定规则：
+>
+> 　　__stdcall调用约定在输出函数名前加上一个下划线前缀，后面加上一个“@”符号和其参数的字节数，
+>
+> 　　格式为_functionname@number。
+>
+> 　　__cdecl调用约定仅在输出函数名前加上一个下划线前缀，格式为_functionname。
+>
+> 　　__fastcall调用约定在输出函数名前加上一个“@”符号，后面也是一个“@”符号和其参数的字节数，
+>
+> 　　格式为@functionname@number。
+>
+> 　　它们均不改变输出函数名中的字符大小写，这和PASCAL调用约定不同，
+>
+>   PASCAL约定输出的函数名无任何修饰且全部大写。
+>
+> 　　b、C++编译时函数名修饰约定规则：
+>
+> 　　__stdcall调用约定：
+>
+> 　　1、以“?”标识函数名的开始，后跟函数名；
+>
+> 　　2、函数名后面以“@@YG”标识参数表的开始，后跟参数表；
+>
+> 　　3、参数表以代号表示：
+>
+> 　　X--void ，
+>
+> 　　D--char，
+>
+> 　　E--unsigned char，
+>
+> 　　F--short，
+>
+> 　　H--int，
+>
+> 　　I--unsigned int，
+>
+> 　　J--long，
+>
+> 　　K--unsigned long，
+>
+> 　　M--float，
+>
+> 　　N--double，
+>
+> 　　_N--bool，
+>
+> 　　....
+>
+> 　　PA--表示指针，后面的代号表明指针类型，如果相同类型的指针连续出现，以“0”代替，一个“0”代
+>
+> 　　表一次重复；
+>
+> 　　4、参数表的第一项为该函数的返回值类型，其后依次为参数的数据类型,指针标识在其所指数据类型前
+>
+> 　　；
+>
+> 　　5、参数表后以“@Z”标识整个名字的结束，如果该函数无参数，则以“Z”标识结束。
+>
+> 　　其格式为“?functionname@@YG*****@Z”或“?functionname@@YG*XZ”，例如
+>
+> 　　int Test1（char *var1,unsigned long）-----“?Test1@@YGHPADK@Z”
+>
+> 　　void Test2（） -----“?Test2@@YGXXZ”
+>
+> 　　__cdecl调用约定：
+>
+> 　　规则同上面的_stdcall调用约定，只是参数表的开始标识由上面的“@@YG”变为“@@YA”。
+>
+> 　　__fastcall调用约定：
+>
+> 　　规则同上面的_stdcall调用约定，只是参数表的开始标识由上面的“@@YG”变为“@@YI”。
+>
+> 　　VC++对函数的省缺声明是"__cedcl",将只能被C/C++调用
+
 6. 通过这里就理解了C语言没办法支持重载，因为同名函数没办法区分。而C++是通过函数修
 饰规则来区分，只要参数不同，修饰出来的名字就不一样，就支持了重载。
 7. 如果两个函数函数名和参数是一样的，返回值不同是不构成重载的，因为调用时编译器没办
