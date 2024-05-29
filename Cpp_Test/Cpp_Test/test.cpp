@@ -8,12 +8,12 @@ public:
     int _a = 1;
 };
 
-class B : public A{
+class B :virtual public A{
 public:
     int _b = 2;
 };
 
-class C : public A{
+class C :virtual public A{
     public:
     int _c = 3;
 };
