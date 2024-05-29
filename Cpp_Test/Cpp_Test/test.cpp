@@ -26,5 +26,6 @@ class D :public B, public C {
 int main()
 {
     D d;
+    D d1,d2,d3;
     return 0;
 }
