@@ -129,7 +129,6 @@
     <None Include="0.1OnlineJudge.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <ClInclude Include="20inheritance.h" />
     <ClInclude Include="21polymorphism.h" />
     <ClInclude Include="22BSTree.hpp" />
     <ClInclude Include="23map_set.h" />
@@ -165,7 +164,8 @@
     </None>
     <ClInclude Include="Test.h" />
     <None Include="C++.md" />
-    <None Include="封装、继承、多态.md" />
+    <None Include="多态.md" />
+    <None Include="继承.md" />
     <None Include="模板.md" />
     <Xml Include="markdown语法.md">
       <FileType>Document</FileType>

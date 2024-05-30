@@ -59,9 +59,6 @@
     <ClInclude Include="16my_Itetator.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="20inheritance.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="21polymorphism.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -214,7 +211,11 @@
     <None Include="模板.md">
       <Filter>博客</Filter>
     </None>
-    <None Include="封装、继承、多态.md">
+    <None Include="继承.md">
+      <Filter>博客</Filter>
+    </None>
+    <None Include="C++.md" />
+    <None Include="多态.md">
       <Filter>博客</Filter>
     </None>
   </ItemGroup>

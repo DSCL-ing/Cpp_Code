@@ -3,29 +3,22 @@
 #include<iostream>
 #include<algorithm>
 
-class A{
+class Person {
 public:
-    int _a = 1;
+    ~Person() { std::cout << "~Person()" << "\n"; }
 };
 
-class B :virtual public A{
+class Student :public Person {
 public:
-    int _b = 2;
-};
-
-class C :virtual public A{
-    public:
-    int _c = 3;
-};
-
-class D :public B, public C {
-    public:
-    int _d = 4;
+    ~Student() { std::cout << "~Student()" << "\n"; }
 };
 
 int main()
 {
-    D d;
-    D d1,d2,d3;
+    Person* ptr1 = new Student; 
+    Person* ptr2 = new Student;
+
+    delete ptr1;
+    delete ptr2;
     return 0;
 }
