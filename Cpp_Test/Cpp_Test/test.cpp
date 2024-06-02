@@ -5,21 +5,35 @@
 
 class Person {
 public:
-      ~Person() { std::cout << "~Person()" << "\n"; }
+    virtual void BuyTicket() {
+        std::cout << "全票" << std::endl;
+    }
 };
 
 class Student :public Person {
 public:
-      ~Student() { std::cout << "~Student()" << "\n"; }
+    void BuyTicket() {
+        std::cout << "半票" << std::endl;
+    }
 };
 
-int main()
-{
-    Person* ptr1 = new Person; 
-    Person* ptr2 = new Student;
+class Children : public Person {
+public:
+    void BuyTicket(){
+        std::cout << "三折票" << std::endl;
+    }
+};
 
-    delete ptr1;
-    delete ptr2;
+void func(Person& p){
+    p.BuyTicket();
+}
 
+int main(){
+    Person p;    
+    Student s;    
+    Children c;
+    func(p);     
+    func(s);      
+    func(c);
     return 0;
 }
