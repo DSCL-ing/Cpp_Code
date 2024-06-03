@@ -4,18 +4,18 @@
 #include<algorithm>
 
 
-class A final
-{
+class A {
+public:
+     virtual void func()  {}
 };
 
-class B : public A
-{
+class B : public A {
+public:
+    void func(int i) override{ }
 };
 
 int main(int argc, char* argv[])
 {
-    B* p = new B;
-    p->test();
     return 0;
 }
 
