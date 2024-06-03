@@ -3,27 +3,25 @@
 #include<iostream>
 #include<algorithm>
 
+class A{};
+class B : public A{};
+
 class Person {
 public:
-    virtual void BuyTicket() {
+    virtual A* BuyTicket() {
         std::cout << "全票" << std::endl;
+        return nullptr;
     }
 };
 
 class Student :public Person {
 public:
-    void BuyTicket() {
+    A* BuyTicket() {
         std::cout << "半票" << std::endl;
+        return nullptr;
+
     }
 };
-
-class Children : public Person {
-public:
-    void BuyTicket(){
-        std::cout << "三折票" << std::endl;
-    }
-};
-
 void func(Person& p){
     p.BuyTicket();
 }
@@ -31,9 +29,7 @@ void func(Person& p){
 int main(){
     Person p;    
     Student s;    
-    Children c;
     func(p);     
     func(s);      
-    func(c);
     return 0;
 }
