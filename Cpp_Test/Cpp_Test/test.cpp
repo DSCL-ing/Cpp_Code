@@ -4,43 +4,38 @@
 #include<algorithm>
 
 
-class A {
-public:
-    A(int a):_a(a) {
-    }
-    int _a ;
-};
 
-class B :virtual public A {
-public:
-    B(int b)    :A(2)
-    {
-    }
-    int _b = 2;
-};
+//class D :public B{
+//    public:
+//        virtual void func() {
+//            std::cout<<"D"<<"\n";
+//    }
+//};
+//
+//class E {
+//    public:
+//        virtual void func() {
+//            std::cout<<"E"<<"\n";
+//    }
+//};
 
 
-class C :virtual public A {
-public:
-    C(int c) : A(3){
-    }
-    int _c = 3;
-};
+//class Base {
+//public:
+//    virtual void func() {}
+//private:
+//    int _a = 1;
+//    char _b;
+//};
+//
+//int main()
+//{
+//    std::cout << sizeof(Base) << "\n";
+//    Base b;
+//    return 0;
+//}
+//
 
-class D :public C, public B {
-public:
-    D():B(4),C(5),A(6){}
-    int _d = 4;
-};
-
-int main() {
-    //D *p = new D;
-    D d;
-
-    int a[3] = {1,2,3};
-
-    return 0;
-}
 
 //class A {
 ////public:
@@ -92,26 +87,25 @@ int main() {
 //    return 0;
 //}
 
-//class Person {
-//public:
-//     void BuyTicket(int val = 1) {
-//        std::cout << "全票" <<":"<<val<<"\n";
-//    }
-//    void call() {
-//        BuyTicket();
-//    }
-//};
-//
-//class Student :public Person {
-//public:
-//    void BuyTicket(int val = 0) {
-//        std::cout << "半票" <<"="<<val<<"\n";
-//    }
-//};
-//
-//int main(){
-//    Student s;
-//    s.call();
-//    s.BuyTicket();
-//    return 0;
-//}
+class Person {
+public:
+    virtual void BuyTicket(int val = 1) {
+        std::cout << "全票" << ":" << val << "\n";
+    }
+    virtual void func(int val = 1) {
+        std::cout << "全票" << ":" << val << "\n";
+    }
+};
+
+class Student :public Person {
+public:
+    void BuyTicket(int val = 0) {
+        std::cout << "半票" << "=" << val << "\n";
+    }
+};
+
+int main() {
+    Person p;
+    Student s;
+    return 0;
+}
