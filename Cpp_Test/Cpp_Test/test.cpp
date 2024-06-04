@@ -102,10 +102,32 @@ public:
     void BuyTicket(int val = 0) {
         std::cout << "半票" << "=" << val << "\n";
     }
+    virtual int Add()
+    {
+        std::cout<<"Studetn"<<"\n";
+        return 0;
+    }
 };
+
+class C : public Student {
+public:
+    virtual int Add()
+    {
+        std::cout<<"C"<<"\n";
+        return 0;
+    }
+    int _c = 3;
+};
+
+void fun(Student &s)
+{
+    s.Add();
+}
 
 int main() {
     Person p;
     Student s;
+    C c;
+    fun(c);
     return 0;
 }
