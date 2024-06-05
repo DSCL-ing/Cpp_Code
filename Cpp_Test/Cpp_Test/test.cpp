@@ -5,19 +5,41 @@
 
 
 
-//class D :public B{
-//    public:
-//        virtual void func() {
-//            std::cout<<"D"<<"\n";
-//    }
-//};
-//
-//class E {
-//    public:
-//        virtual void func() {
-//            std::cout<<"E"<<"\n";
-//    }
-//};
+class A {
+public:
+    virtual void fun1(){
+        std::cout<<"func1()"<<"\n";
+    }
+    virtual void fun2(){
+        std::cout<<"func2()"<<"\n";
+    }
+};
+
+class B :public A {
+public:
+    virtual void fun3(){
+        std::cout<<"func3()"<<"\n";
+    }
+};
+
+using VFPTR = void(*)(void);
+void PrintVFTable(VFPTR table[])
+{
+    for (int i = 0; table[i]; i++)
+    {
+        printf("%p\n",table[i]);
+    }
+}
+
+int main()
+{
+    A a;
+    B b;
+    PrintVFTable((VFPTR*)(*((int*)&a)));
+    puts("");
+    PrintVFTable(*(VFPTR**)&b);
+    return 0;
+}
 
 
 //class Base {
@@ -87,47 +109,47 @@
 //    return 0;
 //}
 
-class Person {
-public:
-    virtual void BuyTicket(int val = 1) {
-        std::cout << "全票" << ":" << val << "\n";
-    }
-    virtual void func(int val = 1) {
-        std::cout << "全票" << ":" << val << "\n";
-    }
-};
-
-class Student :public Person {
-public:
-    void BuyTicket(int val = 0) {
-        std::cout << "半票" << "=" << val << "\n";
-    }
-    virtual int Add()
-    {
-        std::cout<<"Studetn"<<"\n";
-        return 0;
-    }
-};
-
-class C : public Student {
-public:
-    virtual int Add()
-    {
-        std::cout<<"C"<<"\n";
-        return 0;
-    }
-    int _c = 3;
-};
-
-void fun(Student &s)
-{
-    s.Add();
-}
-
-int main() {
-    Person p;
-    Student s;
-    C c;
-    fun(c);
-    return 0;
-}
+//class Person {
+//public:
+//    virtual void BuyTicket(int val = 1) {
+//        std::cout << "全票" << ":" << val << "\n";
+//    }
+//    virtual void func(int val = 1) {
+//        std::cout << "全票" << ":" << val << "\n";
+//    }
+//};
+//
+//class Student :public Person {
+//public:
+//    void BuyTicket(int val = 0) {
+//        std::cout << "半票" << "=" << val << "\n";
+//    }
+//    virtual int Add()
+//    {
+//        std::cout<<"Studetn"<<"\n";
+//        return 0;
+//    }
+//};
+//
+//class C : public Student {
+//public:
+//    virtual int Add()
+//    {
+//        std::cout<<"C"<<"\n";
+//        return 0;
+//    }
+//    int _c = 3;
+//};
+//
+//void fun(Student &s)
+//{
+//    s.Add();
+//}
+//
+//int main() {
+//    Person p;
+//    Student s;
+//    C c;
+//    fun(c);
+//    return 0;
+//}
