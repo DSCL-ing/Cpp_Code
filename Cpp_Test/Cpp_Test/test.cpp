@@ -35,7 +35,7 @@ int main()
 {
     A a;
     B b;
-    PrintVFTable((VFPTR*)(*((int*)&a)));
+    PrintVFTable((VFPTR*)(*((VFPTR)&a)));
     puts("");
     PrintVFTable(*(VFPTR**)&b);
     return 0;
