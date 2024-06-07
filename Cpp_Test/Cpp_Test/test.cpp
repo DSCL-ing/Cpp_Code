@@ -8,17 +8,17 @@
 class A {
 public:
     virtual void fun1(){
-        std::cout<<"func1()"<<"\n";
+        std::cout << "func1()" << "\n";
     }
     virtual void fun2(){
-        std::cout<<"func2()"<<"\n";
+        std::cout<<this<<"->" <<"func2()"<<"\n";
     }
 };
 
 class B :public A {
 public:
     virtual void fun3(){
-        std::cout<<"func3()"<<"\n";
+        std::cout<<this<<"->" <<"func3()"<<"\n";
     }
 };
 
@@ -27,7 +27,10 @@ void PrintVFTable(VFPTR table[])
 {
     for (int i = 0; table[i]; i++)
     {
-        printf("%p\n",table[i]);
+        printf("%p -> ",table[i]);
+        VFPTR f = table[i];
+        f();
+        //puts("");
     }
 }
 
@@ -35,7 +38,7 @@ int main()
 {
     A a;
     B b;
-    PrintVFTable((VFPTR*)(*((VFPTR)&a)));
+    PrintVFTable((VFPTR*)(*((VFPTR*)&a)));
     puts("");
     PrintVFTable(*(VFPTR**)&b);
     return 0;
