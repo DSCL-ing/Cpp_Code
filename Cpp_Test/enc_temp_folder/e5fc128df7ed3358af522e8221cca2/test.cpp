@@ -44,7 +44,7 @@ int main()
     Base1 *ptr1 = &d;
     Base2 *ptr2 = &d;
     ptr1->func1();
-    ptr2->func1();
+    ptr2->func2();
     return 0;
 }
 
