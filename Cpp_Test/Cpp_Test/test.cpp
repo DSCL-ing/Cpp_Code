@@ -4,22 +4,28 @@
 #include<algorithm>
 
 
-
-class A {
+class Base1 {
 public:
-    virtual void fun1(){
-        std::cout << "func1()" << "\n";
-    }
-    virtual void fun2(){
-        std::cout<<this<<"->" <<"func2()"<<"\n";
-    }
+    virtual void func1() { std::cout << "Base1::func1" <<std::endl; }
+    virtual void func2() { std::cout << "Base1::func2" <<  std::endl; }
+private:
+    int b1 = 1;
 };
 
-class B :public A {
+class Base2 {
 public:
-    virtual void fun3(){
-        std::cout<<this<<"->" <<"func3()"<<"\n";
-    }
+    virtual void func1() { std::cout << "Base2::func1" << std::endl; }
+    virtual void func2() { std::cout << "Base2::func2" << std::endl; }
+private:
+    int b2 = 1;
+};
+
+class Derive : public Base1, public Base2 {
+public:
+    virtual void func1() { std::cout << "Derive::func1" << std::endl; }
+    virtual void func3() { std::cout << "Derive::func3" << std::endl; }
+private:
+    int d1 =2;
 };
 
 using VFPTR = void(*)(void);
@@ -27,22 +33,70 @@ void PrintVFTable(VFPTR table[])
 {
     for (int i = 0; table[i]; i++)
     {
-        printf("%p -> ",table[i]);
+        printf("%p", table[i]);
         VFPTR f = table[i];
         f();
-        //puts("");
     }
 }
-
 int main()
 {
-    A a;
-    B b;
-    PrintVFTable((VFPTR*)(*((VFPTR*)&a)));
+    Derive d;
+    /*打印d中Base1的虚表*/
+    std::cout<<"Base1的虚表"<<"\n";
+    PrintVFTable(*(VFPTR**)(&d));
+   
     puts("");
-    PrintVFTable(*(VFPTR**)&b);
+    /*打印d中Base2的虚表*/
+    std::cout<<"Base2的虚表"<<"\n";
+     //方法1,手动计算指针偏移
+    //PrintVFTable((VFPTR*)*(VFPTR*)((char*)&d+sizeof(Base1)));
+    //PrintVFTable(*(VFPTR**)((char*)&d+sizeof(Base1)));
+    
+    //方法2,切片,自动计算指针偏移 -- 推荐,不容易出错
+    Base2 *b2 = &d;
+    PrintVFTable(*(VFPTR**)b2);
     return 0;
 }
+
+
+
+//class A {
+//public:
+//    virtual void fun1(){
+//        std::cout << "func1()" << "\n";
+//    }
+//    virtual void fun2(){
+//        std::cout <<"func2()"<<"\n";
+//    }
+//};
+//
+//class B :public A {
+//public:
+//    virtual void fun3(){
+//        std::cout <<"func3()"<<"\n";
+//    }
+//};
+//
+//using VFPTR = void(*)(void);
+//void PrintVFTable(VFPTR table[])
+//{
+//    for (int i = 0; table[i]; i++)
+//    {
+//        printf("%p -> ",table[i]);
+//        VFPTR f = table[i];
+//        f();
+//    }
+//}
+//
+//int main()
+//{
+//    A a;
+//    B b;
+//    PrintVFTable((VFPTR*)(*((VFPTR*)&a)));
+//    puts("");
+//    PrintVFTable(*(VFPTR**)&b);
+//    return 0;
+//}
 
 
 //class Base {
@@ -94,21 +148,31 @@ int main()
 
 //class Base{
 //public:
-//     void func() {}
+//    virtual void func(){
+//    }
 //private:
 //    int _a;
-//    char _b;
 //};
 //
-//
-//class Driver :public Base {
-//
+//class Derive :public Base {
 //};
 //
-//int main(int argc, char* argv[])
+//int main()
 //{
-//    std::cout<<sizeof(Base)<<"\n";
-//    std::cout<<sizeof(Driver)<<"\n";
+//    Base b;
+//    Derive d;
+//    int x = 0;
+//    int *y = new int;
+//    static int z = 1;
+//    const char * str = "hello world";
+//
+//    printf("栈对象地址:        %p\n",&x);
+//    printf("堆对象地址:        %p\n",y);
+//    printf("静态区对象地址:    %p\n",&z);
+//    printf("常量区对象地址:    %p\n",str);
+//    printf("Base对象虚表指针:  %p\n",*(int**)(&b)); //32位环境
+//    printf("Derive对象虚表指针:%p\n",*(int**)(&d)); 
+//
 //    return 0;
 //}
 
