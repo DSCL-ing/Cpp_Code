@@ -4,6 +4,17 @@
 #include<algorithm>
 
 
+void fun() {
+    
+}
+
+int main()
+{
+    fun();
+    return 0;
+}
+
+
 class Base1 {
 public:
     virtual void func1() { std::cout << "Base1::func1" <<std::endl; }
@@ -38,15 +49,15 @@ void PrintVFTable(VFPTR table[])
         f();
     }
 }
-int main()
-{
-    Derive d;
-    Base1 *ptr1 = &d;
-    Base2 *ptr2 = &d;
-    ptr1->func1();
-    ptr2->func1();
-    return 0;
-}
+//int main()
+//{
+//    Derive d;
+//    Base1 *ptr1 = &d;
+//    Base2 *ptr2 = &d;
+//    ptr1->func1();
+//    ptr2->func1();
+//    return 0;
+//}
 
 
 
