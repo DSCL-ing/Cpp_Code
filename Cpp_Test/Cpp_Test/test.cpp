@@ -3,52 +3,103 @@
 #include<iostream>
 #include<algorithm>
 
-
-void fun() {
-    
-}
-
-int main()
-{
-    fun();
-    return 0;
-}
-
-
-class Base1 {
+class A {
 public:
-    virtual void func1() { std::cout << "Base1::func1" <<std::endl; }
-    virtual void func2() { std::cout << "Base1::func2" <<  std::endl; }
-private:
-    int b1 = 1;
+	virtual void func1() {}
+public:
+	int _a;
 };
 
-class Base2 {
+class B : virtual public A {
 public:
-    virtual void func1() { std::cout << "Base2::func1" << std::endl; }
-    virtual void func2() { std::cout << "Base2::func2" << std::endl; }
-private:
-    int b2 = 1;
+	virtual void func1() {}
+	virtual void func2() {}
+public:
+	int _b;
 };
 
-class Derive : public Base1, public Base2 {
+class C : virtual public A {
 public:
-    virtual void func1() { std::cout << "Derive::func1" << std::endl; }
-    virtual void func3() { std::cout << "Derive::func3" << std::endl; }
-private:
-    int d1 =2;
+	virtual void func1() {}
+	virtual void func3() {}
+public:
+	int _c;
 };
 
-using VFPTR = void(*)(void);
-void PrintVFTable(VFPTR table[])
-{
-    for (int i = 0; table[i]; i++)
-    {
-        printf("%p", table[i]);
-        VFPTR f = table[i];
-        f();
-    }
+class D : public B, public C {
+public:
+	virtual void func1() {}
+public:
+	int _d;
+};
+
+class AA {
+public:
+    virtual void func1() {}
+};
+
+class BB : public AA {
+};
+
+int main() {
+	AA a;
+	BB b;
+	//a.func1();
+	//b.func1();
+
+	AA*pa = &a;
+	pa->func1();
+	BB*pb = &b;
+	pa->func1();
+	return 0;
 }
+
+
+//void fun() {
+//    
+//}
+//
+//int main()
+//{
+//    fun();
+//    return 0;
+//}
+//
+//
+//class Base1 {
+//public:
+//    virtual void func1() { std::cout << "Base1::func1" <<std::endl; }
+//    virtual void func2() { std::cout << "Base1::func2" <<  std::endl; }
+//private:
+//    int b1 = 1;
+//};
+//
+//class Base2 {
+//public:
+//    virtual void func1() { std::cout << "Base2::func1" << std::endl; }
+//    virtual void func2() { std::cout << "Base2::func2" << std::endl; }
+//private:
+//    int b2 = 1;
+//};
+//
+//class Derive : public Base1, public Base2 {
+//public:
+//    virtual void func1() { std::cout << "Derive::func1" << std::endl; }
+//    virtual void func3() { std::cout << "Derive::func3" << std::endl; }
+//private:
+//    int d1 =2;
+//};
+//
+//using VFPTR = void(*)(void);
+//void PrintVFTable(VFPTR table[])
+//{
+//    for (int i = 0; table[i]; i++)
+//    {
+//        printf("%p", table[i]);
+//        VFPTR f = table[i];
+//        f();
+//    }
+//}
 //int main()
 //{
 //    Derive d;

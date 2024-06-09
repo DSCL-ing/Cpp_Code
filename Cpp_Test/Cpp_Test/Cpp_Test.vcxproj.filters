@@ -214,8 +214,10 @@
     <None Include="继承.md">
       <Filter>博客</Filter>
     </None>
-    <None Include="C++.md" />
     <None Include="多态.md">
+      <Filter>博客</Filter>
+    </None>
+    <None Include="C++.md">
       <Filter>博客</Filter>
     </None>
   </ItemGroup>
