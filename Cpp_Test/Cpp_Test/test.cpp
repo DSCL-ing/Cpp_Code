@@ -3,272 +3,44 @@
 #include<iostream>
 #include<algorithm>
 
-class A {
+template<class T>
+class SmartPtr {
 public:
-	virtual void func1() {}
-public:
-	int _a;
+    SmartPtr(T*ptr):_ptr(ptr) 
+    {}
+    ~SmartPtr() {
+        delete _ptr;
+        std::cout<<"delete "<<_ptr<<"\n";
+    }
+private:
+    T*_ptr;
 };
 
-class B : virtual public A {
-public:
-	virtual void func1() {}
-	virtual void func2() {}
-public:
-	int _b;
-};
-
-class C : virtual public A {
-public:
-	virtual void func1() {}
-	virtual void func3() {}
-public:
-	int _c;
-};
-
-class D : public B, public C {
-public:
-	virtual void func1() {}
-public:
-	int _d;
-};
-
-class AA {
-public:
-    virtual void func1() {}
-};
-
-class BB : public AA {
-};
-
-int main() {
-	AA a;
-	BB b;
-	//a.func1();
-	//b.func1();
-
-	AA*pa = &a;
-	pa->func1();
-	BB*pb = &b;
-	pa->func1();
-	return 0;
+int div()
+{
+    int a, b;
+    std::cin >> a >> b;
+    if (b == 0)
+        throw std::invalid_argument("除0错误");
+    return a / b;
 }
 
+void example() {
+    SmartPtr<int> sp1(new int);
+    SmartPtr<int> sp2(new int);
+    try {
+        div();
+    }
+    catch (...) {
+        throw;
+    }
+}
 
-//void fun() {
-//    
-//}
-//
-//int main()
-//{
-//    fun();
-//    return 0;
-//}
-//
-//
-//class Base1 {
-//public:
-//    virtual void func1() { std::cout << "Base1::func1" <<std::endl; }
-//    virtual void func2() { std::cout << "Base1::func2" <<  std::endl; }
-//private:
-//    int b1 = 1;
-//};
-//
-//class Base2 {
-//public:
-//    virtual void func1() { std::cout << "Base2::func1" << std::endl; }
-//    virtual void func2() { std::cout << "Base2::func2" << std::endl; }
-//private:
-//    int b2 = 1;
-//};
-//
-//class Derive : public Base1, public Base2 {
-//public:
-//    virtual void func1() { std::cout << "Derive::func1" << std::endl; }
-//    virtual void func3() { std::cout << "Derive::func3" << std::endl; }
-//private:
-//    int d1 =2;
-//};
-//
-//using VFPTR = void(*)(void);
-//void PrintVFTable(VFPTR table[])
-//{
-//    for (int i = 0; table[i]; i++)
-//    {
-//        printf("%p", table[i]);
-//        VFPTR f = table[i];
-//        f();
-//    }
-//}
-//int main()
-//{
-//    Derive d;
-//    Base1 *ptr1 = &d;
-//    Base2 *ptr2 = &d;
-//    ptr1->func1();
-//    ptr2->func1();
-//    return 0;
-//}
-
-
-
-//class A {
-//public:
-//    virtual void fun1(){
-//        std::cout << "func1()" << "\n";
-//    }
-//    virtual void fun2(){
-//        std::cout <<"func2()"<<"\n";
-//    }
-//};
-//
-//class B :public A {
-//public:
-//    virtual void fun3(){
-//        std::cout <<"func3()"<<"\n";
-//    }
-//};
-//
-//using VFPTR = void(*)(void);
-//void PrintVFTable(VFPTR table[])
-//{
-//    for (int i = 0; table[i]; i++)
-//    {
-//        printf("%p -> ",table[i]);
-//        VFPTR f = table[i];
-//        f();
-//    }
-//}
-//
-//int main()
-//{
-//    A a;
-//    B b;
-//    PrintVFTable((VFPTR*)(*((VFPTR*)&a)));
-//    puts("");
-//    PrintVFTable(*(VFPTR**)&b);
-//    return 0;
-//}
-
-
-//class Base {
-//public:
-//    virtual void func() {}
-//private:
-//    int _a = 1;
-//    char _b;
-//};
-//
-//int main()
-//{
-//    std::cout << sizeof(Base) << "\n";
-//    Base b;
-//    return 0;
-//}
-//
-
-
-//class A {
-////public:
-//private:
-//    int _a = 1;
-//};
-//
-//class B : public A {
-//public:
-//    int _b = 2;
-//};
-//
-//class C : public A {
-//public:
-//    int _c = 3;
-//};
-//
-//class D :public B, public C {
-//public:
-//    int _d = 4;
-//};
-//
-//int main()
-//{
-//    //B b;
-//    //C c;
-//    D d;
-//    std::cout<<sizeof(D)<<"\n";
-//}
-//
-
-//class Base{
-//public:
-//    virtual void func(){
-//    }
-//private:
-//    int _a;
-//};
-//
-//class Derive :public Base {
-//};
-//
-//int main()
-//{
-//    Base b;
-//    Derive d;
-//    int x = 0;
-//    int *y = new int;
-//    static int z = 1;
-//    const char * str = "hello world";
-//
-//    printf("栈对象地址:        %p\n",&x);
-//    printf("堆对象地址:        %p\n",y);
-//    printf("静态区对象地址:    %p\n",&z);
-//    printf("常量区对象地址:    %p\n",str);
-//    printf("Base对象虚表指针:  %p\n",*(int**)(&b)); //32位环境
-//    printf("Derive对象虚表指针:%p\n",*(int**)(&d)); 
-//
-//    return 0;
-//}
-
-//class Person {
-//public:
-//    virtual void BuyTicket(int val = 1) {
-//        std::cout << "全票" << ":" << val << "\n";
-//    }
-//    virtual void func(int val = 1) {
-//        std::cout << "全票" << ":" << val << "\n";
-//    }
-//};
-//
-//class Student :public Person {
-//public:
-//    void BuyTicket(int val = 0) {
-//        std::cout << "半票" << "=" << val << "\n";
-//    }
-//    virtual int Add()
-//    {
-//        std::cout<<"Studetn"<<"\n";
-//        return 0;
-//    }
-//};
-//
-//class C : public Student {
-//public:
-//    virtual int Add()
-//    {
-//        std::cout<<"C"<<"\n";
-//        return 0;
-//    }
-//    int _c = 3;
-//};
-//
-//void fun(Student &s)
-//{
-//    s.Add();
-//}
-//
-//int main() {
-//    Person p;
-//    Student s;
-//    C c;
-//    fun(c);
-//    return 0;
-//}
+int main() {
+    try {
+        example();
+    }
+    catch (std::exception& e) {
+        std::cout << e.what() << std::endl;
+    }
+}

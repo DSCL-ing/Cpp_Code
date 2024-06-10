@@ -171,6 +171,7 @@
     <ClInclude Include="Test.h" />
     <None Include="C++.md" />
     <None Include="多态.md" />
+    <None Include="智能指针.md" />
     <None Include="继承.md" />
     <None Include="模板.md" />
     <Xml Include="markdown语法.md">
