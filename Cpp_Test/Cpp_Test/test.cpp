@@ -10,7 +10,7 @@ public:
     {}
     ~SmartPtr() {
         delete _ptr;
-        std::cout<<"delete "<<_ptr<<"\n";
+        std::cout<<"delete ptr"<<"\n";
     }
 private:
     T*_ptr;
