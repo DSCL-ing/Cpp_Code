@@ -44,9 +44,10 @@
     <None Include="0.1算法.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <ClInclude Include="3.3MySQL.txt">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
-    </ClInclude>
+    <None Include="MySQL.md">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <FileType>Document</FileType>
+    </None>
     <ClInclude Include="9Date.h" />
     <ClInclude Include="云备份.h" />
     <None Include="1.4智能指针.h">

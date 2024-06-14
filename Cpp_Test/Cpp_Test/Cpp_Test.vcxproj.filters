@@ -110,9 +110,6 @@
     <ClInclude Include="云备份.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="3.3MySQL.txt">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="9Date.h">
       <Filter>源文件</Filter>
     </ClInclude>
@@ -221,6 +218,9 @@
       <Filter>博客</Filter>
     </None>
     <None Include="智能指针.md">
+      <Filter>博客</Filter>
+    </None>
+    <None Include="MySQL.md">
       <Filter>博客</Filter>
     </None>
   </ItemGroup>
