@@ -1,19 +1,13 @@
 ﻿#include<iostream>
 
 namespace test {
-
     template<class T>
-    class auto_ptr {
+    class unique_ptr {
     public:
-        auto_ptr(T* ptr) :_ptr(ptr)
+        unique_ptr(T* ptr) :_ptr(ptr)
         {}
 
-        auto_ptr(auto_ptr& ap) {
-            _ptr = ap._ptr;
-            ap._ptr = nullptr;
-        }
-
-        ~auto_ptr() {
+        ~unique_ptr() {
             delete _ptr;
             std::cout << "delete ptr" << "\n";
         }
@@ -23,17 +17,23 @@ namespace test {
         T* operator->() {
             return _ptr;
         }
+
+        //C++11封拷贝 
+        //unique_ptr(const unique_ptr<T>& up) = delete;
+        //unique_ptr<T>& operator = (const unique_ptr<T>&up) = delete;
     private:
+        //C++98封拷贝
+        unique_ptr(const unique_ptr<T>& up); //C++98
+        unique_ptr<T>& operator=(const unique_ptr<T>&up);
+
         T* _ptr;
     };
 }
 
 int main() {
-    test::auto_ptr<int> ap1(new int);
-    test::auto_ptr<int> ap2(ap1);
+    test::unique_ptr<int> up1(new int);
+    test::unique_ptr<int> up2(up1);
 
-    *ap1 = 1;
-    *ap2 = 1;
 
     return 0;
 }
