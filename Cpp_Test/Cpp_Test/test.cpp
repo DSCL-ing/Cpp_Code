@@ -22,9 +22,7 @@ private:
 int main()
 {
     SmartPtr<int> sp1(new int);
-    SmartPtr<int> sp2(new int);
-    *sp1 = 10; 
-    std::cout<< *sp1 <<std::endl;
+    SmartPtr<int> sp2(sp1);
 
     return 0;
 }

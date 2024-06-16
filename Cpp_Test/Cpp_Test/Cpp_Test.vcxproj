@@ -136,7 +136,6 @@
     <None Include="0.1OnlineJudge.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
-    <ClInclude Include="21polymorphism.h" />
     <ClInclude Include="22BSTree.hpp" />
     <ClInclude Include="23map_set.h" />
     <ClInclude Include="24AVLTree.h" />
