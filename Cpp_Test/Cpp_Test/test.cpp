@@ -1,6 +1,7 @@
 ﻿#include<iostream>
 #include<mutex>
 #include<thread>
+#include<memory>
 
 namespace test {
     template<class T>
@@ -100,36 +101,62 @@ namespace test {
     };
 }
 
-struct Date
+struct ListNode
 {
-    int _year = 0;
-    int _month = 0;
-    int _day = 0;
+    int _data;
+    std::shared_ptr<ListNode> _prev;
+    std::shared_ptr<ListNode> _next;
+
+    ~ListNode() { std::cout << "~ListNode()" << std::endl; }
 };
 
-void SharePtrFunc(test::shared_ptr<Date>& sp, size_t n)
-{
-    for (size_t i = 0; i < n; ++i)
-    {
-        test::shared_ptr<Date> copy(sp);
-    }
-}
-
 int main() {
-    test::shared_ptr<Date> sp (new Date);
-
-    const size_t n = 10000000;
-    std::thread t1(SharePtrFunc, std::ref(sp), n);
-    std::thread t2(SharePtrFunc, std::ref(sp), n);
-    std::thread t3(SharePtrFunc, std::ref(sp), n);
-
-    t1.join();
-    t2.join();
-    t3.join();
-
-    std::cout<<sp.use_count()<<"\n";
+    std::shared_ptr<ListNode> sp1 (new ListNode);
+    std::shared_ptr<ListNode> sp2 (new ListNode);
+    sp1->_next = sp2;
+    sp2->_prev = sp1;
     return 0;
 }
+
+//struct Date
+//{
+//    int _year = 0;
+//    int _month = 0;
+//    int _day = 0;
+//};
+//
+////void SharePtrFunc(test::shared_ptr<Date>& sp, size_t n)
+//void SharePtrFunc(std::shared_ptr<Date>& sp, size_t n)
+//{
+//    for (size_t i = 0; i < n; ++i)
+//    {
+//        //test::shared_ptr<Date> copy(sp);
+//        std::shared_ptr<Date> copy(sp);
+//        copy->_year++;
+//        copy->_month++;
+//        copy->_day++;
+//    }
+//}
+//
+//int main() {
+//    //test::shared_ptr<Date> sp (new Date);
+//    std::shared_ptr<Date> sp (new Date);
+//
+//    const size_t n = 1000000;
+//    std::thread t1(SharePtrFunc, std::ref(sp), n);
+//    std::thread t2(SharePtrFunc, std::ref(sp), n);
+//    std::thread t3(SharePtrFunc, std::ref(sp), n);
+//
+//    t1.join();
+//    t2.join();
+//    t3.join();
+//
+//    std::cout<<sp.use_count()<<"\n";
+//    std::cout<<sp->_year<<"\n";
+//    std::cout<<sp->_month<<"\n";
+//    std::cout<<sp->_day<<"\n";
+//    return 0;
+//}
 
 //int main() {
 //    test::shared_ptr<int> sp1(new int(1));
