@@ -2,19 +2,28 @@
 #include<mutex>
 #include<thread>
 #include<memory>
+#include<cstdio>
+#include<functional>
+
+#pragma warning(disable:4996)
 
 namespace test {
     template<class T>
     class shared_ptr {
     public:
-        shared_ptr() : _ptr(nullptr), _pRefCount(new int(0)),_pmtx(new std::mutex)
+        shared_ptr() : _ptr(nullptr), _pRefCount(new int(0)), _pmtx(new std::mutex)
         {}
 
-        shared_ptr(T* ptr) :_ptr(ptr), _pRefCount(new int(1)),_pmtx(new std::mutex)
+        shared_ptr(T* ptr) :_ptr(ptr), _pRefCount(new int(1)), _pmtx(new std::mutex)
         {}
 
-        shared_ptr(const shared_ptr<T>& sp) :_ptr(sp._ptr), _pRefCount(sp._pRefCount) ,_pmtx(sp._pmtx){
+        shared_ptr(const shared_ptr<T>& sp) :_ptr(sp._ptr), _pRefCount(sp._pRefCount), _pmtx(sp._pmtx) {
             AddRef();
+        }
+
+        template<class T, class D>
+        shared_ptr(T* ptr, D del) : shared_ptr(ptr) {
+            _del = del;
         }
 
 
@@ -23,24 +32,11 @@ namespace test {
         }
 
         shared_ptr<T>& operator=(const shared_ptr<T>& sp) {
-            /*
-            operator较为复杂,具有任意性(可以多次赋值,拷贝只能一次)
-            1.如果使用赋值进行初始化,则和拷贝赋值一样.
-            2.如果是二次赋值,需要考虑有:
-            - 新管理资源走拷贝构造一套.
-            - 原先管理资源的引用计数减少.为0时需要析构(走一次析构)
-            - 处理"自己"给"自己"赋值
-                - 智能指针对象相同,指向的资源相同
-                - 智能指针对象不同,指向的资源相同
-                传统的方法(*this!=对象),只能处理第一种;而(*this._ptr != sp._ptr)能够兼容两种方法;
-
-            虽然处理逻辑和析构函数很像,但是C++中成员函数不能自己调用析构函数,因为肚子里的蛋不能杀的了鸡.
-            如果需要提高复用性,可以将逻辑独立成一个函数,然后析构和赋值重载都分别进行调用
-            */
             if (_ptr != sp._ptr)
             {
                 if (*_pRefCount == 0) //天生就为0
-                {}
+                {
+                }
                 else {
                     Release();
                 }
@@ -57,7 +53,8 @@ namespace test {
             _pmtx->lock();
             if (--(*_pRefCount) <= 0) {
                 _pmtx->unlock();
-                delete _ptr;
+                //delete _ptr;
+                _del(_ptr);
                 delete _pRefCount;
                 delete _pmtx;
                 std::cout << "delete " << _ptr << "\n";
@@ -72,7 +69,7 @@ namespace test {
             ++(*_pRefCount);
             _pmtx->unlock();
         }
-        
+
         T& operator*() {
             return *_ptr;
         }
@@ -80,11 +77,11 @@ namespace test {
             return _ptr;
         }
 
-        T* get() {
+        T* get() const {
             return _ptr;
         }
 
-        int use_count() {
+        int use_count() const {
             return *_pRefCount;
         }
 
@@ -93,30 +90,90 @@ namespace test {
         T* _ptr;
         int* _pRefCount;
         std::mutex* _pmtx;
-        /*
-        1.线程安全问题,智能指针只负责自身线程安全,并不负责资源的线程安全,资源的线程安全由资源自己负责.
-        而引用计数是属于智能指针维护的,因此,智能指针的线程安全问题为引用计数的线程安全问题.即保护引用计数
-        2.锁的定义方式和_pRefCount一样.一份资源(此处资源为_pRefCount)对应一个.
-        */
+        std::function<void(T* ptr)> _del = [](T*ptr){delete ptr;};
     };
 }
 
-struct ListNode
-{
-    int _data;
-    std::shared_ptr<ListNode> _prev;
-    std::shared_ptr<ListNode> _next;
 
-    ~ListNode() { std::cout << "~ListNode()" << std::endl; }
+struct Date
+{
+    int _year = 0;
+    int _month = 0;
+    int _day = 0;
+    ~Date() {
+        std::cout << "~Date()" << "\n";
+    }
 };
 
+template<class T>
+struct DeleteArray {
+    void operator()(T* ptr) {
+        delete[] ptr;
+    }
+};
+
+
+
 int main() {
-    std::shared_ptr<ListNode> sp1 (new ListNode);
-    std::shared_ptr<ListNode> sp2 (new ListNode);
-    sp1->_next = sp2;
-    sp2->_prev = sp1;
+    test::shared_ptr<Date> sp0(new Date);
+    test::shared_ptr<Date> sp1(new Date[10], DeleteArray<Date>());
+    test::shared_ptr<Date> sp2(new Date[10], [](Date* ptr) {delete[] ptr; });
+    test::shared_ptr<FILE> sp3(fopen("test.cpp", "r"), [](FILE* ptr) {std::cout << "fclose()" << "\n"; fclose(ptr); });
     return 0;
 }
+
+//    template<class T>
+//    class weak_ptr
+//    {
+//    public:
+//        weak_ptr()
+//            :_ptr(nullptr)
+//        {}
+//
+//        weak_ptr(const shared_ptr<T>& sp)
+//            :_ptr(sp.get())
+//        {}
+//
+//        weak_ptr<T>& operator=(const shared_ptr<T>& sp)
+//        {
+//            _ptr = sp.get();
+//
+//            return *this;
+//        }
+//
+//        T& operator*()
+//        {
+//            return *_ptr;
+//        }
+//
+//        T* operator->()
+//        {
+//            return _ptr;
+//        }
+//
+//    private:
+//        T* _ptr;
+//    };
+//
+//}
+
+
+//struct ListNode
+//{
+//    int _data;
+//    test::weak_ptr<ListNode> _prev;
+//    test::weak_ptr<ListNode> _next;
+//
+//    ~ListNode() { std::cout << "~ListNode()" << std::endl; }
+//};
+
+//int main() {
+//    test::shared_ptr<ListNode> sp1(new ListNode);
+//    test::shared_ptr<ListNode> sp2(new ListNode);
+//    sp1->_next = sp2;
+//    sp2->_prev = sp1;
+//    return 0;
+//}
 
 //struct Date
 //{
