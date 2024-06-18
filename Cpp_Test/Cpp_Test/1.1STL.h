@@ -226,8 +226,11 @@ Compare: 比较器的类型，map中的元素是按照key来比较的，缺省�
  * array<int,10> a1;
  *
  * 差别:
- * 但实际上被vector全面碾压,vector也能越界检查,vector还能直接初始化:vector<int> v(10,0);
+ * 但实际上vector用得会更多,vector也能越界检查,vector还能直接初始化:vector<int> v(10,0);
  * 主要差别是array是在栈上,vector是在堆里
- *
+
+array是栈上的，把C数组给“标准化”，有大小信息，不会弱化为指针，不可以动态扩大。vector管理堆内存，可以动态扩容。
+array可以使用C的memset,memcpy等. vector不可以
+
  */
 
