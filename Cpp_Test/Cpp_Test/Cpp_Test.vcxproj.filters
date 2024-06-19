@@ -220,6 +220,9 @@
     <None Include="MySQL.md">
       <Filter>博客</Filter>
     </None>
+    <None Include="C++11常用特性.md">
+      <Filter>博客</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="0.随手记.txt">

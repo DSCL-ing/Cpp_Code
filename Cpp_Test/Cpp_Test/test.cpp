@@ -8,11 +8,14 @@
 #include<vector>
 
 int main() {
-    auto bar = std::make_shared<int>(10);
-    auto foo(std::make_shared<int>(10));
-    auto foo1 = std::make_shared<std::array<char, 64>>();
-    auto foo2 = std::make_shared<std::vector<int>>(10,0);
-    auto foo3 = std::make_shared<std::vector<int>>(10);
-
+    long long n1;
+    long long int n2;
+    signed long long n3;
+    signed long long int n4;
+    std::cout<<typeid(n1).name()<<"\n";
+    std::cout<<typeid(n2).name()<<"\n";
+    std::cout<<typeid(n3).name()<<"\n";
+    std::cout<<typeid(n4).name()<<"\n";
+    std::cout<<sizeof(n1)<<"\n";
     return 0;
 }
