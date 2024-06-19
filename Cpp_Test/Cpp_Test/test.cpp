@@ -6,16 +6,25 @@
 #include<functional>
 #include<array>
 #include<vector>
+#include<string>
+
+class A{
+    void func() {
+
+    }
+
+    int func() {
+        return 0;
+    }
+};
 
 int main() {
-    long long n1;
-    long long int n2;
-    signed long long n3;
-    signed long long int n4;
-    std::cout<<typeid(n1).name()<<"\n";
-    std::cout<<typeid(n2).name()<<"\n";
-    std::cout<<typeid(n3).name()<<"\n";
-    std::cout<<typeid(n4).name()<<"\n";
-    std::cout<<sizeof(n1)<<"\n";
+    std::string str = "123a123a";
+    size_t n= 0;
+    int a = std::stoi(str,&n, 10);
+    std::cout<<a<<", char:"<<n << "\n";
+
+    
+
     return 0;
 }
