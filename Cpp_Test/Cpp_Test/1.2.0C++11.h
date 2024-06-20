@@ -200,57 +200,54 @@ void test1()
 
 
 
+// vector和list的列表初始化 
+{
+    std::vector<int> v1 = { 1,23,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }; //
+    std::list<int> l1 = { 1,1,1,1,1,1,1,11,1,1,1 }; //花括号里是一个常量数组
+
+    auto i1 = { 1,1,1,1,1,1,1,1,1,1,1 };
+    //查看i1的类型
+    std::cout << typeid(i1).name() << std::endl;// class std::initializer_list<int>  -- 是一个类
+/*
+  C++11给vector和list增加了支持initializer_list的构造函数,使其支持花括号初始化
+  //我们可以给自己的vector和list添加initializer_list构造,原理很简单,遍历+push_back就好了 -- 已添加在mylist和myVector
+  只有容器才适配了initializer_list
+  
+  C++容器还支持使用initializer_list赋值(operator=)
+ */
 
 
+// initializer_list 
+/*
+ 类:class template<T>  std::initializer_list{};
 
+成员:
+ begin():指向常量数组头;
+ end()  :指向常量数组尾的下一个位置;
+ size() :为end-begin;
+*/
 
-    /* vector和list的列表初始化 */
-    {
-        std::vector<int> v1 = { 1,23,1,1,1,1,1,1,1,1,1,1,1,1,1,1 }; //
-        std::list<int> l1 = { 1,1,1,1,1,1,1,11,1,1,1 }; //花括号里是一个常量数组
+//验证begin是地址:
+std::initializer_list<int>::iterator it = i1.begin();
+std::cout << it << std::endl;//00AFF9C4,是一个地址, --> begin指向的是常量数组的地址
 
-        auto i1 = { 1,1,1,1,1,1,1,1,1,1,1 };
-        //查看i1的类型
-        std::cout << typeid(i1).name() << std::endl;// class std::initializer_list<int>  -- 是一个类
-    /**
-     * C++11给vector和list增加了支持initializer_list的构造函数,使其支持花括号初始化
-     * //我们可以给自己的vector和list添加initializer_list构造,原理很简单,遍历+push_back就好了 -- 已添加在mylist和myVector
-     * 只有容器才适配了initializer_list
-     * 
-     * C++容器还支持使用initializer_list赋值(operator=)
-     * 
-     */
+//c++11 std::initializer_list<t> -- 接收常量数组 --该数组在常量区 -- 不允许修改
+//++(*it); -- 报错,不允许 --- 因为是常量,不允许修改
 
+/*
+ 中文名 :初始化器表
 
-     /* initializer_list */
-          /**
-           * 类:class template<T>  std::initializer_list{};
-           *
-           * 成员:begin指向常量数组头.end指向常量数组尾的下一个位置,size为end-begin,
-           *
-           */
+ 是c++标准程序库中的一个头文件，定义了c++标准中一个非常轻量级的表示初始化器列表的类模板initializer_list及有关函数。
+ 为了编写能够处理不同数量实参（但是类型相同），c++11新标准提供了initializer_list的方法。
+ 与vector不同的是，initializer_list对象中的元素永远是常量值，我们无法改变initializer_list对象中元素的值。在进行函数调用的时候需要使用花括号将所有的参数括起来。
 
-           //验证begin是地址:
-        std::initializer_list<int>::iterator it = i1.begin();
-        std::cout << it << std::endl;//00AFF9C4,是一个地址, --> begin指向的是常量数组的地址
+ 支持:vector,list,map
 
-        //c++11 std::initializer_list<t> -- 接收常量数组 --该数组在常量区 -- 不允许修改
-        //++(*it); -- 报错,不允许 --- 因为是常量,不允许修改
+ std::initializer_list一般是作为构造函数的参数，c++11对stl中的不少容器就增加std::initializer_list作为参数的构造函数，
+ 这样初始化容器对象就更方便了。也可以作为operator=的参数，这样就可以用大括号赋值。
 
-        /**
-         * 中文名 :初始化器表
-         *
-         * 是c++标准程序库中的一个头文件，定义了c++标准中一个非常轻量级的表示初始化器列表的类模板initializer_list及有关函数。
-         * 为了编写能够处理不同数量实参（但是类型相同），c++11新标准提供了initializer_list的方法。
-         * 与vector不同的是，initializer_list对象中的元素永远是常量值，我们无法改变initializer_list对象中元素的值。在进行函数调用的时候需要使用花括号将所有的参数括起来。
-         *
-         * 支持:vector,list,map
-         *
-         * std::initializer_list一般是作为构造函数的参数，c++11对stl中的不少容器就增加std::initializer_list作为参数的构造函数，
-         * 这样初始化容器对象就更方便了。也可以作为operator=的参数，这样就可以用大括号赋值。
-         *
-         */
-    }
+*/
+}
     {
         int i = 1;
         int array1[] = { 1,2,3,4,5 };

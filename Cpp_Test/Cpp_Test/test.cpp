@@ -8,16 +8,6 @@
 #include<vector>
 #include<string>
 
-class A{
-    void func() {
-
-    }
-
-    int func() {
-        return 0;
-    }
-};
-
 int main() {
     std::string str = "123a123a";
     size_t n= 0;
