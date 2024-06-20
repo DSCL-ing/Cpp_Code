@@ -746,3 +746,18 @@ const 右值引用
     }
 
 
+// =delete
+/*
+能起到禁止隐式类型转换的效果
+class A {
+public:
+    void print(int i) {
+
+    }
+    void print(char c) = delete;
+};
+int main() {
+    A().print('c'); //error:已被删除的函数
+
+}
+*/
