@@ -37,7 +37,7 @@ C风格的转换格式很简单，但是有不少缺点的：
 标准C++为了加强类型转换的可视性，引入了四种命名的强制类型转换操作符：
 static_cast、reinterpret_cast、const_cast、dynamic_cast
 
-1.static_cast
+1.static_cast(将C风格隐式类型转换具体表示出来)
     static_cast 对应 C语言的隐式类型转换(能当C语言的隐式类型转换使用)
  用于非多态类型的转换(静态转换).编译器隐式执行的任何类型都可用. 但是不能用于两个不相关的类型进行转换
 int main()
