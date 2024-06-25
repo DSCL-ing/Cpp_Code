@@ -25,35 +25,18 @@ std::string getTime()
     return buffer;
 }
 
+template<typename ToDuration>
+using MyTimePoint = std::chrono::time_point<std::chrono::system_clock,ToDuration>;
+
 int main() {
-
-    //auto nt = std::chrono::system_clock().now();
-    //auto t = std::chrono::system_clock::to_time_t(nt);
-    //std::cout<<ctime(&t)<<"\n";
-    //std::cout<<nt.time_since_epoch().count()<<std::endl;
-    ////std::cout<<getTime()<<std::endl;
-
-    //std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
-    //Sleep(1000);
-    //std::chrono::steady_clock::time_point end= std::chrono::high_resolution_clock::now();
-    ////std::chrono::steady_clock::time_point ret = end - start;
-    //auto ret = end -start;
-    //std::cout<<ret.count()<<std::endl;
-
-    std::chrono::system_clock::time_point epoch;  //新纪元起始
-    std::cout<<epoch.time_since_epoch().count()<<"\n";
-
-    std::chrono::duration<long long> day(std::chrono::hours(24));
-    //std::chrono::hours day(24); //相同
-
-    std::chrono::system_clock::time_point epoch1 = epoch+day;
-    //std::chrono::system_clock::time_point epoch1(epoch+day); //相同
-    std::cout<<epoch1.time_since_epoch().count()<<"\n"; //法一
    
-    std::chrono::system_clock::time_point now_time =  std::chrono::system_clock::now();
-    time_t time = std::chrono::system_clock::to_time_t(now_time);
-    std::cout<<ctime(&time)<<"\n";
-    std::cout<<now_time.time_since_epoch().count()<<"\n"; //获取时间戳后还需要将时间戳转换工具转换
+  
+    std::chrono::time_point<std::chrono::system_clock,std::chrono::milliseconds> millis; 
+    std::chrono::time_point<std::chrono::system_clock,std::chrono::seconds> s = std::chrono::time_point_cast<std::chrono::seconds>(millis); 
+
+
+
+ 
     return 0;
 }
 
