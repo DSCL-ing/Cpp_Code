@@ -18,7 +18,9 @@
 // 时间接口
 /*
 1.time
-2.gettimeofday(&tv,nullptr)
+
+
+2.gettimeofday(&tv,nullptr) //unix/linux专用
 #include<sys/time.h>
 struct timeval {
     time_t      tv_sec;     // seconds      秒
@@ -28,27 +30,28 @@ struct timeval {
 
 
 3.localtime() //把时间戳转格式
- std::string getTime()
+示例函数:
+std::string getTime()
 {
-//struct tm
-//  int tm_sec;			 Seconds.	[0-60] (1 leap second)
-//  int tm_min;			 Minutes.	[0-59] 
-//  int tm_hour;		 Hours.	[0-23] 
-//  int tm_mday;		 Day.		[1-31] 
-//  int tm_mon;			 Month.	[0-11] 
-//  int tm_year;		 Year	- 1900.  
-//  int tm_wday;		 Day of week.	[0-6]
-//  int tm_yday;		 Days in year.[0-365]
-//  int tm_isdst;		 DST.		[-1/0/1]
+    //struct tm
+    //  int tm_sec;			 Seconds.	[0-60] (1 leap second)
+    //  int tm_min;			 Minutes.	[0-59] 
+    //  int tm_hour;		 Hours.	[0-23] 
+    //  int tm_mday;		 Day.		[1-31] 
+    //  int tm_mon;			 Month.	[0-11] 
+    //  int tm_year;		 Year	- 1900.  
+    //  int tm_wday;		 Day of week.	[0-6]
+    //  int tm_yday;		 Days in year.[0-365]
+    //  int tm_isdst;		 DST.		[-1/0/1]
 
-time_t curr = time(nullptr);
-struct tm* tmp = localtime(&curr); //参数事time_t类型的时间戳
-char buffer[128];
-snprintf(buffer, sizeof(buffer), "%d-%d-%d %d:%d:%d", tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday, tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
-return buffer;
+    time_t curr = time(nullptr);
+    struct tm* tmp = localtime(&curr); //参数事time_t类型的时间戳
+    char buffer[128];
+    snprintf(buffer, sizeof(buffer), "%d-%d-%d %d:%d:%d", tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday, tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+    return buffer;
 }
 
-4.ctime
+4.ctime //更快,更方便
 头:<ctime.h>
 声明:char* ctime (const time_t * timer);
     The returned string has the following format:

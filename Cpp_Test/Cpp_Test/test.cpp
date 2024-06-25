@@ -1,39 +1,59 @@
 ﻿#include<iostream>
-
 #include<chrono>
+#include<ctime>
+#include<windows.h>
+
+#pragma warning(disable:4996)
+
+std::string getTime()
+{
+    //struct tm
+    //  int tm_sec;			 Seconds.	[0-60] (1 leap second)
+    //  int tm_min;			 Minutes.	[0-59] 
+    //  int tm_hour;		 Hours.	[0-23] 
+    //  int tm_mday;		 Day.		[1-31] 
+    //  int tm_mon;			 Month.	[0-11] 
+    //  int tm_year;		 Year	- 1900.  
+    //  int tm_wday;		 Day of week.	[0-6]
+    //  int tm_yday;		 Days in year.[0-365]
+    //  int tm_isdst;		 DST.		[-1/0/1]
+
+    time_t curr = time(nullptr);
+    struct tm* tmp = localtime(&curr); //参数事time_t类型的时间戳
+    char buffer[128];
+    snprintf(buffer, sizeof(buffer), "%d-%d-%d %d:%d:%d", tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday, tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+    return buffer;
+}
 
 int main() {
 
-    std::chrono::duration<double, std::ratio<9, 7>> d1(3); //单位为9/7秒
-    std::chrono::duration<double, std::ratio<6, 5>> d2(1); //单位为6/5秒
-    /*
-    9和6的最大公约数是3;
-    7和5的最小公倍数是35;
-    */
-    // d1 和 d2 统一之后的时钟周期
-    std::chrono::duration<double, std::ratio<3, 35>> d4 = d1 - d2; 
-    auto d3 = d1 - d2;
-    std::cout<<d3.count()<<"\n";
-    std::cout<<d4.count()<<"\n";
+    //auto nt = std::chrono::system_clock().now();
+    //auto t = std::chrono::system_clock::to_time_t(nt);
+    //std::cout<<ctime(&t)<<"\n";
+    //std::cout<<nt.time_since_epoch().count()<<std::endl;
+    ////std::cout<<getTime()<<std::endl;
 
+    //std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
+    //Sleep(1000);
+    //std::chrono::steady_clock::time_point end= std::chrono::high_resolution_clock::now();
+    ////std::chrono::steady_clock::time_point ret = end - start;
+    //auto ret = end -start;
+    //std::cout<<ret.count()<<std::endl;
 
+    std::chrono::system_clock::time_point epoch;  //新纪元起始
+    std::cout<<epoch.time_since_epoch().count()<<"\n";
 
+    std::chrono::duration<long long> day(std::chrono::hours(24));
+    //std::chrono::hours day(24); //相同
 
-    //std::chrono::duration<int> a(1);
-    //std::chrono::duration<int ,std::milli> b(10);
-    //std::chrono::duration<int ,std::ratio<1,1000000>>  c(100);
-
-    //std::cout<<a.count()<<std::endl;
-    //std::cout<<b.count()<<std::endl;
-    //std::cout<<c.count()<<std::endl;
-
-    //std::chrono::hours h(2);             //2小时
-    //std::chrono::minutes min(3);         //3分钟
-    //std::chrono::seconds sec(4);         //4秒钟
-    //std::chrono::milliseconds millis(5); //5毫秒
-    //std::chrono::microseconds micros(6); //6微秒
-    //std::chrono::nanoseconds nanos(7);   //7纳秒
-
+    std::chrono::system_clock::time_point epoch1 = epoch+day;
+    //std::chrono::system_clock::time_point epoch1(epoch+day); //相同
+    std::cout<<epoch1.time_since_epoch().count()<<"\n"; //法一
+   
+    std::chrono::system_clock::time_point now_time =  std::chrono::system_clock::now();
+    time_t time = std::chrono::system_clock::to_time_t(now_time);
+    std::cout<<ctime(&time)<<"\n";
+    std::cout<<now_time.time_since_epoch().count()<<"\n"; //获取时间戳后还需要将时间戳转换工具转换
     return 0;
 }
 
