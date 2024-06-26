@@ -220,7 +220,7 @@
     <None Include="MySQL.md">
       <Filter>博客</Filter>
     </None>
-    <None Include="C++11常用特性.md">
+    <None Include="C++11.md">
       <Filter>博客</Filter>
     </None>
   </ItemGroup>
