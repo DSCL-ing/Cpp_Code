@@ -1,31 +1,32 @@
 ﻿#include<iostream>
 #include<thread>
 #include<chrono>
+#include<cstdlib>
 
-template<class T>
-void func(std::chrono::duration<T> d) {
+#pragma warning(disable:4996)
 
+int g_count;
+
+void func1() {
+    do {
+        std::cout << std::this_thread::get_id() << "\n";
+    } while (true);
+}
+
+
+void func2() {
+    do {
+        std::this_thread::yield();
+        std::cout << std::this_thread::get_id() << "\n";
+    } while (true);
 }
 
 int main() {
-    func(std::chrono::duration<long long>());
-    func(std::chrono::seconds());
 
-    std::cout<<std::this_thread::get_id()<<"\n";
-
-    std::cout<<"sleep_for:10s"<<"\n";
-    //std::this_thread::sleep_until
-    std::cout<<"sleep_for:end"<<"\n";
-
-
-    //std::chrono::nanoseconds ret = end - start;
-    
-
-        //std::chrono::time_point<std::chrono::steady_clock> start = std::chrono::steady_clock::now();
-        //std::chrono::time_point<std::chrono::steady_clock> end= std::chrono::steady_clock::now();
-        //std::chrono::duration<long long,std::nano> ret = end - start;
-        //std::cout<<"计时器计时时长:"<<ret.count()<<"纳秒"<<ret.count()/ 1000000000<<"秒" << "\n";
-  
+    std::thread t1(func1);
+    std::thread t2(func2);
+    t1.join();
+    t2.join();
     return 0;
 }
 
