@@ -1,5 +1,7 @@
-﻿  正在生成代码
-  Previous IPDB not found, fall back to full compilation.
-  All 11 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+﻿  test.cpp
+  正在生成代码
+  4 of 11 functions (36.4%) were compiled, the rest were copied from previous compilation.
+    1 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   Cpp_Test.vcxproj -> C:\Users\chj\Desktop\Repository\Cpp_Code\Cpp_Test\x64\Release\Cpp_Test.exe
