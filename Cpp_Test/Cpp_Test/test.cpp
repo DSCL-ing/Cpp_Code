@@ -2,40 +2,40 @@
 #include<thread>
 #include<chrono>
 #include<cstdlib>
-#include<functional>
-
-#pragma warning(disable:4996)
-
-//int g_val;
-
-void func1() {
-    do {
-        std::cout << std::this_thread::get_id() << "\n";
-    } while (1);
-}
+#include<mutex>
 
 
-void func2() {
-    do {
-        //std::cout << std::this_thread::get_id() << "\n";
-        //_sleep(100);
-    } while (0);
-}
+std::once_flag g_flag;
+
+class Singleton {
+public:
+    Singleton(const Singleton& s) = delete;
+    Singleton& operator=(const Singleton&s) = delete;
+    static Singleton* GetInstance() {
+        std::call_once(g_flag,[](){ std::cout<<"do once:"<<std::this_thread::get_id()<<"\n"; _instance = new Singleton; });
+        std::cout<<std::this_thread::get_id()<<"\n";
+        return _instance;
+    }
+    static void func() {
+
+    }
+
+private:
+    Singleton(){};
+    static Singleton* _instance;
+};
+Singleton* Singleton::_instance = nullptr;
 
 
 int main() {
-
-    //std::thread t1;
-    //if (t1.joinable() == true)
-    //{
-    //    t1.join();
-    //}
-    std::thread t1(func2);
-    std::thread::native_handle_type t = t1.native_handle();
-    printf("%d",t);
+   std::thread t1(Singleton::GetInstance);
+   std::thread t2(Singleton::GetInstance);
+   std::thread t3(Singleton::GetInstance);
+    
     t1.join();
+    t2.join();
+    t3.join();
 
-    std::cout<<std::thread::hardware_concurrency()<<"\n";
 
     //std::thread t1(func1);
     //std::thread t2(func2);
