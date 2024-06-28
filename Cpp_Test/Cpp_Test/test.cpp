@@ -30,6 +30,10 @@ int main() {
     //{
     //    t1.join();
     //}
+    std::thread t1(func2);
+    std::thread::native_handle_type t = t1.native_handle();
+    printf("%d",t);
+    t1.join();
 
     std::cout<<std::thread::hardware_concurrency()<<"\n";
 
