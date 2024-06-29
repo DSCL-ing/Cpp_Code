@@ -4,34 +4,31 @@
 #include<cstdlib>
 #include<mutex>
 
+#pragma warning(disable:4996)
 
-std::once_flag g_flag;
+int g_val;
+std::mutex mtx;
 
-class Singleton {
-public:
-    Singleton(const Singleton& s) = delete;
-    Singleton& operator=(const Singleton& s) = delete;
-    static Singleton* GetInstance() {
-        std::call_once(g_flag, []() {
-            std::this_thread::sleep_for(std::chrono::seconds(1));          //延迟1s
-            std::cout << "do once:" << std::this_thread::get_id() << "\n";
-            _instance = new Singleton; });
-        std::cout << std::this_thread::get_id() << "\n";
-        std::cout << _instance << "\n";
-        return _instance;
+void other() {
+    std::cout << "do other thing" << "\n";
+}
+
+void func() {
+    while (true) {
+        _sleep(100);
+        //while (mtx.try_lock() == false)
+        //    other();
+        //std::cout << g_val++ << "\n";
+        mtx.unlock();
     }
+}
 
-private:
-    Singleton() {};
-    static Singleton* _instance;
-};
-Singleton* Singleton::_instance = nullptr;
 
 
 int main() {
-    std::thread t1(Singleton::GetInstance);
-    std::thread t2(Singleton::GetInstance);
-    std::thread t3(Singleton::GetInstance);
+    std::thread t1(func);
+    std::thread t2(func);
+    std::thread t3(func);
 
     t1.join();
     t2.join();
