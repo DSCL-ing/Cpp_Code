@@ -26,6 +26,7 @@ void func() {
 
 
 int main() {
+    std::recursive_timed_mutex t;
     std::thread t1(func);
     std::thread t2(func);
     std::thread t3(func);
