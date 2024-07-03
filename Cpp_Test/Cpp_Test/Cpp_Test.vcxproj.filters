@@ -36,6 +36,9 @@
     <ClCompile Include="C++11.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="源.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="10myString.h">
