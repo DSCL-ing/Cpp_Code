@@ -1,8 +1,8 @@
 ﻿#include<iostream> //std::cout 
 #include<thread> //std::thread
-#include<mutex> //std::mutex, std::unique_lock, std::lock_guard
 #include<queue> //std::queue
 #include<condition_variable> //std::condition_variable
+#include<mutex> //std::mutex, std::unique_lock, std::lock_guard
 #include<functional> //std::bind
 
 //设计概要
@@ -52,7 +52,8 @@ public:
 private:
     std::queue<T> _bqueue;
     std::mutex _mtx;
-    std::condition_variable cv;  //必须搭配all
+    //std::condition_variable cv;  //必须搭配all
+    std::condition_variable_any cv;
     size_t _capacity = 5; //队列定长大小
 };
 
