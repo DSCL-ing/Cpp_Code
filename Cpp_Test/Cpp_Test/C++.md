@@ -489,3 +489,79 @@ int main()
 2. 从表面上看，定位放置new操作是申请空间，其本质是利用已经申请好的空间，真正的申请空间的工作是在此之前完成的。
 3. 使用定位放置new 创建对象时会自动调用对应类的构造函数，但是由于对象的空间不会自动释放，如果需要释放堆内存必须显示调用类的析构函数。
 4. 使用定位放置new操作，我们可以反复动态申请到同一块堆内存，这样可以避免内存的重复创建销毁，从而提高程序的执行效率（比如网络通信中数据的接收和发送）。
+
+----
+
+
+
+## 类成员类型修饰符
+
+​    [C++程序员应了解的那些事（56）const 和 volatile 成员函数、mutable 数据成员_mutable成员一般在什么情况下定义-CSDN博客](https://blog.csdn.net/qfturauyls/article/details/109344360#:~:text=【valatile成员函数】 也可以将成员函数声明为 volatile 。 如果一个类对象的值可能被修改的方式是编译器无法控制或检测的，则把它声明为 volatile 。,与 const 类对象类似，对于一个 volatile 类对象，只有 volatile 成员函数、构造函数、析构函数可以被调用。)
+
+**为尊重类对象的常量性，编译器必须区分不安全与安全的成员函数(即区分试图修改类对象与不试图修改类对象的函数)。**
+
+
+
+**【const成员函数】**
+
+​    类的设计者通过把成员函数声明为 const ，以表明它们不修改类对象。只有被声明为 const 的成员函数才能被一个 const 类对象调用。关键字 const 被放在成员函数的参数表和函数体之间。**对于在类体之外定义的 const 成员函数，我们必须在它的定义和声明中同时指定关键字const 。**把一个修改类数据成员的函数声明为 const 是非法的。
+​    一般来说，任何一个类如果期望被广泛使用，就应该把那些不修改类数据成员的成员函数声明为 const 成员函数。但是，把一个成员函数声明为 const 并不能阻止程序员可能做到的所有修改动作。把一个成员函数声明为 const 可以保证这个成员函数不修改类的数据成员，但是如果该类含有指针，那么在 const 成员函数中就能修改指针所指的对象。编译器不会把这种修改检测为错误，这常常令 C++ 初学者吃惊，例如：
+
+```
+#include <cstring>
+class Text {
+public:   
+    void bad(const string &parm )const;
+private:
+    char *_text;
+};
+void Text::bad(const string &parm ) const
+{   
+    for( int ix = 0; ix < parm.size(); ++ix )
+   {      
+      _text[ix] = parm[ix];  // 不好的风格，但不是错误     
+   }
+   //_text = parm.c_str();  // 错误：不能修改数据成员
+}
+```
+
+![image-20240705221819112](C++.assets/image-20240705221819112.png)
+
+**const 成员函数可以被相同参数表的非 const 成员函数重载。在这种情况下，类对象的常量性决定了调用哪个函数。构造函数和析构函数是两个例外，即使构造函数和析构函数不是 const 成员函数，const 对象也可以调用它们。**当构造函数执行结束、类对象已经被初始化时，类对象的常量性才被建立。析构函数一被调用，常量性就消失。所以一个 const 类对象“从构造完成时刻到析构开始时刻”这段时间内被认定是 const 。
+
+**【valatile成员函数】**
+    也可以将成员函数声明为 volatile 。**如果一个类对象的值可能被修改的方式是编译器无法控制或检测的，则把它声明为 volatile 。与 const 类对象类似，对于一个 volatile 类对象，只有 volatile 成员函数、构造函数、析构函数可以被调用。**
+
+**【mutable数据成员】**
+
+​     **为了允许修改一个类的数据成员，即使它是一个 const 对象的数据成员，我们也可以把该数据成员声明为 mutable (易变的)。**mutable 数据成员永远不会是 const 成员，即使它是一个 const 对象的数据成员。mutable 成员总可以被更新，即使是在一个 const 成员函数中。**为把一个成员声明为 mutable 数据成员，我们必须把关键字 mutable 放在类成员中的数据成员声明之前，例如：**
+
+```
+class Screen {
+public:
+// 成员函数
+private:    
+string _screen;   
+mutable string::size_type _cursor; // mutable 成员
+};
+```
+
+**【const数据成员】**
+
+ **const修饰的成员变量相当于该变量是一个常量，所以只能在初始化列表上初始化。**
+
+```
+class Date{
+public:
+	Date(int year = 1900, int month = 1)
+		:_year(year)
+		, _month(month)
+		, _day(1)
+	{}
+private:
+	int _year;
+	int _month;
+	const int _day;
+};
+```
+
