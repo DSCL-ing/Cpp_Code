@@ -1,23 +1,55 @@
 ﻿#include<iostream>                  //std::cout 
 #include<thread>                    //std::thread
 #include<queue>                     //std::queue
-#include<condition_variable>        //std::condition_variable
-#include<mutex>                     //std::mutex, std::unique_lock, std::lock_guard
-#include<functional>                //std::bind
-#include <cstring>
-#include<atomic>
+#include <iostream>
+#include <thread>
+#include <mutex>
+#include <atomic>
+#include <functional>
+#include<chrono>
 
-template<class T>
-struct A {
-    operator T() {
-        return ++_a;
+struct Counter
+{
+    void increment()
+    {
+        for (int i = 0; i < 100000000; ++i)
+        {
+            std::lock_guard<std::mutex> locker(m_mutex);
+            m_value++;
+        }
     }
-    T _a = 0;
+
+    void decrement()
+    {
+        for (int i = 0; i < 100000000; ++i)
+        {
+            std::lock_guard<std::mutex> locker(m_mutex);
+            m_value--;
+        }
+    }
+
+    int m_value = 0;
+    //std::atomic_int m_value = 0;
+    std::mutex m_mutex;
 };
 
-int main() {
-    A<int> a;
-    std::cout << a << "\n";
-    //std::cout<<
-    std::cin << 1<<"\n";
+int main()
+{
+    Counter c;
+    auto increment = std::bind(&Counter::increment, &c);
+    auto decrement = std::bind(&Counter::decrement, &c);
+
+    std::chrono::steady_clock::time_point start = std::chrono::high_resolution_clock::now();
+    std::thread t1(increment);
+    std::thread t2(decrement);
+    //auto ret = end -start;
+    t1.join();
+    t2.join();
+    std::chrono::steady_clock::time_point end  = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double,std::nano> ret = end -start;
+    std::cout<<"Counter: "<<c.m_value<<"\n";
+    std::cout<<ret.count()/1000000000<<"秒" << "\n";
+    return 0;
+
 }
+
