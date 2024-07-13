@@ -86,3 +86,13 @@ fs>>std::noskipws>>(char*)buffer;  //即先读到noskipws,并且把空格\换行
 有自动类型转换特性...
 
 */
+
+
+//manipulators 操纵符
+/*
+https://zh.cppreference.com/w/cpp/io/manip
+https://legacy.cplusplus.com/reference/ios/
+
+
+*/
+
