@@ -226,6 +226,12 @@
     <None Include="C++11.md">
       <Filter>博客</Filter>
     </None>
+    <None Include="C++11标准库.md">
+      <Filter>博客</Filter>
+    </None>
+    <None Include="设计模式.md">
+      <Filter>博客</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="0.随手记.txt">

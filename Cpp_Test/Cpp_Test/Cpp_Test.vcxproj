@@ -58,6 +58,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </None>
     <None Include="C++11.md" />
+    <None Include="C++11标准库.md" />
     <None Include="MySQL.md">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
@@ -188,6 +189,7 @@
     <None Include="智能指针.md" />
     <None Include="继承.md" />
     <None Include="模板.md" />
+    <None Include="设计模式.md" />
     <Xml Include="markdown语法.md">
       <FileType>Document</FileType>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
