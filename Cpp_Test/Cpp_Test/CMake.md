@@ -28,7 +28,13 @@
 
   其中-B 后面的目录是cmake自动创建的,不需要我们手动创建.
 
-  cmake -S . -B build //该命令和"mkdir build;cd build;cmake ../"的效果是一样的.
+  ​    cmake -S . -B build //该命令和"mkdir build;cd build;cmake ../"的效果是一样的.
+
+- -G "编译方式"
+
+  -G 指定编译器,生成相应的MakeFile文件
+
+  Exam:`cmake -S . -B g -G "MinGW Makefiles"E`
 
 
 
@@ -40,7 +46,7 @@
 
   
 
-- cmake --build construct_dir  [-j线程数]
+- -j线程数
 
   -j是启用多线程编译,后面跟着多线程数
 
@@ -48,9 +54,11 @@
 
 
 
-- cmake --build construct_dir --config <release或debug> 
+- --config <release或debug> 
 
   生成dubug版本或者release版本
+
+
 
 
 
@@ -69,3 +77,30 @@
 CMakeLists.txt本身大小写不敏感,满足跨平台特性.
 
 最好按标准名称写,可读性更好.在敏感大小写的平台,不同名称可能是不同的文件.
+
+
+
+## CMakeLists.txt编写
+
+### 指定CMake最小版本
+
+- cmake_minimum_required(VERSION 3.20)
+
+ minimum:最低
+
+ requird:需求
+
+ cmake_minimum_requird用于表示支持的cmake最低版e本,以防使用高级版本新特性时,不兼容,无法得知bug原因等
+
+### 指定构建项目的名称
+
+- project(项目名称)
+
+  CMake语法中项目名称不需要加"",虽然他是字符串
+
+
+
+addexecutable(项目名称 源文件)
+
+
+
