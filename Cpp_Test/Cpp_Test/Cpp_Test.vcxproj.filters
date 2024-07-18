@@ -232,6 +232,9 @@
     <None Include="设计模式.md">
       <Filter>博客</Filter>
     </None>
+    <None Include="CMake.md">
+      <Filter>博客</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="0.随手记.txt">
