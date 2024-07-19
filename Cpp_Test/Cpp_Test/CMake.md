@@ -100,7 +100,11 @@ CMakeLists.txt本身大小写不敏感,满足跨平台特性.
 
 
 
-addexecutable(项目名称 源文件)
+- add_executable(项目名称 源文件)
+
+- add_library(库名 类型 依赖)
+
+  add_library(xlog STATIC xlog.cc xlog.h) //放入xlog.h目的是让xlog.h被修改也能重新编译
 
 
 
