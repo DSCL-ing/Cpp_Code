@@ -1,4 +1,20 @@
-﻿## cmake执行CMakeLists.txt命令 
+﻿# 基本语法认识
+
+## 认识CMakeLists.txt
+
+CMakeLists.txt被拆分成4部分,前3部分注意要大写,以防跨平台时无法识别(特别是linux,只认识CMakeLists.txt)
+
+C
+
+Make
+
+Lists
+
+.txt
+
+
+
+## cmake执行CMakeLists.txt命令 
 
 
 
@@ -86,11 +102,13 @@ CMakeLists.txt本身大小写不敏感,满足跨平台特性.
 
 - cmake_minimum_required(VERSION 3.20)
 
- minimum:最低
+  minimum:最低
 
- requird:需求
+  requird:需求
 
- cmake_minimum_requird用于表示支持的cmake最低版e本,以防使用高级版本新特性时,不兼容,无法得知bug原因等
+  3.20: 最低支持的版本,表示3.20.0. 还可以写成3.20.1,指定更细版本
+
+  cmake_minimum_requird用于表示支持的cmake最低版e本,以防使用高级版本新特性时,不兼容,无法得知bug原因等
 
 ### 指定构建项目的名称
 
@@ -100,11 +118,155 @@ CMakeLists.txt本身大小写不敏感,满足跨平台特性.
 
 
 
+### 添加构建对象
+
+源文件相对路径以CMakeLists.txt为起始
+
+#### 可执行文件
+
 - add_executable(项目名称 源文件)
 
-- add_library(库名 类型 依赖)
+  `add_executable(xlog xlog.cc xlog.h)`
 
-  add_library(xlog STATIC xlog.cc xlog.h) //放入xlog.h目的是让xlog.h被修改也能重新编译
+- add_executable(项目名称 源文件 库)
+
+  `add_executable(xlog xlog.cc xlog)`
+
+#### 库
+
+- add_library(库名 STATIC/SHARED 依赖/源文件)
+
+  如果是静态库,需要显示指明STATIC
+
+  `add_library(xlog STATIC xlog.cc xlog.h) //放入xlog.h目的是让xlog.h被修改也能重新编译`
+
+  如果是动态库
+
+  `add_library(xlog ARED xlog.cc xlog.h)`
+
+  或`add_library(xlog xlog.cc xlog.h)` //缺省
+
+
+
+### 指定路径
+
+#### 指定查找的头文件所在路径
+
+- include_directories("头文件所在路径")
+
+  include_directories("../xlog")
+
+
+
+#### 指定库查找路径
+
+不同平台中,cmake生成库的路径可能不一样,cmake能够一定情况下自动查找(同属于cmake --build生成)
+
+windows中vs会生成../Debug/ 或../Release,在大部分情况都能够查找
+
+- link_directories("库所在路径")
+
+  link_directories("../xlog/build")
+
+  
+
+#### 指定库(分离)
+
+- target_link_libraries(项目名称 库名)
+
+  target_link_libraries(test_xlog xlog)
+
+  > 注意: 
+  >
+  > 1.target_link_libraries需要在add_executable/add_library下方.
+  >
+  > 2.库名没有lib,.so,.lib这些
+
+
+
+
+
+## Windows平台特性说明
+
+- 动态库在windows平台需要导出.lib文件,需要使用微软提供的宏`__declspec()`.`_WIN32`
+
+decl:declaration; spec:specifier; --- 大意为声明限定符
+
+导入:`__declspec(dllimport)`
+
+导出:`__declspec(dllexport)`
+
+标识:`_WIN32`; _WIN32包含32位和64位
+
+- 跨平台容易出现编码问题,可以使用utf8 with BOM
+
+
+
+## 示例
+
+linux工具 
+
+ldd, echo $LD_LIBRARY_PATH,
+
+
+
+### xlog
+
+CMakeLists.txt
+
+```
+cmake_minimum_required(VERSION 3.20)
+
+project(xlog)
+
+include_directories(xlog)
+
+add_library(xlog SHARED xlog/xlog.cc)
+
+add_executable(test_xlog test_xlog/test_xlog.cc xlog)
+
+target_link_libraries(test_xlog xlog)
+```
+
+xlog.h
+
+```
+//xlog.h
+
+#ifndef XLOG_H
+#define XLOG_H
+
+
+//仅动态库 --动静态库由CMakeLists.txt设置,在后续..
+#ifdef _WIN32 //WIN32环境
+    #ifdef XLOG_EXPORTS //需要导出(动态库)
+        #define XCPP_API _declspec(dllexport)
+    #else  //否则导入
+        #define XCPP_API _declspec(dllimport)
+    #endif
+#else  //linux mac环境
+    #define XCPP_API //非WIN32环境则为空
+#endif
+
+
+class XCPP_API Xlog{
+    public:
+       Xlog();
+};
+#endif
+```
+
+xlog.cc
+
+```
+//xlog.cc
+
+#include<iostream>
+#include"xlog.h"
+Xlog::Xlog(){
+  std::cout<<"Xlog()"<<std::endl;
+}
+```
 
 
 
