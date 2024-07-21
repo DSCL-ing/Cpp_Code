@@ -270,3 +270,166 @@ Xlog::Xlog(){
 
 
 
+## CMake注释
+
+注释:预处理阶段会清除掉的文本
+
+### 行注释
+
+行注释:一行中#号之后(包括#)的所有内容都是注释
+
+Exam:
+
+```
+# CMakeLists.txt
+
+cmake_minimum_required(VERSION 3.20) #表示cmake最低需要的版本号
+```
+
+
+
+### 括号注释
+
+cmake3.0开始
+
+语法: #[[  注释内容 ]]
+
+Exam: 
+
+```
+```
+
+
+
+## message
+
+### 基本使用
+
+语法: message(arg1 arg2 arg3 ...)
+
+```
+//CMakeLists.txt
+cmake_minimum_required(VERSION 3.20.1)
+
+message("参数1")
+message("参数1" "参数2" "参数3")
+message("你 好" 111 你 好)
+message(需要加特殊字符,如 "空 格" 时,用双引号围起来,否则会自动去掉空格和自动拼接)
+message(使用双引号时,两边要加"空格",否则双引号也会输出)
+
+project(first_cmake)
+
+add_executable(first_cmake main.cc)
+```
+
+![image-20240721193707231](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240721193707231.png)
+
+
+
+
+
+### 高级用法
+
+#### 指定日志级别 :
+
+message([\<mode\>] "message text" ...)
+
+--log-level=<ERROR|WARNING|NOTICE|STATUS|VERBOSE|DEBUG|TRACE>
+
+显示级别为最高级别到指定的低级别.不在范围内的更低的级别则不会显示.
+
+#### 日志级别:
+
+FATAL_ERROR级别最高,越往下越低
+
+|     FATAL_ERROR     |     停止cmake运行和生成      | stderr |
+| :-----------------: | :--------------------------: | :----: |
+|     SEND_ERROR      |    cmake继续运行,生成跳过    | stderr |
+|       WARNING       |             警告             | stderr |
+|  (none) or NOTICE   |             通知             | stderr |
+|       STATUS        |   项目用户可能感兴趣的信息   | stdout |
+| VERBOSE(默认不显示) |    针对项目用户的详细信息    | stdout |
+|  DEBUG(默认不显示)  | 项目本身的开发人员使用的信息 | stdout |
+|  TRACE(默认不显示)  | 非常低级实现细节的细粒度消息 | stdout |
+|                     |                              |        |
+
+- FATAL_ERROR
+
+  FATAL_ERROR:致命错误.
+
+  当CMakeLists.txt执行到FATAL_ERROR时, cmake程序停止运行,项目生成也随之停止运行.
+
+  ![image-20240721202859649](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240721202859649.png)
+
+- SEND_ERROR
+
+  发送错误
+
+  当CMakeLists.txt执行到SEND_ERROR时,cmake程序继续运行,项目文件生成停止.即发生错误后,不需要再继续生成项目文件,也能够获取更多信息.
+
+- WARNING
+
+  警告,一般是小错误,但不影响项目继续生成.
+
+  例如项目中某个库缺失或编译失败,导致少了一部分功能,但是还能够运行.
+
+  
+
+- (none) or NOTICE
+
+  不写日志等级或写为notice.
+
+  这是一般的日志等级,用于提示各种信息
+
+- STATUS
+
+  状态,用户可能感兴趣的消息 
+
+  输出时会自动在消息前加上前缀 --
+
+
+
+- VERBOSE
+
+  (默认不显示),用户需要的详细信息
+
+  输出时会自动在消息前加上前缀 --
+
+  带日志等级执行(显示)
+
+  ![image-20240721205101302](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240721205101302.png)
+
+  不带日志等级执行(不显示)
+
+  ![image-20240721205121448](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240721205121448.png)
+
+
+
+- DEBUG
+
+  (默认不显示),开发者调试常用
+
+- TRACE
+
+  (默认不显示),
+
+
+
+> 1. error都会输出CMakeLists.txt文件的行号
+>
+> 2. STATUS以上都是默认显示的等级,VERBOSE开始往下都是默认不显示的等级
+>
+> 3. 重定向测试: cmake -S . -B b --log-level=VERBOSE >log.txt 2>&1
+>
+>    标准输出重定向到log.txt , 标准错误重定向到标准输出
+
+
+
+
+
+
+
+
+
+
+
