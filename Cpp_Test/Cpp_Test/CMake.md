@@ -134,9 +134,9 @@ CMakeLists.txt本身大小写不敏感,满足跨平台特性.
 
 #### 库
 
-- add_library(库名 STATIC/SHARED 依赖/源文件)
+- add_library(库名 STATIC/SHARED/... 依赖/源文件)
 
-  如果是静态库,需要显示指明STATIC
+  > 动静态库等由内建变量BUILD_SHAERD_LIBS决定,默认是静态
 
   `add_library(xlog STATIC xlog.cc xlog.h) //放入xlog.h目的是让xlog.h被修改也能重新编译`
 
@@ -301,6 +301,8 @@ Exam:
 
 
 
+
+
 ## message
 
 ### 基本使用
@@ -429,7 +431,132 @@ FATAL_ERROR级别最高,越往下越低
 
 
 
+## 变量
+
+### 变量语法:
+
+设置变量 set(\<variable\>\<value\>)
+
+>  没有指定value,则变量会被撤销
+
+撤销变量 unset(\<variable\>)
+
+### 变量使用:
+
+- 获取变量值: ${variable}
+
+  >  如果未设置变量,则返回空字符串 
+
+- 嵌套使用(从内向外求值): ${${variable}}
+
+  Exam: 
+
+  ```
+  set(VAR1 "变量1的值")
+  set(VAR2 "VAR1")
+  message(\${VAR1}=${${VAR2}})
+  ```
+
+  ![image-20240722104135453](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240722104135453.png)
+
+- 变量大小写敏感
+
+- 变量可以直接在字符串中
+
+  Exam: "${var}变量可以直接在字符串中"
+
+- 使用转义可以得到原始$
+
+  Exam: "\\${var}得到的是原始的\$"
 
 
 
+### 示例:变量+message改变控制台颜色输出
+
+
+
+### 内建变量
+
+#### 1. 提供信息的变量
+
+```
+project(xlog)
+# 提供信息的变量 PROJECT_NAME:项目名称 -- 对应project的值
+```
+
+
+
+#### 2. 改变行为的变量
+
+```
+# BUILD_SHARED_LIBS,ON动态库,OFF静态库,默认OFF
+set(BUILD_SHARED_LIBS OFF)
+# BUILD_SHARED_LIBS还属于缓存变量
+
+# cmake传递变量给C++
+add_definitions(-Dxlog_STATIC) #默认值为1
+```
+
+##### 搭配跨平台代码例程
+
+```
+//xlog.h
+#ifndef XLOG_H
+#define XLOG_H
+
+#ifdef _WIN32 //WIN32环境
+    #ifdef xlog_STATIC //如果是静态库 XLOG_STATIC为用户定义
+        #define XCPP_API //不需要导出导入
+    #else
+        #ifdef xlog_EXPORTS //需要导出(动态库) -- 动态库时,CMake会自动生成xx_EXPORTS变量
+            #define XCPP_API _declspec(dllexport)
+        #else  //否则导入
+            #define XCPP_API _declspec(dllimport)
+        #endif
+    #endif
+#else  //linux mac环境
+    #define XCPP_API //非WIN32环境则为空
+#endif
+
+class XCPP_API Xlog{
+    public:
+       Xlog();
+};
+#endif
+```
+
+
+
+
+
+
+
+#### 3. 描述系统的变量
+
+```
+# 描述系统的变量
+message("MSVC = " ${MSVC})
+message("WIN32 = " ${WIN32})
+message("UNIX = " ${UNIX})
+message("CMAKE_SYSTEM_NAME = " ${CMAKE_SYSTEM_NAME})
+# ANDROID
+```
+
+windows:
+
+![image-20240722230737463](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240722230737463.png)
+
+linux:
+
+![image-20240722230820744](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240722230820744.png)
+
+
+
+#### 4. 控制构建过程的变量
+
+```
+# 控制构建过程的变量 输出路径控制 CMAKE_COLOR_MAKEFILE:makefile执行过程是否有颜色,默认ON
+set(CMAKE_COLOR_MAKEFILE OFF)
+# 效果:make执行过程不再显示颜色
+```
 
