@@ -202,7 +202,7 @@ decl:declaration; spec:specifier; --- 大意为声明限定符
 
 
 
-## 示例
+### 示例
 
 linux工具 
 
@@ -210,7 +210,7 @@ ldd, echo $LD_LIBRARY_PATH,
 
 
 
-### xlog
+#### xlog
 
 CMakeLists.txt
 
@@ -559,4 +559,254 @@ linux:
 set(CMAKE_COLOR_MAKEFILE OFF)
 # 效果:make执行过程不再显示颜色
 ```
+
+
+
+
+
+
+
+## include
+
+//CMakeLists.txt
+
+```
+# CMakeLists.txt
+cmake_minimum_required(VERSION 3.20)
+
+project("cmake_include")
+
+message("begin include")
+
+# cmake中的 include 和C/C++中的include类似,都是直接把文件内容直接拷贝到当前文件.多次引用多次复制
+include("cmake/test_cmake.cmake")
+include("cmake/test_cmake.cmake")
+
+include("cmake/test_cmake1.cmake" OPTIONAL) #OPTIONAL选项,表示可选,当文件不存在时不报错.
+
+include("cmake/test_cmake1.cmake" OPTIONAL RESULT_VARIABLE ret)
+message("ret = ${ret}") #ret = NOTFOUND
+
+include("cmake/test_cmake.cmake" OPTIONAL RESULT_VARIABLE ret)
+message("ret = ${ret}") #ret = NOTFOUND
+
+message("end include")
+```
+
+
+
+// ./cmake/test_cmake.cmake
+
+```
+message("in cmake/test_cmake.cmake")
+```
+
+![image-20240723144831924](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240723144831924.png)
+
+
+
+
+
+## 自动搜索源文件
+
+//CMakeLists.txt
+
+```
+#[[
+项目目录层次结构
+主目录
+    CMakeLists.txt
+    main.cc
+    src/
+        xlog.cpp
+        xthread.cc
+        xtest.c
+    include/
+        xlog.h
+        xthread.hpp
+]]
+
+cmake_minimum_required(VERSION 3.20)
+
+project("auto_add_source")
+
+# 自动找到目录下源码文件,写入到变量中
+aux_source_directory("." M_SRC)
+aux_source_directory("./src" SRC)
+
+include_directories("./include")
+
+# 读取头文件, 写入到HDR_LIST中
+file(GLOB HDR_LIST "include/*.h" "include/*.hpp")
+
+add_executable(${PROJECT_NAME} ${M_SRC} ${SRC} ${HDR_LIST})
+```
+
+
+
+
+
+
+
+## CMake分步编译和清理
+
+注意,只有指定生成makefile文件才具有此步骤;Win中需要使用nmake,MSVC不支持
+
+
+
+- 分布编译
+
+```
+cmake --build b --target help
+```
+
+![image-20240723202713903](C:/Users/chj/Desktop/Repository/Cpp_Code/Cpp_Test/Cpp_Test/CMake.assets/image-20240723202713903.png)
+
+指定.i可以得到预处理文件,指定.s可以得到编译后的汇编文件, 指定.o(win中为.obj)可以得到汇编后的二进制文件.
+
+
+
+- 清理
+
+```
+cmake --build b --target clean
+```
+
+效果和make clean类似.
+
+
+
+
+
+## CMake调试启用:打印具体的代码执行/生成指令
+
+- 方式1,加命令选项,最常用
+
+```
+cmake --build b -v //或者--verbose
+```
+
+- 方式2 配置内建变量
+
+  ```
+  #显示详细的生成日志,默认是OFF
+  set(CMAKE_VERBOSE_MAKEFILE ON)
+  ```
+
+
+
+## CMake设置库输出路径
+
+```
+cmake_minimum_required(VERSION 3.20)
+
+project(xlog)
+
+include_directories(xlog)
+
+message("CMAKE_CURRENT_LIST_DIR = ${CMAKE_CURRENT_LIST_DIR}")
+
+# CMAKE_LIBRARY_OUTPUT_DIRECTORY : linux动态库.so和mac动态库输出路径
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib")
+
+# CMAKE_ARCHIVE_OUTPUT_DIRECTORY : windows静态库.lib  windows动态库.lib文件 linux静态库.a文件
+# 一般库输出路径都设置成相同的,除非特别需要区分
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/lib")
+
+
+# CMKAE_RUNTIME_OUTPUT_DIRECTORY : 执行程序 windows动态库dll文件 输出路径
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/bin")
+
+
+# 改变行为的变量 BUILD_SHARED_LIBS,ON动态库,OFF静态库,默认OFF
+set(BUILD_SHARED_LIBS OFF)
+
+# cmake传递变量给C++
+add_definitions(-Dxlog_STATIC) #默认值为1
+
+
+# add_library(xlog xlog/xlog.cc)
+# add_executable(test_xlog test_xlog/test_xlog.cc xlog)
+
+# 添加子项目目录(主目录项目配置,子目录构建项目) -- 每个子项目必须包含CMakeLists.txt文件
+add_subdirectory(xlog)
+add_subdirectory(test_xlog)
+
+
+target_link_libraries(test_xlog xlog)
+```
+
+
+
+
+
+## CMake常用模板
+
+```
+#CMakeListt.txt
+
+# 设置 CMake 最低版本要求
+cmake_minimum_required(VERSION 3.10)
+
+# 定义项目名称
+project(MyProject VERSION 1.0.0 LANGUAGES CXX)
+
+# 设置 C++ 标准
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+# 设置输出目录
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/lib)
+
+# 添加头文件目录
+include_directories(include)
+
+# 收集源文件
+file(GLOB SOURCES "src/*.cpp")
+file(GLOB HEADERS "include/*.h" "include/*.hpp")
+
+# 添加可执行文件
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+
+# 添加库（如果适用）
+# add_library(MyLibrary STATIC src/library/*.cpp)
+# target_include_directories(MyLibrary PUBLIC include)
+
+# 链接库到可执行文件（如果适用）
+# target_link_libraries(${PROJECT_NAME} PRIVATE MyLibrary)
+
+# 添加编译定义
+add_definitions(-DPROJECT_VERSION="${PROJECT_VERSION}")
+
+#-------------------------------------------------------------------------
+# 设置编译器警告级别
+if(MSVC)
+    add_compile_options(/W4 /MP)
+elseif(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-Wall -Wextra -Wpedantic -Wno-unused-parameter)
+endif()
+
+# 添加外部依赖项（如果适用）
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(PC_SOME_PKG some_pkg)
+# include_directories(${PC_SOME_PKG_INCLUDE_DIRS})
+# target_link_libraries(${PROJECT_NAME} ${PC_SOME_PKG_LIBRARIES})
+# -------------------------------------------------------------------------
+# 注释
+# cmake_minimum_required() 确保 CMake 版本满足项目需求。
+# project() 定义项目名称、版本和使用的语言。
+# set(CMAKE_CXX_STANDARD ...) 设置 C++ 标准版本。
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ...) 设置输出目录。
+# include_directories() 设置头文件的包含路径。
+# file(GLOB ...) 收集源文件和头文件。
+# add_executable() 创建可执行文件。
+# add_library() 和 target_link_libraries() 用于创建和链接库（如果项目中包含库）。
+add_definitions() 添加编译时的预处理器定义。
+add_compile_options() 设置编译器选项。
+# find_package() 和 pkg_check_modules() 用于处理外部依赖项。
+```
+
+
 
