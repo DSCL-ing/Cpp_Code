@@ -1,4 +1,4 @@
-﻿# 基本语法认识
+﻿﻿# 基本语法认识
 
 ## 认识CMakeLists.txt
 
@@ -695,7 +695,7 @@ cmake --build b -v //或者--verbose
 
 
 
-## CMake设置库输出路径
+## CMake设置输出路径
 
 ```
 cmake_minimum_required(VERSION 3.20)
