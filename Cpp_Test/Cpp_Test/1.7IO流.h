@@ -14,9 +14,9 @@ ofstream(filename); //创建名为filename的文件
 //文件读写
 /*
 1.头文件简介
-ofstream:打开文件写操作
-ifstream:打开文件读操作
-一般直接用fstream,可读可写 
+ifstream:打开文件读操作 -- 将文件内容读取到内存(string ,char[],...等内存缓冲区)中
+ofstream:打开文件写操作 -- 将内存中数据写到文件中
+fstream:可读可写 
 ...
 
 2.打开文件
@@ -30,8 +30,8 @@ ios::ate 打开已有文件,文件指针在文件末尾
 ios::trunc 文件不存在的情况下具有创建功能,一般以ios::trunc|ios::in
 ios::nocreate 不创建方式
 ios::noreplace 不替换方式,清除
-// 以二进制方式
-ios::binary
+// 以二进制方式读写
+ios::binary 
 
 //缺省值是 ios::in|ios::out  ,即可读可写
 
@@ -57,19 +57,39 @@ ios::binary
     fs.read(str,8);//读fs中8个字符到str
     fs.write(str,9); //将str中的前9个写到fs
 
-5.文件指针
-流对象fs.eof() //文件结束标志
 
+
+
+5.文件指针
 ifstream
-    seekg(long int pos);
-    seekg(long int pos,ios_base::seekdir begin); //把begin移动到pos
+ - 移动文件指针
+ basic_istream& seekg( pos_type pos ); (1)
+ basic_istream& seekg( off_type off, std::ios_base::seekdir dir ); (2)
+    //Example:
+    //移动到begin相对于pos的位置
+    //seekg(0,ifs.end()); // 移动到文件末尾+0的位置,即文件末尾
+
+ - 获取指针的当前位置/获取指针相对于起始位置的长度
+ pos_type tellg();
+    //Example:
+    //size_t pos = ifs.tellg();
+
 ofstream
     seekp(long int pos);
     seekp(long int pos,ios_base::seekdir begin);//把begin移动到pos
-begin(枚举类):
-    ios::beg 开始位置
-    ios::end 结束位置
-    ios::cur 当前位置
+
+
+参数:
+    pos	-	设置输入位置指示器到的绝对位置。 //用于(1)
+    off	-	设置输入位置指示器到的相对位置（正数或负数）。用于(2)
+    dir	-	定义应用相对偏移量的基位置。它可以是下列常量之一：
+dir:  常量	    解释
+    ios::beg	流的开始
+    ios::end	流的结尾
+    ios::cur	流位置指示器的当前位置
+
+流对象fs.eof() //文件结束标志
+
 
 6.其他
 std::noskipws //no skip word space 不跳过间隔(符)
