@@ -160,7 +160,7 @@ namespace A::B::C {
             int foo(){ return 1;}
         }
     
-3.命名空间别名
+3.命名空间别名 -- 简化复杂命名空间书写
 namespace a_very_long_namespace_name { class Foo {}; }
 namespace AVLNN = a_very_long_namespace_name;
 void Bar(AVLNN::Foo foo){ }

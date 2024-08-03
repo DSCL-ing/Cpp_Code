@@ -1647,13 +1647,20 @@ sudo yum install -y git
 # git commit [file1] [file2] ... -m [message]  //提交暂存区的指定文件到仓库区
 # git commit -a  //提交工作区自上次commit之后的变化，直接到仓库区
 # git commit -v //提交时显示所有diff信息
-# git commit --amend -m "message" //使用一次新的commit，替代上一次提交(重做上一次commit),如果代码没有任何新变化，则用来改写上一次commit的提交信息  
-                                    //修改未push的,最后一次的commit可以用
-// 不要随便重做 -- 把持不住
+# git commit --amend -m "message" //使用一次新的commit，替代上一次提交(重做上一次commit),
+                                  //如果代码没有任何新变化，则用来改写上一次commit的提交信息  
+                                  //未push时,可以覆盖上次操作
+
+# git reset --soft HEAD~1 //撤销最近1次commit,数字为撤回
+    --soft
+    不删除工作空间的改动代码 ，撤销commit，不撤销git add file
+
+    --hard
+    删除工作空间的改动代码，撤销commit且撤销add
 
 
 //提交代码必做
-# git config --global user.name "提交用户名" //给别人看的
+# git config --global user.name "提交用户名" //非全局可以去掉--global
 # git config --global user.email "提交邮箱"
 # git config --list //查看提交用户和邮箱
 # git config --global --list
