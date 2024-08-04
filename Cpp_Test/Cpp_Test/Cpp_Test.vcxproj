@@ -60,6 +60,7 @@
     <None Include="C++11.md" />
     <None Include="C++11标准库.md" />
     <None Include="CMake.md" />
+    <None Include="linux基本命令.md" />
     <None Include="MySQL.md">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>

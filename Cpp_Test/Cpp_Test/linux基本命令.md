@@ -1014,6 +1014,84 @@ poweroff、halt、shutdown、init 0 都是关机,没什么区别
 
 
 
+### yum
+
+基于RPM的软件包管理器 -- 应用商店  -- 仓库
+
+yum命令来自英文词组yellow dog updater modified的缩写，其功能是在Linux系统中基于RPM技术进行软件包的管理工作。yum技术通用于RHEL、CentOS、Fedora、OpenSUSE等主流系统，可以让系统管理人员交互式地自动化更新和管理软件包，实现从指定服务器自动下载、更新、删除软件包的工作。
+
+yum软件仓库及命令能够自动处理软件依赖关系，一次性安装所需的全部软件，无须烦琐的操作。
+
+**语法格式：**yum 参数 动作 软件包
+
+```
+软件包名称: 主版本号.次版本号.源程序发行号-软件包的发行号.主机平台.cpu架构. 
+"x86_64" 后缀表示64位系统的安装包, "i686" 后缀表示32位系统安装包. 选择包时要和系统匹配.
+"el7" 表示操作系统发行版的版本. "el7" 表示的是 centos7/redhat7. "el6" 表示 centos6/redhat6.
+最后一列, base 表示的是 "软件源" 的名称, 类似于 "小米应用商店", "华为应用商店" 这样的概念.
+
+# yum list //列出yum所有程序 -- 软件名-版本号-@提供者
+
+# yum search 关键字 //匹配有关键字的程序  -- 不好用
+
+# yum list | grep 关键字 //好用
+
+$ 版本中带el就是centos ,el7就代表centos7
+//x86:架构 x86_64:x86架构64位系统
+
+$ ctrl+Z :终止程序 -- 有些程序ctrl+C终止不了
+
+//安装 
+# yum install 程序名(严格匹配) //安装程序 ,需要确认安装
+# yum install -y 程序  //直接安装到位,不需要确认
+
+yum -y install gcc+ gcc-c++ //g++安装
+
+//卸载
+# yum remove 程序名 //卸载程序,需要确认卸载
+# yum remove -y 程序名 //直接卸载
+
+$ 程序sl:一个火车动画,测试yum
+
+# 软件仓库内内置了各个软件的下载地址/配置文件 
+//yum的配置文件 -- yum源
+
+$ yum源位置  /etc/yum.repos.d/下
+
+$ centos的基础yum源: CentOS-Base.repo
+$ 还有 epel.repo
+
+$ //前面带"$"符号的单词表示这个单词是宏,会被替换掉
+
+//更新yum源
+1.备份原来的yum源 CentOS-Base.repo
+2.wget 新的yum源 
+3.mv 重命名成为 CentOS-Base.repo
+4.yum clean all //清空缓存 
+5.yum makecache //生成新的缓存
+
+//可能在扩展yum源中的软件安装
+1.# sudo yum install -y epel-release //根据base_yum源去找到匹配的yum源
+2.# sudo yum install -y  
+```
+
+
+
+| install      | 安装软件包                     |
+| ------------ | ------------------------------ |
+| update       | 更新软件包                     |
+| check-update | 检查是否有可用的更新软件包     |
+| remove       | 删除软件包                     |
+| list         | 显示软件包的信息               |
+| search       | 搜索指定软件包                 |
+| info         | 显示指定软件包的描述和概要信息 |
+| clean        | 清理过期的缓存                 |
+| shell        | 设置使用的shell提示符          |
+| resolvedep   | 显示软件包的依赖关系           |
+| localinstall | 安装本地软件包                 |
+| localupdate  | 更新本地软件包                 |
+| deplist      | 显示软件包的依赖关系           |
+
 
 
 ### 快捷键
