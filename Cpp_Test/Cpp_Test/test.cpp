@@ -98,33 +98,6 @@ void HeapSort(HeapDataType* a, int size)
 }
 
 int main() {
-	srand(time(nullptr));
-	
-	int size = 100000000;
-	//int *a = new int[size];
-	int *a = (int*)malloc(size*4);
-	//int a[] = {1,3,5,2,6,5,4,7,9,8};
-	for (int i = 0; i < size; i++) {
-		a[i] = rand()%100+i;
-	}
-	//clock_t start = clock();
-	std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now();
-	HeapSort(a,size);
-	//std::this_thread::sleep_for(std::chrono::seconds(1));
-	auto end = std::chrono::steady_clock::now();
-	//for (int i = 0; i < size; i++) {
-	//	std::cout<<a[i]<<" ";
-	//}
 
-	//clock_t end = clock();
-	std::chrono::duration<double> cost = end - start;
-	std::cout<<cost.count()<<std::endl;
-
-	//int a[] = {1,3,5,2,6,5,4,7,9,8};
-	//HeapSort(a,10);
-	//for (auto it : a) {
-	//	std::cout<<it<<" ";
-	//}
-
-	return  0;
+    return 0;
 }
