@@ -1,7 +1,8 @@
 ﻿  test.cpp
+C:\Users\chj\Desktop\Repository\Cpp_Code\Cpp_Test\Cpp_Test\test.cpp(101,12): warning C4244: “参数”: 从“time_t”转换到“unsigned int”，可能丢失数据
   正在生成代码
-  32 of 88 functions (36.4%) were compiled, the rest were copied from previous compilation.
-    11 functions were new in current compilation
+  4 of 25 functions (16.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   Cpp_Test.vcxproj -> C:\Users\chj\Desktop\Repository\Cpp_Code\Cpp_Test\Release\Cpp_Test.exe
