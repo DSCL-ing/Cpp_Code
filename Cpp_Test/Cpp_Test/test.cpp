@@ -5,99 +5,49 @@
 #include<queue>
 #include<chrono>
 #include<thread>
+#include<functional>
 
 #include<cassert>
-typedef int HeapDataType;
 
-void Swap(HeapDataType* p1, HeapDataType* p2)
-{
-	HeapDataType tmp = 0;
-	tmp = *p1;
-	*p1 = *p2;
-	*p2 = tmp;
+bool greater(int a, int b){
+	return a>b;
 }
 
-//向上调整算法：从0插入建堆 以及 在堆的前提下插入 //不适合直接建堆（把数组从1开始向下建堆）
-void AdjustUp(HeapDataType* a, int child)
-{
-	assert(a);
-	int parent = (child - 1) / 2;
-	while (child > 0)
-	{
-		if (a[child] > a[parent])
-		{
-			Swap(&a[child], &a[parent]);
-			child = parent;
-			parent = (child - 1) / 2;
-		}
-		else
-		{
-			break;
-		}
-	}
-	
+bool less(int a, int b) {
+	return a<b;
 }
 
-
-void AdjustDown(HeapDataType* a, int size, int parent)
-{
-	//假设左孩子大
-	int child = parent * 2 + 1;
-
-	//调整到叶子就结束
-	while (child < size) //左孩子不存在,右孩子一定不存在
-	{
-		//向下调整算法-大堆:选出最大孩子
-		if (child + 1 < size && a[child] < a[child + 1]) {
-			child++;
-		}
-		//我小于我最大的孩子,就要交换,让他来当父亲,我当儿子 --- 因为大堆要选出最大的,只要最大的  
-		if (a[child] > a[parent])
-		{
-			Swap(&a[child], &a[parent]);
-			parent = child;
-			child = parent * 2 + 1;
-		}
-		else
-		{
-			break;
-		}
-	}
+bool compare(int a, int b) {
+	return greater(a,b); //升序
+	//return less(a,b);  //降序
 }
 
-void HeapSort(HeapDataType* a, int size)
+void InsertSort(int* a, int n)
 {
-	assert(a);
-	// ---- 1. 向下调整算法建堆  ----
-	//时间复杂度O(n)
-	//int parent = (size - 1 - 1) / 2;
-	//while (parent >= 0)
-	//{
-	//	AdjustDown(a, size, parent);
-	//	parent--;
-	//}
-	
-	int child = 1;
-	while (child < size) {
-		AdjustUp(a,child);
-		child++;
+	assert(a && n); //a不能为空且n不能为0 (当n为0,则i为最大整型值,错误)
+
+	for (int i = 0; i < n - 1; i++) {
+		int end = i;
+		int tmp = a[end + 1];
+
+		while (end >= 0) {
+			if (a[end]>tmp){      // >升序, <降序
+				a[end + 1] = a[end];
+				end--;
+			}
+			else {
+				break;
+			}
+		}
 	}
-
-	// ---- 2. 选数 ----
-	//时间复杂度O(n*logN),n个数都要高度次调整
-
-	//int end = size - 1; //下标版本
-	//元素个数版本,能够复用删除写法
-    while (size > 1) //元素个数大于1
-	{
-		Swap(&a[0], &a[size - 1]);		//交换
-		size--;
-		AdjustDown(a, size, 0);  //调整堆 -- 注意,此处end为元素个数
-	}
-
 }
 
 int main() {
+	int a[] = {3,1,8,4,2,7,5,9,6,0};
+	InsertSort(a,10);
+	for (int it : a) {
+		std::cout<<it<<" ";
+	}
 
-    return 0;
+	return 0;
 }
