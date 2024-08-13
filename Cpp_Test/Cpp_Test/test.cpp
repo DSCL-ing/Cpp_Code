@@ -94,12 +94,17 @@ void ShellSort(int* a, int n)
     }
 }
 
+int getMidIndex(int *a,int begin,int end);
+
 void hoare(int* a, int begin, int end) {
 
     //一个元素或没有元素时,递归结束
     if (begin >= end) {
         return;
     }
+
+    int mid = getMidIndex(a,begin,end);
+    Swap(&a[begin],&a[mid]);
 
     int left = begin;
     int right = end;
@@ -123,52 +128,19 @@ void hoare(int* a, int begin, int end) {
     hoare(a, keyi + 1, end);
 }
 
-//void _HoareQuickSort(int* a, int begin, int end)
-//{
-//
-//    //int mid = getMidIndex(a, begin, end);//mid是中间索引（中间值的下标）
-//    //Swap(&a[begin], &a[mid]); //获取到中间值的下标后对换begin和mid对应的值，使key对应的是中间值，消除有序
-//
-//    if (begin >= end) {
-//        return;
-//    }
-//    int left = begin; int right = end;
-//    int keyi = left;
-//
-//    while (left < right)
-//    {
-//        while (left < right && a[right] >= a[keyi])
-//        {
-//            right--;
-//        }
-//
-//        while (left < right && a[left] <= a[keyi])
-//        {
-//            left++;
-//        }
-//
-//        Swap(&a[left], &a[right]);
-//    }
-//    Swap(&a[keyi], &a[right]);
-//    keyi = right;
-//
-//    _HoareQuickSort(a, begin, keyi - 1);
-//    _HoareQuickSort(a, keyi + 1, end);
-//
-//}
-
-int main() {
-
+void test_sort(int n) {
     std::random_device rnd;//random num device //效率低，只用于生成种子
     std::mt19937 rng(rnd()); //random num generator -- 生成随机数
-    std::uniform_int_distribution<int> uni(0, 100000);//整型区间筛选
+    std::uniform_int_distribution<int> uni(0, 1000000000);//整型区间筛选
     //[0-N]有6成为不重复,4成重复 --若需要9成不重复需要扩大筛选范围为10倍的N,即插入N需筛选10N
 
     //int a[] = { 3,1,8,4,2,7,5,9,6,0 };
-    int size = 10000000;
+    //int size = 1000000;
+    int size = n;
     int* a = new int[size];
     for (int i = 0; i < size; i++) {
-        a[i] = uni(rng);
+        //a[i] = uni(rng);
+        a[i] = i;
     }
     
     //for (int i = 0; i < size; i++) {
@@ -191,6 +163,7 @@ int main() {
     auto end1 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost1 = end1 - begin1;
     std::cout << cost1.count() << "秒" << std::endl;
+    delete[] a1;
     
     //for (int i = 0; i < size; i++) {
     //    std::cout<<a1[i] <<" ";
@@ -205,7 +178,7 @@ int main() {
     //auto end2 = std::chrono::steady_clock::now();
     //std::chrono::duration<double> cost2 = end2 - begin2;
     //std::cout << cost2.count() << "秒" << std::endl;
- 
+    //delete[] a2;
     //for (int i = 0; i < size; i++) {
     //    std::cout<<a2[i] <<" ";
     //}
@@ -221,8 +194,8 @@ int main() {
     std::chrono::duration<double> cost3 = end3 - begin3;
     std::cout << cost3.count() << "秒" << std::endl;
     //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
-    std::cout << std::boolalpha << (a3[0] == a1[0] && a3[size - 1] == a1[size - 1]) << std::endl;
-
+    //std::cout << std::boolalpha << (a3[0] == a1[0] && a3[size - 1] == a1[size - 1]) << std::endl;
+    delete[] a3;
 
     int* a4 = new int[size];
     //memcpy(a3,a,size);
@@ -234,8 +207,8 @@ int main() {
     auto end4 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost4 = end4 - begin4;
     std::cout << cost4.count() << "秒" << std::endl;
-    std::cout<<std::boolalpha<< (a4[0]==a1[0]&&a4[size-1] == a1[size-1])<<std::endl;
-
+    //std::cout<<std::boolalpha<< (a4[0]==a1[0]&&a4[size-1] == a1[size-1])<<std::endl;
+    delete[] a4;
     //for (int i = 0; i < size; i++) {
     //    std::cout<<a4[i] <<" ";
     //}
@@ -246,19 +219,39 @@ int main() {
     memmove(a5,a,size*sizeof(int));
     std::cout << "stl::sort:" << " ";
     auto begin5 = std::chrono::steady_clock::now();
-    //std::make_heap(a5,a5+size);
-    //std::sort_heap(a5,a5+size);
     std::sort(a5,a5+size);
     auto end5 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost5 = end5 - begin5;
     std::cout << cost5.count() << "秒" << std::endl;
-    std::cout<<std::boolalpha<< (a5[0]==a1[0]&&a5[size-1] == a1[size-1])<<std::endl;
+    //std::cout<<std::boolalpha<< (a5[0]==a1[0]&&a5[size-1] == a1[size-1])<<std::endl;
  
  //*a是指针,不是数组,迭代器只支持数组,不支持指针
     //for (int it : a) {
     //    std::cout << it << " ";
     //}
 
+}
+
+int getMidIndex(int* a, int begin, int end) {
+    int mid = (begin + end) / 2;
+    if (a[begin] > a[mid])
+    {
+        if (a[mid] > a[end])	return mid;
+        else if (a[begin] > a[end]) return end;
+        else return begin;
+    }
+    else //a[begin] <= a[mid]
+    {
+        if (a[begin] > a[end]) return begin;
+        else if (a[mid] > a[end]) return end;
+        else return mid;
+    }
+}
+int main() {
+    test_sort(100000000);
+    
+    //int a[] = { 5,1,8,4,2,7,5,9,6,4 };
+    //std::cout<<getMidIndex(a,0,9);
 
     return 0;
 }
