@@ -7,6 +7,7 @@
 #include<thread>
 #include<functional>
 #include<random>
+#include<iomanip>
 
 #include<cassert>
 
@@ -22,6 +23,33 @@ static void Swap(int* p1, int* p2)
     tmp = *p1;
     *p1 = *p2;
     *p2 = tmp;
+}
+
+//直接插入排序
+void InsertSort(int* a, int n)
+{
+    assert(a && n); //a不能为空且n不能为0 (当n为0,则i为最大整型值,错误)
+
+    //当n==1,边界
+    //当n>1,执行算法
+    //i==n-2,最后一次插入
+    for (int i = 0; i < n - 1; i++) {
+        int end = i;
+        int tmp = a[end + 1]; //因挪动会将end+1位置覆盖,因此使用tmp保存准备插入的元素
+
+        while (end >= 0) {
+            //挪动覆盖
+            if (a[end] > tmp) {      // a[end]>tmp升序, a[end]<tmp降序
+                a[end + 1] = a[end];
+                end--;
+            }
+            else {
+                break;
+            }
+        }
+        //挪动覆盖方式,结束时将tmp写入到目标位置
+        a[end + 1] = tmp;
+    }
 }
 
 void AdjustDown(int* a, int size, int parent) {
@@ -94,7 +122,7 @@ void ShellSort(int* a, int n)
     }
 }
 
-int getMidIndex(int *a,int begin,int end);
+int getMidIndex(int* a, int begin, int end);
 
 void hoare(int* a, int begin, int end) {
 
@@ -103,8 +131,8 @@ void hoare(int* a, int begin, int end) {
         return;
     }
 
-    int mid = getMidIndex(a,begin,end);
-    Swap(&a[begin],&a[mid]);
+    int mid = getMidIndex(a, begin, end);
+    Swap(&a[begin], &a[mid]);
 
     int left = begin;
     int right = end;
@@ -128,6 +156,211 @@ void hoare(int* a, int begin, int end) {
     hoare(a, keyi + 1, end);
 }
 
+
+int getMidIndex(int* a, int begin, int end)
+{
+    int mid = (begin + end) / 2;
+    if (a[begin] < a[mid])
+    {
+        if (a[mid] < a[end])
+        {
+            return mid;
+        }
+        else if (a[begin] > a[end])
+        {
+            return begin;
+        }
+        else
+        {
+            return end;
+        }
+    }
+    else // a[begin] > a[mid]
+    {
+        if (a[mid] > a[end])
+        {
+            return mid;
+        }
+        else if (a[begin] < a[end])
+        {
+            return begin;
+        }
+        else
+        {
+            return end;
+        }
+    }
+}
+
+//int getMidIndex(int* a, int begin, int end) {
+//    int mid = (begin + end) / 2;
+//    if (a[begin] > a[mid])
+//    {
+//        if (a[mid] > a[end])	return mid;
+//        else if (a[begin] > a[end]) return end;
+//        else return begin;
+//    }
+//    else //a[begin] <= a[mid]
+//    {
+//        if (a[begin] > a[end]) return begin;
+//        else if (a[mid] > a[end]) return end;
+//        else return mid;
+//    }
+//}
+
+
+void hoare_small(int* a, int begin, int end) {
+
+    //一个元素或没有元素时,递归结束
+    if (begin >= end) {
+        return;
+    }
+    if (end - begin + 1 < 10) {
+        InsertSort(a + begin, end - begin + 1);
+    }
+    else {
+        int mid = getMidIndex(a, begin, end);
+        Swap(&a[begin], &a[mid]);
+
+        int left = begin;
+        int right = end;
+        int keyi = left; //keyi == key index == key是下标
+
+        while (left < right) {
+            while (left < right && a[right] >= a[keyi]) {  //要找小于key的,大于等于都要走,不然执行不了函数体(下标移动),导致死循环
+                right--;  //不能合并,要保证下标指向的是找到的那个值
+            }
+            while (left < right && a[left] <= a[keyi]) {
+                left++;
+            }
+            Swap(&a[left], &a[right]);
+        }
+
+        Swap(&a[left], &a[keyi]);
+        keyi = left;
+
+        // [begin,keyi-1] keyi [keyi+1,end]
+        hoare_small(a, begin, keyi - 1);
+        hoare_small(a, keyi + 1, end);
+    }
+}
+
+void test_Insert(int* a, int size) {
+    int* a1 = new int[size];
+    memmove(a1, a, size * sizeof(int));
+    //for (int i = 0; i < size; i++) {
+    //    std::cout<<a1[i] <<" ";
+    //}
+    //std::cout<<"\n";
+    //std::cout<<"\n";
+    std::cout << std::setw(15) << "Insert:" << " ";
+    auto begin1 = std::chrono::steady_clock::now();
+    ShellSort(a1, size);
+    auto end1 = std::chrono::steady_clock::now();
+    std::chrono::duration<long double> cost1 = end1 - begin1;
+    std::cout << cost1.count() << "秒" << std::endl;
+    delete[] a1;
+}
+
+void test_Shell(int* a, int size) {
+    int* a1 = new int[size];
+    memmove(a1, a, size * sizeof(int));
+    //for (int i = 0; i < size; i++) {
+    //    std::cout<<a1[i] <<" ";
+    //}
+    //std::cout<<"\n";
+    //std::cout<<"\n";
+    std::cout << std::setw(15) << "Shell:" << " ";
+    auto begin1 = std::chrono::steady_clock::now();
+    ShellSort(a1, size);
+    auto end1 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost1 = end1 - begin1;
+    std::cout << cost1.count() << "秒" << std::endl;
+    delete[] a1;
+
+}
+
+void test_Heap(int* a, int size) {
+
+    int* a2 = new int[size];
+    //memcpy(a2,a,size);
+    memmove(a2, a, size * sizeof(int));
+    std::cout << std::setw(15) << "Heap:" << " ";
+    auto begin2 = std::chrono::steady_clock::now();
+    HeapSort(a2, size);
+    auto end2 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost2 = end2 - begin2;
+    std::cout << cost2.count() << "秒" << std::endl;
+    delete[] a2;
+}
+
+void test_hoare(int* a, int size) {
+
+    int* a3 = new int[size];
+    //memcpy(a3,a,size);
+    memmove(a3, a, size * sizeof(int));
+    std::cout << std::setw(15) << "hoare:" << " ";
+    auto begin3 = std::chrono::steady_clock::now();
+    hoare(a3, 0, size - 1);
+    //_HoareQuickSort(a3,0,size-1);
+    auto end3 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost3 = end3 - begin3;
+    std::cout << cost3.count() << "秒" << std::endl;
+    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
+    //std::cout << std::boolalpha << (a3[0] == a1[0] && a3[size - 1] == a1[size - 1]) << std::endl;
+    delete[] a3;
+}
+
+void test_hoare_small(int* a, int size) {
+
+    int* a3 = new int[size];
+    //memcpy(a3,a,size);
+    memmove(a3, a, size * sizeof(int));
+    std::cout << std::setw(15) << "hoare_small:" << " ";
+    auto begin3 = std::chrono::steady_clock::now();
+    hoare_small(a3, 0, size - 1);
+    //_HoareQuickSort(a3,0,size-1);
+    auto end3 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost3 = end3 - begin3;
+    std::cout << cost3.count() << "秒" << std::endl;
+    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
+    //std::cout << std::boolalpha << (a3[0] == a1[0] && a3[size - 1] == a1[size - 1]) << std::endl;
+    delete[] a3;
+}
+
+void test_std_sort(int* a, int size) {
+
+    int* a5 = new int[size];
+    //memcpy(a3,a,size);
+    memmove(a5, a, size * sizeof(int));
+    std::cout <<std::setw(15)<< "std::sort:" << " ";
+    auto begin5 = std::chrono::steady_clock::now();
+    std::sort(a5, a5 + size);
+    auto end5 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost5 = end5 - begin5;
+    std::cout << cost5.count() << "秒" << std::endl;
+    //std::cout<<std::boolalpha<< (a5[0]==a1[0]&&a5[size-1] == a1[size-1])<<std::endl;
+}
+
+void test_std_heap(int* a, int size) {
+    int* a4 = new int[size];
+    //memcpy(a3,a,size);
+    memmove(a4, a, size * sizeof(int));
+    std::cout <<std::setw(15)<< "std::heap:" << " ";
+    auto begin4 = std::chrono::steady_clock::now();
+    std::make_heap(a4, a4 + size);
+    std::sort_heap(a4, a4 + size);
+    auto end4 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost4 = end4 - begin4;
+    std::cout << cost4.count() << "秒" << std::endl;
+    //std::cout<<std::boolalpha<< (a4[0]==a1[0]&&a4[size-1] == a1[size-1])<<std::endl;
+    delete[] a4;
+    //for (int i = 0; i < size; i++) {
+    //    std::cout<<a4[i] <<" ";
+    //}
+}
+
+
 void test_sort(int n) {
     std::random_device rnd;//random num device //效率低，只用于生成种子
     std::mt19937 rng(rnd()); //random num generator -- 生成随机数
@@ -140,116 +373,25 @@ void test_sort(int n) {
     int* a = new int[size];
     for (int i = 0; i < size; i++) {
         //a[i] = uni(rng);
-        a[i] = i;
+        a[i] = size-i;
+        //a[i] = i;
+
     }
-    
-    //for (int i = 0; i < size; i++) {
-    //    std::cout<<a[i] <<" ";
-    //}
-    //std::cout<<"\n";
-    //std::cout<<"\n";
 
-    
-    int* a1 = new int[size];
-    memmove(a1,a,size*sizeof(int));
-    //for (int i = 0; i < size; i++) {
-    //    std::cout<<a1[i] <<" ";
-    //}
-    //std::cout<<"\n";
-    //std::cout<<"\n";
-    std::cout << "Shell:" << " ";
-    auto begin1 = std::chrono::steady_clock::now();
-    ShellSort(a1, size);
-    auto end1 = std::chrono::steady_clock::now();
-    std::chrono::duration<double> cost1 = end1 - begin1;
-    std::cout << cost1.count() << "秒" << std::endl;
-    delete[] a1;
-    
-    //for (int i = 0; i < size; i++) {
-    //    std::cout<<a1[i] <<" ";
-    //}
-   
-    //int* a2 = new int[size];
-    ////memcpy(a2,a,size);
-    //memmove(a2,a,size*sizeof(int));
-    //std::cout << "Heap:" << std::endl;
-    //auto begin2 = std::chrono::steady_clock::now();
-    //HeapSort(a2, size);
-    //auto end2 = std::chrono::steady_clock::now();
-    //std::chrono::duration<double> cost2 = end2 - begin2;
-    //std::cout << cost2.count() << "秒" << std::endl;
-    //delete[] a2;
-    //for (int i = 0; i < size; i++) {
-    //    std::cout<<a2[i] <<" ";
-    //}
-
-    int* a3 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a3,a,size*sizeof(int));
-    std::cout << "hoare:" << " ";
-    auto begin3 = std::chrono::steady_clock::now();
-    hoare(a3,0,size-1);
-    //_HoareQuickSort(a3,0,size-1);
-    auto end3 = std::chrono::steady_clock::now();
-    std::chrono::duration<double> cost3 = end3 - begin3;
-    std::cout << cost3.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
-    //std::cout << std::boolalpha << (a3[0] == a1[0] && a3[size - 1] == a1[size - 1]) << std::endl;
-    delete[] a3;
-
-    int* a4 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a4,a,size*sizeof(int));
-    std::cout << "std::heap:" << " ";
-    auto begin4 = std::chrono::steady_clock::now();
-    std::make_heap(a4,a4+size);
-    std::sort_heap(a4,a4+size);
-    auto end4 = std::chrono::steady_clock::now();
-    std::chrono::duration<double> cost4 = end4 - begin4;
-    std::cout << cost4.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a4[0]==a1[0]&&a4[size-1] == a1[size-1])<<std::endl;
-    delete[] a4;
-    //for (int i = 0; i < size; i++) {
-    //    std::cout<<a4[i] <<" ";
-    //}
-
-
-    int* a5 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a5,a,size*sizeof(int));
-    std::cout << "stl::sort:" << " ";
-    auto begin5 = std::chrono::steady_clock::now();
-    std::sort(a5,a5+size);
-    auto end5 = std::chrono::steady_clock::now();
-    std::chrono::duration<double> cost5 = end5 - begin5;
-    std::cout << cost5.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a5[0]==a1[0]&&a5[size-1] == a1[size-1])<<std::endl;
- 
- //*a是指针,不是数组,迭代器只支持数组,不支持指针
-    //for (int it : a) {
-    //    std::cout << it << " ";
-    //}
+    //test_Insert(a, size);
+    //test_Shell(a, size);
+    //test_Heap(a, size);
+    test_hoare(a, size);
+    test_hoare_small(a,size);
+    test_std_sort(a, size);
+    //test_std_heap(a, size);
 
 }
 
-int getMidIndex(int* a, int begin, int end) {
-    int mid = (begin + end) / 2;
-    if (a[begin] > a[mid])
-    {
-        if (a[mid] > a[end])	return mid;
-        else if (a[begin] > a[end]) return end;
-        else return begin;
-    }
-    else //a[begin] <= a[mid]
-    {
-        if (a[begin] > a[end]) return begin;
-        else if (a[mid] > a[end]) return end;
-        else return mid;
-    }
-}
 int main() {
-    test_sort(100000000);
-    
+    //std::cout<<std::scientific<<std::left; //科学计数法
+    std::cout << std::fixed << std::setprecision(8) << std::left;        //保留小数
+    test_sort(100000);
     //int a[] = { 5,1,8,4,2,7,5,9,6,4 };
     //std::cout<<getMidIndex(a,0,9);
 
