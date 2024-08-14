@@ -122,7 +122,21 @@ void ShellSort(int* a, int n)
     }
 }
 
-int getMidIndex(int* a, int begin, int end);
+int getMidIndex(int* a, int begin, int end) {
+    int mid = (begin + end) / 2;
+    if (a[begin] > a[mid])
+    {
+        if (a[mid] > a[end])	return mid;
+        else if (a[begin] > a[end]) return end;
+        else return begin;
+    }
+    else //a[begin] <= a[mid]
+    {
+        if (a[begin] > a[end]) return begin;
+        else if (a[mid] > a[end]) return end;
+        else return mid;
+    }
+}
 
 void hoare(int* a, int begin, int end) {
 
@@ -157,56 +171,7 @@ void hoare(int* a, int begin, int end) {
 }
 
 
-int getMidIndex(int* a, int begin, int end)
-{
-    int mid = (begin + end) / 2;
-    if (a[begin] < a[mid])
-    {
-        if (a[mid] < a[end])
-        {
-            return mid;
-        }
-        else if (a[begin] > a[end])
-        {
-            return begin;
-        }
-        else
-        {
-            return end;
-        }
-    }
-    else // a[begin] > a[mid]
-    {
-        if (a[mid] > a[end])
-        {
-            return mid;
-        }
-        else if (a[begin] < a[end])
-        {
-            return begin;
-        }
-        else
-        {
-            return end;
-        }
-    }
-}
 
-//int getMidIndex(int* a, int begin, int end) {
-//    int mid = (begin + end) / 2;
-//    if (a[begin] > a[mid])
-//    {
-//        if (a[mid] > a[end])	return mid;
-//        else if (a[begin] > a[end]) return end;
-//        else return begin;
-//    }
-//    else //a[begin] <= a[mid]
-//    {
-//        if (a[begin] > a[end]) return begin;
-//        else if (a[mid] > a[end]) return end;
-//        else return mid;
-//    }
-//}
 
 
 void hoare_small(int* a, int begin, int end) {
@@ -215,13 +180,12 @@ void hoare_small(int* a, int begin, int end) {
     if (begin >= end) {
         return;
     }
-    if (end - begin + 1 < 10) {
+    int mid = getMidIndex(a, begin, end);
+    Swap(&a[begin], &a[mid]);
+    if (end - begin + 1 < 16) {
         InsertSort(a + begin, end - begin + 1);
     }
     else {
-        int mid = getMidIndex(a, begin, end);
-        Swap(&a[begin], &a[mid]);
-
         int left = begin;
         int right = end;
         int keyi = left; //keyi == key index == key是下标
@@ -242,6 +206,76 @@ void hoare_small(int* a, int begin, int end) {
         // [begin,keyi-1] keyi [keyi+1,end]
         hoare_small(a, begin, keyi - 1);
         hoare_small(a, keyi + 1, end);
+    }
+}
+
+void hoare2(int* a, int begin, int end) {
+    if (begin >= end) {
+        return;
+    }
+    int mid = getMidIndex(a, begin, end);
+    Swap(&a[begin], &a[mid]);
+
+    if (end - begin + 1 < 16) {
+        InsertSort(a, end - begin + 1);
+    }
+    else {
+        int left = begin;
+        int right = end;
+        int key = a[left];
+        int hole = left;
+        while (left < right) {
+            while (left < right && a[right] >= key) {
+                right--;
+            }
+            a[hole] = a[right];
+            hole = right;
+            while (left < right && a[left] <= key) {
+                left++;
+            }
+            a[hole] = a[left];
+            hole = left;
+        }
+        //相遇位置是最后一个坑,用来放key
+        a[hole] = key;
+
+        //[begin,hole-1] hole [hole+1,end];
+        hoare2(a, begin, hole - 1);
+        hoare2(a, hole + 1, end);
+    }
+}
+
+//类似算法题移动零
+void tow_point(int *a, int begin,int end) {
+    if(begin>=end) return ;
+    int mid = getMidIndex(a,begin,end);
+    Swap(&a[begin], &a[mid]);
+    if (end - begin + 1 < 16) {
+        InsertSort(a,end-begin+1);
+    }
+    else {
+        int cur = begin+1;
+        int prev = begin;
+        int keyi = begin;
+        while (cur <= end) {
+            //只有小于时交换
+            //if (a[cur] < a[keyi]) {
+            //    Swap(&a[cur],&a[++prev]);
+            //}
+            //cur++; 
+
+            //只有小于时交换,相同时不交换
+            if (a[cur] < a[keyi] && ++prev != cur) {
+                Swap(&a[cur],&a[prev]);
+            }
+            cur++; 
+        }
+        Swap(&a[prev], &a[keyi]);
+        keyi = prev;
+
+        // [begin,keyi-1] keyi [keyi+1,end]
+        tow_point(a,begin,keyi-1);
+        tow_point(a,keyi+1,end);
     }
 }
 
@@ -325,6 +359,55 @@ void test_hoare_small(int* a, int size) {
     std::cout << cost3.count() << "秒" << std::endl;
     //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
     //std::cout << std::boolalpha << (a3[0] == a1[0] && a3[size - 1] == a1[size - 1]) << std::endl;
+
+    //for (int i = 0; i < size; i++) {
+    //    std::cout << a3[i] << " ";
+    //}
+    //std::cout << std::endl;
+
+    delete[] a3;
+}
+
+void test_hoare2(int* a, int size) {
+
+    int* a3 = new int[size];
+    //memcpy(a3,a,size);
+    memmove(a3, a, size * sizeof(int));
+    std::cout << std::setw(15) << "hoare2:" << " ";
+    auto begin3 = std::chrono::steady_clock::now();
+    hoare2(a3, 0, size - 1);
+    auto end3 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost3 = end3 - begin3;
+    std::cout << cost3.count() << "秒" << std::endl;
+    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
+    //std::cout << std::boolalpha << (a3[0] == a[0] && a3[size - 1] == a[size - 1]) << std::endl;
+    //for (int i = 0; i < size; i++) {
+    //    std::cout << a3[i] << " ";
+    //}
+    //std::cout << std::endl;
+
+    delete[] a3;
+}
+
+
+void test_towpoint(int* a, int size) {
+
+    int* a3 = new int[size];
+    //memcpy(a3,a,size);
+    memmove(a3, a, size * sizeof(int));
+    std::cout << std::setw(15) << "tow_point:" << " ";
+    auto begin3 = std::chrono::steady_clock::now();
+    tow_point(a3, 0, size - 1);
+    auto end3 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost3 = end3 - begin3;
+    std::cout << cost3.count() << "秒" << std::endl;
+    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
+    //std::cout << std::boolalpha << (a3[0] == a[0] && a3[size - 1] == a[size - 1]) << std::endl;
+    //for (int i = 0; i < size; i++) {
+    //    std::cout << a3[i] << " ";
+    //}
+    //std::cout << std::endl;
+
     delete[] a3;
 }
 
@@ -333,20 +416,21 @@ void test_std_sort(int* a, int size) {
     int* a5 = new int[size];
     //memcpy(a3,a,size);
     memmove(a5, a, size * sizeof(int));
-    std::cout <<std::setw(15)<< "std::sort:" << " ";
+    std::cout << std::setw(15) << "std::sort:" << " ";
     auto begin5 = std::chrono::steady_clock::now();
     std::sort(a5, a5 + size);
     auto end5 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost5 = end5 - begin5;
     std::cout << cost5.count() << "秒" << std::endl;
     //std::cout<<std::boolalpha<< (a5[0]==a1[0]&&a5[size-1] == a1[size-1])<<std::endl;
+    delete[] a5;
 }
 
 void test_std_heap(int* a, int size) {
     int* a4 = new int[size];
     //memcpy(a3,a,size);
     memmove(a4, a, size * sizeof(int));
-    std::cout <<std::setw(15)<< "std::heap:" << " ";
+    std::cout << std::setw(15) << "std::heap:" << " ";
     auto begin4 = std::chrono::steady_clock::now();
     std::make_heap(a4, a4 + size);
     std::sort_heap(a4, a4 + size);
@@ -372,17 +456,23 @@ void test_sort(int n) {
     int size = n;
     int* a = new int[size];
     for (int i = 0; i < size; i++) {
-        //a[i] = uni(rng);
-        a[i] = size-i;
-        //a[i] = i;
-
+        //a[i] = uni(rng); //随机数
+        a[i] = size - i; //逆序
+        //a[i] = i;         //正序
+        //a[i] = size/2;     //重复数
     }
+    //for (int i = 0; i < size; i++) {
+    //    std::cout << a[i] << " ";
+    //}
+    //std::cout << std::endl;
 
     //test_Insert(a, size);
     //test_Shell(a, size);
     //test_Heap(a, size);
     test_hoare(a, size);
-    test_hoare_small(a,size);
+    test_hoare_small(a, size);
+    test_hoare2(a, size);
+    test_towpoint(a,size);
     test_std_sort(a, size);
     //test_std_heap(a, size);
 
@@ -391,7 +481,7 @@ void test_sort(int n) {
 int main() {
     //std::cout<<std::scientific<<std::left; //科学计数法
     std::cout << std::fixed << std::setprecision(8) << std::left;        //保留小数
-    test_sort(100000);
+    test_sort(1000);
     //int a[] = { 5,1,8,4,2,7,5,9,6,4 };
     //std::cout<<getMidIndex(a,0,9);
 
