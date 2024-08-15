@@ -1,4 +1,4 @@
-﻿# 多态
+﻿﻿# 多态
 
 [TOC]
 
@@ -366,86 +366,6 @@ int main(){
 至此,彻底解决继承体系中析构函数问题.
 
 
-
-## 题目1
-
-1.以下程序输出结果是什么（）
-
-```
-   class A 
-   { 
-   public:
-       virtual void func(int val = 1){ std::cout<<"A->"<< val <<std::endl;}
-              virtual void test(){ func();} 
-   };
-   
-   class B : public A
-   { 
-   public:
-       void func(int val=0){ std::cout<<"B->"<< val <<std::endl; } 
-   };
-   
-   int main(int argc ,char* argv[])
-   {
-       B*p = new B;
-       p->test(); 
-       return 0;
-   }
-```
-
- A: A->0    B: B->1   C: A->1   D: B->0   E: 编译出错    F: 以上都不正确
-
-### 答案:
-
-![image-20240603123956521](https://img2023.cnblogs.com/blog/2921710/202406/2921710-20240609221516450-422599894.png)
-
-### 解析:
-
-`B*p = new B;`这里p是普通的指针,不满足多态.
-
-`p->test();`这里调用了继承下来的`test();`
-
-`test()`的实际原型是`test(A*this)`,因此函数体内即为`(A*)->func();`
-
-因为`test()`在B中,B会将自己的this传参给test(),即父类类型指针接收子类类型指针.同时func也是虚函数.
-
-因此满足多态,即test()中调用的是子类的func().
-
-又因为虚函数的继承是接口继承,只有函数体是子类的,其他都是父类的,缺省参数也是父类的,因此答案是`B->1`
-
-## 题目2
-
-以下程序输出结果是什么（）
-
-```
-class A
-{
-public:
-    virtual void func(int val = 1) { std::cout << "A->" << val << std::endl; }
-};
-
-class B : public A
-{
-public:
-    void func(int val = 0) { std::cout << "B->" << val << std::endl; }
-    virtual void test() { func(); }
-};
-
-int main(int argc ,char* argv[])
-{
-    B*p = new B;
-    p->test(); 
-    return 0;
-}
-```
-
- A: A->0    B: B->1   C: A->1   D: B->0   E: 编译出错    F: 以上都不正确
-
-### 答案:
-
-D: B->0 
-
-![image-20240603171613568](https://img2023.cnblogs.com/blog/2921710/202406/2921710-20240609221516096-427448869.png)
 
 
 
@@ -1232,6 +1152,148 @@ public:
 - 动态绑定也称为后期绑定(晚绑定),是在**程序运行期间**,即**运行时**,根据具体拿到的类型确定程序的具体行为,调用具体的函数,也称为动态多态.虚函数多态就是动态多态.
 
 
+
+## 两题搞懂 静态/动态绑定
+
+### 题目1
+
+1.以下程序输出结果是什么（）
+
+```
+   class A 
+   { 
+   public:
+       virtual void func(int val = 1){ std::cout<<"A->"<< val <<std::endl;}
+              virtual void test(){ func();} 
+   };
+   
+   class B : public A
+   { 
+   public:
+       void func(int val=0){ std::cout<<"B->"<< val <<std::endl; } 
+   };
+   
+   int main(int argc ,char* argv[])
+   {
+       B*p = new B;
+       p->test(); 
+       return 0;
+   }
+```
+
+ A: A->0    B: B->1   C: A->1   D: B->0   E: 编译出错    F: 以上都不正确
+
+#### 答案:
+
+![image-20240603123956521](https://img2023.cnblogs.com/blog/2921710/202406/2921710-20240609221516450-422599894.png)
+
+#### 解析:
+
+类B继承了类A的两个虚函数,分别是fun和test,其中B重写了fun.
+
+- 展开B::fun的伪代码
+
+```
+virtual void fun(A* this,int val=?){		 //?表示待定 --- 静态多态(后文)
+	std::cout<<"B->"<< this->val <<std::endl; 
+}
+```
+
+- 展开B::test的伪代码
+
+```
+virtual void test(A* this){
+	this->func();			//可能发生多态的位置
+} 
+```
+
+(展开视图对理解多态调用非常重要)
+
+
+
+`B*p = new B;`这里B是子类类型的指针变量,不满足多态.
+
+`p->test();`这里p调用了继承下来的`test();`
+
+`test()`的实际原型是`test(A*this)`,因此函数体内即为`(A*)->func();`
+
+注意这里,静态绑定(即编译期绑定)不在乎是否指针指向的对象,只根据且只能根据类型来决定如何绑定(C++语法设计如此);缺省参数在C++中属于静态绑定语法,只根据类型来决定,当前func的调用者是A类型,因此func的缺省参数就是A的,即val=1.
+
+> 静态绑定(编译期完成的工作)是动态绑定的基础,必须先把函数确定下来才能跑起来
+
+确定好缺省参数后再看回来,因为是B对象调用的`test()`,B会将自己的this传参给test(),即**父类类型指针接收子类类型指针.同时func也是虚函数**.满足动态多态的要求.
+
+即test()中调用的是子类的func().
+
+因此答案是`B->1`.
+
+### 题目2
+
+以下程序输出结果是什么（）
+
+```
+class A
+{
+public:
+    virtual void func(int val = 1) { std::cout << "A->" << val << std::endl; }
+};
+
+class B : public A
+{
+public:
+    void func(int val = 0) { std::cout << "B->" << val << std::endl; }
+    virtual void test() { func(); }
+};
+
+int main(int argc ,char* argv[])
+{
+    B*p = new B;
+    p->test(); 
+    return 0;
+}
+```
+
+ A: A->0    B: B->1   C: A->1   D: B->0   E: 编译出错    F: 以上都不正确
+
+
+
+#### 解析:
+
+B类只继承了A类的func并重写.B类自己增加了虚函数test
+
+展开B类的两个函数的伪代码
+
+- func
+
+  ```
+  virtual  void func(A* this, int val = ?) {		  //静态绑定的位置
+  	std::cout << "B->" << this->val << std::endl; 
+  }
+  ```
+
+- test
+
+  ```
+  virtual void test(B* this) {
+  	this->func(); 		//发生静态绑定的位置
+  }
+  ```
+
+1. 通过展开B的两个函数的伪代码分析得知,本题没有发生动态多态,只有静态多态.
+
+2. p调用只有自己有的test,this的类型就是B类型,即函数体内是`(B*)->func()`,因此缺省参数静态绑定判定为自己func的val.另外`(B*)->func()`不满足多态,因此调用自己的func().
+
+#### 答案:
+
+D: B->0 
+
+![image-20240603171613568](https://img2023.cnblogs.com/blog/2921710/202406/2921710-20240609221516096-427448869.png)
+
+
+
+<br>
+
+<br><br><br>
 
 
 
