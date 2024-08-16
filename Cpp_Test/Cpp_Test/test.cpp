@@ -462,6 +462,9 @@ void test_sort(int n) {
         a[i] = size - i; //逆序
         //a[i] = i;         //正序
         //a[i] = size/2;     //重复数
+        if (i % 10000 == 0) {
+            a[i] = uni(rng);  //插入一些随机数
+        }
     }
     //for (int i = 0; i < size; i++) {
     //    std::cout << a[i] << " ";
@@ -474,7 +477,7 @@ void test_sort(int n) {
     test_hoare(a, size);
     test_hoare_small(a, size);
     test_hoare2(a, size);
-    test_towpoint(a,size);
+    //test_towpoint(a, size);
     test_std_sort(a, size);
     //test_std_heap(a, size);
 
