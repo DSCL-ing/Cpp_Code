@@ -1,7 +1,6 @@
 ﻿  test.cpp
   正在生成代码
-  3 of 75 functions ( 4.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  All 69 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   已完成代码的生成
   Cpp_Test.vcxproj -> C:\Users\chj\Desktop\Repository\Cpp_Code\Cpp_Test\Release\Cpp_Test.exe

@@ -11,6 +11,8 @@
 
 #include<cassert>
 
+#if 1
+
 //void Swap(int* a, int* b) {
 //    int tmp =  *a;
 //    *a = *b;
@@ -481,9 +483,13 @@ void test_sort(int n) {
 int main() {
     //std::cout<<std::scientific<<std::left; //科学计数法
     std::cout << std::fixed << std::setprecision(8) << std::left;        //保留小数
-    test_sort(1000);
+    test_sort(100000);
     //int a[] = { 5,1,8,4,2,7,5,9,6,4 };
     //std::cout<<getMidIndex(a,0,9);
 
     return 0;
 }
+
+#else
+
+#endif
