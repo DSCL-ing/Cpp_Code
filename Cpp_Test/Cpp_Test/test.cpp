@@ -24,6 +24,109 @@ static void Swap(int* p1, int* p2)
     *p2 = tmp;
 }
 
+// 时间复杂度：O(N*logN)
+// 空间复杂度：O(N)
+// [begin, end]
+//void _MergeSort(int* a, int begin, int end, int* tmp)
+//{
+//    if (begin >= end)
+//        return;
+//
+//    int mid = (begin + end) / 2;
+//    // [begin, mid] [mid+1, end] 递归让子区间有序
+//    _MergeSort(a, begin, mid, tmp);
+//    _MergeSort(a, mid + 1, end, tmp);
+//
+//    // 归并[begin, mid] [mid+1, end]
+//    //...
+//
+//    int begin1 = begin, end1 = mid;
+//    int begin2 = mid + 1, end2 = end;
+//    int i = begin;
+//    while (begin1 <= end1 && begin2 <= end2)
+//    {
+//        if (a[begin1] <= a[begin2])
+//        {
+//            tmp[i++] = a[begin1++];
+//        }
+//        else
+//        {
+//            tmp[i++] = a[begin2++];
+//        }
+//    }
+//
+//    while (begin1 <= end1)
+//    {
+//        tmp[i++] = a[begin1++];
+//    }
+//
+//    while (begin2 <= end2)
+//    {
+//        tmp[i++] = a[begin2++];
+//    }
+//
+//    memcpy(a + begin, tmp + begin, sizeof(int) * (end - begin + 1));
+//}
+//
+//void MergeSort(int* a, int n)
+//{
+//    int* tmp = (int*)malloc(sizeof(int) * n);
+//    if (tmp == NULL)
+//    {
+//        perror("malloc fail");
+//        exit(-1);
+//    }
+//
+//    _MergeSort(a, 0, n - 1, tmp);
+//
+//    free(tmp);
+//    tmp = NULL;
+//}
+
+void _MergeSort(int* a, int begin, int end, int* tmp) {
+    if(begin>=end) return ;
+
+    int mid = (begin+end)/2;
+
+    //先划分(或先递归让左右子树有序),再归并 ---> 后序 
+    _MergeSort(a,begin,mid,tmp);
+    _MergeSort(a,mid+1,end,tmp);
+    //归并
+    int begin1 = begin; int end1 = mid; 
+    int begin2 = mid+1; int end2 = end; 
+    int i = begin;
+    while (begin1 <= end1 && begin2 <= end2) {
+        if (a[begin1] < a[begin2]) {
+            tmp[i] = a[begin1++];
+        }
+        else {
+            tmp[i] = a[begin2++];
+        }
+        i++;
+    }
+
+    //出来后一个满足另一个不满足
+    while (begin1 <= end1) {
+            tmp[i++] = a[begin1++];
+    }
+    while (begin2 <= end2) {
+            tmp[i++] = a[begin2++];
+    }
+    memmove(a+begin,tmp+begin,sizeof(int)*(end-begin+1));
+}
+
+void MergeSort(int *a,int n) {
+    //因为要使用额外空间,所以需要辅助函数
+    int *tmp = (int*)malloc(sizeof(int)*n);
+    if (tmp == NULL) {
+        perror("malloc fail!");
+        exit(-999);
+    }
+    _MergeSort(a,0,n-1,tmp);
+    free(tmp);
+    tmp = NULL;
+}
+
 
 //直接插入排序
 void InsertSort(int* a, int n)
@@ -454,6 +557,21 @@ void test_std_heap(int size) {
     std::cout << cost4.count() << "秒" << std::endl;
 }
 
+void test_Merge(int size) {
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a, size);
+    std::cout << std::setw(15) << "Merge:" << " ";
+    auto begin4 = std::chrono::steady_clock::now();
+    MergeSort(a,size);
+    auto end4 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost4 = end4 - begin4;
+    std::cout << cost4.count() << "秒" << std::endl;
+
+    //PrintArray(a, size);
+}
+
+
 void PrintArray(int* a, int size) {
     for (int i = 0; i < size; i++) {
         std::cout << a[i] << " ";
@@ -467,13 +585,14 @@ void RandomArray_Generator(int* a, int n) {
     std::uniform_int_distribution<int> uni(0, 1000000000);//整型区间筛选
     //[0-N]有6成为不重复,4成重复 --若需要9成不重复需要扩大筛选范围为10倍的N,即插入N需筛选10N
 
-    //int a[] = { 3,1,8,4,2,7,5,9,6,0 }; //自定义数组
+    //int tmp[] = { 3,1,8,4,2,7,5,9,6,0 }; //自定义数组
+    //memcpy(a,tmp,40);
     int size = n;
     for (int i = 0; i < size; i++) {
-        //a[i] = uni(rng); //随机数
+        a[i] = uni(rng); //随机数
         //a[i] = size - i; //逆序
         //a[i] = i;         //正序
-        a[i] = size / 2;     //重复数
+        //a[i] = size / 2;     //重复数
         if (i % 10000 == 0) {
             //a[i] = uni(rng);  //插入一些随机数
         }
@@ -493,6 +612,7 @@ void test_sort(int size) {
     test_hoare2(size);
     test_partition(size);
     //test_towpoint( size);
+    test_Merge(size);
     test_std_sort(size);
     //test_std_heap( size);
 
@@ -501,9 +621,7 @@ void test_sort(int size) {
 int main() {
     //std::cout<<std::scientific<<std::left; //科学计数法
     std::cout << std::fixed << std::setprecision(8) << std::left;        //保留小数,精度8位
-    //test_sort(100000);
-
-
+    test_sort(1000000);
 
     return 0;
 }
