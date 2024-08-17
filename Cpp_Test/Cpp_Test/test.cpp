@@ -13,11 +13,8 @@
 
 #if 1
 
-//void Swap(int* a, int* b) {
-//    int tmp =  *a;
-//    *a = *b;
-//    *b = tmp;
-//}
+void PrintArray(int* a, int size) ;
+void RandomArray_Generator(int *a,int n) ;
 
 static void Swap(int* p1, int* p2)
 {
@@ -26,6 +23,7 @@ static void Swap(int* p1, int* p2)
     *p1 = *p2;
     *p2 = tmp;
 }
+
 
 //直接插入排序
 void InsertSort(int* a, int n)
@@ -247,16 +245,18 @@ void hoare2(int* a, int begin, int end) {
     }
 }
 
+
+
 //类似算法题移动零
-void tow_point(int *a, int begin,int end) {
-    if(begin>=end) return ;
-    int mid = getMidIndex(a,begin,end);
+void tow_point(int* a, int begin, int end) {
+    if (begin >= end) return;
+    int mid = getMidIndex(a, begin, end);
     Swap(&a[begin], &a[mid]);
     if (end - begin + 1 < 16) {
-        InsertSort(a,end-begin+1);
+        InsertSort(a, end - begin + 1);
     }
     else {
-        int cur = begin+1;
+        int cur = begin + 1;
         int prev = begin;
         int keyi = begin;
         while (cur <= end) {
@@ -268,227 +268,242 @@ void tow_point(int *a, int begin,int end) {
 
             //只有小于时交换,相同时不交换
             if (a[cur] < a[keyi] && ++prev != cur) {
-                Swap(&a[cur],&a[prev]);
+                Swap(&a[cur], &a[prev]);
             }
-            cur++; 
+            cur++;
         }
         Swap(&a[prev], &a[keyi]);
         keyi = prev;
 
         // [begin,keyi-1] keyi [keyi+1,end]
-        tow_point(a,begin,keyi-1);
-        tow_point(a,keyi+1,end);
+        tow_point(a, begin, keyi - 1);
+        tow_point(a, keyi + 1, end);
     }
 }
 
-void test_Insert(int* a, int size) {
-    int* a1 = new int[size];
-    memmove(a1, a, size * sizeof(int));
-    //for (int i = 0; i < size; i++) {
-    //    std::cout<<a1[i] <<" ";
-    //}
-    //std::cout<<"\n";
-    //std::cout<<"\n";
+
+//[begin , left-1] [left , right] [right , end]
+void partitionQSort(int* a, int begin, int end)
+{
+    if (begin >= end)
+    {
+        return;
+    }
+    int mid = getMidIndex(a, begin, end);
+    Swap(&a[begin], &a[mid]);
+
+    int left = begin; int right = end;
+    int cur = begin + 1;
+    int key = a[left];
+
+    while (cur <= right)
+    {
+        if (a[cur] < key)
+        {
+            Swap(&a[cur++], &a[left++]);//a[left]永远小于key
+        }
+        else if (a[cur] == key)
+        {
+            cur++;
+        }
+        else
+        {
+            Swap(&a[cur], &a[right--]);
+        }
+        /*
+        * 如果是大于，则c不动，只控制right往前走，原因是不知道a[right]大小，再走就会出问题。
+        解决方法：交换a[right--]后保持cur不动，让循环进入下一轮，比较新的a[cur]和key，
+        在新一轮的循环中如果上一轮从right换过来的a[cur]比key大就丢回去，如果小于等于就按命令走
+        这样就能保证	左边<key ,中间 == key ,右边>key
+        */
+    }
+
+    partitionQSort(a, begin, left - 1);
+    partitionQSort(a, right + 1, end);
+
+}
+
+
+void test_Insert(int size) {
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    PrintArray(a, size);
     std::cout << std::setw(15) << "Insert:" << " ";
     auto begin1 = std::chrono::steady_clock::now();
-    ShellSort(a1, size);
+    ShellSort(a, size);
     auto end1 = std::chrono::steady_clock::now();
     std::chrono::duration<long double> cost1 = end1 - begin1;
     std::cout << cost1.count() << "秒" << std::endl;
-    delete[] a1;
 }
 
-void test_Shell(int* a, int size) {
-    int* a1 = new int[size];
-    memmove(a1, a, size * sizeof(int));
-    //for (int i = 0; i < size; i++) {
-    //    std::cout<<a1[i] <<" ";
-    //}
-    //std::cout<<"\n";
-    //std::cout<<"\n";
+void test_Shell(int size) {
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    PrintArray(a, size);
     std::cout << std::setw(15) << "Shell:" << " ";
     auto begin1 = std::chrono::steady_clock::now();
-    ShellSort(a1, size);
+    ShellSort(a, size);
     auto end1 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost1 = end1 - begin1;
     std::cout << cost1.count() << "秒" << std::endl;
-    delete[] a1;
 
 }
 
-void test_Heap(int* a, int size) {
+void test_Heap(int size) {
 
-    int* a2 = new int[size];
-    //memcpy(a2,a,size);
-    memmove(a2, a, size * sizeof(int));
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a,size);
     std::cout << std::setw(15) << "Heap:" << " ";
     auto begin2 = std::chrono::steady_clock::now();
-    HeapSort(a2, size);
+    HeapSort(a, size);
     auto end2 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost2 = end2 - begin2;
     std::cout << cost2.count() << "秒" << std::endl;
-    delete[] a2;
 }
 
-void test_hoare(int* a, int size) {
-
-    int* a3 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a3, a, size * sizeof(int));
+void test_hoare(int size) {
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a,size);
     std::cout << std::setw(15) << "hoare:" << " ";
     auto begin3 = std::chrono::steady_clock::now();
-    hoare(a3, 0, size - 1);
-    //_HoareQuickSort(a3,0,size-1);
+    hoare(a, 0, size - 1);
     auto end3 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost3 = end3 - begin3;
     std::cout << cost3.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
-    //std::cout << std::boolalpha << (a3[0] == a1[0] && a3[size - 1] == a1[size - 1]) << std::endl;
-    delete[] a3;
 }
 
-void test_hoare_small(int* a, int size) {
+void test_hoare_small(int size) {
 
-    int* a3 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a3, a, size * sizeof(int));
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a, size);
     std::cout << std::setw(15) << "hoare_small:" << " ";
     auto begin3 = std::chrono::steady_clock::now();
-    hoare_small(a3, 0, size - 1);
+    hoare_small(a, 0, size - 1);
     //_HoareQuickSort(a3,0,size-1);
     auto end3 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost3 = end3 - begin3;
     std::cout << cost3.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
-    //std::cout << std::boolalpha << (a3[0] == a1[0] && a3[size - 1] == a1[size - 1]) << std::endl;
-
-    //for (int i = 0; i < size; i++) {
-    //    std::cout << a3[i] << " ";
-    //}
-    //std::cout << std::endl;
-
-    delete[] a3;
 }
 
-void test_hoare2(int* a, int size) {
+void test_hoare2(int size) {
 
-    int* a3 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a3, a, size * sizeof(int));
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a, size);
     std::cout << std::setw(15) << "hoare2:" << " ";
     auto begin3 = std::chrono::steady_clock::now();
-    hoare2(a3, 0, size - 1);
+    hoare2(a, 0, size - 1);
     auto end3 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost3 = end3 - begin3;
     std::cout << cost3.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
-    //std::cout << std::boolalpha << (a3[0] == a[0] && a3[size - 1] == a[size - 1]) << std::endl;
-    //for (int i = 0; i < size; i++) {
-    //    std::cout << a3[i] << " ";
-    //}
-    //std::cout << std::endl;
-
-    delete[] a3;
 }
 
 
-void test_towpoint(int* a, int size) {
+void test_towpoint(int size) {
 
-    int* a3 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a3, a, size * sizeof(int));
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a, size);
     std::cout << std::setw(15) << "tow_point:" << " ";
     auto begin3 = std::chrono::steady_clock::now();
-    tow_point(a3, 0, size - 1);
+    tow_point(a, 0, size - 1);
     auto end3 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost3 = end3 - begin3;
     std::cout << cost3.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a3[0] == a2[0] &&a3[0]==a1[0]&&a3[size-1]==a2[size-1]&&a3[size-1] == a1[size-1])<<std::endl;
-    //std::cout << std::boolalpha << (a3[0] == a[0] && a3[size - 1] == a[size - 1]) << std::endl;
-    //for (int i = 0; i < size; i++) {
-    //    std::cout << a3[i] << " ";
-    //}
-    //std::cout << std::endl;
-
-    delete[] a3;
 }
 
-void test_std_sort(int* a, int size) {
+void test_partition(int size) {
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a, size);
+    std::cout << std::setw(15) << "3路划分:" << " ";
+    auto begin3 = std::chrono::steady_clock::now();
+    partitionQSort(a, 0, size - 1);
+    auto end3 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> cost3 = end3 - begin3;
+    std::cout << cost3.count() << "秒" << std::endl;
+    //PrintArray(a, size);
+}
 
-    int* a5 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a5, a, size * sizeof(int));
+void test_std_sort(int size) {
+
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a, size);
     std::cout << std::setw(15) << "std::sort:" << " ";
     auto begin5 = std::chrono::steady_clock::now();
-    std::sort(a5, a5 + size);
+    std::sort(a, a + size);
     auto end5 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost5 = end5 - begin5;
     std::cout << cost5.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a5[0]==a1[0]&&a5[size-1] == a1[size-1])<<std::endl;
-    delete[] a5;
 }
 
-void test_std_heap(int* a, int size) {
-    int* a4 = new int[size];
-    //memcpy(a3,a,size);
-    memmove(a4, a, size * sizeof(int));
+void test_std_heap(int size) {
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+    //PrintArray(a, size);
     std::cout << std::setw(15) << "std::heap:" << " ";
     auto begin4 = std::chrono::steady_clock::now();
-    std::make_heap(a4, a4 + size);
-    std::sort_heap(a4, a4 + size);
+    std::make_heap(a, a + size);
+    std::sort_heap(a, a + size);
     auto end4 = std::chrono::steady_clock::now();
     std::chrono::duration<double> cost4 = end4 - begin4;
     std::cout << cost4.count() << "秒" << std::endl;
-    //std::cout<<std::boolalpha<< (a4[0]==a1[0]&&a4[size-1] == a1[size-1])<<std::endl;
-    delete[] a4;
-    //for (int i = 0; i < size; i++) {
-    //    std::cout<<a4[i] <<" ";
-    //}
 }
 
+void PrintArray(int* a, int size) {
+    for (int i = 0; i < size; i++) {
+        std::cout << a[i] << " ";
+    }
+    std::cout << std::endl;
+}
 
-void test_sort(int n) {
+void RandomArray_Generator(int* a, int n) {
     std::random_device rnd;//random num device //效率低，只用于生成种子
     std::mt19937 rng(rnd()); //random num generator -- 生成随机数
     std::uniform_int_distribution<int> uni(0, 1000000000);//整型区间筛选
     //[0-N]有6成为不重复,4成重复 --若需要9成不重复需要扩大筛选范围为10倍的N,即插入N需筛选10N
 
-    //int a[] = { 3,1,8,4,2,7,5,9,6,0 };
-    //int size = 1000000;
+    //int a[] = { 3,1,8,4,2,7,5,9,6,0 }; //自定义数组
     int size = n;
-    int* a = new int[size];
     for (int i = 0; i < size; i++) {
         //a[i] = uni(rng); //随机数
-        a[i] = size - i; //逆序
+        //a[i] = size - i; //逆序
         //a[i] = i;         //正序
-        //a[i] = size/2;     //重复数
+        a[i] = size / 2;     //重复数
         if (i % 10000 == 0) {
-            a[i] = uni(rng);  //插入一些随机数
+            //a[i] = uni(rng);  //插入一些随机数
         }
     }
-    //for (int i = 0; i < size; i++) {
-    //    std::cout << a[i] << " ";
-    //}
-    //std::cout << std::endl;
+}
 
-    //test_Insert(a, size);
-    //test_Shell(a, size);
-    //test_Heap(a, size);
-    test_hoare(a, size);
-    test_hoare_small(a, size);
-    test_hoare2(a, size);
-    //test_towpoint(a, size);
-    test_std_sort(a, size);
-    //test_std_heap(a, size);
+
+void test_sort(int size) {
+    int* a = new int[size];
+    RandomArray_Generator(a, size);
+
+    //test_Insert( size);
+    //test_Shell( size);
+    //test_Heap(size);
+    //test_hoare(size);
+    //test_hoare_small(size);
+    test_hoare2(size);
+    test_partition(size);
+    //test_towpoint( size);
+    test_std_sort(size);
+    //test_std_heap( size);
 
 }
 
 int main() {
     //std::cout<<std::scientific<<std::left; //科学计数法
-    std::cout << std::fixed << std::setprecision(8) << std::left;        //保留小数
-    test_sort(100000);
-    //int a[] = { 5,1,8,4,2,7,5,9,6,4 };
-    //std::cout<<getMidIndex(a,0,9);
+    std::cout << std::fixed << std::setprecision(8) << std::left;        //保留小数,精度8位
+    //test_sort(100000);
+
+
 
     return 0;
 }
