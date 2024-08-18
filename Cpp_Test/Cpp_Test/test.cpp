@@ -11,7 +11,7 @@
 
 #include<cassert>
 
-#if 1
+#if 0
 
 void PrintArray(int* a, int size) ;
 void RandomArray_Generator(int *a,int n) ;
@@ -626,6 +626,173 @@ int main() {
     return 0;
 }
 
-#else
+#elif 1
+
+
+template<class K>
+struct BSTreeNode {
+    BSTreeNode<K>* _left;
+    BSTreeNode<K>* _right;
+    K _key;
+
+    BSTreeNode(K key) 
+    :_key(key),_left(nullptr),_right(nullptr)
+    {}
+};
+
+template<class K>
+class BSTree {
+public:
+    using Node = BSTreeNode<K>;
+
+public:
+    bool Insert(const K& key) {
+        if (_root == nullptr) {
+            _root = new Node(key);
+            _root->_key = key;
+            return true;
+        }
+        BSTreeNode<K>* cur = _root;
+        BSTreeNode<K>* parent = _root;
+        while (cur) {
+            if (key < cur->_key) {
+                parent = cur;
+                cur = cur->_left;
+            }
+            else if (key > cur->_key) {
+                parent = cur;
+                cur = cur->_right;
+            }
+            else {
+                return false;
+            }
+        }
+        //走出循环,说明树中不存在该节点, 可以插入
+        cur = new BSTreeNode<K>(key);
+        if (key < parent->_key) {
+
+            parent->_left = cur;
+        }
+        else {
+            parent->_right = cur;
+        }
+        return true;
+    }
+
+    bool Find(const K& key) {
+        if(_root == nullptr) return false;
+
+        Node* cur = _root;
+        while (cur) {
+            if (key < cur->_key) {
+                cur = cur->_left;
+            }
+            else if (key > cur->_key) {
+                cur = cur->_right;
+            }
+            else {
+                return true;
+            }
+        }
+        // 从循环出来,说明没找着
+        return false;
+    }
+
+    bool Erase(const K& key) {
+        if (_root == nullptr) return false;
+
+        Node* cur = _root;
+        Node* parent = _root;
+
+        while (cur) {
+            if (key < cur->_key) {
+                parent = cur;
+                cur = cur->_left;
+            }
+            else if (key > cur->_right) {
+                parent = cur;
+                cur = cur->_right;
+            }
+            else {
+                //没有左孩子
+                if (cur->_left == nullptr) {
+                    if (parent->_left == cur) {
+                        parent->_left = cur->_right;
+                    }
+                    else {
+                        parent->_right = cur->_right;
+                    }
+                    delete cur;
+                }
+                //没有右孩子
+                else if (cur->_right == nullptr) {
+                    if (parent->_left == cur) {
+                        parent->_left = cur->_left;
+                    }
+                    else {
+                        parent->_right = cur->_left;
+                    }
+                    delete cur;
+                }
+                //有左右孩子
+                else {
+                    //找右孩子(子树)的最小结点/最左结点
+                    Node* rightMin = cur->_right;  //明确不为空
+                    Node* rightMinParent = cur;
+                    while (rightMin->_left) {
+                        rightMinParent = rightMin;
+                        rightMin = rightMin->_left;
+                    }
+                    cur->_key = rightMin->_key;
+                    if (rightMinParent == cur) {
+                        rightMinParent->_right = rightMin->_right;
+                    }
+                    else {
+                        rightMinParent->_left = rightMin->_right;
+                    }
+                    delete cur;
+                }
+            }
+            //没找到
+            return false;
+        }
+    }
+
+    void InOrder() {
+        _InOrder(_root);
+        std::cout << std::endl;
+    }
+
+private:
+    void _InOrder(Node* root) {
+        if (root == nullptr)  return;
+        _InOrder(root->_left);
+        std::cout << root->_key << " ";
+        _InOrder(root->_right);
+    }
+
+private:
+    BSTreeNode<K>* _root = nullptr;
+};
+
+
+void test() {
+    int a[] = { 8, 3, 1, 10, 6, 4, 7, 14, 13 };
+    BSTree<int> bst;
+    for (int i : a) {
+        bst.Insert(i);
+    }
+    bst.InOrder();
+
+    //Find
+    std::cout << std::boolalpha << bst.Find(8) << std::endl; //true
+    std::cout << std::boolalpha << bst.Find(9) << std::endl; //false
+}
+
+int main() {
+    test();
+}
+
+#elif 0
 
 #endif
