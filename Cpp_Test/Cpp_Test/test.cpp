@@ -709,7 +709,7 @@ public:
                 parent = cur;
                 cur = cur->_left;
             }
-            else if (key > cur->_right) {
+            else if (key > cur->_key) {
                 parent = cur;
                 cur = cur->_right;
             }
@@ -723,6 +723,7 @@ public:
                         parent->_right = cur->_right;
                     }
                     delete cur;
+                    return true;
                 }
                 //没有右孩子
                 else if (cur->_right == nullptr) {
@@ -733,6 +734,7 @@ public:
                         parent->_right = cur->_left;
                     }
                     delete cur;
+                    return true;
                 }
                 //有左右孩子
                 else {
@@ -743,27 +745,57 @@ public:
                         rightMinParent = rightMin;
                         rightMin = rightMin->_left;
                     }
-                    cur->_key = rightMin->_key;
-                    if (rightMinParent == cur) {
-                        rightMinParent->_right = rightMin->_right;
-                    }
-                    else {
-                        rightMinParent->_left = rightMin->_right;
-                    }
-                    delete cur;
-                }
-            }
-            //没找到
-            return false;
-        }
-    }
+                    // 删除右子树最小结点有3种情况(与是不是根无关)
+                    //1. 要删除的结点右子树最小结点恰好是自己的右孩子.
+                    //2. 要删除的结点的右孩子的左子树的最左结点没有右孩子.
+                    //3. 要删除的结点的右孩子的左子树的最左结点有右孩子.
+                    //结论解析: 复用删除单结点代码,进行删除rightMin即可
+                    //if (cur == root) {
+                    //    cur->_key = rightMin;
+                    //    Erase(rightMin);
+                    //    return true;
+                    //}
+                    //else if (rightMin == cur->_right) {
+                    //    //rightMinParent->_right = rightMin->_right;
+                    //    //cur->_key = rightMin;
+                    //    Erase(rightMin);
+                    //    return true;
+                    //}
+                    //else {
+                    //    rightMinParent->_left = rightMin->_right;
+                    //}
+                    K tmp =  rightMin->_key;
+                    Erase(rightMin->_key);
+                    cur->_key = tmp;
+                    return true;
+                } //有左右孩子的情况 
+            } //找到了_继续处理的过程
+        }//循环找的过程
+        //循环结束,说明没找到
+        return false;
+    }//Erase [end]
 
     void InOrder() {
         _InOrder(_root);
         std::cout << std::endl;
     }
 
+    bool InsertR(const K& key) {
+        _InsertR(_root, key);
+    }
+
 private:
+    //练习递归+引用指针的玩法,仅练习
+    bool _InsertR(Node*& root, const K& key) { //引用的妙用,跨栈帧直接访问实参
+        if (root == nullptr) {
+            root == new Node(key);
+            return true;
+        }
+        if (key == root->_key) return false;
+        return (key > root->_key) ? _InsertR(root->_right, key) : _InsertR(root->_left, key);
+    }
+
+
     void _InOrder(Node* root) {
         if (root == nullptr)  return;
         _InOrder(root->_left);
@@ -784,9 +816,18 @@ void test() {
     }
     bst.InOrder();
 
-    //Find
-    std::cout << std::boolalpha << bst.Find(8) << std::endl; //true
-    std::cout << std::boolalpha << bst.Find(9) << std::endl; //false
+    ////Find
+    //std::cout << std::boolalpha << bst.Find(8) << std::endl; //true
+    //std::cout << std::boolalpha << bst.Find(9) << std::endl; //false
+
+
+    //测试两孩子的三种情况即可
+    bst.Erase(8);  //1. 要删除的结点的右子树的最小结点恰好是要删除结点的右孩子.
+    bst.Erase(10); //2. 要删除的结点的右子树的最小结点没有右孩子
+    bst.Insert(5); //构造有右孩子的最小结点
+    bst.Erase(3);  //3. 要删除的结点的右子树的最小结点有右孩子
+    bst.InOrder();
+
 }
 
 int main() {
