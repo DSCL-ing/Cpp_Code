@@ -8,6 +8,7 @@
 #include<functional>
 #include<random>
 #include<iomanip>
+#include<string>
 
 #include<cassert>
 
@@ -644,6 +645,17 @@ template<class K>
 class BSTree {
 public:
     using Node = BSTreeNode<K>;
+    BSTree() = default;
+    BSTree(const BSTree& bst) {
+        _root = Copy(bst._root);
+    }
+    BSTree<K>& operator=(BSTree bst) { //拷贝复用
+        swap(_root,bst.root);
+        return *this;
+    }
+    ~BSTree() {
+        Destroy(_root);
+    }
 
 public:
     bool Insert(const K& key) {
@@ -680,7 +692,7 @@ public:
     }
 
     bool Find(const K& key) {
-        if(_root == nullptr) return false;
+        if (_root == nullptr) return false;
 
         Node* cur = _root;
         while (cur) {
@@ -716,7 +728,10 @@ public:
             else {
                 //没有左孩子
                 if (cur->_left == nullptr) {
-                    if (parent->_left == cur) {
+                    if (cur == _root) {
+                        _root = cur->_right;
+                    }
+                    else if (parent->_left == cur) {
                         parent->_left = cur->_right;
                     }
                     else {
@@ -727,6 +742,9 @@ public:
                 }
                 //没有右孩子
                 else if (cur->_right == nullptr) {
+                    if (cur == _root) {
+                        _root = cur->_left;
+                    }
                     if (parent->_left == cur) {
                         parent->_left = cur->_left;
                     }
@@ -750,22 +768,8 @@ public:
                     //2. 要删除的结点的右孩子的左子树的最左结点没有右孩子.
                     //3. 要删除的结点的右孩子的左子树的最左结点有右孩子.
                     //结论解析: 复用删除单结点代码,进行删除rightMin即可
-                    //if (cur == root) {
-                    //    cur->_key = rightMin;
-                    //    Erase(rightMin);
-                    //    return true;
-                    //}
-                    //else if (rightMin == cur->_right) {
-                    //    //rightMinParent->_right = rightMin->_right;
-                    //    //cur->_key = rightMin;
-                    //    Erase(rightMin);
-                    //    return true;
-                    //}
-                    //else {
-                    //    rightMinParent->_left = rightMin->_right;
-                    //}
-                    K tmp =  rightMin->_key;
-                    Erase(rightMin->_key);
+                    K tmp = rightMin->_key;
+                    Erase(rightMin->_key); //只能从根开始遍历,性能损失,但是二分查找很快,损失不大(理想情况,BST只学习用)
                     cur->_key = tmp;
                     return true;
                 } //有左右孩子的情况 
@@ -784,7 +788,78 @@ public:
         _InsertR(_root, key);
     }
 
+    bool EraseR(const K& key) {
+        return _EraseR(_root,key);
+    }
+
 private:
+
+    //此处返回值不能使用指针引用,虽然一定情况下可以使用(不推荐),至少目前不能引用空值.
+    Node* Copy(const Node* root) {
+        if (root == nullptr) {
+            return nullptr;
+        }
+        Node* newRoot = new Node(root->_key);
+        newRoot->_left = Copy(root->_left);
+        newRoot->_right = Copy(root->_right);
+        return newRoot;
+    }
+
+    //用不用引用无所谓,好习惯做到底
+    //(析构子节点时,父节点两个成员会成为垂悬指针,但是接下来父亲也要析构了,指针变量也随之回收)
+    void Destroy(Node*&root) {
+        if (root == nullptr) {
+            return ;
+        }
+        Destroy(root->_left);
+        Destroy(root->_right);
+
+        std::cout<<root->_key<<" ";
+        delete root; //释放加自动置空
+    }
+
+    //练习递归+引用 -- 代码更加简洁
+    bool _EraseR(Node*& root, const K&key) {
+        //走到空,说明没找到,返回false
+        if (root == nullptr) {
+            return false;
+        }
+
+        //大于走右边,小于走左边
+        if (key > root->_key) {
+            return _EraseR(root->_right,key);
+        }
+        else if(key<root->_key) {
+            return _EraseR(root->_left,key);
+        }
+        //找到了
+        else {
+            if (root->_left == nullptr) {
+                Node* del = root;
+                root = root->_right;
+                delete del;
+                return true;
+            }
+            else if (root->_right == nullptr) {
+                Node* del = root;
+                root = root->_left;
+                delete del;
+                return true;
+            }
+            //有左右孩子
+            else {
+                Node* leftMax = root->_left;
+                //找左子树最大结点
+                while (leftMax->_right) {
+                    leftMax = leftMax->_right;
+                }
+                std::swap(root->_key, leftMax->_key);
+                return _EraseR(root->_left, key);    //直接从左孩子开始递归删除.
+            }
+        }
+
+    }
+
     //练习递归+引用指针的玩法,仅练习
     bool _InsertR(Node*& root, const K& key) { //引用的妙用,跨栈帧直接访问实参
         if (root == nullptr) {
@@ -794,7 +869,6 @@ private:
         if (key == root->_key) return false;
         return (key > root->_key) ? _InsertR(root->_right, key) : _InsertR(root->_left, key);
     }
-
 
     void _InOrder(Node* root) {
         if (root == nullptr)  return;
@@ -820,18 +894,34 @@ void test() {
     //std::cout << std::boolalpha << bst.Find(8) << std::endl; //true
     //std::cout << std::boolalpha << bst.Find(9) << std::endl; //false
 
+    BSTree<int> cp(bst);
+    cp.InOrder();
 
     //测试两孩子的三种情况即可
     bst.Erase(8);  //1. 要删除的结点的右子树的最小结点恰好是要删除结点的右孩子.
     bst.Erase(10); //2. 要删除的结点的右子树的最小结点没有右孩子
     bst.Insert(5); //构造有右孩子的最小结点
     bst.Erase(3);  //3. 要删除的结点的右子树的最小结点有右孩子
+    bst.Erase(4);
+    bst.Erase(7);
+    bst.Erase(1);
+    bst.Erase(14);
+    bst.Erase(13);
+    bst.Erase(6);
+    bst.Erase(5);
     bst.InOrder();
 
+    //禁止显式调用析构函数 --> 双重释放
+    //bst.~BSTree();
+    //cp.~BSTree();
+    
 }
 
 int main() {
-    test();
+    //test();
+    std::string str=  "   ";
+    size_t pos = 0;
+    std::cout<<std::stoi(str,&pos)<<std::endl;
 }
 
 #elif 0
