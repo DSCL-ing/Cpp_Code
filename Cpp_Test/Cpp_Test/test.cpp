@@ -66,7 +66,7 @@ public:
         } //循环搜索...
 
         //不存在,可以插入
-        cur = new Node(kv);
+        cur = new Node(kv); //新插入结点平衡因子都是0
         if (cur == parent->_left) {
             parent->_left = cur;
         }
