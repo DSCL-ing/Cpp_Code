@@ -339,6 +339,10 @@ namespace test
 		 */
 		void RotateL(node* parent)//左单旋 -- parent是bf为2的结点
 		{
+            //记录下父的右孩子 ==  我
+			//记录下我的左子树
+			//把我的左子树托管给父成为他的右孩子,我的右孩子的父更新成旧父
+			//旧父成为我的左儿子,旧父的父更新成我
 			node* subR = parent->_right;//sR
 			node* subRL = subR->_left; //b
 			
