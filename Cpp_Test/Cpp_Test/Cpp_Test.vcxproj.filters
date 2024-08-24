@@ -113,6 +113,9 @@
     <ClInclude Include="9Date.h">
       <Filter>源文件</Filter>
     </ClInclude>
+    <ClInclude Include="24.2AVL树.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="0应用场景.hpp">
