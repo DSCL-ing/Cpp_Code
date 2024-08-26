@@ -36,7 +36,7 @@ struct RBTreeNode {
 template<class K,class V>
 class RBTree {
 public:
-    bool Insert(const std::pair<K,V>& kv) {
+    bool Insert(const std::pair<K, V>& kv) {
         if (_root == nullptr) {
             _root = new Node(kv);
             _root->_col = Color::BLACK;
@@ -48,11 +48,11 @@ public:
         while (cur) {
             if (kv.first > cur->_kv.first) {
                 parent = cur;
-                cur = cur -> _right;
+                cur = cur->_right;
             }
             else if (kv.first < cur->_kv.first) {
                 parent = cur;
-                cur = cur -> _left;
+                cur = cur->_left;
             }
             else {
                 //存在相同的
@@ -69,14 +69,41 @@ public:
         else {
             parent->_left = cur;
         }
-    
-        //检查和调整红黑树
 
+        //检查和调整红黑树
+        //FixInsert();
+        while (parent && parent->_col == Color::RED) {
+            Node* grandpa = parent->_parent;
+            Node* uncle = nullptr;
+            if (parent == grandpa->_left && grandpa->_right) {
+                uncle = grandpa->_right;
+            }
+            else if (parent == grandpa->_right && grandpa->_left) {
+                uncle = grandpa->_left;
+            }
+            else {
+                uncle = nullptr;
+            }
+
+            if (uncle && uncle->_col == Color::RED) {
+                grandpa->_col = Color::RED;
+                uncle->_col = Color::BLACK;
+                parent->_col = Color::BLACK;
+
+                cur = parent;
+                parent = grandpa;
+                break;
+            }
+            else {
+
+
+            }
+        }
 
     }
 
 private:
-    using Node = RBTreeNode<K,V>;
+    using Node = RBTreeNode<K, V>;
     Node* _root;
 };
 
