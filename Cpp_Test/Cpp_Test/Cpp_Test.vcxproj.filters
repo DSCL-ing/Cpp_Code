@@ -24,7 +24,7 @@
     <ClCompile Include="Main_DataStructure.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="MyContainersTest.cpp">
+    <ClCompile Include="costTest.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="test.cpp">
@@ -113,7 +113,10 @@
     <ClInclude Include="9Date.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="24.2AVL树.hpp">
+    <ClInclude Include="24.2 AVLTree.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="25.2 RBTree.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
