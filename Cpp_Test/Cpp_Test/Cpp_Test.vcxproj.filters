@@ -119,6 +119,9 @@
     <ClInclude Include="25.2 RBTree.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="22.2 BSTree.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="0应用场景.hpp">

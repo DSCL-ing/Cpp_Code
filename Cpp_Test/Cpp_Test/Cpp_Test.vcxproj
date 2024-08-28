@@ -43,6 +43,7 @@
     </ClCompile>
     <ClCompile Include="costTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="test.cpp" />
     <ClCompile Include="源.cpp">
@@ -63,6 +64,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <FileType>Document</FileType>
     </None>
+    <ClInclude Include="22.2 BSTree.hpp" />
     <ClInclude Include="24.2 AVLTree.hpp" />
     <ClInclude Include="25.2 RBTree.hpp" />
     <ClInclude Include="9Date.h" />
