@@ -29,6 +29,16 @@ struct RBTreeNode {
 };
 
 template<class K,class V>
+struct itetator {
+    using Node = RBTreeNode<K,V>;
+    Node* _node;
+
+    Node& operator*() {
+        return *_node->_kv;
+    }
+};
+
+template<class K,class V>
 class RBTree {
 public:
     using Node = RBTreeNode<K, V>;
