@@ -29,15 +29,15 @@ struct RBTreeNode {
 };
 
 template<class K,class V>
-struct iterator {
+struct _RBTree_iterator {
     using Node = RBTreeNode<K,V>;
-    using Self = iterator<K,V>;
+    using Self = _RBTree_iterator<K,V>;
     Node* _node;
-    iterator(Node* node)
+    _RBTree_iterator(Node* node)
         :_node(node)
     {}
 
-    iterator(const iterator<K, V>& it)
+    _RBTree_iterator(const Self<K, V>& it)
         :_node(const_cast<Node*>(it._node))
     { }
 
@@ -105,7 +105,7 @@ struct iterator {
             //    asssert(false);
             //}
 
-            //上面3种情况可以合并成一种情况
+            //上面3种情况可以合并成一种情况:找最近的不是右孩子的祖父
             Node* parent = cur->_parent;
             while (parent && cur != parent->_left) {
                 cur = parent;
@@ -160,7 +160,7 @@ class RBTree {
 
 public: //construct
     using Node = RBTreeNode<K, V>;
-    using iterator = iterator<K, V>;
+    using iterator = _RBTree_iterator<K, V>;
     RBTree()
         :_root(nullptr)
     {}
@@ -179,7 +179,7 @@ public: //iterator
 
 public: //member function
 
-    Node* Find(const K& key) {
+    iterator Find(const K& key) {
         if (_root == nullptr) {
             return false;
         }

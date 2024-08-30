@@ -11,15 +11,42 @@
 
 template<class K>
 class my_set {
+public:
+    using Node = RBTreeNode<K,K>;
+    struct iterator {
+        using rb_iterator = _RBTree_iterator<K,K> ;
+        iterator() 
+        :it
+        {}
+        rb_iterator it;
+
+        K& operator*() {
+            return _node->_kv.first;
+        }
+
+        iterator operator++() {
+            
+        }
+    };
+    
+
     bool Insert(const K& key) {
-        return t.Insert(std::make_pair(key,key));
+        return _t.Insert(std::make_pair(key,key));
     }
 
-    //Node* Find(const K& key) {
-    //    return  t.Find(key);
-    //}
+    iterator Find(const K& key) {
+        return _t.Find(key);
+    }
+
+    iterator begin() {
+        return _t.begin();
+    }
+
+    iterator end() {
+        return _t.end();
+    }
     
-    RBTree<K,K> t;
+    RBTree<K,K> _t;
 };
 
 template<class K, class V>
@@ -32,31 +59,36 @@ class my_map {
 
 
 int main() {
-    //my_set<int> s;
-    //my_map<int,int> m;
-    //std::string str;
-    //for (int i = 0; i < 100; i++) {
-    //    str+=1;
-    //}
-    RBTree<int,int> t;
     int a[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16,14 };
+    my_set<int> s;
+    my_map<int,int> m;
     for(int it : a){
-        t.Insert(std::make_pair(it,it));
+        s.Insert(it);
     }
-    //t.InOrder();
 
-    auto it = t.begin();
-    while (it != t.end()) {
-        std::cout<<(*it).first<<std::endl;
-        ++it;
-        //测试++/--;
-        if (it != t.end()) {
-            it--;
-            it++;
-            --it;
-            ++it;
-        }
+    for (auto it : s) {
+        std::cout<<it<<std::endl;
     }
+
+
+    //RBTree<int,int> t;
+    //for(int it : a){
+    //    t.Insert(std::make_pair(it,it));
+    //}
+    ////t.InOrder();
+
+    //auto it = t.begin();
+    //while (it != t.end()) {
+    //    std::cout<<(*it).first<<std::endl;
+    //    ++it;
+    //    //测试++/--;
+    //    if (it != t.end()) {
+    //        it--;
+    //        it++;
+    //        --it;
+    //        ++it;
+    //    }
+    //}
 
     //for (auto it : t) {
     //    std::cout<<it.first<<std::endl;
