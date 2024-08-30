@@ -6,41 +6,67 @@
 #include<queue>
 #include<stack>
 
-#if 0
-//#include"25.2 RBTree.hpp"
-//
-//template<class K>
-//class my_set {
-//    bool Insert(const K& key) {
-//        return t.Insert(std::make_pair(key,key));
-//    }
-//
-//    //Node* Find(const K& key) {
-//    //    return  t.Find(key);
-//    //}
-//    
-//    RBTree<K,K> t;
-//};
-//
-//template<class K, class V>
-//class my_map {
-//    bool Insert(const std::pair<K, V>& kv) {
-//        return t.Insert(kv);
-//    }
-//    RBTree<K,V> t;
-//};
+#if 1
+#include"25.2 RBTree.hpp"
+
+template<class K>
+class my_set {
+    bool Insert(const K& key) {
+        return t.Insert(std::make_pair(key,key));
+    }
+
+    //Node* Find(const K& key) {
+    //    return  t.Find(key);
+    //}
+    
+    RBTree<K,K> t;
+};
+
+template<class K, class V>
+class my_map {
+    bool Insert(const std::pair<K, V>& kv) {
+        return t.Insert(kv);
+    }
+    RBTree<K,V> t;
+};
 
 
 int main() {
     //my_set<int> s;
     //my_map<int,int> m;
-    std::string str;
-    for (int i = 0; i < 100; i++) {
-        str+=1;
+    //std::string str;
+    //for (int i = 0; i < 100; i++) {
+    //    str+=1;
+    //}
+    RBTree<int,int> t;
+    int a[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16,14 };
+    for(int it : a){
+        t.Insert(std::make_pair(it,it));
     }
+    //t.InOrder();
+
+    auto it = t.begin();
+    while (it != t.end()) {
+        std::cout<<(*it).first<<std::endl;
+        ++it;
+        //测试++/--;
+        if (it != t.end()) {
+            it--;
+            it++;
+            --it;
+            ++it;
+        }
+    }
+
+    //for (auto it : t) {
+    //    std::cout<<it.first<<std::endl;
+    //}
+
+
+
 }
 
-#elif 1
+#elif 0
 #include <cstring>
 #include <iostream>
 #include <thread>

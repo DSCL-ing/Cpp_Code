@@ -29,23 +29,156 @@ struct RBTreeNode {
 };
 
 template<class K,class V>
-struct itetator {
+struct iterator {
     using Node = RBTreeNode<K,V>;
+    using Self = iterator<K,V>;
     Node* _node;
+    iterator(Node* node)
+        :_node(node)
+    {}
 
-    Node& operator*() {
-        return *_node->_kv;
+    iterator(const iterator<K, V>& it)
+        :_node(const_cast<Node*>(it._node))
+    { }
+
+    //要的就是浅拷贝,默认就好
+    //iterator<K, V>& operator=(iterator<K,V> it) {
+    //    std::swap(it._node,_node);
+    //    return *this;
+    //}
+
+    bool operator!=(const Self& s) {
+        return _node != s._node;
     }
+
+    std::pair<K, V>& operator*() {
+        return (*_node)._kv;
+    }
+
+    //++
+    /*
+        推导1:一个结点的左子树一定比自己小,右子树一定比自己大
+            我如果是父的左结点,则我一定比父小.反之我一定比父大.
+        一个结点的左子树的最小结点是最小的值,他的父是仅大于他的结点,他的父的右子树的最左结点是仅更大一点的结点.
+
+        升序: 左子树<根<右子树
+
+        如何找到自己结点的下一个正序数 :
+        1. 右子树一定比自己大,找右子树中最小那(最左结点)个就是比自己大的
+        2. 没有右子树,则说明自己是最大的了,自己这棵子树已经遍历完了;
+           1. 如果自己是父的右孩子,则说明父结点这棵树走到头了(我是最大),需要再看爷爷(迭代往上)
+           2. 如果自己是父的左孩子,则说明父结点是下一个正序数(推导1).
+    */
+    //前置++
+    Self& operator++() {
+        //此版本实现迭代器不需要判空,为空说明遍历结束,要么是用户错误使用
+        Node* cur = _node;
+        //1. 有右子树
+        if (cur->_right) {
+            //找右子树的最小结点
+            Node* rightMin = cur->_right;
+            while (rightMin->_left) {
+                rightMin = rightMin->_left;
+            }
+            _node = rightMin;
+        }
+        //2. 没有右子树
+        else {
+            ////1.没有父亲,说明是根
+            //Node* parent = cur->_parent;
+            //if (parent == nullptr) {
+            //    _node == nullptr;
+            //}
+            ////2.且我是父的左子树,说明父亲是下一个正序值
+            //else if (parent->_left == cur) {
+            //    _node = parent;
+            //}
+            ////3.或我是父亲的右子树,说明走完了当前最小分支祖先这棵树.迭代往上
+            //else if (parent->_right == cur) {
+            //    while (parent && cur != parent->_left) {
+            //        cur = parent;
+            //        parent = parent->_parent;
+            //    }
+            //    _node = parent;
+            //}
+            //else {
+            //    asssert(false);
+            //}
+
+            //上面3种情况可以合并成一种情况
+            Node* parent = cur->_parent;
+            while (parent && cur != parent->_left) {
+                cur = parent;
+                parent = parent->_parent;
+            }
+            _node = parent;
+        }
+        return *this;
+    }
+
+    //后置++
+    Self operator++(int) {
+        Self tmp(_node);
+        operator++();
+        return tmp;
+    }
+
+
+    Self& operator--() {
+        //将++反过来就是--
+        Node* cur = _node;
+        //左子树存在,就找最大
+        if (cur->_left) {
+            Node* leftMax = cur->_left;
+            while (leftMax->_right) {
+                leftMax = leftMax->_right;
+            }
+            _node = leftMax;
+        }
+        //2. 没有左子树
+        else {
+            Node* parent = cur->_parent;
+            while (parent && cur != parent->_right) {
+                cur = parent;
+                parent = parent->_parent;
+            }
+            _node = parent;
+        }
+        return *this;
+    }
+
+    Self operator--(int) {
+        Self tmp(_node);
+        operator--();
+        return tmp;
+    }
+
 };
 
-template<class K,class V>
+template<class K, class V>
 class RBTree {
-public:
+
+public: //construct
     using Node = RBTreeNode<K, V>;
+    using iterator = iterator<K, V>;
     RBTree()
         :_root(nullptr)
     {}
-public:
+
+public: //iterator
+    iterator begin() {
+        Node* cur = _root;
+        while (cur && cur->_left) {     //需要的是最左节点,不能走到空
+            cur = cur->_left;
+        }
+        return cur;
+    }
+    iterator end() {
+        return nullptr;
+    }
+
+public: //member function
+
     Node* Find(const K& key) {
         if (_root == nullptr) {
             return false;
