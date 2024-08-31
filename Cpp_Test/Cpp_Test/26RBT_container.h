@@ -61,22 +61,25 @@ namespace test
 			:_node(node)
 		{}
 
-		//因为set迭代器涉及到普通迭代器转换成const迭代器,所以需要写这个拷贝构造用于类型转换,
-		//原因1:如果是set把constK传给T.那么const迭代器的Ref就是const constT&,显然不能这么写
-		//原因2:const迭代器实例化后为<T,const T&, const T*> ,接收不了<T,T&,T*>的参数 -- 同一个类模板,只要模板参数不同就是不同类型了--多一个const也不行,类模板看<>一不一样
-		//综上得知,问题为类型转换问题,即需要单独给const迭代器写一个构造函数,参数为普通迭代器,即可解决类型转换问题
-		__RBTree_iterator(const __RBTree_iterator<T,T&,T*>& it) 
+		//首先,<class T, class Ref, class Ptr>这种写法能够提高复用性和灵活性(实现不同类型的迭代器)等,,库里迭代器都这么写
+		//其次,模板参数中,T用于获取类型,Ref用于返回引用,Ptr用于返回指针
+
+		using Self           = __RBTree_iterator<T,Ref,Ptr>;            //自己--实例化出下面两种迭代器
+		using iterator       = __RBTree_iterator<T,T&,T*>;              //普通迭代器
+		using const_iterator = __RBTree_iterator<T,const T&,const T*>;  //const迭代器
+		__RBTree_iterator(const iterator& it) 
 			:_node(it._node)
 		{}
-		//这个构造函数的作用,当迭代器模板被实例化成普通迭代器时,他就是构造函数
-		//    被实例化成const迭代器时,他是带参构造函数 --------->那么说,这个函数起到了一石二鸟的作用?
-		//const类型的作为返回值的迭代器接收(带参构造)隐式类型(拷贝构造)转换过来的临时变量? --应该也没这么复杂,直接建const临时变量拿来用可能
+		//这个构造函数的作用,
+	    //a.当迭代器被实例化成iterator时,他就是拷贝构造函数.      __RBTree_iterator<T,T&,T*>
+		//b.当迭代器被实例化成const_iterator时,他是支持隐式类型转换的带参构造函数. __RBTree_iterator<T,const T&,const T*> 
+
+		//这样实现的目的
+	    // 能够复用普通迭代器,可以通过类型转换后直接实现出const迭代器
 
 
-
-		//Ref为 T& 或 const T& 
-		//Ptr为 T* 或 const T*
-		typedef __RBTree_iterator<T, Ref, Ptr> Self;
+		//Ref为 T& 或 const T&, Ptr为 T* 或 const T*
+		//typedef __RBTree_iterator<T, Ref, Ptr> Self;
 
 		Ref operator*()
 		{
@@ -90,82 +93,88 @@ namespace test
 		{
 			return _node != x._node;
 		}
-		Self& operator++()
-		{
-			//++逻辑
-			/**
-			 * 如果右子树不为空,则下一个是右子树的最左节点
-			 *
-			 * 如果右子树完了,则父亲也完了.
-			 *
-			 * 如果我是父亲的左,完了则走父亲
-			 *
-			 * 直到没有父亲,结束
-			 *
-			 * 方法1:三叉链非递归
-			 * 方法2:借助栈,非递归
-			 *
-			 */
-			 //if (!_node) //还不知为何不需要判空
-			 //{
-			 //	return *this;
-			 //}
-
-			 /**
-			  * 特性:
-			  * -- 除了右子树为空,每个结点的下一个是他的右子树走到空的那一个,
-			  *
-			  * 1.如果右子树不为空,,每个结点的下一个是他的右子树的最左结点,右子树往左走走到空的那一个,
-			  * 2.如果右子树为空,则下一个是他所在的左子树的那个结点(祖先),cur往父亲的右倒着走,走到第一个出现的父亲的左,这个父亲就是下一个结点
-			  * -- 沿着到根的路径往上走，找孩子是左子树的那个祖先
-			  */
-			if (_node->_right)
-			{
-				node* cur = _node->_right;
-				while (cur->_left)
-				{
-					cur = cur->_left;
+		//前置++
+		Self& operator++() {
+			//此版本实现迭代器不需要判空,为空说明遍历结束,要么是用户错误使用
+			Node* cur = _node;
+			//1. 有右子树
+			if (cur->_right) {
+				//找右子树的最小结点
+				Node* rightMin = cur->_right;
+				while (rightMin->_left) {
+					rightMin = rightMin->_left;
 				}
-				_node = cur;
+				_node = rightMin;
 			}
-			else
-			{
-				node* cur = _node;
-				node* parent = _node->_parent;
-				while (parent && parent->_right == cur)
-				{
+			//2. 没有右子树
+			else {
+				////1.没有父亲,说明是根
+				//Node* parent = cur->_parent;
+				//if (parent == nullptr) {
+				//    _node == nullptr;
+				//}
+				////2.且我是父的左子树,说明父亲是下一个正序值
+				//else if (parent->_left == cur) {
+				//    _node = parent;
+				//}
+				////3.或我是父亲的右子树,说明走完了当前最小分支祖先这棵树.迭代往上
+				//else if (parent->_right == cur) {
+				//    while (parent && cur != parent->_left) {
+				//        cur = parent;
+				//        parent = parent->_parent;
+				//    }
+				//    _node = parent;
+				//}
+				//else {
+				//    asssert(false);
+				//}
+
+				//上面3种情况可以合并成一种情况:找最近的不是右孩子的祖父
+				Node* parent = cur->_parent;
+				while (parent && cur != parent->_left) {
 					cur = parent;
 					parent = parent->_parent;
 				}
 				_node = parent;
 			}
-
 			return *this;
 		}
-		Self& operator--()
-		{
-			//和++对称
-			if (_node->_left)
-			{
-				node* cur = _node->_left;
-				while (cur->_right)
-				{
-					cur = cur->_right;
+
+		//后置++
+		Self operator++(int) {
+			Self tmp(_node);
+			operator++();
+			return tmp;
+		}
+
+
+		Self& operator--() {
+			//将++反过来就是--
+			Node* cur = _node;
+			//左子树存在,就找最大
+			if (cur->_left) {
+				Node* leftMax = cur->_left;
+				while (leftMax->_right) {
+					leftMax = leftMax->_right;
 				}
-				_node = cur;
+				_node = leftMax;
 			}
-			else
-			{
-				node* cur = _node;
-				node* parent = _node->_parent;
-				while (parent && parent->_left == cur)
-				{
+			//2. 没有左子树
+			else {
+				Node* parent = cur->_parent;
+				while (parent && cur != parent->_right) {
 					cur = parent;
 					parent = parent->_parent;
 				}
 				_node = parent;
 			}
 			return *this;
+		}
+
+		Self operator--(int) {
+			Self tmp(_node);
+			operator--();
+			return tmp;
 		}
 	};
 

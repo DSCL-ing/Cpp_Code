@@ -7,68 +7,27 @@
 #include<stack>
 
 #if 1
-#include"25.2 RBTree.hpp"
 
-template<class K>
-class my_set {
+template<class T>
+class A{
 public:
-    using Node = RBTreeNode<K,K>;
-    struct iterator {
-        using rb_iterator = _RBTree_iterator<K,K> ;
-        iterator() 
-        :it
-        {}
-        rb_iterator it;
+using reference = T&;
+using const_reference = const T&;
+using pointer = T*;
+using const_pointer = const T*;
 
-        K& operator*() {
-            return _node->_kv.first;
-        }
+using const_A = A<const T>;
 
-        iterator operator++() {
-            
-        }
-    };
+    A()
     
-
-    bool Insert(const K& key) {
-        return _t.Insert(std::make_pair(key,key));
-    }
-
-    iterator Find(const K& key) {
-        return _t.Find(key);
-    }
-
-    iterator begin() {
-        return _t.begin();
-    }
-
-    iterator end() {
-        return _t.end();
-    }
     
-    RBTree<K,K> _t;
+    
 };
-
-template<class K, class V>
-class my_map {
-    bool Insert(const std::pair<K, V>& kv) {
-        return t.Insert(kv);
-    }
-    RBTree<K,V> t;
-};
-
 
 int main() {
     int a[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16,14 };
-    my_set<int> s;
-    my_map<int,int> m;
-    for(int it : a){
-        s.Insert(it);
-    }
 
-    for (auto it : s) {
-        std::cout<<it<<std::endl;
-    }
+
 
 
     //RBTree<int,int> t;

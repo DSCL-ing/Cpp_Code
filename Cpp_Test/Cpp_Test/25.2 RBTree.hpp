@@ -28,10 +28,11 @@ struct RBTreeNode {
     {}
 };
 
-template<class K,class V>
+template<class T>
 struct _RBTree_iterator {
-    using Node = RBTreeNode<K,V>;
-    using Self = _RBTree_iterator<K,V>;
+    using Node = RBTreeNode
+    using Self = _RBTree_iterator<T>
+    using Ref = T&;
     Node* _node;
     _RBTree_iterator(Node* node)
         :_node(node)
