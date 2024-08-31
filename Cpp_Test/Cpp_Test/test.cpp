@@ -8,54 +8,6 @@
 
 #if 1
 
-template<class T>
-class A{
-public:
-using reference = T&;
-using const_reference = const T&;
-using pointer = T*;
-using const_pointer = const T*;
-
-using const_A = A<const T>;
-
-    A()
-    
-    
-    
-};
-
-int main() {
-    int a[] = { 4, 2, 6, 1, 3, 5, 15, 7, 16,14 };
-
-
-
-
-    //RBTree<int,int> t;
-    //for(int it : a){
-    //    t.Insert(std::make_pair(it,it));
-    //}
-    ////t.InOrder();
-
-    //auto it = t.begin();
-    //while (it != t.end()) {
-    //    std::cout<<(*it).first<<std::endl;
-    //    ++it;
-    //    //测试++/--;
-    //    if (it != t.end()) {
-    //        it--;
-    //        it++;
-    //        --it;
-    //        ++it;
-    //    }
-    //}
-
-    //for (auto it : t) {
-    //    std::cout<<it.first<<std::endl;
-    //}
-
-
-
-}
 
 #elif 0
 #include <cstring>

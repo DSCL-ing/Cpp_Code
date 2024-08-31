@@ -109,7 +109,114 @@ void testHight() {
     std::cout << "\t高度" << avlt.Hight()<<std::endl;
 }
 
+void a() {
+
+    std::random_device rnd;//random num device //效率低，只用于生成种子
+    std::mt19937 rng(rnd()); //random num generator -- 生成随机数
+    std::uniform_int_distribution<int> uni(0, 1000000000);//整型区间筛选
+    //[0-N]有6成为不重复,4成重复 --若需要9成不重复需要扩大筛选范围为10倍的N,即插入N需筛选10N
+
+    //int a[] = { 3,1,8,4,2,7,5,9,6,0 }; //自定义数组
+    int size = 1000000;
+    int *a = new int[size];
+    std::cout << size << "个" << "随机数" << std::endl;
+    //std::cout<<size<<"个"<<"逆序数"<<std::endl;
+    //std::cout<<size<<"个"<<"正序数"<<std::endl;
+    //std::cout<<size<<"个"<<"重复数"<<std::endl;
+    for (int i = 0; i < size; i++) {
+        a[i] = uni(rng); //随机数
+        //a[i] = size - i; //逆序
+        //a[i] = i;         //正序
+        //a[i] = size/2;     //重复数
+        //if (i % 10000 == 0) {
+        //    a[i] = uni(rng);  //插入一些随机数
+        //}
+    }
+}
+
+void v() {
+    std::random_device rnd;//random num device //效率低，只用于生成种子
+    std::mt19937 rng(rnd()); //random num generator -- 生成随机数
+    std::uniform_int_distribution<int> uni(0, 1000000000);//整型区间筛选
+    //[0-N]有6成为不重复,4成重复 --若需要9成不重复需要扩大筛选范围为10倍的N,即插入N需筛选10N
+
+    //int a[] = { 3,1,8,4,2,7,5,9,6,0 }; //自定义数组
+    int size = 1000000;
+    std::vector<int> a(size);
+    std::cout << size << "个" << "随机数" << std::endl;
+    //std::cout<<size<<"个"<<"逆序数"<<std::endl;
+    //std::cout<<size<<"个"<<"正序数"<<std::endl;
+    //std::cout<<size<<"个"<<"重复数"<<std::endl;
+    for (int i = 0; i < size; i++) {
+        a[i] = uni(rng); //随机数
+        //a[i] = size - i; //逆序
+        //a[i] = i;         //正序
+        //a[i] = size/2;     //重复数
+        //if (i % 10000 == 0) {
+        //    a[i] = uni(rng);  //插入一些随机数
+        //}
+    }
+
+}
+
+void vp() {
+    std::random_device rnd;//random num device //效率低，只用于生成种子
+    std::mt19937 rng(rnd()); //random num generator -- 生成随机数
+    std::uniform_int_distribution<int> uni(0, 1000000000);//整型区间筛选
+    //[0-N]有6成为不重复,4成重复 --若需要9成不重复需要扩大筛选范围为10倍的N,即插入N需筛选10N
+
+    //int a[] = { 3,1,8,4,2,7,5,9,6,0 }; //自定义数组
+    int size = 1000000;
+    std::vector<int> a;
+    std::cout << size << "个" << "随机数" << std::endl;
+    //std::cout<<size<<"个"<<"逆序数"<<std::endl;
+    //std::cout<<size<<"个"<<"正序数"<<std::endl;
+    //std::cout<<size<<"个"<<"重复数"<<std::endl;
+    for (int i = 0; i < size; i++) {
+        //a[i] = uni(rng); //随机数
+        a.push_back(uni(rng));
+        //a[i] = size - i; //逆序
+        //a[i] = i;         //正序
+        //a[i] = size/2;     //重复数
+        //if (i % 10000 == 0) {
+        //    a[i] = uni(rng);  //插入一些随机数
+        //}
+    }
+
+}
+
+void ve() {
+    std::random_device rnd;//random num device //效率低，只用于生成种子
+    std::mt19937 rng(rnd()); //random num generator -- 生成随机数
+    std::uniform_int_distribution<int> uni(0, 1000000000);//整型区间筛选
+    //[0-N]有6成为不重复,4成重复 --若需要9成不重复需要扩大筛选范围为10倍的N,即插入N需筛选10N
+
+    //int a[] = { 3,1,8,4,2,7,5,9,6,0 }; //自定义数组
+    int size = 1000000;
+    std::vector<int> a;
+    std::cout << size << "个" << "随机数" << std::endl;
+    //std::cout<<size<<"个"<<"逆序数"<<std::endl;
+    //std::cout<<size<<"个"<<"正序数"<<std::endl;
+    //std::cout<<size<<"个"<<"重复数"<<std::endl;
+    for (int i = 0; i < size; i++) {
+        //a[i] = uni(rng); //随机数
+        a.emplace_back(uni(rng));
+        //a[i] = size - i; //逆序
+        //a[i] = i;         //正序
+        //a[i] = size/2;     //重复数
+        //if (i % 10000 == 0) {
+        //    a[i] = uni(rng);  //插入一些随机数
+        //}
+    }
+
+}
+
 int main() {
     //testInsert();
-    testHight();
+    //testHight();
+
+    Cost([&]() {std::cout << "cost: "; a(); });
+    Cost([&]() {std::cout << "cost: "; v(); });
+    Cost([&]() {std::cout << "cost: "; vp(); });
+    Cost([&]() {std::cout << "cost: "; ve(); });
 }

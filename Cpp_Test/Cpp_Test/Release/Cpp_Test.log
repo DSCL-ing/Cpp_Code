@@ -1,7 +1,7 @@
-﻿  test.cpp
+﻿  costTest.cpp
   正在生成代码
-  10 of 10 functions (100.0%) were compiled.
-    8 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  20 of 260 functions ( 7.7%) were compiled, the rest were copied from previous compilation.
+    19 functions were new in current compilation
+    46 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   Cpp_Test.vcxproj -> C:\Users\chj\Desktop\Repository\Cpp_Code\Cpp_Test\Release\Cpp_Test.exe

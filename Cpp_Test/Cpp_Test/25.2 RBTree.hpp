@@ -28,17 +28,16 @@ struct RBTreeNode {
     {}
 };
 
-template<class T>
-struct _RBTree_iterator {
-    using Node = RBTreeNode
-    using Self = _RBTree_iterator<T>
-    using Ref = T&;
+template<class K,class V>
+struct iterator {
+    using Node = RBTreeNode<K,V>;
+    using Self = iterator<K,V>;
     Node* _node;
-    _RBTree_iterator(Node* node)
+    iterator(Node* node)
         :_node(node)
     {}
 
-    _RBTree_iterator(const Self<K, V>& it)
+    iterator(const iterator<K, V>& it)
         :_node(const_cast<Node*>(it._node))
     { }
 
@@ -161,7 +160,7 @@ class RBTree {
 
 public: //construct
     using Node = RBTreeNode<K, V>;
-    using iterator = _RBTree_iterator<K, V>;
+    using iterator = iterator<K, V>;
     RBTree()
         :_root(nullptr)
     {}
@@ -180,7 +179,7 @@ public: //iterator
 
 public: //member function
 
-    iterator Find(const K& key) {
+    Node* Find(const K& key) {
         if (_root == nullptr) {
             return false;
         }
