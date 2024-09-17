@@ -7,7 +7,12 @@
 #include<stack>
 
 #if 1
-
+int main() {
+    int a = 0;  
+    sizeof a;
+    int b = 0;
+    return 0;
+}
 
 #elif 0
 #include <cstring>

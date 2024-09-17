@@ -108,496 +108,507 @@ namespace OpenAddress
 {
 
 	//state:状态
-	enum state { EMPTY, EXIST, DELETE }; //ctrl shitf U 一键变大
+    enum state {
+        EMPTY,
+        EXIST,
+        DELETE  //是否可以使用EMPTY代替? 使用delete能够提供更好的可读性,简化逻辑,提高性能;
+    }; 
 
-	template<class K, class V>
-	struct HashData
-	{
-		pair<K, V> _kv; //键值对
-		state _state = EMPTY; //状态//默认是空
-	};//HashData_end
-
-
-	template<class K, class V>
-	class HashTable
-	{
-	private:
-		std::vector<HashData<K, V>> _tables;
-		size_t _n = 0;
-	public:
-		bool insert(const pair<K, V>& kv)
-		{
-			if (find(kv.first))//找到就不能插入 unique
-			{
-				return false;
-			}
-			//负载因子超过0.7和空表就扩容 -- 负载因子是直接算出来的 -- 负载因子== 个数/容量
-			//扩容:
-			/**
-			 * 建立新的哈希表 -- 考虑空表
-			 * 遍历旧表,调用自己的insert,重新映射到新表
-			 *
-			 */
-			if (_tables.size() == 0 || _n * 10 / _tables.size() >= 7) //整型算不出小数
-			{
-				//空表和旧表都要开辟新表
-				size_t newsize = _tables.size() == 0 ? 10 : _tables.size() * 2;
-				HashTable<K, V> newht; //new HashTable
-
-				//要满足随机插入特性,需要扩容并初始化所有的容量,所以需要使用resize,不能使用reserve
-				newht._tables.resize(newsize);
-
-				//遍历旧表
-				for (auto& data : _tables)
-				{
-					if (data._state == EXIST)//只要存在就插入
-						//?插入后,新表没有delete了,问题:如果该位置没删除之前插入一个值x,即下一个线性探测位置存在,
-						//  然后负载因子0.7了,扩容,该位置delete变empty了,那再次find(x)能不能找得到? ---- 想多了,扩容后重新计算位置了,会有新的delete
-					{
-						newht.insert(data._kv);
-					}
-				}
-				//swap(newht._tables, _tables); //
-				_tables.swap(newht._tables); //好像这个好一点
-			}
-
-			//常规插入
-			//计算哈希值
-			//线性探测,如果当前哈希值位置状态存在,则进入循环 -- 
-
-			size_t hashi = kv.first % _tables.size();
-			size_t i = 1;
-			size_t index = hashi;
-			while (_tables[index]._state == EXIST) //所有都存在呢??????? --走完一圈就跳出来
-			{
-				index = hashi + i; //该结构是为了和其他如二次探测的算法结构类似
-				++i;
-				index %= _tables.size();//每次都模,一满就从0开始
-				if (index == hashi)
-				{
-					break;
-				}
-			}
-
-			_tables[index]._kv = kv;
-			_tables[index]._state = EXIST;
-			++_n;
-
-			return true;
-		} //insert_end
-
-		HashData<K, V>* find(const K& key)
-		{
-			if (_tables.size() == 0) //如果为数组空则不可能找到,返回空;
-			{
-				return nullptr;
-			}
-
-			size_t hashi = key % _tables.size();//起始位置
-			//线性探测
-			size_t i = 1;
-			size_t index = hashi;
-			while (_tables[index]._state != EMPTY) //数组中数据的状态不为空,即是“存在”或"删除"都进行查找
-			{
-				//哈希值应该有范围的
-
-				//元素状态为存在且key相等,则返回该元素地址?为什么不返回引用
-				if (_tables[index]._state == EXIST && _tables[index]._kv.first == key)
-				{
-					return &_tables[index];
-				}
-
-				index = hashi + i;
-				++i;
-				index %= _tables.size();
-
-				if (index == hashi)
-				{
-					break;
-				}
-				//不存在则继续往下遍历,走到底就从头开始,直到走完一圈
-				//如果走完一圈,回到起始位置后,结束循环
-
-			}
-			return nullptr;
-			//出循环后,说明没找到,返回空
-		}//find_end
-
-		bool erase(const K& key)
-		{
-			//找到key的位置,找不到返回否,找到则删除
-			/** 删除原理
-			 *
-			 * 为了因为冲突而插在非哈希值位置的元素,
-			 * 删除要将其置为|删除|状态,满足(空不查找,删除和存在都要查找)
-			 *
-			 *
-			 */
-			HashData<K, V>* ret = find(key);
-			if (ret)
-			{
-				ret->_state = DELETE;
-				--_n;
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		} //erase_end
-
-	}; //HashTable_end
-
-	void test_hash1()
-	{
-		int a[] = { 3,33,2,13,5,12,102 };
-		OpenAddress::HashTable<int, int> ht;
-
-		//insert test
-		for (auto i : a)
-		{
-			ht.insert(std::make_pair(i, i));
-		}
-		ht.insert(std::make_pair(15, 15));
+    template<class K, class V>
+    struct HashData
+    {
+        pair<K, V> _kv; //键值对
+        state _state = EMPTY; //状态//默认是空
+    };//HashData_end
 
 
-		//find and erase test
-		if (ht.find(13))
-		{
-			cout << "13在" << endl;
-		}
-		else
-		{
-			cout << "13不在" << endl;
-		}
+    template<class K, class V>
+    class HashTable
+    {
+    private:
+        std::vector<HashData<K, V>> _tables;    //线性表
+        size_t _n = 0;                          //容量
+    public:
+        bool insert(const pair<K, V>& kv)
+        {
+            if (find(kv.first))//找到就不能插入 unique
+            {
+                return false;
+            }
+            //负载因子超过0.7和空表就扩容 -- 负载因子是直接算出来的 -- 负载因子== 个数/容量
+            //扩容:
+            /**
+             * 建立新的哈希表 -- 考虑空表
+             * 遍历旧表,调用自己的insert,重新映射到新表
+             *
+             */
 
-		ht.erase(13);
+             //前置:根据数组特性可知,未初始化的空间是不能够随机访问的
+             //     有效空间范围:   [0,size]
+             //     已申请空间范围: [0,capacity]
 
-		if (ht.find(13))
-		{
-			cout << "13在" << endl;
-		}
-		else
-		{
-			cout << "13不在" << endl;
-		}
+             //1. 如果是空表,则初始化一段空间,能够保证这段空间能够随机访问
+            if (_tables.size() == 0 || _n * 10 / _tables.size() >= 7) //整型算不出小数
+            {
+                size_t newsize = _tables.size() == 0 ? 10 : _tables.size() * 2;
+                HashTable<K, V> newht; //new HashTable
 
-	}
+                //要满足随机插入特性,需要扩容并初始化所有的容量,所以需要使用resize,不能使用reserve
+                newht._tables.resize(newsize);
+
+                //遍历旧表
+                for (auto& data : _tables)
+                {
+                    if (data._state == EXIST)//只要存在就插入
+                        //?插入后,新表没有delete了,问题:如果该位置没删除之前插入一个值x,即下一个线性探测位置存在,
+                        //  然后负载因子0.7了,扩容,该位置delete变empty了,那再次find(x)能不能找得到? ---- 想多了,扩容后重新计算位置了,会有新的delete
+                    {
+                        newht.insert(data._kv);
+                    }
+                }
+                //swap(newht._tables, _tables); //
+                _tables.swap(newht._tables); //好像这个好一点: vector内部指针也帮我挪动了,简化代码
+            }
+
+            //常规插入
+            //计算哈希值
+            //线性探测,如果当前哈希值位置状态存在,则进入循环 -- 
+
+            //2. 为什么模size,不模capacity? ---> 只有[0,size]这段空间已初始化,能够进行随机访问
+            size_t hashi = kv.first % _tables.size();
+            size_t i = 1;
+            size_t index = hashi;
+            while (_tables[index]._state == EXIST) //所有都存在呢? 不可能,因为容量满时会扩容,在上文已经扩容了,一定有空间能够容纳,即至少有一次能够跳出循环
+            {
+                index = hashi + i; //该结构是为了和其他如二次探测的算法结构类似 ==> index = hash+i*i;
+                ++i;
+                index %= _tables.size();//据说叫"循环取模"处理,即将索引限制在数组的有效范围内
+                if (index == hashi) //当相等时即说明至少遍历完一遍了,还是找不到 ---> 不可能
+                {
+                    break;
+                }
+            }
+
+            _tables[index]._kv = kv;
+            _tables[index]._state = EXIST;
+            ++_n;
+
+            return true;
+        } //insert_end
+
+        HashData<K, V>* find(const K& key)
+        {
+            if (_tables.size() == 0) //如果为数组空则不可能找到,返回空;
+            {
+                return nullptr;
+            }
+
+            size_t hashi = key % _tables.size();//起始位置
+            //线性探测
+            size_t i = 1;
+            size_t index = hashi;
+            while (_tables[index]._state != EMPTY) //数组中数据的状态不为空,即是“存在”或"删除"都进行查找
+            {
+                //哈希值应该有范围的
+
+                //元素状态为存在且key相等,则返回该元素地址?为什么不返回引用
+                if (_tables[index]._state == EXIST && _tables[index]._kv.first == key)
+                {
+                    return &_tables[index];
+                }
+
+                index = hashi + i;
+                ++i;
+                index %= _tables.size();
+
+                if (index == hashi) //为了delete维护,走一圈就结束
+                {
+                    break;
+                }
+                //不存在则继续往下遍历,走到底就从头开始,直到走完一圈
+                //如果走完一圈,回到起始位置后,结束循环
+
+            }
+            return nullptr;
+            //出循环后,说明没找到,返回空
+        }//find_end
+
+        bool erase(const K& key)
+        {
+            //找到key的位置,找不到返回否,找到则删除
+            /** 删除原理
+             *
+             * 为了因为冲突而插在非哈希值位置的元素,
+             * 删除要将其置为|删除|状态,满足(空不查找,删除和存在都要查找)
+             *
+             *
+             */
+            HashData<K, V>* ret = find(key);
+            if (ret)
+            {
+                ret->_state = DELETE;
+                --_n;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        } //erase_end
+
+    }; //HashTable_end
+
+    void test_hash1()
+    {
+        int a[] = { 3,33,2,13,5,12,102 };
+        OpenAddress::HashTable<int, int> ht;
+
+        //insert test
+        for (auto i : a)
+        {
+            ht.insert(std::make_pair(i, i));
+        }
+        ht.insert(std::make_pair(15, 15));
+
+
+        //find and erase test
+        if (ht.find(13))
+        {
+            cout << "13在" << endl;
+        }
+        else
+        {
+            cout << "13不在" << endl;
+        }
+
+        ht.erase(13);
+
+        if (ht.find(13))
+        {
+            cout << "13在" << endl;
+        }
+        else
+        {
+            cout << "13不在" << endl;
+        }
+
+    }
 
 }
 
 
 //哈希桶的时间复杂度
 /**
- * 
+ *
  * 最坏情况O(n) :所有值都冲突,插在一个数组元素上
- * 
- * 但最坏情况基本不会发生,因为扩容存在,每次扩容都会重新计算哈希值,所以哈希桶一般不看最坏情况,和快排类似 
- * 
+ *
+ * 但最坏情况基本不会发生,因为扩容存在,每次扩容都会重新计算哈希值,所以哈希桶一般不看最坏情况,和快排类似
+ *
  * 增删查改时间复杂度:O(1)
- * 
+ *
  * 性能分析:统计各个桶的长度的概率,很少有极端场景出现
- * 
+ *
  * 万一有极端场景出现的解决方案
  * 1.负载因子控制:减小负载因子,空间换时间
  * 2.单个桶超过一定长度(java好像是8),这个桶不同链表改成红黑树 -- 通过联合体/共用体来控制  -- 绝对解决太长问题
- * 
+ *
  * .
  */
 
 
 namespace HashBucket //哈希桶
 {
-	//enum State{ EMPTY,EXIST,DELETE };//不需要状态
+    //enum State{ EMPTY,EXIST,DELETE };//不需要状态
 
-	//建一个原生结点方便控制
-	template<class K, class V>
-	struct HashNode
-	{
-		HashNode* _next = nullptr; //单链
-		pair<K, V> _kv; //KV都是存键值对
+    //建一个原生结点方便控制
+    template<class K, class V>
+    struct HashNode
+    {
+        HashNode* _next = nullptr; //单链
+        pair<K, V> _kv; //KV都是存键值对
 
-		HashNode(const pair<K, V>& kv)
-			:_kv(kv)
-		{}
+        HashNode(const pair<K, V>& kv)
+            :_kv(kv)
+        {}
 
-	}; //HashNode_end
-
-
-	//解决key不同类型取模的问题
-	//仿函数--给不同类型增加可以取模的对象
-	template<typename K>
-	struct HashFunc //默认仿函数
-	{
-		size_t operator()(const K& key)
-		{
-			return key;
-		}
-	};
-	template<>
-	struct HashFunc<std::string> //string 特化
-	{
-		//字符串哈希处理
-		/**
-		 * 一般处理是将字符串的每个字符加起来(字符可以加)
-		 * 
-		 * 但直接相加很容易发生冲突,如aabb,bbaa.abab等
-		 * 
-		 * (衍生场景:字符串比对:来一个地址很长,通过相加计算他的哈希值,然后搜索库中的哈希表中,把冲突的几个拿出来比对.这种方法比一个一个比对快很多.)
-		 * 
-		 * 使用BKDR算法
-		 * https://www.cnblogs.com/-clq/archive/2012/05/31/2528153.html
-		 * 
-		 */
-		size_t operator()(const std::string& s)
-		{
-			size_t ret = 0;
-			for (auto ch : s)
-			{
-				ret += ch;
-				ret *= 31;
-			}
-			return ret;
-		}
-	};
-
-	//计算哈希值用的太多了,可以考虑封装成函数
-	template<class K, class V,class Hash = HashFunc<K>>
-	class HashTable
-	{
-	public:
-		typedef HashNode<K, V> node;
-	public:
-		size_t _n = 0;
-		std::vector<node*> _tables;
-
-	public:
-
-		~HashTable()
-		{
-			for (auto& cur : _tables)
-			{
-				while (cur)
-				{
-					node* next = cur->_next;
-					delete cur;
-					cur = next;
-				}
-			}
-			//析构,只需要析构主动申请的空间,栈空间不需要,防止内存泄漏
-		}
+    }; //HashNode_end
 
 
-		size_t GetNextPrime(size_t prime)
-		{
-			// SGI -- 控制每次扩容的值为素数 --- 目前没有证据必要是素数 ,java没有使用这种方法
-			// 因为每次扩容的值为素数不好控制,SGI给定一个数组
-			static const int __stl_num_primes = 28; //一共28个值
-			static const unsigned long __stl_prime_list[__stl_num_primes] =
-			{
-				53, 97, 193, 389, 769,
-				1543, 3079, 6151, 12289, 24593,
-				49157, 98317, 196613, 393241, 786433,
-				1572869, 3145739, 6291469, 12582917, 25165843,
-				50331653, 100663319, 201326611, 402653189, 805306457,
-				1610612741, 3221225473, 4294967291
-			};
-			size_t i = 0;//后面复用需要
-			for ( ;i < __stl_num_primes; ++i)
-			{
-				if (__stl_prime_list[i] > prime) 
-					return __stl_prime_list[i];    //返回比实参大的元素
-			}
+    //解决key不同类型取模的问题:将特定类型转化成可以去模的类型(整型)
+    //仿函数--给不同类型增加可以取模的对象
+    template<typename K>
+    struct HashFunc //默认仿函数
+    {
+        size_t operator()(const K& key)
+        {
+            return key;
+        }
+    };
+    template<>
+    struct HashFunc<std::string> //string 特化:
+    {
+        //字符串哈希处理
+        /**
+         * 一般处理是将字符串的每个字符加起来(字符可以加)
+         *
+         * 但直接相加很容易发生冲突,如aabb,bbaa.abab等
+         *
+         * (衍生场景:字符串比对:来一个地址很长,通过相加计算他的哈希值,然后搜索库中的哈希表中,把冲突的几个拿出来比对.这种方法比一个一个比对快很多.)
+         *
+         * 使用BKDR算法
+         * https://www.cnblogs.com/-clq/archive/2012/05/31/2528153.html
+         *
+         */
+        size_t operator()(const std::string& s)
+        {
+            //字符串中的每一个字符对应的ascii值都乘以31
+            size_t ret = 0;
+            for (auto ch : s)
+            {
+                ret += ch;
+                ret *= 31;
+            }
+            return ret;
+        }
+    };
 
-			return __stl_prime_list[i];
-		}
+    //计算哈希值用的太多了,可以考虑封装成函数
+    template<class K, class V, class Hash = HashFunc<K>>
+    class HashTable
+    {
+    public:
+        typedef HashNode<K, V> node;
+    public:
+        size_t _n = 0;
+        std::vector<node*> _tables;
 
+    public:
 
-		bool insert(const pair<K, V>& kv)
-		{
-			Hash hash;
-			//插入:头插有什么好处? 1.高效O(1) 
-			
-			//负载因子越大,冲突的概率越高,查找效率越低,空间利用率越高
-			//负载因子越小,冲突的概率越低,查找效率越高,空间利用率越低 : 空间换时间
-			
-			//最好的情况是负载因子==1,相当于平均每个下标挂一个. 先负载因子==1时扩容 
-			
-			//扩容直接将原结点挪动下来 -- 每一个结点都需要重新计算hash值插入
-			if (find(kv.first)!=nullptr)
-			{
-				return false;
-			}
-
-			//负载因子为1时扩容,什么时候负载因子为1? : 平均每个数组元素下边挂一个结点,即结点数量==数组大小
-			//空表时呢? 空表时结点数量也 == 数组大小 == 0
-			if (_n == _tables.size())//负载因子
-			{
-				size_t newsize = GetNextPrime(_tables.size());
-
-				//size_t newsize = _tables.size() == 0 ? 10 : 2 * _tables.size();
-				/*_tables.resize(newsize,nullptr);*/ //不能直接resize,因为会使原数据全部丢失
-				std::vector<node*> newht(newsize, nullptr);
-
-				//遍历旧表,插到新表
-				for (auto& cur : _tables)//拿到每个元素:元素是一个存放结点的指针变量(通过这个指针变量可以使用*和->控制结点行为,但这个指针变量是vector的元素,不操作vector则不会收到影响)
-				{
-					while (cur) //遍历悬挂的单链表
-					{
-						node* next = cur->_next;
-						/*newht.insert(cur._kv);*/ //不能这么写,因为这就是个顺序表,不是闭散列哈希表
-
-						size_t hashi = hash(cur->_kv.first) % newht.size();
-
-						cur->_next = newht[hashi];
-						newht[hashi] = cur;
-
-						cur = next;
-					}
-				}
-				_tables.swap(newht);
-				//需不需要主动释放旧数组? 不需要出了insert自动释放
-				//newht.~vector();C++11
-			}
-			//常规插入
-			size_t hashi = hash(kv.first) % _tables.size();
-
-			node* newnode = new node(kv);
-			newnode->_next = _tables[hashi];
-			_tables[hashi] = newnode;
-			++_n;
-
-			return true;
-		}//insert_end
-
-		//find和erase都需要查找:因为有key,只需要确定哈希值去遍历就行
-
-		node* find(const K& key)
-		{
-			Hash hash;
-
-			if (_n == 0)
-			{
-				return nullptr;
-			}
-			size_t hashi = hash(key) % _tables.size();
-			node* cur = _tables[hashi];
-
-			while (cur)
-			{
-				if (cur->_kv.first == key)
-				{
-					return cur;
-				}
-				cur = cur->_next;
-			}
-
-			return nullptr;
-		} //find_end
-
-		bool erase(const K& key)
-		{
-			Hash hash;
-			size_t hashi = hash(key) % _tables.size();
-
-			node* cur = _tables[hashi];
-			node* prev = nullptr;
-			while (cur)
-			{
-				if (cur->_kv.first == key)
-				{
-					if (!prev)
-					{
-						_tables[hashi] = cur->_next;
-					}
-					else
-					{
-						prev->_next = cur->_next;
-					}
-					delete cur;
-
-					return true;
-				}
-				prev = cur;
-				cur = cur->_next;
-			}
-			
-			return false;
-		}//erase_end
-
-		size_t MaxBucketSize()
-		{
-			size_t max = 0;
-			for (size_t i = 0; i < _tables.size(); ++i)
-			{
-				auto cur = _tables[i];
-				size_t size = 0;
-				while (cur)
-				{
-					++size;
-					cur = cur->_next;
-				}
-
-				//printf("[%d]->%d\n", i, size);
-				if (size > max)
-				{
-					max = size;
-				}
-			}
-
-			return max;
-		}
+        ~HashTable()
+        {
+            for (auto& cur : _tables)
+            {
+                while (cur)
+                {
+                    node* next = cur->_next;
+                    delete cur;
+                    cur = next;
+                }
+            }
+            //析构,只需要析构主动申请的空间,栈空间不需要,防止内存泄漏
+        }
 
 
-	};//HashBucket_end
+        size_t GetNextPrime(size_t prime)
+        {
+            // SGI -- 控制每次扩容的值为素数 --- 目前没有证据必要是素数 ,java没有使用这种方法
+            // 因为每次扩容的值为素数不好控制,SGI给定一个数组
+            static const int __stl_num_primes = 28; //一共28个值
+            static const unsigned long __stl_prime_list[__stl_num_primes] =
+            {
+                53, 97, 193, 389, 769,
+                1543, 3079, 6151, 12289, 24593,
+                49157, 98317, 196613, 393241, 786433,
+                1572869, 3145739, 6291469, 12582917, 25165843,
+                50331653, 100663319, 201326611, 402653189, 805306457,
+                1610612741, 3221225473, 4294967291
+            };
+            size_t i = 0;//后面复用需要
+            for (; i < __stl_num_primes; ++i)
+            {
+                if (__stl_prime_list[i] > prime)
+                    return __stl_prime_list[i];    //返回比实参大的元素
+            }
+
+            return __stl_prime_list[i];
+        }
 
 
-	void test_hash1()
-	{
-		int a[] = { 3,33,2,13,5,12,102 };
-		HashBucket::HashTable<int, int> ht;
+        bool insert(const pair<K, V>& kv)
+        {
+            Hash hash;
+            //插入:头插有什么好处? 1.高效O(1) 
 
-		for (auto& i : a)
-		{
-			ht.insert(make_pair(i, i));
-		}
+            //负载因子越大,冲突的概率越高,查找效率越低,空间利用率越高
+            //负载因子越小,冲突的概率越低,查找效率越高,空间利用率越低 : 空间换时间
 
-		ht.insert(make_pair(15, 15));
-		ht.insert(make_pair(25, 25));
-		ht.insert(make_pair(35, 35));
-		ht.insert(make_pair(45, 45));
+            //最好的情况是负载因子==1,相当于平均每个下标挂一个. 先负载因子==1时扩容 
 
-		//find 不用测试,嵌在insert里了
-		ht.erase(12);
-		ht.erase(3);
-		ht.erase(33);
-	}
+            //扩容直接将原结点挪动下来 -- 每一个结点都需要重新计算hash值插入
+            if (find(kv.first) != nullptr)
+            {
+                return false;
+            }
 
-	void test_hash2()
-	{
-		std::string arr[] = { "苹果", "西瓜", "苹果", "西瓜", "苹果", "苹果", "西瓜","苹果", "香蕉", "苹果", "香蕉" };
-		HashBucket::HashTable<std::string, std::string> ht; 
-		for (auto& s : arr)
-		{
-			ht.insert(std::make_pair(s,s));
-		}
-	}
+            //负载因子为1时扩容,什么时候负载因子为1? : 平均每个数组元素下边挂一个结点,即结点数量==数组大小
+            //空表时呢? 空表时结点数量也 == 数组大小 == 0
+            if (_n == _tables.size())//负载因子
+            {
+                size_t newsize = GetNextPrime(_tables.size());
 
-	//性能分析 -- 自己改成高随机算法再测试
-	void test_hash3()
-	{
-		size_t N = 900000;
-		HashTable<int, int> ht;
-		srand((size_t)time(0));
-		for (size_t i = 0; i < N; ++i)
-		{
-			size_t x = rand() + i;
-			ht.insert(make_pair(x, x));
-		}
+                //size_t newsize = _tables.size() == 0 ? 10 : 2 * _tables.size();
+                /*_tables.resize(newsize,nullptr);*/ //不能直接resize,因为会使原数据全部丢失
+                std::vector<node*> newht(newsize, nullptr);
 
-		cout << ht.MaxBucketSize() << endl;
-	}
-	
+                //遍历旧表,插到新表
+                for (auto& cur : _tables)//拿到每个元素:元素是一个存放结点的指针变量(通过这个指针变量可以使用*和->控制结点行为,但这个指针变量是vector的元素,不操作vector则不会收到影响)
+                {
+                    while (cur) //遍历悬挂的单链表
+                    {
+                        node* next = cur->_next;
+                        /*newht.insert(cur._kv);*/ //不能这么写,因为这就是个顺序表,不是闭散列哈希表
+
+                        size_t hashi = hash(cur->_kv.first) % newht.size();
+
+                        cur->_next = newht[hashi];
+                        newht[hashi] = cur;
+
+                        cur = next;
+                    }
+                }
+                _tables.swap(newht);
+                //需不需要主动释放旧数组? 不需要出了insert自动释放
+                //newht.~vector();C++11
+            }
+            //常规插入
+            size_t hashi = hash(kv.first) % _tables.size();
+
+            node* newnode = new node(kv);
+            newnode->_next = _tables[hashi];
+            _tables[hashi] = newnode;
+            ++_n;
+
+            return true;
+        }//insert_end
+
+        //find和erase都需要查找:因为有key,只需要确定哈希值去遍历就行
+
+        node* find(const K& key)
+        {
+            Hash hash;
+
+            if (_n == 0)
+            {
+                return nullptr;
+            }
+            size_t hashi = hash(key) % _tables.size();
+            node* cur = _tables[hashi];
+
+            while (cur)
+            {
+                if (cur->_kv.first == key)
+                {
+                    return cur;
+                }
+                cur = cur->_next;
+            }
+
+            return nullptr;
+        } //find_end
+
+        bool erase(const K& key)
+        {
+            Hash hash;
+            size_t hashi = hash(key) % _tables.size();
+
+            node* cur = _tables[hashi];
+            node* prev = nullptr;
+            while (cur)
+            {
+                if (cur->_kv.first == key)
+                {
+                    if (!prev)
+                    {
+                        _tables[hashi] = cur->_next;
+                    }
+                    else
+                    {
+                        prev->_next = cur->_next;
+                    }
+                    delete cur;
+
+                    return true;
+                }
+                prev = cur;
+                cur = cur->_next;
+            }
+
+            return false;
+        }//erase_end
+
+        size_t MaxBucketSize()
+        {
+            size_t max = 0;
+            for (size_t i = 0; i < _tables.size(); ++i)
+            {
+                auto cur = _tables[i];
+                size_t size = 0;
+                while (cur)
+                {
+                    ++size;
+                    cur = cur->_next;
+                }
+
+                //printf("[%d]->%d\n", i, size);
+                if (size > max)
+                {
+                    max = size;
+                }
+            }
+
+            return max;
+        }
+
+
+    };//HashBucket_end
+
+
+    void test_hash1()
+    {
+        int a[] = { 3,33,2,13,5,12,102 };
+        HashBucket::HashTable<int, int> ht;
+
+        for (auto& i : a)
+        {
+            ht.insert(make_pair(i, i));
+        }
+
+        ht.insert(make_pair(15, 15));
+        ht.insert(make_pair(25, 25));
+        ht.insert(make_pair(35, 35));
+        ht.insert(make_pair(45, 45));
+
+        //find 不用测试,嵌在insert里了
+        ht.erase(12);
+        ht.erase(3);
+        ht.erase(33);
+    }
+
+    void test_hash2()
+    {
+        std::string arr[] = { "苹果", "西瓜", "苹果", "西瓜", "苹果", "苹果", "西瓜","苹果", "香蕉", "苹果", "香蕉" };
+        HashBucket::HashTable<std::string, std::string> ht;
+        for (auto& s : arr)
+        {
+            ht.insert(std::make_pair(s, s));
+        }
+    }
+
+    //性能分析 -- 自己改成高随机算法再测试
+    void test_hash3()
+    {
+        size_t N = 900000;
+        HashTable<int, int> ht;
+        srand((size_t)time(0));
+        for (size_t i = 0; i < N; ++i)
+        {
+            size_t x = rand() + i;
+            ht.insert(make_pair(x, x));
+        }
+
+        cout << ht.MaxBucketSize() << endl;
+    }
+
 }
 
 

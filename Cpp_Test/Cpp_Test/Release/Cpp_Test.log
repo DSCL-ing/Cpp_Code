@@ -1,7 +1,13 @@
 ﻿  costTest.cpp
+C:\Users\chj\Desktop\Repository\Cpp_Code\Cpp_Test\Cpp_Test\costTest.cpp(124,10): warning C4834: 放弃具有 "nodiscard" 属性的函数的返回值
+C:\Users\chj\Desktop\Repository\Cpp_Code\Cpp_Test\Cpp_Test\costTest.cpp(147): message : 查看对正在编译的函数 模板 实例化“void t_find<std::set<int,std::less<int>,std::allocator<int>>>(T &,int *,int)”的引用
+          with
+          [
+              T=std::set<int,std::less<int>,std::allocator<int>>
+          ]
   正在生成代码
-  20 of 260 functions ( 7.7%) were compiled, the rest were copied from previous compilation.
-    19 functions were new in current compilation
-    46 functions had inline decision re-evaluated but remain unchanged
+  2 of 480 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
   已完成代码的生成
   Cpp_Test.vcxproj -> C:\Users\chj\Desktop\Repository\Cpp_Code\Cpp_Test\Release\Cpp_Test.exe
