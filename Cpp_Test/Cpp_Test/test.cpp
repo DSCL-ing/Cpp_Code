@@ -7,10 +7,44 @@
 #include<stack>
 
 #if 1
-int main() {
-    int a = 0;  
-    sizeof a;
-    int b = 0;
+//class A
+//{
+//public:
+//    virtual void func(int val = 1) { std::cout << "A->" << val << std::endl; }
+//    virtual void test() {};
+//};
+//
+//class B : public A
+//{
+//public:
+//    void func(int val = 0) override{ std::cout << "B->" << val << std::endl; }
+//    virtual void test() override{ func(); }
+//};
+//
+//int main(int argc, char* argv[])
+//{
+//    B* p = new B;
+//    p->test();
+//    return 0;
+//}
+
+class A
+{
+public:
+    virtual void func(int val = 1) { std::cout << "A->" << val << std::endl; }
+    virtual void test() { func(); }
+};
+
+class B : public A
+{
+public:
+    void func(int val = 0) {  std::cout<<typeid(this).name()<<std::endl;  std::cout << "B->" << val << std::endl; }
+};
+
+int main(int argc, char* argv[])
+{
+    B* p = new B;
+    p->test();
     return 0;
 }
 
