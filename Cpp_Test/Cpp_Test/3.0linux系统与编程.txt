@@ -1189,6 +1189,35 @@ vim 宏录制
 4. 启用宏: 数字(重复次数,默认为1)+@+寄存器
 }
 
+#### vim打开explore
+{
+  :Explore 
+  :Sexplore or :Sex     ##分列打开
+  :Vexplore or :Vex     ##分行打开
+}
+
+#### vim中调整窗口尺寸
+{
+    resize +n 将当前窗口高度增加n行  等同于 ctrl+w +，就是同时按住ctrl和w键后再按+键
+    resize -n 将当前窗口高度减少n行   等同于 ctrl+w -
+    vertical resize ±n 将当前窗口宽度增加或减少n列 等同于ctrl+w < or >
+    
+    所以可以增加映射来调整窗口大小，例如使用shift+上下左右键分别来调整窗口大小，具体如下：
+    nnoremap <S-Up> :resize -1<CR>
+    nnoremap <S-Down> :resize +1<CR>
+    nnoremap <S-Left> :vertical resize -1<CR>
+    nnoremap <S-Right> :vertical resize +1<CR>
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
