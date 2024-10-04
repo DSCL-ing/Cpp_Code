@@ -1750,12 +1750,22 @@ git log查看commit 记录,
 git checkout <commit> <绝对/相对路径>
 例:git checkout c3437c4c2ea505ab948623b0177e8f5049fa4e06 . //恢复某次提交到当前目录
 
+git checkout -- 文件    //即可恢复已提交的文件
+
 三.
 git add 时出现: LF will be replaced by CRLF the next time Git touches it
 //https://blog.csdn.net/weixin_44786530/article/details/129735762
 
 
-//颜色.....
+
+
+
+
+
+
+
+
+##### 颜色.....
 
 一般系统默认的提示符形式是：[username@host 工作目录]$ 
 
