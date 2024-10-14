@@ -6,151 +6,128 @@
 #include<queue>
 #include<stack>
 #include<memory>
+#include<vector>
 
 #if 1
-// bugTest.cpp: 定义应用程序的入口点。
-//
-
-#include <iostream>
-#include <string>
-#include <algorithm>
+#include <queue>
+#include <unordered_map>
 #include <vector>
+#include <functional>
 
-class BugTemplate {
-public:
-    virtual void FixTest() = 0;
+
+#include<iostream>
+#include<string>
+#include<cstring>
+#include<memory>
+#include<vector>
+
+//POD 平凡 标准布局
+template <typename T, size_t Cap>
+struct Vec {
+    T arr[Cap];
+    size_t len;
 };
 
-//存在1个bug
-class ClassBug :public BugTemplate
+template <size_t Cap>
+struct Str {
+    char str[Cap];
+    size_t len;
+};
+
+struct MyData {
+    Str<128> name{};
+    Vec<int, 512> vec{};         //设为INT先,可以改模板
+};
+
+bool ser_my_data(const MyData& data, uint8_t* buff, size_t len)
 {
-private:
-    const std::string StringToUpper(const std::string& src)
-    {
-        std::string temp;
-        temp = src;
-        //std::transform(输入起始,输入结束,输出起始,处理函数);
-        std::transform(temp.begin(), temp.end(), temp.begin(), ::toupper);
-        return temp;    //返回拷贝
+    //len是输出缓冲区长度,如果len<data.size,说明缓冲区存不下 -> false
+    if (len > sizeof(data)) {
+        return false;
     }
 
-    const std::string StringToLower(const char* src)
-    {
-        std::string temp;
-        temp = src;
-        std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
-        return temp;
-    }
+    //序列化
+    size_t offset = 0;
 
-public:
-    ClassBug() {}
-    ~ClassBug() {}
-    //需要修复乱码问题
-    //tip:考察对类的作用域理解
-    virtual void FixTest()  override//不上override,提高可读性
-    {
-        std::cout << "请修复bug，使程序正确输出转大写转小写" << std::endl;
-        const char* test = "ABCddasdasdaddaweqWADfFcddasdasdaddaweqewabcddasdasdaddaweWQD";
-        std::string test1 = StringToUpper(test);
-        //const char* test2 = StringToLower(test).c_str();  //该函数返回的是一个临时对象,char*又指向的是一个由临时对象管理的资源,临时对象一销毁,char*就是垂悬指针了;因此不能使用指针,需要使用对象来拷贝或移动使资源的生命周期延长;
-        std::string test2 = StringToLower(test).c_str();    //不需要显式使用std::move,现在编译器会自动优化,比使用效果更好
+    //序列化Str.len
+    //值+类型大小
+    std::memcpy(buff + offset, &data.name.len, sizeof(data.name.len));
+    offset += sizeof(data.name.len);
 
-        std::cout << test << std::endl;
-        std::cout << test1 << std::endl;
-        std::cout << test2 << std::endl;
+    //序列化Str.str
+    //内容+长度
+    std::memcpy(buff + offset, &data.name.str, sizeof(data.name.str));
+    offset += sizeof(data.name.str);
 
-    }
+    //序列化vec
+    std::memcpy(buff + offset, &data.vec.len, sizeof(data.vec.len));    //值
+    offset += sizeof(data.vec.len);                                   //长度
 
-};
+    std::memcpy(buff + offset, &data.vec.arr, sizeof(data.vec.arr));     //数组
+    offset += sizeof(data.vec.arr);                                      //数组长度
 
+    return true;
 
-struct buffertest {
-    char strbuffer1[9];
-    char strbuffer2[9];
-    char strbuffer3[9];
-};
+}
 
-//存在3个bug
-class CopyBug :public BugTemplate
+//C++17 optional 还不会
+std::shared_ptr<MyData> deser_my_data(uint8_t* buff, size_t len)
 {
-public:
-    CopyBug() {}
-    ~CopyBug() {}
-    //需要修复乱码问题
-    virtual void FixTest()
-    {
+    std::shared_ptr<MyData> data = std::make_shared<MyData>();
+    size_t offset = 0;
 
-        std::cout << "请让程序能够正常输出ABCDEFGHIJKLMNOP" << std::endl;
-        buffertest* buffer = (buffertest*)malloc(sizeof(buffertest));   //bug1:内存泄漏 -> 智能指针或free
-        //bug2:malloc可能不会成功返回有效空间指针,例如内存不足时可能会返回NULL,因此需要检测
-        if (buffer == nullptr) {
-            perror("malloc is NULL");
-            return ;
-            //exit;
-            //assert(false);
-            //...
-        }
+    // 反序列化 Str<128> name
+    std::memcpy(&data->name.len, buff + offset, sizeof(data->name.len));
+    offset += sizeof(data->name.len);
 
-        //bug3:malloc的对象是未初始化的,可能存在不确定的值 -> 使用memset清零
-        memset(buffer,0,sizeof(buffer));
-        
-        //bug4:字符串常量隐藏了一个\0,大小是字面值的个数+1;因此解决方法可以是给buffer的数组扩大容量
-        strcpy(buffer->strbuffer2, "IJKLMNOP");
-        strcpy(buffer->strbuffer1, "ABCDEFGH");
-        //也可以使用strncpy,strncpy,保证buffer不会溢出;
+    std::memcpy(&data->name.str, buff + offset, sizeof(data->name.str));
+    offset += sizeof(data->name.str);
 
-        std::cout << buffer->strbuffer1;
-        std::cout << buffer->strbuffer2 << std::endl;
-        
-        free(buffer);
-    }
-};
+    // 反序列化 Vec<int, 512> vec
+    std::memcpy(&data->vec.len, buff + offset, sizeof(data->vec.len));
+    offset += sizeof(data->vec.len);
 
-//存在一个bug
-class VectorBug :public BugTemplate
-{
-public:
-    VectorBug() {}
-    ~VectorBug() {}
-    virtual void FixTest()
-    {
-        std::vector<int> vec = { 1,2,3,4,5,6,7,8,9 };
-        std::cout << "正确使用迭代器删除程序前三个数值,使程序不崩溃" << std::endl;
-        std::vector<int>::iterator it = vec.begin();
-        for (int i = 0; i < 3; i++)
-        {
-            it = vec.erase(it); //erase后会返回删除前该元素的下一个元素位置的迭代器
-            //it++; //迭代器失效了,不能再++
-        }
-        for (it = vec.begin(); it != vec.end(); it++)
-        {
-            std::cout << *it << " ";
-        }
+    std::memcpy(&data->vec.arr, buff + offset, sizeof(data->vec.arr));
+    offset += sizeof(data->vec.arr);
 
-    }
-};
-
-
-//修复bug 使程序正常运作
-int main()
-{
-    {
-        ClassBug bug;
-        bug.FixTest();
-    }
-    {
-        CopyBug bug;
-        bug.FixTest();
-    }
-    {
-        VectorBug bug;
-        bug.FixTest();
-    }
-    system("pause");
-    return 0;
+    return data;
 }
 
 
+int main() {
+    //MyData data;
+    //std::string str = "zhangsan";   //输入数据
+    //strcpy(data.name.str,str.c_str());
+    //data.name.len = str.size();
+    //int a[] = {1,2,3,4,5};    //输入数据
+    //for(int i = 0 ; i< sizeof(a); i++){
+    //    data.vec.arr[i] = a[i];
+    //}
+
+
+    ////序列化
+    //uint8_t buffer[1024];
+    //if (ser_my_data(data, (uint8_t*)buffer, sizeof(buffer))) {
+    //    std::cout<<"serialize success"<<std::endl;
+    //}
+    //else {
+    //    std::cerr<<"serialize error"<<std::endl;
+    //    return -1;
+    //}
+
+    ////反序列化
+    //auto deser_data = deser_my_data(buffer,sizeof(buffer));
+    //std::cout<<"name: "<< data.name.str << " len: "<<data.name.len<<std::endl;
+    ////for std::cout<<"Vec: "<< 
+
+
+    std::shared_ptr<int> sp1(new int(10)); //需要两次申请内存,new int + new RefCnt
+    auto bar = std::make_shared<int>(10);
+    //auto foo = std::make_shared<std::array<char, 64>>();
+
+
+    return 0;
+}
 
 #elif 0
 #include <cstring>
