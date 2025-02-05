@@ -123,8 +123,10 @@ namespace test
 	{
 	public:
 		//成员类型 //也可以用内部类,但C++都是typedef居多,不喜欢内部类
-		typedef T* iterator;
-		typedef const T* const_iterator;
+		//typedef T* iterator;
+		//typedef const T* const_iterator;
+		using iterator = T*;
+		using const_iterator = const T*;
 	private:
 		//构造函数太多,初始化列表重复太多麻烦,直接给缺省参数方便//C++11
 		iterator _start = nullptr; //数组头

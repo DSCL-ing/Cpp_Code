@@ -3676,7 +3676,7 @@ c++头文件      /usr/include/c++/
 静态库:
 {
 
-制作库:
+制作静态库:
 # ar rc lib库名[.so或.a]  要打包的文件1 要打包的文件2 ...       //ar是打包命令archive r是选项replace:替换已有的或插入新的;  c是不存在则创建;
 //ar，Linux系统的一个备份压缩命令，用于创建、修改备存文件（archive），或从备存文件中提取成员文件。ar命令最常见的用法是将目标文件打包为静态链接库。
 https://baike.baidu.com/item/ar/7426017 //ar百度百科
